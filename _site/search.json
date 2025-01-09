@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "posts/2025/01/github_pages_setup_with_quarto.html",
+    "href": "posts/2025/01/github_pages_setup_with_quarto.html",
+    "title": "github pages setup for this website",
+    "section": "",
+    "text": "Desired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n\n\n\n\n\n2025-01\n\n\n\ngithub pages setup for this website\n\n\n\n2024-12\n\n\n\nhuhu\n\n\n\n2024-11\n\n\n\nNovember blog post\n\n\n\n2013-12\n\n\n\nSimulated Maximum Likelihood with R\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/2024/11/haha.html",
+    "href": "posts/2024/11/haha.html",
+    "title": "November blog post",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "posts/2024/12/huhu.html",
+    "href": "posts/2024/12/huhu.html",
+    "title": "huhu",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "posts/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "href": "posts/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "title": "Simulated Maximum Likelihood with R",
+    "section": "",
+    "text": "This document details section 12.4.5. Unobserved Heterogeneity Example from Cameron and Trivedi’s book - MICROECONOMETRICS: Methods and Applications. The original source code giving the results from table 12.2 are available from the authors' site here and written for Stata. This is an attempt to translate the code to R. I’d like to thank Reddit user anonemouse2010 for his advice which helped me write the function.\n\n\nConsult the original source code if you want to read the authors' comments. If you want the R source code without all the commentaries, grab it here. This is not guaranteed to work, nor to be correct. It could set your pet on fire and/or eat your first born. Use at your own risk. I may, or may not, expand this example. Corrections, constructive criticism are welcome.\n\n\nThe model is \\(y=\\theta+u+\\varepsilon\\) where \\(\\theta\\) is a scalar parameter equal to 1. \\(u\\) is extreme value type 1 (Gumbel distribution), \\(\\varepsilon \\leadsto \\mathbb{N}(0,1)\\). For more details, consult the book.\n\n\nImport the data\n\n\nYou can consult the original source code to see how the authors simulated the data. To get the same results, and verify that I didn't make mistakes I prefer importing their data directly from their website.\n\n\ndata &lt;- read.table(\"http://cameron.econ.ucdavis.edu/mmabook/mma12p2mslmsm.asc\")\nu &lt;- data[, 1]\ne &lt;- data[, 2]\ny &lt;- data[, 3]\nnumobs &lt;- length(u)\nsimreps &lt;- 10000\n\n\nSimulation\n\n\nIn the code below, the following likelihood function:\n\\[\\log{\\hat{L}_N(\\theta)} = \\dfrac{1}{N} \\sum_{i=1}^N\\log{\\big( \\dfrac{1}{S}\\sum_{s=1}^S \\dfrac{1}{\\sqrt{2\\pi}} \\exp \\{ -(-y_i-\\theta-u_i^s)^2/2 \\}\\big)}\\]\nwhich can be found on page 397 is programmed using the function sapply.\n\n\ndenssim &lt;- function(theta) {\n    loglik &lt;- mean(sapply(y, function(y) log(mean((1/sqrt(2 * pi)) * exp(-(y - theta + log(-log(runif(simreps))))^2/2)))))\n    return(-loglik)\n}\n\n\nThis likelihood is then maximized:\n\n\nsystem.time(res &lt;- optim(0.1, denssim, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n  27.89    0.55   28.47 \n\n\n\nConvergence is achieved pretty rapidly, to\n\n\nres\n\n$par\n[1] 1.321366\n\n$value\n[1] 1.924474\n\n$counts\nfunction gradient \n     151       14 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 1 (which was used to generate the data).\n\n\nLet's try again with another parameter value, for example ( ). We have to generate y again:\n\n\ny2 &lt;- 2.5 + u + e\n\n\nand slightly modify the likelihood:\n\n\ndenssim2 &lt;- function(theta) {\n  loglik &lt;- mean(\n    sapply(\n      y2,\n      function(y2) log(mean((1/sqrt(2 * pi)) * exp(-(y2 - theta + log(-log(runif(simreps))))^2/2)))))\n  return(-loglik)\n}\n\n\nwhich can then be maximized:\n\n\nsystem.time(res2 &lt;- optim(0.1, denssim2, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n  17.41    0.31   17.84 \n\n\n\nThe value that maximizes the likelihood is:\n\n\nres2\n\n$par\n[1] 2.662668\n\n$value\n[1] 1.922372\n\n$counts\nfunction gradient \n      81       14 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 2.5 (which was used to generate the data)."
+  },
+  {
+    "objectID": "blog/2025/01/github_pages_setup_with_quarto.html",
+    "href": "blog/2025/01/github_pages_setup_with_quarto.html",
+    "title": "github pages setup for this website",
+    "section": "",
+    "text": "Desired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "blog/2024/11/haha.html",
+    "href": "blog/2024/11/haha.html",
+    "title": "November blog post",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "blog/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "href": "blog/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "title": "Simulated Maximum Likelihood with R",
+    "section": "",
+    "text": "This document details section 12.4.5. Unobserved Heterogeneity Example from Cameron and Trivedi’s book - MICROECONOMETRICS: Methods and Applications. The original source code giving the results from table 12.2 are available from the authors' site here and written for Stata. This is an attempt to translate the code to R. I’d like to thank Reddit user anonemouse2010 for his advice which helped me write the function.\n\n\nConsult the original source code if you want to read the authors' comments. If you want the R source code without all the commentaries, grab it here. This is not guaranteed to work, nor to be correct. It could set your pet on fire and/or eat your first born. Use at your own risk. I may, or may not, expand this example. Corrections, constructive criticism are welcome.\n\n\nThe model is \\(y=\\theta+u+\\varepsilon\\) where \\(\\theta\\) is a scalar parameter equal to 1. \\(u\\) is extreme value type 1 (Gumbel distribution), \\(\\varepsilon \\leadsto \\mathbb{N}(0,1)\\). For more details, consult the book.\n\n\nImport the data\n\n\nYou can consult the original source code to see how the authors simulated the data. To get the same results, and verify that I didn't make mistakes I prefer importing their data directly from their website.\n\n\ndata &lt;- read.table(\"http://cameron.econ.ucdavis.edu/mmabook/mma12p2mslmsm.asc\")\nu &lt;- data[, 1]\ne &lt;- data[, 2]\ny &lt;- data[, 3]\nnumobs &lt;- length(u)\nsimreps &lt;- 10000\n\n\nSimulation\n\n\nIn the code below, the following likelihood function:\n\\[\\log{\\hat{L}_N(\\theta)} = \\dfrac{1}{N} \\sum_{i=1}^N\\log{\\big( \\dfrac{1}{S}\\sum_{s=1}^S \\dfrac{1}{\\sqrt{2\\pi}} \\exp \\{ -(-y_i-\\theta-u_i^s)^2/2 \\}\\big)}\\]\nwhich can be found on page 397 is programmed using the function sapply.\n\n\ndenssim &lt;- function(theta) {\n    loglik &lt;- mean(sapply(y, function(y) log(mean((1/sqrt(2 * pi)) * exp(-(y - theta + log(-log(runif(simreps))))^2/2)))))\n    return(-loglik)\n}\n\n\nThis likelihood is then maximized:\n\n\nsystem.time(res &lt;- optim(0.1, denssim, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n  17.05    0.45   17.51 \n\n\n\nConvergence is achieved pretty rapidly, to\n\n\nres\n\n$par\n[1] 1.064092\n\n$value\n[1] 1.923841\n\n$counts\nfunction gradient \n     107        9 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 1 (which was used to generate the data).\n\n\nLet's try again with another parameter value, for example ( ). We have to generate y again:\n\n\ny2 &lt;- 2.5 + u + e\n\n\nand slightly modify the likelihood:\n\n\ndenssim2 &lt;- function(theta) {\n  loglik &lt;- mean(\n    sapply(\n      y2,\n      function(y2) log(mean((1/sqrt(2 * pi)) * exp(-(y2 - theta + log(-log(runif(simreps))))^2/2)))))\n  return(-loglik)\n}\n\n\nwhich can then be maximized:\n\n\nsystem.time(res2 &lt;- optim(0.1, denssim2, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n   7.69    0.10    7.94 \n\n\n\nThe value that maximizes the likelihood is:\n\n\nres2\n\n$par\n[1] 0.1\n\n$value\n[1] 3.014571\n\n$counts\nfunction gradient \n      50        3 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 2.5 (which was used to generate the data)."
+  },
+  {
+    "objectID": "blog/2024/12/huhu.html",
+    "href": "blog/2024/12/huhu.html",
+    "title": "huhu",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "blog/2024-12-09-huhu.html",
+    "href": "blog/2024-12-09-huhu.html",
+    "title": "huhu",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "blog/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "href": "blog/2013-01-16-simulated-maximum-likelihood-with-r.html",
+    "title": "Simulated Maximum Likelihood with R",
+    "section": "",
+    "text": "This document details section 12.4.5. Unobserved Heterogeneity Example from Cameron and Trivedi’s book - MICROECONOMETRICS: Methods and Applications. The original source code giving the results from table 12.2 are available from the authors' site here and written for Stata. This is an attempt to translate the code to R. I’d like to thank Reddit user anonemouse2010 for his advice which helped me write the function.\n\n\nConsult the original source code if you want to read the authors' comments. If you want the R source code without all the commentaries, grab it here. This is not guaranteed to work, nor to be correct. It could set your pet on fire and/or eat your first born. Use at your own risk. I may, or may not, expand this example. Corrections, constructive criticism are welcome.\n\n\nThe model is \\(y=\\theta+u+\\varepsilon\\) where \\(\\theta\\) is a scalar parameter equal to 1. \\(u\\) is extreme value type 1 (Gumbel distribution), \\(\\varepsilon \\leadsto \\mathbb{N}(0,1)\\). For more details, consult the book.\n\n\nImport the data\n\n\nYou can consult the original source code to see how the authors simulated the data. To get the same results, and verify that I didn't make mistakes I prefer importing their data directly from their website.\n\n\ndata &lt;- read.table(\"http://cameron.econ.ucdavis.edu/mmabook/mma12p2mslmsm.asc\")\nu &lt;- data[, 1]\ne &lt;- data[, 2]\ny &lt;- data[, 3]\nnumobs &lt;- length(u)\nsimreps &lt;- 10000\n\n\nSimulation\n\n\nIn the code below, the following likelihood function:\n\\[\\log{\\hat{L}_N(\\theta)} = \\dfrac{1}{N} \\sum_{i=1}^N\\log{\\big( \\dfrac{1}{S}\\sum_{s=1}^S \\dfrac{1}{\\sqrt{2\\pi}} \\exp \\{ -(-y_i-\\theta-u_i^s)^2/2 \\}\\big)}\\]\nwhich can be found on page 397 is programmed using the function sapply.\n\n\ndenssim &lt;- function(theta) {\n    loglik &lt;- mean(sapply(y, function(y) log(mean((1/sqrt(2 * pi)) * exp(-(y - theta + log(-log(runif(simreps))))^2/2)))))\n    return(-loglik)\n}\n\n\nThis likelihood is then maximized:\n\n\nsystem.time(res &lt;- optim(0.1, denssim, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n   7.42    0.12    7.55 \n\n\n\nConvergence is achieved pretty rapidly, to\n\n\nres\n\n$par\n[1] 1.110683\n\n$value\n[1] 1.922757\n\n$counts\nfunction gradient \n      40        7 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 1 (which was used to generate the data).\n\n\nLet's try again with another parameter value, for example ( ). We have to generate y again:\n\n\ny2 &lt;- 2.5 + u + e\n\n\nand slightly modify the likelihood:\n\n\ndenssim2 &lt;- function(theta) {\n  loglik &lt;- mean(\n    sapply(\n      y2,\n      function(y2) log(mean((1/sqrt(2 * pi)) * exp(-(y2 - theta + log(-log(runif(simreps))))^2/2)))))\n  return(-loglik)\n}\n\n\nwhich can then be maximized:\n\n\nsystem.time(res2 &lt;- optim(0.1, denssim2, method = \"BFGS\", control = list(maxit = simreps)))\n\n   user  system elapsed \n   6.20    0.13    6.32 \n\n\n\nThe value that maximizes the likelihood is:\n\n\nres2\n\n$par\n[1] 0.1774183\n\n$value\n[1] 2.959929\n\n$counts\nfunction gradient \n      39        4 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n\n\nwhich is close to the true value of the parameter 2.5 (which was used to generate the data)."
+  },
+  {
+    "objectID": "blog/2024-11-09-haha.html",
+    "href": "blog/2024-11-09-haha.html",
+    "title": "November blog post",
+    "section": "",
+    "text": "Undesired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  },
+  {
+    "objectID": "blog/2025-01-09-github_pages_setup_with_quarto.html",
+    "href": "blog/2025-01-09-github_pages_setup_with_quarto.html",
+    "title": "github pages setup for this website",
+    "section": "",
+    "text": "Desired setup\nSetting up a Quarto website on github pages is fairly straightforward: you just need to follow the docs! But in case you need some help, I’m sharing here all the steps I’ve went through.\n\n1 + 1"
+  }
+]

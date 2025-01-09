@@ -1,0 +1,44 @@
+{
+  "about.qmd": {
+    "about.html": "b3db8590"
+  },
+  "index.qmd": {
+    "index.html": "8e734e8e"
+  },
+  "posts/2025/01/github_pages_setup_with_quarto.qmd": {
+    "github_pages_setup_with_quarto.html": "c5f7c53c"
+  },
+  "posts/2024/11/haha.qmd": {
+    "haha.html": "760d4099"
+  },
+  "posts/2024/12/huhu.qmd": {
+    "huhu.html": "4d7e4fc2"
+  },
+  "posts/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.qmd": {
+    "2013-01-16-simulated-maximum-likelihood-with-r.html": "11460597"
+  },
+  "blog/2013/01/2013-01-16-simulated-maximum-likelihood-with-r.qmd": {
+    "2013-01-16-simulated-maximum-likelihood-with-r.html": "86222beb"
+  },
+  "blog/2024/11/haha.qmd": {
+    "haha.html": "68d48527"
+  },
+  "blog/2024/12/huhu.qmd": {
+    "huhu.html": "3baadfe5"
+  },
+  "blog/2025/01/github_pages_setup_with_quarto.qmd": {
+    "github_pages_setup_with_quarto.html": "000976b2"
+  },
+  "blog/2013-01-16-simulated-maximum-likelihood-with-r.qmd": {
+    "2013-01-16-simulated-maximum-likelihood-with-r.html": "43b98ee7"
+  },
+  "blog/2024-11-09-haha.qmd": {
+    "2024-11-09-haha.html": "b897d585"
+  },
+  "blog/2024-12-09-huhu.qmd": {
+    "2024-12-09-huhu.html": "1ccb6347"
+  },
+  "blog/2025-01-09-github_pages_setup_with_quarto.qmd": {
+    "2025-01-09-github_pages_setup_with_quarto.html": "e67f83ac"
+  }
+}
