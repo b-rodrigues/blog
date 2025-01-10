@@ -1,0 +1,23 @@
+name: Render and Publish
+on:
+  push:
+    branches:
+      - main  # changes pushed to this branch will trigger a build.
+
+jobs:
+  build-deploy:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: write
+      steps:
+        - name: Check out repository
+          uses: actions/checkout@v3
+          
+        - name: Set up environment
+          run: nix-build
+
+
+        - name: Publish to GitHub Pages (and render)
+          uses: b-rodrigues/quarto-nix-actions/publish@main
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
