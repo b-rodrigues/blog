@@ -12,10 +12,17 @@ jobs:
       steps:
         - name: Check out repository
           uses: actions/checkout@v3
-          
+
+        - name: Install Nix
+          uses: DeterminateSystems/nix-installer-action@main
+
+        - name: Setup rstats-on-nix cache
+          uses: cachix/cachix-action@v15
+          with:
+            name: rstats-on-nix
+
         - name: Set up environment
           run: nix-build
-
 
         - name: Publish to GitHub Pages (and render)
           uses: b-rodrigues/quarto-nix-actions/publish@main
