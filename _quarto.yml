@@ -1,9 +1,16 @@
 project:
   type: website
+  resources:
+    - "assets/*"
+
+website:
+  title: "Econometrics and Free Software"
+  site-url: https://www.brodrigues.co
+
 
 format:
   html:
-    body-footer: 2025, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the WTFPL. Built with Quarto, Nix and hosted on GitHub Pages.
+    page-footer: "2025, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the WTFPL. Built with Quarto, Nix and hosted on GitHub Pages."
     theme: solar
     css: styles.css
     mainfont: "IBM Plex Serif"
@@ -19,11 +26,13 @@ format:
                 <td>
                   <a href="index.qmd">Website</a> - 
                   <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
-                  <a href="./about.qmd">About</a> - 
+                  <a href="about.qmd">About</a> - 
                   <a href="talks.qmd">Talks</a> -
-                  <a href="book.qmd">Books</a> - 
-                  <a href="packages.qmd">Packages</a>
+                  <a href="books.qmd">Books</a> - 
+                  <a href="packages.qmd">Packages</a> -
+                  <a href="index.xml">RSS</a>
                 </td>
             </table>
+    include-after-body: footer.html
 
 

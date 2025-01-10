@@ -1,9 +1,16 @@
 ---
 listing:
-  contents: blog
+  contents: posts
   template: gallery.ejs
+  feed: true
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If
+you enjoy reading what I write, you might enjoy my
+<a href="books.qmd">books</a> or want to follow me on
+<a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or
+<a href="https://www.twitter.com/brodriguesco">Twitter</a> or
+<a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>.
+If you are 40+, <a href="index.xml">click here</a> instead.
+I also make videos on
+<a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.

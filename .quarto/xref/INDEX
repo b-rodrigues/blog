@@ -40,5 +40,83 @@
   },
   "blog/2025-01-09-github_pages_setup_with_quarto.qmd": {
     "2025-01-09-github_pages_setup_with_quarto.html": "e67f83ac"
+  },
+  "blog/2013-01-29-method-of-simulated-moments-with-r.qmd": {
+    "2013-01-29-method-of-simulated-moments-with-r.html": "8fb28507"
+  },
+  "posts/2013-01-16-simulated-maximum-likelihood-with-r.qmd": {
+    "2013-01-16-simulated-maximum-likelihood-with-r.html": "e5ffcdcf"
+  },
+  "posts/2024-11-09-haha.qmd": {
+    "2024-11-09-haha.html": "461c48ff"
+  },
+  "posts/2024-12-09-huhu.qmd": {
+    "2024-12-09-huhu.html": "00b4bc77"
+  },
+  "posts/2025-01-09-github_pages_setup_with_quarto.qmd": {
+    "2025-01-09-github_pages_setup_with_quarto.html": "960bf880"
+  },
+  "posts/2013-01-29-method-of-simulated-moments-with-r.qmd": {
+    "2013-01-29-method-of-simulated-moments-with-r.html": "6b1f1639"
+  },
+  "talks.qmd": {
+    "talks.html": "17c08604"
+  },
+  "books.qmd": {
+    "books.html": "7402b02f"
+  },
+  "posts/2013-11-07-gmm-with-rmd.qmd": {
+    "2013-11-07-gmm-with-rmd.html": "0541cfb1"
+  },
+  "posts/2013-12-31-r-cas.qmd": {
+    "2013-12-31-r-cas.html": "06633ce2"
+  },
+  "posts/2014-04-23-r-s4-rootfinding.qmd": {
+    "2014-04-23-r-s4-rootfinding.html": "8513d228"
+  },
+  "posts/2014-11-11-benchmarks-r-blas-atlas-rro.qmd": {
+    "2014-11-11-benchmarks-r-blas-atlas-rro.html": "49c230eb"
+  },
+  "posts/2015-01-12-introduction-to-programming-econometrics-with-r.qmd": {
+    "2015-01-12-introduction-to-programming-econometrics-with-r.html": "9dac7e35"
+  },
+  "posts/2015-02-22-export-r-output-to-file.qmd": {
+    "2015-02-22-export-r-output-to-file.html": "2aa5e918"
+  },
+  "posts/2015-05-03-update-introduction-r-programming.qmd": {
+    "2015-05-03-update-introduction-r-programming.html": "c4c71811"
+  },
+  "posts/2015-11-11-bootstrapping-did-with-r.qmd": {
+    "2015-11-11-bootstrapping-did-with-r.html": "859f2edd"
+  },
+  "posts/2016-03-31-unit-testing-with-r.qmd": {
+    "2016-03-31-unit-testing-with-r.html": "acadc9a8"
+  },
+  "posts/2016-06-21-careful-with-trycatch.qmd": {
+    "2016-06-21-careful-with-trycatch.html": "aa21dd5d"
+  },
+  "posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.qmd": {
+    "2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html": "2e6ba0fa"
+  },
+  "posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.qmd": {
+    "2016-07-26-read-a-lot-of-datasets-at-once-with-r.html": "10cbe3a1"
+  },
+  "posts/2016-07-30-merge-a-list-of-datasets-together.qmd": {
+    "2016-07-30-merge-a-list-of-datasets-together.html": "6396e7cb"
+  },
+  "posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.qmd": {
+    "2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html": "ea49b68c"
+  },
+  "posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.qmd": {
+    "2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html": "d490ca8e"
+  },
+  "posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.qmd": {
+    "2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html": "e0d99629"
+  },
+  "posts/2017-01-07-my-free-book-has-a-cover.qmd": {
+    "2017-01-07-my-free-book-has-a-cover.html": "f5274055"
+  },
+  "assets/img/2017-01-07-my-free-book-has-a-cover.qmd": {
+    "2017-01-07-my-free-book-has-a-cover.html": "9addd902"
   }
 }

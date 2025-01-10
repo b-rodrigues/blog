@@ -3,7 +3,7 @@ let
  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2024-12-14.tar.gz") {};
 
  rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) quarto ggplot2 dplyr tidyr janitor tibble;
+  inherit (pkgs.rPackages) quarto ggplot2 gmm Ecdat dplyr tidyr janitor tibble;
  };
 
  system_packages = builtins.attrValues {
