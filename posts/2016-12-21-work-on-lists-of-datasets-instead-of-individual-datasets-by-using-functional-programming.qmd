@@ -12,14 +12,15 @@ toc: true
 
 ```{r}
 #| eval: false
-data2000 &lt;- mtcars
-data2001 &lt;- mtcars
+data2000 <- mtcars
+data2001 <- mtcars
 ```
 
 <p>For the sake of argument, imagine that <code>data2000</code> is data from a survey conducted in the year 2000 and <code>data2001</code> is the same survey but conducted in the year 2001. For illustration purposes, I use the <code>mtcars</code> dataset, but I could have used any other example. In these sort of situations, the variables are named the same in both datasets. Now if I want to check the summary statistics of a variable, I might do it by running:</p>
 
 ```{r}
 #| eval: false
+
 summary(data2000$cyl)
 summary(data2001$cyl)
 ```
@@ -27,9 +28,9 @@ summary(data2001$cyl)
 <p>but this can get quite tedious, especially if instead of only having two years of data, you have 20 years. Another possibility is to merge both datasets and then check the summary statistics of the variable of interest. But this might require a lot of preprocessing, and sometimes you really just want to do a quick check, or some dirty graphs. So you might be tempted to write a loop, which would require to put these two datasets in some kind of structure, such as a list:</p>
 
 ```{r}
-
 #| eval: false
-list_data &lt;- list(&quot;data2000&quot; = data2000, &quot;data2001&quot; = data2001)
+
+list_data <- list("data2000" = data2000, "data2001" = data2001)
 
 for (i in 1:2){
     print(summary(list_data[[i]]$cyl))
@@ -47,6 +48,7 @@ for (i in 1:2){
 
 ```{r}
 #| eval: false
+
 library(purrr)
 
 map(list_data, summary(cyl))
@@ -132,16 +134,16 @@ $data2001
 
 ```{r}
 #| eval: false
-summary_cyl &lt;- map(list_data, (function(x) summary(x$cyl)))
+summary_cyl <- map(list_data, (function(x) summary(x$cyl)))
 str(summary_cyl)
 ```
 
 ```
 ## List of 2
 $ data2000:Classes 'summaryDefault', 'table'  Named num [1:6] 4 4 6 6.19 8 ...
- .. ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;Min.&quot; &quot;1st Qu.&quot; &quot;Median&quot; &quot;Mean&quot; ...
+ .. ..- attr(*, "names")= chr [1:6] "Min." "1st Qu." "Median" "Mean" ...
 $ data2001:Classes 'summaryDefault', 'table'  Named num [1:6] 4 4 6 6.19 8 ...
- .. ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;Min.&quot; &quot;1st Qu.&quot; &quot;Median&quot; &quot;Mean&quot; ...
+ .. ..- attr(*, "names")= chr [1:6] "Min." "1st Qu." "Median" "Mean" ...
  ```
 
 <p>With the loop, you would need to “allocate” an empty list that you would fill at each iteration.</p>
@@ -156,12 +158,12 @@ summary(list_data$cyl)
 
 ```{r}
 #| eval: false
-to_map &lt;- function(func){
+to_map <- function(func){
   function(list, column, ...){
     if(missing(column)){
-        res &lt;- purrr::map(list, (function(x) func(x, ...)))
+        res <- purrr::map(list, (function(x) func(x, ...)))
       } else {
-        res &lt;- purrr::map(list, (function(x) func(x[column], ...)))
+        res <- purrr::map(list, (function(x) func(x[column], ...)))
              }
     res
   }
@@ -172,9 +174,9 @@ to_map &lt;- function(func){
 
 ```{r}
 #| eval: false
-summarymap &lt;- to_map(summary)
+summarymap <- to_map(summary)
 
-summarymap(list_data, &quot;cyl&quot;)
+summarymap(list_data, "cyl")
 ```
 
 ```
@@ -202,7 +204,7 @@ So now everytime I want to have summary statistics for a variable, I just need t
 
 ```{r}
 #| eval: false
-summarymap(list_data, &quot;mpg&quot;)
+summarymap(list_data, "mpg")
 ```
 
 ```
@@ -284,9 +286,9 @@ $data2001
 
 ```{r}
 #| eval: false
-tablemap &lt;- to_map(table)
+tablemap <- to_map(table)
 
-tablemap(list_data, &quot;cyl&quot;)
+tablemap(list_data, "cyl")
 ```
 
 ```
@@ -303,7 +305,7 @@ $data2001
 
 ```{r}
 #| eval: false
-tablemap(list_data, &quot;mpg&quot;)
+tablemap(list_data, "mpg")
 ```
 
 ```
