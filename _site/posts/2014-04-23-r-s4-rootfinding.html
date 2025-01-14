@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2014-04-23">
 
-<title>Object Oriented Programming with R: An example with a Cournot duopoly</title>
+<title>Object Oriented Programming with R: An example with a Cournot duopoly – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,19 +21,85 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="2014-04-23-r-s4-rootfinding_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/quarto.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/popper.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap-618b72e2628d49b629082c58b74646ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0860cfbe084100d39084b98e226c6235.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
@@ -44,7 +110,8 @@ ul.task-list li input[type="checkbox"] {
       <a href="about.qmd">About</a> - 
       <a href="talks.qmd">Talks</a> -
       <a href="books.qmd">Books</a> - 
-      <a href="packages.qmd">Packages</a>
+      <a href="packages.qmd">Packages</a> -
+      <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
@@ -83,10 +150,15 @@ window.Quarto = {
 
 
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
-</div>
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -153,41 +225,49 @@ Implementation in R
 <p>
 If we want to find the optimal quantities (q_1) and (q_2) we need to program the optimality condition and we could also use the jacobian of the optimality condition. The jacobian is generally useful to speed up the root finding routines. This is were OOP is useful. First let's create a new class, called <em>Model</em>:
 </p>
-<pre><code class="r">setClass(Class = "Model", slots = list(OptimCond = "function", JacobiOptimCond = "function"))
-</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>(<span class="at">Class =</span> <span class="st">"Model"</span>, <span class="at">slots =</span> <span class="fu">list</span>(<span class="at">OptimCond =</span> <span class="st">"function"</span>, <span class="at">JacobiOptimCond =</span> <span class="st">"function"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 This new class has two <em>slots</em>, which here are functions (in general <em>slots</em> are properties of your class); we need the model to return the optimality condition and the jacobian of the optimality condition.
 </p>
 <p>
 Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta"> of the model:
 </p>
-<pre><code class="r">my_mod &lt;- function(eta, c) {
-    e = -1/eta
-
-    OptimCond &lt;- function(q) {
-        return(sum(q)^e + e * sum(q)^(e - 1) * q - diag(c) %*% q)
-    }
-
-    JacobiOptimCond &lt;- function(q) {
-        return((e * sum(q)^e) * array(1, c(2, 2)) + (e * sum(q)^(e - 1)) * diag(1, 
-            2) + (e - 1) * e * sum(q)^(e - 2) * q * c(1, 1) - diag(c))
-    }
-
-    return(new("Model", OptimCond = OptimCond, JacobiOptimCond = JacobiOptimCond))
-
-}
-</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_mod <span class="ot">&lt;-</span> <span class="cf">function</span>(eta, c) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    e <span class="ot">=</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>eta</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    OptimCond <span class="ot">&lt;-</span> <span class="cf">function</span>(q) {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">sum</span>(q)<span class="sc">^</span>e <span class="sc">+</span> e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> q <span class="sc">-</span> <span class="fu">diag</span>(c) <span class="sc">%*%</span> q)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    JacobiOptimCond <span class="sc">&amp;</span>lt;<span class="sc">-</span> <span class="cf">function</span>(q) {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>e) <span class="sc">*</span> <span class="fu">array</span>(<span class="dv">1</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">*</span> <span class="fu">diag</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span> q <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">diag</span>(c)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">new</span>(<span class="st">"Model"</span>, <span class="at">OptimCond =</span> OptimCond, <span class="at">JacobiOptimCond =</span> JacobiOptimCond))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 The function <code>my_mod</code> takes two parameters, <code>eta</code> and <code>c</code> and returns two functions, the optimality condition and the jacobian of the optimality condition. Both are now accessible via <code>my_mod(eta=1.6,c = c(0.6,0.8))<span class="citation" data-cites="OptimCond">@OptimCond</span></code> and <code>my_mod(eta=1.6,c = c(0.6,0.8))<span class="citation" data-cites="JacobiOptimCond">@JacobiOptimCond</span></code> respectively (and by specifying values for <code>eta</code> and <code>c</code>).
 </p>
 <p>
 Now, we can use the <code>rootSolve</code> package to get the optimal values (q_1) and (q_2)
 </p>
-<pre><code class="r">library("rootSolve")
-
-multiroot(f = my_mod(eta = 1.6, c = c(0.6, 0.8))@OptimCond, start = c(1, 1), 
-    maxiter = 100, jacfunc = my_mod(eta = 1.6, c = c(0.6, 0.8))@JacobiOptimCond)
-</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rootSolve"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">multiroot</span>(<span class="at">f =</span> <span class="fu">my_mod</span>(<span class="at">eta =</span> <span class="fl">1.6</span>, <span class="at">c =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.8</span>))<span class="sc">@</span>OptimCond,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">maxiter =</span> <span class="dv">100</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">jacfunc =</span> <span class="fu">my_mod</span>(<span class="at">eta =</span> <span class="fl">1.6</span>, <span class="at">c =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.8</span>))<span class="sc">@</span>JacobiOptimCond)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $root
 ## [1] 0.8396 0.6888
 ## 
@@ -211,26 +291,30 @@ Suggestion by Reddit user, TheDrownedKraken
 <p>
 I posted this blog post on the rstats subbreddit on <a href="http://www.reddit.com">www.reddit.com</a>. I got a very useful comment by reddit member TheDrownedKraken which suggested the following approach, which doesn't need a new class to be build. I thank him for this. Here is his suggestion:
 </p>
-<pre><code class="r">generator &lt;- function(eta, a) {
-    e = -1/eta
-
-    OptimCond &lt;- function(q) {
-        return(sum(q)^e + e * sum(q)^(e - 1) * q - diag(a) %*% q)
-    }
-
-    JacobiOptimCond &lt;- function(q) {
-        return((e * sum(q)^e) * array(1, c(2, 2)) + (e * sum(q)^(e - 1)) * diag(1, 
-            2) + (e - 1) * e * sum(q)^(e - 2) * q * c(1, 1) - diag(a))
-    }
-
-    return(list(OptimCond = OptimCond, JacobiOptimCond = JacobiOptimCond))
-
-}
-
-f.s &lt;- generator(eta = 1.6, a = c(0.6, 0.8))
-
-multiroot(f = f.s$OptimCond, start = c(1, 1), maxiter = 100, jacfunc = f.s$JacobiOptimCond)
-</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>generator <span class="ot">&lt;-</span> <span class="cf">function</span>(eta, a) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    e <span class="ot">=</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>eta</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    OptimCond <span class="ot">&lt;-</span> <span class="cf">function</span>(q) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">sum</span>(q)<span class="sc">^</span>e <span class="sc">+</span> e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> q <span class="sc">-</span> <span class="fu">diag</span>(a) <span class="sc">%*%</span> q)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    JacobiOptimCond <span class="ot">&lt;-</span> <span class="cf">function</span>(q) {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>e) <span class="sc">*</span> <span class="fu">array</span>(<span class="dv">1</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">*</span> <span class="fu">diag</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        (e <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> e <span class="sc">*</span> <span class="fu">sum</span>(q)<span class="sc">^</span>(e <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span> q <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">diag</span>(a)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">OptimCond =</span> OptimCond, <span class="at">JacobiOptimCond =</span> JacobiOptimCond))</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>f.s <span class="ot">&lt;-</span> <span class="fu">generator</span>(<span class="at">eta =</span> <span class="fl">1.6</span>, <span class="at">a =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.8</span>))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">multiroot</span>(<span class="at">f =</span> f.s<span class="sc">$</span>OptimCond, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="at">maxiter =</span> <span class="dv">100</span>, <span class="at">jacfunc =</span> f.s<span class="sc">$</span>JacobiOptimCond)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $root
 ## [1] 0.8396 0.6888
 ## 
@@ -247,13 +331,14 @@ multiroot(f = f.s$OptimCond, start = c(1, 1), maxiter = 100, jacfunc = f.s$Jacob
 </code></pre>
 
 
-</main>
-<!-- /main column -->
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="/books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -265,7 +350,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="/index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
@@ -362,7 +447,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/www\.brodrigues\.co");
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2014-04-23">
+<meta name="dcterms.date" content="2017-03-08">
 
-<title>Object Oriented Programming with R: An example with a Cournot duopoly</title>
+<title>Lesser known dplyr tricks – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,16 +24,48 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="2014-04-23-r-s4-rootfinding_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/quarto.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/popper.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2014-04-23-r-s4-rootfinding_files/libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2014-04-23-r-s4-rootfinding_files/libs/bootstrap/bootstrap-618b72e2628d49b629082c58b74646ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0860cfbe084100d39084b98e226c6235.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
@@ -44,7 +76,8 @@ ul.task-list li input[type="checkbox"] {
       <a href="about.qmd">About</a> - 
       <a href="talks.qmd">Talks</a> -
       <a href="books.qmd">Books</a> - 
-      <a href="packages.qmd">Packages</a>
+      <a href="packages.qmd">Packages</a> -
+      <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
@@ -83,18 +116,23 @@ window.Quarto = {
 
 
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
-</div>
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Object Oriented Programming with R: An example with a Cournot duopoly</h1>
+<h1 class="title">Lesser known dplyr tricks</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
-    <div class="quarto-category">econometrics</div>
+    <div class="quarto-category">programming</div>
   </div>
   </div>
 
@@ -106,7 +144,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 23, 2014</p>
+      <p class="date">March 8, 2017</p>
     </div>
   </div>
   
@@ -118,142 +156,269 @@ window.Quarto = {
 </header>
 
 
-<!-- MathJax scripts -->
-<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
+<p>
+In this blog post I share some lesser-known (at least I believe they are) tricks that use mainly functions from <code>dplyr</code>.
+</p>
+<section id="removing-unneeded-columns" class="level2">
+<h2 class="anchored" data-anchor-id="removing-unneeded-columns">
+Removing unneeded columns
+</h2>
+<p>
+Did you know that you can use <code>-</code> in front of a column name to remove it from a data frame?
+</p>
+<pre class="r"><code>mtcars %&gt;% 
+    select(-disp) %&gt;% 
+    head()</code></pre>
+<pre><code>##                    mpg cyl  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+</section>
+<section id="re-ordering-columns" class="level2">
+<h2 class="anchored" data-anchor-id="re-ordering-columns">
+Re-ordering columns
+</h2>
+<p>
+Still using <code>select()</code>, it is easy te re-order columns in your data frame:
+</p>
+<pre class="r"><code>mtcars %&gt;% 
+    select(cyl, disp, hp, everything()) %&gt;% 
+    head()</code></pre>
+<pre><code>##                   cyl disp  hp  mpg drat    wt  qsec vs am gear carb
+## Mazda RX4           6  160 110 21.0 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag       6  160 110 21.0 3.90 2.875 17.02  0  1    4    4
+## Datsun 710          4  108  93 22.8 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive      6  258 110 21.4 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout   8  360 175 18.7 3.15 3.440 17.02  0  0    3    2
+## Valiant             6  225 105 18.1 2.76 3.460 20.22  1  0    3    1</code></pre>
+<p>
+As its name implies <code>everything()</code> simply means all the other columns.
+</p>
+</section>
+<section id="renaming-columns-with-rename" class="level2">
+<h2 class="anchored" data-anchor-id="renaming-columns-with-rename">
+Renaming columns with <code>rename()</code>
+</h2>
+<pre class="r"><code>mtcars &lt;- rename(mtcars, spam_mpg = mpg)
+mtcars &lt;- rename(mtcars, spam_disp = disp)
+mtcars &lt;- rename(mtcars, spam_hp = hp)
 
+head(mtcars)</code></pre>
+<pre><code>##                   spam_mpg cyl spam_disp spam_hp drat    wt  qsec vs am
+## Mazda RX4             21.0   6       160     110 3.90 2.620 16.46  0  1
+## Mazda RX4 Wag         21.0   6       160     110 3.90 2.875 17.02  0  1
+## Datsun 710            22.8   4       108      93 3.85 2.320 18.61  1  1
+## Hornet 4 Drive        21.4   6       258     110 3.08 3.215 19.44  1  0
+## Hornet Sportabout     18.7   8       360     175 3.15 3.440 17.02  0  0
+## Valiant               18.1   6       225     105 2.76 3.460 20.22  1  0
+##                   gear carb
+## Mazda RX4            4    4
+## Mazda RX4 Wag        4    4
+## Datsun 710           4    1
+## Hornet 4 Drive       3    1
+## Hornet Sportabout    3    2
+## Valiant              3    1</code></pre>
+</section>
+<section id="selecting-columns-with-a-regexp" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-columns-with-a-regexp">
+Selecting columns with a regexp
+</h2>
 <p>
-I started reading <em>Applied Computational Economics &amp; Finance</em> by Mario J. Miranda and Paul L. Fackler. It is a very interesting book that I recommend to every one of my colleagues. The only issue I have with this book, is that the programming language they use is Matlab, which is proprietary. While there is a free as in freedom implementation of the Matlab language, namely Octave, I still prefer using R. In this post, I will illustrate one example the authors present in the book with R, using the package <code>rootSolve</code>. <code>rootSolve</code> implements Newtonian algorithms to find roots of functions; to specify the functions for which I want the roots, I use R's Object-Oriented Programming (OOP) capabilities to build a model that returns two functions. This is optional, but I found that it was a good example to illustrate OOP, even though simpler solutions exist, one of which was proposed by reddit user TheDrownedKraken (whom I thank) and will be presented at the end of the article.
+It is easy to select the columns that start with “spam” with some helper functions:
 </p>
-<h3 class="anchored">
-Theoretical background
-</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    select(contains("spam")) %&gt;% 
+    head()</code></pre>
+<pre><code>##                   spam_mpg spam_disp spam_hp
+## Mazda RX4             21.0       160     110
+## Mazda RX4 Wag         21.0       160     110
+## Datsun 710            22.8       108      93
+## Hornet 4 Drive        21.4       258     110
+## Hornet Sportabout     18.7       360     175
+## Valiant               18.1       225     105</code></pre>
 <p>
-The example is taken from Miranda's and Fackler's book, on page 35. The authors present a Cournot duopoly model. In a Cournot duopoly model, two firms compete against each other by quantities. Both produce a certain quantity of an homogenous good, and take the quantity produce by their rival as given.
+take also a look at <code>starts_with()</code>, <code>ends_with()</code>, <code>contains()</code>, <code>matches()</code>, <code>num_range()</code>, <code>one_of()</code> and <code>everything()</code>.
 </p>
+</section>
+<section id="create-new-columns-with-mutate-and-if_else" class="level2">
+<h2 class="anchored" data-anchor-id="create-new-columns-with-mutate-and-if_else">
+Create new columns with <code>mutate()</code> and <code>if_else()</code>
+</h2>
+<pre class="r"><code>mtcars %&gt;% 
+    mutate(vs_new = if_else(
+        vs == 1, 
+        "one", 
+        "zero", 
+        NA_character_)) %&gt;% 
+    head()</code></pre>
+<pre><code>##   spam_mpg cyl spam_disp spam_hp drat    wt  qsec vs am gear carb vs_new
+## 1     21.0   6       160     110 3.90 2.620 16.46  0  1    4    4   zero
+## 2     21.0   6       160     110 3.90 2.875 17.02  0  1    4    4   zero
+## 3     22.8   4       108      93 3.85 2.320 18.61  1  1    4    1    one
+## 4     21.4   6       258     110 3.08 3.215 19.44  1  0    3    1    one
+## 5     18.7   8       360     175 3.15 3.440 17.02  0  0    3    2   zero
+## 6     18.1   6       225     105 2.76 3.460 20.22  1  0    3    1    one</code></pre>
 <p>
-The inverse demand of the good is :
+You might want to create a new variable conditionally on several values of another column:
 </p>
-<p><span class="math display">\[P(q) = q^{-\dfrac{1}{\eta}}\]</span></p>
+<pre class="r"><code>mtcars %&gt;% 
+    mutate(carb_new = case_when(.$carb == 1 ~ "one",
+                                .$carb == 2 ~ "two",
+                                .$carb == 4 ~ "four",
+                                 TRUE ~ "other")) %&gt;% 
+    head(15)</code></pre>
+<pre><code>##    spam_mpg cyl spam_disp spam_hp drat    wt  qsec vs am gear carb
+## 1      21.0   6     160.0     110 3.90 2.620 16.46  0  1    4    4
+## 2      21.0   6     160.0     110 3.90 2.875 17.02  0  1    4    4
+## 3      22.8   4     108.0      93 3.85 2.320 18.61  1  1    4    1
+## 4      21.4   6     258.0     110 3.08 3.215 19.44  1  0    3    1
+## 5      18.7   8     360.0     175 3.15 3.440 17.02  0  0    3    2
+## 6      18.1   6     225.0     105 2.76 3.460 20.22  1  0    3    1
+## 7      14.3   8     360.0     245 3.21 3.570 15.84  0  0    3    4
+## 8      24.4   4     146.7      62 3.69 3.190 20.00  1  0    4    2
+## 9      22.8   4     140.8      95 3.92 3.150 22.90  1  0    4    2
+## 10     19.2   6     167.6     123 3.92 3.440 18.30  1  0    4    4
+## 11     17.8   6     167.6     123 3.92 3.440 18.90  1  0    4    4
+## 12     16.4   8     275.8     180 3.07 4.070 17.40  0  0    3    3
+## 13     17.3   8     275.8     180 3.07 3.730 17.60  0  0    3    3
+## 14     15.2   8     275.8     180 3.07 3.780 18.00  0  0    3    3
+## 15     10.4   8     472.0     205 2.93 5.250 17.98  0  0    3    4
+##    carb_new
+## 1      four
+## 2      four
+## 3       one
+## 4       one
+## 5       two
+## 6       one
+## 7      four
+## 8       two
+## 9       two
+## 10     four
+## 11     four
+## 12    other
+## 13    other
+## 14    other
+## 15     four</code></pre>
 <p>
-the cost function for firm i is:
-</p>
-<p><span class="math display">\[C_i(q_i) = P(q_1+q_2)*q_i - C_i(q_i)\]</span></p>
-<p>
-and the profit for firm i:
-</p>
-<p><span class="math display">\[\pi_i(q1,q2) = P(q_1+q_2)q_i - C_i(q_i)\]</span></p>
-<p>
-The optimality condition for firm i is thus:
-</p>
-<p><span class="math display">\[\dfrac{\partial \pi_i}{\partial q_i} = (q1+q2)^{-\dfrac{1}{\eta}} - \dfrac{1}{\eta} (q_1+q_2)^{\dfrac{-1}{\eta-1}}q_i - c_iq_i=0.\]</span></p>
-<h3 class="anchored">
-Implementation in R
-</h3>
-<p>
-If we want to find the optimal quantities (q_1) and (q_2) we need to program the optimality condition and we could also use the jacobian of the optimality condition. The jacobian is generally useful to speed up the root finding routines. This is were OOP is useful. First let's create a new class, called <em>Model</em>:
-</p>
-<pre><code class="r">setClass(Class = "Model", slots = list(OptimCond = "function", JacobiOptimCond = "function"))
-</code></pre>
-<p>
-This new class has two <em>slots</em>, which here are functions (in general <em>slots</em> are properties of your class); we need the model to return the optimality condition and the jacobian of the optimality condition.
-</p>
-<p>
-Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta"> of the model:
-</p>
-<pre><code class="r">my_mod &lt;- function(eta, c) {
-    e = -1/eta
+Mind the <code>.<span class="math inline">\(&lt;/code&gt; before the variable &lt;code&gt;carb&lt;/code&gt;. There is a &lt;a href="https://github.com/hadley/dplyr/issues/1965"&gt;github issue&lt;/a&gt;
+about this, and it is already fixed in the development version of &lt;code&gt;dplyr&lt;/code&gt;, which means that in the next version
+of &lt;code&gt;dplyr&lt;/code&gt;, &lt;code&gt;case_when()&lt;/code&gt; will work as any other specialized &lt;code&gt;dplyr&lt;/code&gt; function inside &lt;code&gt;mutate()&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id="apply-a-function-to-certain-columns-only-by-rows" class="section level2"&gt;
+&lt;h2&gt;Apply a function to certain columns only, by rows&lt;/h2&gt;
+&lt;pre class="r"&gt;&lt;code&gt;mtcars %&amp;gt;%
+    select(am, gear, carb) %&amp;gt;%
+    purrr::by_row(sum, .collate = &amp;quot;cols&amp;quot;, .to = &amp;quot;sum_am_gear_carb&amp;quot;) -&amp;gt; mtcars2
+head(mtcars2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For this, I had to use &lt;code&gt;purrr&lt;/code&gt;’s &lt;code&gt;by_row()&lt;/code&gt; function. You can then add this column to your original data frame:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;mtcars &amp;lt;- cbind(mtcars, &amp;quot;sum_am_gear_carb&amp;quot; = mtcars2\)</span>sum_am_gear_carb) head(mtcars)</code>
 
-    OptimCond &lt;- function(q) {
-        return(sum(q)^e + e * sum(q)^(e - 1) * q - diag(c) %*% q)
-    }
-
-    JacobiOptimCond &lt;- function(q) {
-        return((e * sum(q)^e) * array(1, c(2, 2)) + (e * sum(q)^(e - 1)) * diag(1, 
-            2) + (e - 1) * e * sum(q)^(e - 2) * q * c(1, 1) - diag(c))
-    }
-
-    return(new("Model", OptimCond = OptimCond, JacobiOptimCond = JacobiOptimCond))
-
+</p><pre><code>##                   spam_mpg cyl spam_disp spam_hp drat    wt  qsec vs am
+## Mazda RX4             21.0   6       160     110 3.90 2.620 16.46  0  1
+## Mazda RX4 Wag         21.0   6       160     110 3.90 2.875 17.02  0  1
+## Datsun 710            22.8   4       108      93 3.85 2.320 18.61  1  1
+## Hornet 4 Drive        21.4   6       258     110 3.08 3.215 19.44  1  0
+## Hornet Sportabout     18.7   8       360     175 3.15 3.440 17.02  0  0
+## Valiant               18.1   6       225     105 2.76 3.460 20.22  1  0
+##                   gear carb sum_am_gear_carb
+## Mazda RX4            4    4                9
+## Mazda RX4 Wag        4    4                9
+## Datsun 710           4    1                6
+## Hornet 4 Drive       3    1                4
+## Hornet Sportabout    3    2                5
+## Valiant              3    1                4</code></pre>
+</section></main></div>
+<section id="use-do-to-do-any-arbitrary-operation" class="level2">
+<h2 data-anchor-id="use-do-to-do-any-arbitrary-operation">
+Use <code>do()</code> to do any arbitrary operation
+</h2>
+<pre class="r"><code>mtcars %&gt;% 
+    group_by(cyl) %&gt;% 
+    do(models = lm(spam_mpg ~ drat + wt, data = .)) %&gt;% 
+    broom::tidy(models)</code></pre>
+<pre><code>## # A tibble: 9 x 6
+## # Groups:   cyl [3]
+##     cyl term        estimate std.error statistic p.value
+##   &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1     4 (Intercept)   33.2      17.1       1.94  0.0877 
+## 2     4 drat           1.32      3.45      0.384 0.711  
+## 3     4 wt            -5.24      2.22     -2.37  0.0456 
+## 4     6 (Intercept)   30.7       7.51      4.08  0.0151 
+## 5     6 drat          -0.444     1.17     -0.378 0.725  
+## 6     6 wt            -2.99      1.57     -1.91  0.129  
+## 7     8 (Intercept)   29.7       7.09      4.18  0.00153
+## 8     8 drat          -1.47      1.63     -0.903 0.386  
+## 9     8 wt            -2.45      0.799    -3.07  0.0107</code></pre>
+<p>
+<code>do()</code> is useful when you want to use any R function (user defined functions work too!) with <code>dplyr</code> functions. First I grouped the observations by <code>cyl</code> and then ran a linear model for each group. Then I converted the output to a tidy data frame using <code>broom::tidy()</code>.
+</p>
+</section>
+<section id="using-dplyr-functions-inside-your-own-functions" class="level2">
+<h2 data-anchor-id="using-dplyr-functions-inside-your-own-functions">
+Using <code>dplyr</code> functions inside your own functions
+</h2>
+<pre class="r"><code>extract_vars &lt;- function(data, some_string){
+    
+  data %&gt;%
+    select_(lazyeval::interp(~contains(some_string))) -&gt; data
+    
+  return(data)
 }
-</code></pre>
+
+extract_vars(mtcars, "spam")</code></pre>
+<pre><code>##                     spam_mpg spam_disp spam_hp
+## Mazda RX4               21.0     160.0     110
+## Mazda RX4 Wag           21.0     160.0     110
+## Datsun 710              22.8     108.0      93
+## Hornet 4 Drive          21.4     258.0     110
+## Hornet Sportabout       18.7     360.0     175
+## Valiant                 18.1     225.0     105
+## Duster 360              14.3     360.0     245
+## Merc 240D               24.4     146.7      62
+## Merc 230                22.8     140.8      95
+## Merc 280                19.2     167.6     123
+## Merc 280C               17.8     167.6     123
+## Merc 450SE              16.4     275.8     180
+## Merc 450SL              17.3     275.8     180
+## Merc 450SLC             15.2     275.8     180
+## Cadillac Fleetwood      10.4     472.0     205
+## Lincoln Continental     10.4     460.0     215
+## Chrysler Imperial       14.7     440.0     230
+## Fiat 128                32.4      78.7      66
+## Honda Civic             30.4      75.7      52
+## Toyota Corolla          33.9      71.1      65
+## Toyota Corona           21.5     120.1      97
+## Dodge Challenger        15.5     318.0     150
+## AMC Javelin             15.2     304.0     150
+## Camaro Z28              13.3     350.0     245
+## Pontiac Firebird        19.2     400.0     175
+## Fiat X1-9               27.3      79.0      66
+## Porsche 914-2           26.0     120.3      91
+## Lotus Europa            30.4      95.1     113
+## Ford Pantera L          15.8     351.0     264
+## Ferrari Dino            19.7     145.0     175
+## Maserati Bora           15.0     301.0     335
+## Volvo 142E              21.4     121.0     109</code></pre>
 <p>
-The function <code>my_mod</code> takes two parameters, <code>eta</code> and <code>c</code> and returns two functions, the optimality condition and the jacobian of the optimality condition. Both are now accessible via <code>my_mod(eta=1.6,c = c(0.6,0.8))<span class="citation" data-cites="OptimCond">@OptimCond</span></code> and <code>my_mod(eta=1.6,c = c(0.6,0.8))<span class="citation" data-cites="JacobiOptimCond">@JacobiOptimCond</span></code> respectively (and by specifying values for <code>eta</code> and <code>c</code>).
+About this last point, you can read more about it <a href="2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">here</a>.
 </p>
 <p>
-Now, we can use the <code>rootSolve</code> package to get the optimal values (q_1) and (q_2)
+Hope you liked this small list of tricks!
 </p>
-<pre><code class="r">library("rootSolve")
-
-multiroot(f = my_mod(eta = 1.6, c = c(0.6, 0.8))@OptimCond, start = c(1, 1), 
-    maxiter = 100, jacfunc = my_mod(eta = 1.6, c = c(0.6, 0.8))@JacobiOptimCond)
-</code></pre>
-<pre><code>## $root
-## [1] 0.8396 0.6888
-## 
-## $f.root
-##            [,1]
-## [1,] -2.220e-09
-## [2,]  9.928e-09
-## 
-## $iter
-## [1] 4
-## 
-## $estim.precis
-## [1] 6.074e-09
-</code></pre>
-<p>
-After 4 iterations, we get that <img src="http://latex.codecogs.com/png.latex?\inline q_1" alt="\inline q_1"> and <img src="http://latex.codecogs.com/png.latex?\inline q_2" alt="\inline q_2"> are equal to 0.84 and 0.69 respectively, which are the same values as in the book!
-</p>
-<h3 class="anchored">
-Suggestion by Reddit user, TheDrownedKraken
-</h3>
-<p>
-I posted this blog post on the rstats subbreddit on <a href="http://www.reddit.com">www.reddit.com</a>. I got a very useful comment by reddit member TheDrownedKraken which suggested the following approach, which doesn't need a new class to be build. I thank him for this. Here is his suggestion:
-</p>
-<pre><code class="r">generator &lt;- function(eta, a) {
-    e = -1/eta
-
-    OptimCond &lt;- function(q) {
-        return(sum(q)^e + e * sum(q)^(e - 1) * q - diag(a) %*% q)
-    }
-
-    JacobiOptimCond &lt;- function(q) {
-        return((e * sum(q)^e) * array(1, c(2, 2)) + (e * sum(q)^(e - 1)) * diag(1, 
-            2) + (e - 1) * e * sum(q)^(e - 2) * q * c(1, 1) - diag(a))
-    }
-
-    return(list(OptimCond = OptimCond, JacobiOptimCond = JacobiOptimCond))
-
-}
-
-f.s &lt;- generator(eta = 1.6, a = c(0.6, 0.8))
-
-multiroot(f = f.s$OptimCond, start = c(1, 1), maxiter = 100, jacfunc = f.s$JacobiOptimCond)
-</code></pre>
-<pre><code>## $root
-## [1] 0.8396 0.6888
-## 
-## $f.root
-##            [,1]
-## [1,] -2.220e-09
-## [2,]  9.928e-09
-## 
-## $iter
-## [1] 4
-## 
-## $estim.precis
-## [1] 6.074e-09
-</code></pre>
+</section>
 
 
-</main>
-<!-- /main column -->
+
+
+ <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="/books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -265,7 +430,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="/index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
@@ -362,7 +527,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/www\.brodrigues\.co");
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -689,7 +854,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> <!-- /content -->
+ <!-- /content -->
 
 
 

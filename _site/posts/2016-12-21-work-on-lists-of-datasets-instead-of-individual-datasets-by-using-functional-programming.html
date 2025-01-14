@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2016-12-21">
 
-<title>Work on lists of datasets instead of individual datasets by using functional programming</title>
+<title>Work on lists of datasets instead of individual datasets by using functional programming – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,19 +21,85 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/quarto.js"></script>
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/popper.min.js"></script>
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming_files/libs/bootstrap/bootstrap-618b72e2628d49b629082c58b74646ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0860cfbe084100d39084b98e226c6235.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
@@ -44,7 +110,8 @@ ul.task-list li input[type="checkbox"] {
       <a href="about.qmd">About</a> - 
       <a href="talks.qmd">Talks</a> -
       <a href="books.qmd">Books</a> - 
-      <a href="packages.qmd">Packages</a>
+      <a href="packages.qmd">Packages</a> -
+      <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
@@ -54,10 +121,15 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
-</div>
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -92,21 +164,27 @@ ul.task-list li input[type="checkbox"] {
 <p>
 Analyzing a lot of datasets can be tedious. In my work, I often have to compute descriptive statistics, or plot some graphs for some variables for a lot of datasets. The variables in question have the same name accross the datasets but are measured for different years. As an example, imagine you have this situation:
 </p>
-<pre class="r"><code>data2000 &lt;- mtcars
-data2001 &lt;- mtcars</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data2000 <span class="ot">&lt;-</span> mtcars</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data2001 <span class="ot">&lt;-</span> mtcars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 For the sake of argument, imagine that <code>data2000</code> is data from a survey conducted in the year 2000 and <code>data2001</code> is the same survey but conducted in the year 2001. For illustration purposes, I use the <code>mtcars</code> dataset, but I could have used any other example. In these sort of situations, the variables are named the same in both datasets. Now if I want to check the summary statistics of a variable, I might do it by running:
 </p>
-<pre class="r"><code>summary(data2000$cyl)
-summary(data2001$cyl)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data2000<span class="sc">$</span>cyl)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data2001<span class="sc">$</span>cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 but this can get quite tedious, especially if instead of only having two years of data, you have 20 years. Another possibility is to merge both datasets and then check the summary statistics of the variable of interest. But this might require a lot of preprocessing, and sometimes you really just want to do a quick check, or some dirty graphs. So you might be tempted to write a loop, which would require to put these two datasets in some kind of structure, such as a list:
 </p>
-<pre class="r"><code>list_data &lt;- list("data2000" = data2000, "data2001" = data2001)
-
-for (i in 1:2){
-    print(summary(list_data[[i]]$cyl))
- }</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>list_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"data2000"</span> <span class="ot">=</span> data2000, <span class="st">"data2001"</span> <span class="ot">=</span> data2001)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>){</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">summary</span>(list_data[[i]]<span class="sc">$</span>cyl))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   4.000   4.000   6.000   6.188   8.000   8.000 
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -117,14 +195,18 @@ But this also might get tedious, especially if you want to do this for a lot of 
 <p>
 Another, simpler way of doing this, is to use <code>purrr::map()</code> or <code>lapply()</code>. But there is a catch though: how do we specify the column we want to work on? Let’s try some things out:
 </p>
-<pre class="r"><code>library(purrr)
-
-map(list_data, summary(cyl))</code></pre>
-<pre class="r"><code>Error in summary(cyl) : object 'cyl' not found</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(list_data, <span class="fu">summary</span>(cyl))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<pre><code>Error in summary(cyl) : object 'cyl' not found</code></pre>
 <p>
 Maybe this will work:
 </p>
-<pre class="r"><code>map(list_data, summary, cyl)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(list_data, summary, cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $data2000
      mpg             cyl             disp             hp       
 Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
@@ -173,7 +255,9 @@ Max.   :1.0000   Max.   :5.000   Max.   :8.000</code></pre>
 <p>
 Not quite! You get the summary statistics of every variable, <code>cyl</code> simply gets ignored. This might be ok in our small toy example, but if you have dozens of datasets with hundreds of variables, the output becomes unreadable. The solution is to use an anonymous functions:
 </p>
-<pre class="r"><code>map(list_data, (function(x) summary(x$cyl)))</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(list_data, (<span class="cf">function</span>(x) <span class="fu">summary</span>(x<span class="sc">$</span>cyl)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $data2000
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   4.000   4.000   6.000   6.188   8.000   8.000 
@@ -184,8 +268,10 @@ $data2001
 <p>
 This is, in my opinion, much more readable than a loop, and the output of this is another list, so it’s easy to save it:
 </p>
-<pre class="r"><code>summary_cyl &lt;- map(list_data, (function(x) summary(x$cyl)))
-str(summary_cyl)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>summary_cyl <span class="ot">&lt;-</span> <span class="fu">map</span>(list_data, (<span class="cf">function</span>(x) <span class="fu">summary</span>(x<span class="sc">$</span>cyl)))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(summary_cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## List of 2
 $ data2000:Classes 'summaryDefault', 'table'  Named num [1:6] 4 4 6 6.19 8 ...
  .. ..- attr(*, "names")= chr [1:6] "Min." "1st Qu." "Median" "Mean" ...
@@ -197,26 +283,32 @@ With the loop, you would need to “allocate” an empty list that you would fil
 <p>
 So this is already nice, but wouldn’t it be nicer to simply have to type:
 </p>
-<pre class="r"><code>summary(list_data$cyl)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(list_data<span class="sc">$</span>cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 and have the summary of variable <code>cyl</code> for each dataset in the list? Well it is possible with the following function I wrote to make my life easier:
 </p>
-<pre class="r"><code>to_map &lt;- function(func){
-  function(list, column, ...){
-    if(missing(column)){
-        res &lt;- purrr::map(list, (function(x) func(x, ...)))
-      } else {
-        res &lt;- purrr::map(list, (function(x) func(x[column], ...)))
-             }
-    res
-  }
-}</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>to_map <span class="ot">&lt;-</span> <span class="cf">function</span>(func){</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(list, column, ...){</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">missing</span>(column)){</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        res <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(list, (<span class="cf">function</span>(x) <span class="fu">func</span>(x, ...)))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        res <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(list, (<span class="cf">function</span>(x) <span class="fu">func</span>(x[column], ...)))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>             }</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    res</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>
 By following <a href="http://adv-r.had.co.nz/Function-operators.html">this</a> chapter of Hadley Wickham’s book, <i>Advanced R</i>, I was able to write this function. What does it do? It basically <i>generalizes</i> a function to work on a list of datasets instead of just on a dataset. So for example, in the case of <code>summary()</code>:
 </p>
-<pre class="r"><code>summarymap &lt;- to_map(summary)
-
-summarymap(list_data, "cyl")</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>summarymap <span class="ot">&lt;-</span> <span class="fu">to_map</span>(summary)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summarymap</span>(list_data, <span class="st">"cyl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>$data2000
      cyl       
 Min.   :4.000  
@@ -237,7 +329,9 @@ Max.   :8.000</code></pre>
 <p>
 So now everytime I want to have summary statistics for a variable, I just need to use <code>summarymap()</code>:
 </p>
-<pre class="r"><code>summarymap(list_data, "mpg")</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarymap</span>(list_data, <span class="st">"mpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $data2000
       mpg       
  Min.   :10.40  
@@ -258,7 +352,9 @@ $data2001
 <p>
 If I want the summary statistics for every variable, I simply omit the column name:
 </p>
-<pre class="r"><code>summarymap(list_data)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarymap</span>(list_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>$data2000
       mpg             cyl             disp             hp       
  Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
@@ -307,9 +403,11 @@ $data2001
 <p>
 I can use any function:
 </p>
-<pre class="r"><code>tablemap &lt;- to_map(table)
-
-tablemap(list_data, "cyl")</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tablemap <span class="ot">&lt;-</span> <span class="fu">to_map</span>(table)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tablemap</span>(list_data, <span class="st">"cyl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $data2000
 
  4  6  8 
@@ -319,7 +417,9 @@ $data2001
 
  4  6  8 
 11  7 14</code></pre>
-<pre class="r"><code>tablemap(list_data, "mpg")</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tablemap</span>(list_data, <span class="st">"mpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <pre><code>## $data2000
 
 10.4 13.3 14.3 14.7   15 15.2 15.5 15.8 16.4 17.3 17.8 18.1 18.7 19.2 19.7 
@@ -338,13 +438,14 @@ I hope you will find this little function useful, and as usual, for any comments
 </p>
 
 
-</main>
-<!-- /main column -->
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="/books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -356,7 +457,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="/index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
@@ -453,7 +554,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/www\.brodrigues\.co");
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }

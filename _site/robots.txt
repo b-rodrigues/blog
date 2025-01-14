@@ -1,1 +1,1 @@
-Sitemap: https://www.brodrigues.co/sitemap.xml
+Sitemap: https://b-rodrigues.github.io/sitemap.xml
