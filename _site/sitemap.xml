@@ -1,43 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.brodrigues.co/index.html</loc>
-    <lastmod>2025-01-10T14:00:29.074Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.brodrigues.co/books.html</loc>
+    <loc>https://brodrigues.co/books.html</loc>
     <lastmod>2025-01-10T10:19:25.512Z</lastmod>
   </url>
   <url>
-    <loc>https://www.brodrigues.co/about.html</loc>
-    <lastmod>2025-01-10T14:18:21.570Z</lastmod>
+    <loc>https://brodrigues.co/posts/2017-12-17-teaching_tidyverse.html</loc>
+    <lastmod>2025-01-15T15:38:26.406Z</lastmod>
   </url>
   <url>
-    <loc>https://www.brodrigues.co/posts/2017-01-07-my-free-book-has-a-cover.html</loc>
-    <lastmod>2025-01-10T14:26:13.022Z</lastmod>
+    <loc>https://brodrigues.co/posts/2017-10-26-margins_r.html</loc>
+    <lastmod>2025-01-15T15:32:28.953Z</lastmod>
   </url>
   <url>
-    <loc>https://www.brodrigues.co/assets/img/2017-01-07-my-free-book-has-a-cover.html</loc>
-    <lastmod>2025-01-10T14:22:09.778Z</lastmod>
+    <loc>https://brodrigues.co/posts/2017-07-27-spread_rename_at.html</loc>
+    <lastmod>2025-01-15T15:23:47.808Z</lastmod>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/index.html</loc>
-    <lastmod>2025-01-10T14:00:29.074Z</lastmod>
+    <loc>https://brodrigues.co/posts/2017-03-29-make-ggplot2-purrr.html</loc>
+    <lastmod>2025-01-15T15:16:50.935Z</lastmod>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/posts/2014-04-23-r-s4-rootfinding.html</loc>
-    <lastmod>2025-01-14T20:33:28.753Z</lastmod>
+    <loc>https://brodrigues.co/posts/2017-03-24-lesser_known_purrr.html</loc>
+    <lastmod>2025-01-15T15:20:47.353Z</lastmod>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html</loc>
-    <lastmod>2025-01-14T20:53:18.996Z</lastmod>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/posts/2017-02-17-how_to_use_jailbreakr.html</loc>
+    <loc>https://brodrigues.co/posts/2017-02-17-how_to_use_jailbreakr.html</loc>
     <lastmod>2025-01-14T20:50:24.745Z</lastmod>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/posts/2017-03-08-lesser_known_tricks.html</loc>
-    <lastmod>2025-01-14T20:55:59.465Z</lastmod>
+    <loc>https://brodrigues.co/posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html</loc>
+    <lastmod>2025-01-10T13:27:43.232Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html</loc>
+    <lastmod>2025-01-10T13:26:05.876Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html</loc>
+    <lastmod>2025-01-10T13:24:59.757Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-06-21-careful-with-trycatch.html</loc>
+    <lastmod>2025-01-10T13:24:40.870Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2015-11-11-bootstrapping-did-with-r.html</loc>
+    <lastmod>2025-01-10T13:19:43.033Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2015-02-22-export-r-output-to-file.html</loc>
+    <lastmod>2025-01-10T13:14:30.429Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2014-11-11-benchmarks-r-blas-atlas-rro.html</loc>
+    <lastmod>2025-01-10T13:11:05.891Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2013-12-31-r-cas.html</loc>
+    <lastmod>2025-01-10T13:11:13.555Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2013-01-29-method-of-simulated-moments-with-r.html</loc>
+    <lastmod>2025-01-10T10:22:20.787Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2024-12-09-huhu.html</loc>
+    <lastmod>2025-01-09T15:29:58.250Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2013-01-16-simulated-maximum-likelihood-with-r.html</loc>
+    <lastmod>2025-01-10T10:22:20.851Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/index.html</loc>
+    <lastmod>2025-01-10T14:00:29.074Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/about.html</loc>
+    <lastmod>2025-01-10T14:18:21.570Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2024-11-09-haha.html</loc>
+    <lastmod>2025-01-09T15:36:51.784Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2025-01-09-github_pages_setup_with_quarto.html</loc>
+    <lastmod>2025-01-09T15:14:10.875Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2013-11-07-gmm-with-rmd.html</loc>
+    <lastmod>2025-01-10T13:11:05.825Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2014-04-23-r-s4-rootfinding.html</loc>
+    <lastmod>2025-01-14T20:33:28.753Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2015-01-12-introduction-to-programming-econometrics-with-r.html</loc>
+    <lastmod>2025-01-10T13:26:20.723Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2015-05-03-update-introduction-r-programming.html</loc>
+    <lastmod>2025-01-10T13:26:20.796Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-03-31-unit-testing-with-r.html</loc>
+    <lastmod>2025-01-10T13:21:09.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html</loc>
+    <lastmod>2025-01-10T13:25:09.850Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-07-30-merge-a-list-of-datasets-together.html</loc>
+    <lastmod>2025-01-10T13:24:40.944Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html</loc>
+    <lastmod>2025-01-14T20:53:18.996Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-01-07-my-free-book-has-a-cover.html</loc>
+    <lastmod>2025-01-10T14:26:13.022Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-03-08-lesser_known_tricks.html</loc>
+    <lastmod>2025-01-15T15:19:22.294Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-03-27-introducing_brotools.html</loc>
+    <lastmod>2025-01-14T21:02:19.878Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-07-02-dplyr-0-70-tutorial.html</loc>
+    <lastmod>2025-01-14T21:03:05.171Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-08-27-why_tidyeval.html</loc>
+    <lastmod>2025-01-15T15:25:05.567Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-11-14-peace_r.html</loc>
+    <lastmod>2025-01-15T15:30:19.727Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/talks.html</loc>
+    <lastmod>2025-01-10T10:17:43.117Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2017-12-27-build_formulae.html</loc>
+    <lastmod>2025-01-15T15:39:16.359Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2018-01-03-lists_all_the_way.html</loc>
+    <lastmod>2025-01-15T15:54:49.621Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2018-01-05-lists_all_the_way2.html</loc>
+    <lastmod>2025-01-15T16:04:09.143Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brodrigues.co/posts/2018-01-19-mapping_functions_with_any_cols.html</loc>
+    <lastmod>2025-01-15T16:19:00.818Z</lastmod>
   </url>
 </urlset>

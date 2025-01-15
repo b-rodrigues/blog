@@ -52,11 +52,19 @@ persons engaged</em>), the usual way to do this is with one of <code>facet_wrap(
 <pre class="r"><code>ggplot(data = small_pwt) + theme_tufte() +
   geom_line(aes(y = avh, x = year)) +
   facet_wrap(~country)</code></pre>
-<p><img src="/blog/2017-03-29-make-ggplot2-purrr_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+
+<div style="text-align:center;">
+  ![](../assets/img/make-ggplot2-purrr-6-1.png)
+</div>
+
 <pre class="r"><code>ggplot(data = small_pwt) + theme_tufte() +
   geom_line(aes(y = avh, x = year)) +
   facet_grid(country~.)</code></pre>
-<p><img src="/blog/2017-03-29-make-ggplot2-purrr_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+
+<div style="text-align:center;">
+  ![](../assets/img/make-ggplot2-purrr-7-1.png)
+</div>
+
 <p>As you can see, for this particular example, <code>facet_grid()</code> is not very useful, but do notice its
 argument, <code>country~.</code>, which is different from <code>facet_wrap()</code>’s argument. This way, I get the graphs
 stacked horizontally. If I had used <code>facet_grid(~country)</code> the graphs would be side by side and completely

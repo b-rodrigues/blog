@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2015-11-11">
 
-<title>Bootstrapping standard errors for difference-in-differences estimation with R</title>
+<title>Bootstrapping standard errors for difference-in-differences estimation with R – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,16 +24,48 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/quarto.js"></script>
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/popper.min.js"></script>
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2015-11-11-bootstrapping-did-with-r_files/libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2015-11-11-bootstrapping-did-with-r_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2015-11-11-bootstrapping-did-with-r_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2015-11-11-bootstrapping-did-with-r_files/libs/bootstrap/bootstrap-618b72e2628d49b629082c58b74646ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0860cfbe084100d39084b98e226c6235.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
@@ -44,7 +76,8 @@ ul.task-list li input[type="checkbox"] {
       <a href="about.qmd">About</a> - 
       <a href="talks.qmd">Talks</a> -
       <a href="books.qmd">Books</a> - 
-      <a href="packages.qmd">Packages</a>
+      <a href="packages.qmd">Packages</a> -
+      <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
@@ -54,10 +87,15 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
-</div>
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -97,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
 I’m currently working on a paper (with my colleague Vincent Vergnat who is also a Phd candidate at BETA) where I want to estimate the causal impact of the birth of a child on hourly and daily wages as well as yearly worked hours. For this we are using non-parametric difference-in-differences (henceforth DiD) and thus have to bootstrap the standard errors. In this post, I show how this is possible using the function <code>boot</code>.
 </p>
 <p>
-For this we are going to replicate the example from Wooldridge’s <em>Econometric Analysis of Cross Section and Panel Data</em> and more specifically the example on page 415. You can download the data for R <a href="/assets/files/kielmc.RData">here</a>. The question we are going to try to answer is <em>how much does the price of housing decrease due to the presence of an incinerator in the neighborhood?</em>
+For this we are going to replicate the example from Wooldridge’s <em>Econometric Analysis of Cross Section and Panel Data</em> and more specifically the example on page 415. You can download the data for R <a href="../assets/files/kielmc.RData">here</a>. The question we are going to try to answer is <em>how much does the price of housing decrease due to the presence of an incinerator in the neighborhood?</em>
 </p>
 <p>
 First put the data in a folder and set the correct working directory and load the <code>boot</code> library.
@@ -163,13 +201,14 @@ Just as in the book, we find that the DiD estimate is not significant to the 5% 
 </p>
 
 
-</main>
-<!-- /main column -->
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="/books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -181,7 +220,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="/index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
@@ -278,7 +317,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/www\.brodrigues\.co");
+      var filterRegex = new RegExp("https:\/\/brodrigues\.co\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }

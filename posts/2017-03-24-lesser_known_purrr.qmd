@@ -195,8 +195,8 @@ transpose(safe_result_list)</code></pre>
 ## $error[[5]]
 ## NULL</code></pre>
 <p>Here we transposed the above list. This means that we still have a list of lists, but where the first list holds
-all the results (which you can then access with <code>safe_result_list$result</code>) and the second list holds all the errors
-(which you can access with <code>safe_result_list$error</code>). This can be quite useful!</p>
+all the results (which you can then access with `safe_result_list$result`) and the second list holds all the errors
+(which you can access with `safe_result_list$error`). This can be quite useful!</p>
 </div>
 <div id="apply-a-function-to-a-lower-depth-of-a-list" class="section level2">
 <h2>Apply a function to a lower depth of a list</h2>

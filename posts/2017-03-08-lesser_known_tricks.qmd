@@ -131,10 +131,13 @@ head(mtcars)</code></pre>
 ## 13    other
 ## 14    other
 ## 15     four</code></pre>
+
 <p>Mind the <code>.$</code> before the variable <code>carb</code>. There is a <a href="https://github.com/hadley/dplyr/issues/1965">github issue</a>
 about this, and it is already fixed in the development version of <code>dplyr</code>, which means that in the next version
-of <code>dplyr</code>, <code>case_when()</code> will work as any other specialized <code>dplyr</code> function inside <code>mutate()</code>.</p>
+of <code>dplyr</code>, `case_when()` will work as any other specialized <code>dplyr</code> function inside <code>mutate()</code>.</p>
+
 </div>
+
 <div id="apply-a-function-to-certain-columns-only-by-rows" class="section level2">
 <h2>Apply a function to certain columns only, by rows</h2>
 <pre class="r"><code>mtcars %&gt;%

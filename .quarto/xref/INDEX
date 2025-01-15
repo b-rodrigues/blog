@@ -124,5 +124,44 @@
   },
   "posts/2017-03-08-lesser_known_tricks.qmd": {
     "2017-03-08-lesser_known_tricks.html": "9fede75b"
+  },
+  "posts/2017-03-24-lesser_known_purrr.qmd": {
+    "2017-03-24-lesser_known_purrr.html": "43fbadfc"
+  },
+  "posts/2017-03-27-introducing_brotools.qmd": {
+    "2017-03-27-introducing_brotools.html": "ed1fa4b8"
+  },
+  "posts/2017-03-29-make-ggplot2-purrr.qmd": {
+    "2017-03-29-make-ggplot2-purrr.html": "905a76db"
+  },
+  "posts/2017-07-02-dplyr-0-70-tutorial.qmd": {
+    "2017-07-02-dplyr-0-70-tutorial.html": "99f972e0"
+  },
+  "posts/2017-07-27-spread_rename_at.qmd": {
+    "2017-07-27-spread_rename_at.html": "5045f0dc"
+  },
+  "posts/2017-08-27-why_tidyeval.qmd": {
+    "2017-08-27-why_tidyeval.html": "eb3d98a0"
+  },
+  "posts/2017-10-26-margins_r.qmd": {
+    "2017-10-26-margins_r.html": "71f6666a"
+  },
+  "posts/2017-11-14-peace_r.qmd": {
+    "2017-11-14-peace_r.html": "23eedc1e"
+  },
+  "posts/2017-12-17-teaching_tidyverse.qmd": {
+    "2017-12-17-teaching_tidyverse.html": "a447529d"
+  },
+  "posts/2017-12-27-build_formulae.qmd": {
+    "2017-12-27-build_formulae.html": "7c05da5c"
+  },
+  "posts/2018-01-03-lists_all_the_way.qmd": {
+    "2018-01-03-lists_all_the_way.html": "d9602b3c"
+  },
+  "posts/2018-01-05-lists_all_the_way2.qmd": {
+    "2018-01-05-lists_all_the_way2.html": "b7884b57"
+  },
+  "posts/2018-01-19-mapping_functions_with_any_cols.qmd": {
+    "2018-01-19-mapping_functions_with_any_cols.html": "69b7d7e5"
   }
 }
