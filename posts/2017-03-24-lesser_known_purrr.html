@@ -38,7 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0860cfbe084100d39084b98e226c6235.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -279,19 +279,11 @@ map(numbers_with_error, safe_sqrt)</code></pre>
 ## [1] NA
 ## 
 ## [[4]]$error
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## 
-## [[5]]
-## [[5]]$result
-## [1] 2
-## 
-## [[5]]$error
-## NULL</code></pre>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" [[5]]="" [[5]]$result="" [1]="" 2="" [[5]]$error="" null<="" code=""></simpleerror></code></pre><code>
 <p>
 <code>safely()</code> is very similar to <code>possibly()</code> but it returns a list of lists. An element is thus a list of the result and the accompagnying error message. If there is no error, the error component is <code>NULL</code> if there is an error, it returns the error message.
 </p>
-</section>
+</code></section><code>
 <section id="transpose-a-list" class="level2">
 <h2 class="anchored" data-anchor-id="transpose-a-list">
 Transpose a list
@@ -327,14 +319,11 @@ transpose(safe_result_list)</code></pre>
 ## NULL
 ## 
 ## $error[[4]]
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## $error[[5]]
-## NULL</code></pre>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" $error[[5]]="" null<="" code=""></simpleerror></code></pre><code>
 <p>
 Here we transposed the above list. This means that we still have a list of lists, but where the first list holds all the results (which you can then access with <code>safe_result_list$result</code>) and the second list holds all the errors (which you can access with <code>safe_result_list$error</code>). This can be quite useful!
 </p>
-</section>
+</code></section><code>
 <section id="apply-a-function-to-a-lower-depth-of-a-list" class="level2">
 <h2 class="anchored" data-anchor-id="apply-a-function-to-a-lower-depth-of-a-list">
 Apply a function to a lower depth of a list
@@ -415,11 +404,8 @@ set_names(transposed_list, name_element)</code></pre>
 ## NULL
 ## 
 ## $`ok?`[[4]]
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## $`ok?`[[5]]
-## NULL</code></pre>
-</section>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" $`ok?`[[5]]="" null<="" code=""></simpleerror></code></pre><code>
+</code></section><code>
 <section id="reduce-a-list-to-a-single-value" class="level2">
 <h2 class="anchored" data-anchor-id="reduce-a-list-to-a-single-value">
 Reduce a list to a single value
@@ -475,7 +461,7 @@ Hope you enjoyed this list of useful functions! If you enjoy the content of my b
 
 
 
-</main> <!-- /main -->
+</code></code></code></main><code><code> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
@@ -589,7 +575,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/blog\/");
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -916,9 +902,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> <!-- /content -->
+</code></code></div><code><code> <!-- /content -->
 
 
 
 
-</body></html>
+</code></code></body></html>

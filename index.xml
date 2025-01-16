@@ -6,14 +6,14 @@
       version="2.0">
 <channel>
 <title>Econometrics and Free Software</title>
-<link>https://b-rodrigues.github.io/blog/</link>
-<atom:link href="https://b-rodrigues.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
+<link>https://b-rodrigues.github.io/</link>
+<atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Wed, 08 Jan 2025 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 09 Jan 2025 00:00:00 GMT</lastBuildDate>
 <item>
   <title>github pages setup for this website</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2025-01-09-github_pages_setup_with_quarto.html</link>
+  <link>https://b-rodrigues.github.io/posts/2025-01-09-github_pages_setup_with_quarto.html</link>
   <description><![CDATA[ 
 
 
@@ -38,12 +38,12 @@ font-style: inherit;">1</span></span></code></pre></div>
  ]]></description>
   <category>quarto</category>
   <category>github pages</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2025-01-09-github_pages_setup_with_quarto.html</guid>
-  <pubDate>Wed, 08 Jan 2025 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2025-01-09-github_pages_setup_with_quarto.html</guid>
+  <pubDate>Thu, 09 Jan 2025 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>huhu</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2024-12-09-huhu.html</link>
+  <link>https://b-rodrigues.github.io/posts/2024-12-09-huhu.html</link>
   <description><![CDATA[ 
 
 
@@ -68,12 +68,12 @@ font-style: inherit;">1</span></span></code></pre></div>
  ]]></description>
   <category>quarto</category>
   <category>github pages</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2024-12-09-huhu.html</guid>
-  <pubDate>Sun, 08 Dec 2024 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2024-12-09-huhu.html</guid>
+  <pubDate>Mon, 09 Dec 2024 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>November blog post</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2024-11-09-haha.html</link>
+  <link>https://b-rodrigues.github.io/posts/2024-11-09-haha.html</link>
   <description><![CDATA[ 
 
 
@@ -98,12 +98,12 @@ font-style: inherit;">1</span></span></code></pre></div>
  ]]></description>
   <category>quarto</category>
   <category>github pages</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2024-11-09-haha.html</guid>
-  <pubDate>Fri, 08 Nov 2024 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2024-11-09-haha.html</guid>
+  <pubDate>Sat, 09 Nov 2024 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Mapping a list of functions to a list of datasets with a list of columns as arguments</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2018-01-19-mapping_functions_with_any_cols.html</link>
+  <link>https://b-rodrigues.github.io/posts/2018-01-19-mapping_functions_with_any_cols.html</link>
   <description><![CDATA[ 
 
 
@@ -207,12 +207,12 @@ If you found this blog post useful, you might want to follow me on <a href="http
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2018-01-19-mapping_functions_with_any_cols.html</guid>
-  <pubDate>Thu, 18 Jan 2018 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2018-01-19-mapping_functions_with_any_cols.html</guid>
+  <pubDate>Fri, 19 Jan 2018 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>It’s lists all the way down, part 2: We need to go deeper</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2018-01-05-lists_all_the_way2.html</link>
+  <link>https://b-rodrigues.github.io/posts/2018-01-05-lists_all_the_way2.html</link>
   <description><![CDATA[ 
 
 
@@ -556,7 +556,7 @@ I know what you’re thinking; <em>Bruno, that’s two lines of code!</em>. Yes,
 Here’s what it looks like:
 </p>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/deeper_xlsx.gif" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/deeper_xlsx.gif" class="img-fluid"></p>
 </div>
 <p>
 I have two Excel workbooks, (one per list), where each sheet is a data frame!
@@ -570,12 +570,12 @@ If you enjoy these blog posts, you can follow me on <a href="https://twitter.com
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2018-01-05-lists_all_the_way2.html</guid>
-  <pubDate>Thu, 04 Jan 2018 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2018-01-05-lists_all_the_way2.html</guid>
+  <pubDate>Fri, 05 Jan 2018 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>It’s lists all the way down</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2018-01-03-lists_all_the_way.html</link>
+  <link>https://b-rodrigues.github.io/posts/2018-01-03-lists_all_the_way.html</link>
   <description><![CDATA[ 
 
 
@@ -931,12 +931,12 @@ If you enjoy these blog posts, you can follow me on <a href="https://twitter.com
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2018-01-03-lists_all_the_way.html</guid>
-  <pubDate>Tue, 02 Jan 2018 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2018-01-03-lists_all_the_way.html</guid>
+  <pubDate>Wed, 03 Jan 2018 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Building formulae</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-12-27-build_formulae.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-12-27-build_formulae.html</link>
   <description><![CDATA[ 
 
 
@@ -1059,12 +1059,12 @@ This is still a new topic for me there might be more elegant ways to do that, us
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-12-27-build_formulae.html</guid>
-  <pubDate>Tue, 26 Dec 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-12-27-build_formulae.html</guid>
+  <pubDate>Wed, 27 Dec 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Teaching the tidyverse to beginners</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-12-17-teaching_tidyverse.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-12-17-teaching_tidyverse.html</link>
   <description><![CDATA[ 
 
 
@@ -1106,7 +1106,7 @@ ggplot(bwages) +
   theme(legend.position = "bottom", legend.title = element_blank())</code></pre>
 <pre><code>## `geom_smooth()` using method = 'loess'</code></pre>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/teaching-tidyverse-3-1.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/teaching-tidyverse-3-1.png" class="img-fluid"></p>
 </div>
 <p>
 Of course some of them needed some help here and there, and I also gave them hints (for example I told them about <code>case_when()</code> and try to use it inside <code>mutate()</code> instead of nested ifs) but it was mostly due to lack of experience and because they hadn’t had the time to fully digest R’s syntax which was for most people involved completely new.
@@ -1135,12 +1135,12 @@ Overall as the teacher, I think that focusing on the <code>tidyverse</code> migh
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-12-17-teaching_tidyverse.html</guid>
-  <pubDate>Sat, 16 Dec 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-12-17-teaching_tidyverse.html</guid>
+  <pubDate>Sun, 17 Dec 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Peace of mind with purrr</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-11-14-peace_r.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-11-14-peace_r.html</link>
   <description><![CDATA[ 
 
 
@@ -1496,12 +1496,12 @@ font-style: inherit;">"5"</span>), paste)</span></code></pre></div>
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-11-14-peace_r.html</guid>
-  <pubDate>Sun, 12 Nov 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-11-14-peace_r.html</guid>
+  <pubDate>Mon, 13 Nov 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Easy peasy STATA-like marginal effects with R</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-10-26-margins_r.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-10-26-margins_r.html</link>
   <description><![CDATA[ 
 
 
@@ -1614,7 +1614,7 @@ And it is also possible to plot the effects with base graphics:
 </p>
 <pre class="r"><code>plot(effects_logit_participation)</code></pre>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/margins-9-1.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/margins-9-1.png" class="img-fluid"></p>
 </div>
 <p>
 This uses the basic R plotting capabilities, which is useful because it is a simple call to the function <code>plot()</code> but if you’ve been using <code>ggplot2</code> and want this graph to have the same look as the others made with <code>ggplot2</code> you first need to save the summary in a variable. Let’s overwrite this <code>effects_logit_participation</code> variable with its summary:
@@ -1630,7 +1630,7 @@ And now it is possible to use <code>ggplot2</code> to create the same plot:
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/margins-11-1.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/margins-11-1.png" class="img-fluid"></p>
 </div>
 <p>
 So an infinitesimal increase, in say, non-labour income (<code>lnnlinc</code>) of 0.001 is associated with a decrease of the probability of labour force participation by 0.001*17 percentage points.
@@ -1668,12 +1668,12 @@ I used the <code>tribble()</code> function from the <code>tibble</code> package 
  ]]></description>
   <category>R</category>
   <category>econometrics</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-10-26-margins_r.html</guid>
-  <pubDate>Wed, 25 Oct 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-10-26-margins_r.html</guid>
+  <pubDate>Thu, 26 Oct 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Why I find tidyeval useful</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-08-27-why_tidyeval.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-08-27-why_tidyeval.html</link>
   <description><![CDATA[ 
 
 
@@ -1723,12 +1723,12 @@ If you want to know more about <code>tidyeval</code> and working programmaticall
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-08-27-why_tidyeval.html</guid>
-  <pubDate>Sat, 26 Aug 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-08-27-why_tidyeval.html</guid>
+  <pubDate>Sun, 27 Aug 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>tidyr::spread() and dplyr::rename_at() in action</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-07-27-spread_rename_at.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-07-27-spread_rename_at.html</link>
   <description><![CDATA[ 
 
 
@@ -1858,12 +1858,12 @@ Hope this post helps you understand the difference between long and wide dataset
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-07-27-spread_rename_at.html</guid>
-  <pubDate>Wed, 26 Jul 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-07-27-spread_rename_at.html</guid>
+  <pubDate>Thu, 27 Jul 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lesser known dplyr 0.7* tricks</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-07-02-dplyr-0-70-tutorial.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-07-02-dplyr-0-70-tutorial.html</link>
   <description><![CDATA[ 
 
 
@@ -1911,12 +1911,12 @@ No need for <code>.$</code> anymore.
 </section> ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-07-02-dplyr-0-70-tutorial.html</guid>
-  <pubDate>Sat, 01 Jul 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-07-02-dplyr-0-70-tutorial.html</guid>
+  <pubDate>Sun, 02 Jul 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Make ggplot2 purrr</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-03-29-make-ggplot2-purrr.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-03-29-make-ggplot2-purrr.html</link>
   <description><![CDATA[ 
 
 
@@ -1973,13 +1973,13 @@ Now when you want to plot the same variable by countries, say <code>avh</code> (
   geom_line(aes(y = avh, x = year)) +
   facet_wrap(~country)</code></pre>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/make-ggplot2-purrr-6-1.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/make-ggplot2-purrr-6-1.png" class="img-fluid"></p>
 </div>
 <pre class="r"><code>ggplot(data = small_pwt) + theme_tufte() +
   geom_line(aes(y = avh, x = year)) +
   facet_grid(country~.)</code></pre>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/make-ggplot2-purrr-7-1.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/make-ggplot2-purrr-7-1.png" class="img-fluid"></p>
 </div>
 <p>
 As you can see, for this particular example, <code>facet_grid()</code> is not very useful, but do notice its argument, <code>country~.</code>, which is different from <code>facet_wrap()</code>’s argument. This way, I get the graphs stacked horizontally. If I had used <code>facet_grid(~country)</code> the graphs would be side by side and completely unreadable.
@@ -2075,12 +2075,12 @@ I hope you found this post useful. You can follow me on <a href="https://www.twi
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-03-29-make-ggplot2-purrr.html</guid>
-  <pubDate>Tue, 28 Mar 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-03-29-make-ggplot2-purrr.html</guid>
+  <pubDate>Wed, 29 Mar 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Introducing brotools</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-03-27-introducing_brotools.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-03-27-introducing_brotools.html</link>
   <description><![CDATA[ 
 
 
@@ -2099,12 +2099,12 @@ Hope you’ll find the <code>brotools</code> useful!
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-03-27-introducing_brotools.html</guid>
-  <pubDate>Sun, 26 Mar 2017 22:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-03-27-introducing_brotools.html</guid>
+  <pubDate>Mon, 27 Mar 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lesser known purrr tricks</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-03-24-lesser_known_purrr.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-03-24-lesser_known_purrr.html</link>
   <description><![CDATA[ 
 
 
@@ -2262,19 +2262,11 @@ map(numbers_with_error, safe_sqrt)</code></pre>
 ## [1] NA
 ## 
 ## [[4]]$error
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## 
-## [[5]]
-## [[5]]$result
-## [1] 2
-## 
-## [[5]]$error
-## NULL</code></pre>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" [[5]]="" [[5]]$result="" [1]="" 2="" [[5]]$error="" null<="" code=""></simpleerror></code></pre><code>
 <p>
 <code>safely()</code> is very similar to <code>possibly()</code> but it returns a list of lists. An element is thus a list of the result and the accompagnying error message. If there is no error, the error component is <code>NULL</code> if there is an error, it returns the error message.
 </p>
-</section>
+</code></section><code>
 <section id="transpose-a-list" class="level2">
 <h2 class="anchored" data-anchor-id="transpose-a-list">
 Transpose a list
@@ -2310,14 +2302,11 @@ transpose(safe_result_list)</code></pre>
 ## NULL
 ## 
 ## $error[[4]]
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## $error[[5]]
-## NULL</code></pre>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" $error[[5]]="" null<="" code=""></simpleerror></code></pre><code>
 <p>
 Here we transposed the above list. This means that we still have a list of lists, but where the first list holds all the results (which you can then access with <code>safe_result_list$result</code>) and the second list holds all the errors (which you can access with <code>safe_result_list$error</code>). This can be quite useful!
 </p>
-</section>
+</code></section><code>
 <section id="apply-a-function-to-a-lower-depth-of-a-list" class="level2">
 <h2 class="anchored" data-anchor-id="apply-a-function-to-a-lower-depth-of-a-list">
 Apply a function to a lower depth of a list
@@ -2398,11 +2387,8 @@ set_names(transposed_list, name_element)</code></pre>
 ## NULL
 ## 
 ## $`ok?`[[4]]
-## &lt;simpleError in sqrt(x = x): non-numeric argument to mathematical function&gt;
-## 
-## $`ok?`[[5]]
-## NULL</code></pre>
-</section>
+## <simpleerror in="" sqrt(x="x):" non-numeric="" argument="" to="" mathematical="" function&gt;="" ##="" $`ok?`[[5]]="" null<="" code=""></simpleerror></code></pre><code>
+</code></section><code>
 <section id="reduce-a-list-to-a-single-value" class="level2">
 <h2 class="anchored" data-anchor-id="reduce-a-list-to-a-single-value">
 Reduce a list to a single value
@@ -2458,15 +2444,15 @@ Hope you enjoyed this list of useful functions! If you enjoy the content of my b
 
 
 
- ]]></description>
+</code></code></code> ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-03-24-lesser_known_purrr.html</guid>
-  <pubDate>Thu, 23 Mar 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-03-24-lesser_known_purrr.html</guid>
+  <pubDate>Fri, 24 Mar 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lesser known dplyr tricks</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-03-08-lesser_known_tricks.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-03-08-lesser_known_tricks.html</link>
   <description><![CDATA[ 
 
 
@@ -2734,12 +2720,12 @@ Hope you liked this small list of tricks!
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-03-08-lesser_known_tricks.html</guid>
-  <pubDate>Tue, 07 Mar 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-03-08-lesser_known_tricks.html</guid>
+  <pubDate>Wed, 08 Mar 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>How to use jailbreakr</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-02-17-how_to_use_jailbreakr.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-02-17-how_to_use_jailbreakr.html</link>
   <description><![CDATA[ 
 
 
@@ -3014,12 +3000,12 @@ Et voilà! We went from a messy spreadsheet to a tidy dataset in a matter of min
  ]]></description>
   <category>R</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-02-17-how_to_use_jailbreakr.html</guid>
-  <pubDate>Thu, 16 Feb 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-02-17-how_to_use_jailbreakr.html</guid>
+  <pubDate>Fri, 17 Feb 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>My free book has a cover!</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2017-01-07-my-free-book-has-a-cover.html</link>
+  <link>https://b-rodrigues.github.io/posts/2017-01-07-my-free-book-has-a-cover.html</link>
   <description><![CDATA[ 
 
 
@@ -3032,7 +3018,7 @@ Et voilà! We went from a messy spreadsheet to a tidy dataset in a matter of min
 </blockquote>
 <p>The book now has a beautiful cover thanks to <a href="https://twitter.com/putosaure"><span class="citation" data-cites="putosaure">@putosaure</span></a>. Putosaure is a Paris based graphic designer who also reviews video games. He is also a very good friend of mine and I am very happy he made this beautiful cover for my book:</p>
 <div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/blog/assets/img/cover.png" class="img-fluid"></p>
+<p><img src="https://b-rodrigues.github.io/assets/img/cover.png" class="img-fluid"></p>
 </div>
 <p>In it, we see a guy holding a shield with the Greek letter lambda, which also happens to be the letter to designate functional programming. I’ve added the title with the <a href="http://www.dafont.com/komika-title.font">Komika Title</a> font.</p>
 <p>Consider this cover in beta, it’ll probably evolve some more. But I couldn’t wait to use it!</p>
@@ -3044,12 +3030,12 @@ Et voilà! We went from a messy spreadsheet to a tidy dataset in a matter of min
   <category>R</category>
   <category>book</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2017-01-07-my-free-book-has-a-cover.html</guid>
-  <pubDate>Fri, 06 Jan 2017 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2017-01-07-my-free-book-has-a-cover.html</guid>
+  <pubDate>Sat, 07 Jan 2017 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Functional programming and unit testing for data munging with R available on Leanpub</title>
-  <link>https://b-rodrigues.github.io/blog/posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html</link>
+  <link>https://b-rodrigues.github.io/posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html</link>
   <description><![CDATA[ 
 
 
@@ -3065,8 +3051,8 @@ Et voilà! We went from a messy spreadsheet to a tidy dataset in a matter of min
   <category>R</category>
   <category>book</category>
   <category>programming</category>
-  <guid>https://b-rodrigues.github.io/blog/posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html</guid>
-  <pubDate>Fri, 23 Dec 2016 23:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html</guid>
+  <pubDate>Sat, 24 Dec 2016 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
