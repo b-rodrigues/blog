@@ -28,4 +28,4 @@ jobs:
           run: nix-build
 
         - name: Publish to GitHub Pages (and render)
-          run: nix-shell 'quarto publish gh-pages'
+          run: nix-shell 'quarto publish gh-pages --no-browser --no-prompt'
