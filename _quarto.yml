@@ -2,6 +2,7 @@ project:
   type: website
   resources:
     - "assets/*"
+  post-render: order_posts.R
 
 website:
   title: "Econometrics and Free Software"
