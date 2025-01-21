@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2018-02-16">
 
-<title>Econometrics and Free Software</title>
+<title>Importing 30GB of data into R with sparklyr – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,82 +66,23 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count','listing-execute',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count","listing-execute"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
-      <a href="./index.html">Website</a> - 
+      <a href="index.qmd">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
-      <a href="./about.html">About</a> - 
-      <a href="./talks.html">Talks</a> -
-      <a href="./books.html">Books</a> - 
-      <a href="./packages.html">Packages</a> -
+      <a href="about.qmd">About</a> - 
+      <a href="talks.qmd">Talks</a> -
+      <a href="books.qmd">Books</a> - 
+      <a href="packages.qmd">Packages</a> -
       <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,230 +92,184 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Importing 30GB of data into R with sparklyr</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 16, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2025
-</h2>
-<ul>
-<li>
-<a href="./posts/2025-01-09-github_pages_setup_with_quarto.html">github pages setup for this website</a>
-</li>
-</ul>
-<h2 class="anchored">
-2024
-</h2>
-<ul>
-<li>
-<a href="./posts/2024-12-09-huhu.html">huhu</a>
-</li>
-<li>
-<a href="./posts/2024-11-09-haha.html">November blog post</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<p>
+Disclaimer: the first part of this blog post draws heavily from <a href="http://bconnelly.net/working-with-csvs-on-the-command-line/">Working with CSVs on the Command Line</a>, which is a beautiful resource that lists very nice tips and tricks to work with CSV files before having to load them into R, or any other statistical software. I highly recommend it! Also, if you find this interesting, read also <a href="https://www.datascienceatthecommandline.com/">Data Science at the Command Line</a> another great resource!
+</p>
+<p>
+In this blog post I am going to show you how to analyze 30GB of data. 30GB of data does not qualify as big data, but it’s large enough that you cannot simply import it into R and start working on it, unless you have a machine with <em>a lot</em> of RAM.
+</p>
+<p>
+Let’s start by downloading some data. I am going to import and analyze (very briefly) the airline dataset that you can download from Microsoft <a href="https://packages.revolutionanalytics.com/datasets/">here</a>. I downloaded the file <code>AirOnTimeCSV.zip</code> from <code>AirOnTime87to12</code>. Once you decompress it, you’ll end up with 303 csv files, each around 80MB. Before importing them into R, I will use command line tools to bind the rows together. But first, let’s make sure that the datasets all have the same columns. I am using Linux, and if you are too, or if you are using macOS, you can follow along. Windows users that installed the Linux Subsystem can also use the commands I am going to show! First, I’ll use the <code>head</code> command in bash. If you’re familiar with <code>head()</code> from R, the <code>head</code> command in bash works exactly the same:
+</p>
+<pre><code>[18-02-15 21:12] brodriguesco in /Documents/AirOnTimeCSV ➤ head -5 airOT198710.csv
+"YEAR","MONTH","DAY_OF_MONTH","DAY_OF_WEEK","FL_DATE","UNIQUE_CARRIER","TAIL_NUM","FL_NUM",
+1987,10,1,4,1987-10-01,"AA","","1",12478,"JFK","NY",12892,"LAX","CA","0900","0901",1.00,
+1987,10,2,5,1987-10-02,"AA","","1",12478,"JFK","NY",12892,"LAX","CA","0900","0901",1.00
+1987,10,3,6,1987-10-03,"AA","","1",12478,"JFK","NY",12892,"LAX","CA","0900","0859",-1.00
+1987,10,4,7,1987-10-04,"AA","","1",12478,"JFK","NY",12892,"LAX","CA","0900","0900",0.00,</code></pre>
+<p>
+let’s also check the 5 first lines of the last file:
+</p>
+<pre><code>[18-02-15 21:13] cbrunos in brodriguesco in /Documents/AirOnTimeCSV ➤ head -5 airOT201212.csv
+"YEAR","MONTH","DAY_OF_MONTH","DAY_OF_WEEK","FL_DATE","UNIQUE_CARRIER","TAIL_NUM","FL_NUM",
+2012,12,1,6,2012-12-01,"AA","N322AA","1",12478,"JFK","NY",12892,"LAX","CA","0900","0852",
+2012,12,2,7,2012-12-02,"AA","N327AA","1",12478,"JFK","NY",12892,"LAX","CA","0900","0853",
+2012,12,3,1,2012-12-03,"AA","N319AA","1",12478,"JFK","NY",12892,"LAX","CA","0900","0856"
+2012,12,4,2,2012-12-04,"AA","N329AA","1",12478,"JFK","NY",12892,"LAX","CA","0900","1006"</code></pre>
+<p>
+Why do that in bash instead of R? This way, I don’t need to import the data into R before checking its contents!
+</p>
+<p>
+It does look like the structure did not change. Before importing the data into R, I am going to bind the rows of the datasets using other command line tools. Again, the reason I don’t import all the files into R is because I would need around 30GB of RAM to do so. So it’s easier to do it with bash:
+</p>
+<pre><code>head -1 airOT198710.csv &gt; combined.csv
+for file in $(ls airOT*); do cat $file | sed "1 d" &gt;&gt; combined.csv; done</code></pre>
+<p>
+On the first line I use <code>head</code> again to only copy the column names (the first line of the first file) into a new file called <code>combined.csv</code>.
+</p>
+<p>
+This <code>&gt;</code> operator looks like the now well known pipe operator in R, <code>%&gt;%</code>, but in bash, <code>%&gt;%</code> is actually <code>|</code>, not <code>&gt;</code>. <code>&gt;</code> redirects the output of the left hand side to a file on the right hand side, not to another command. On the second line, I loop over the files. I list the files with <code>ls</code>, and because I want only to loop over those that are named <code>airOTxxxxx</code> I use a regular expression, <code>airOT*</code> to only list those. The second part is <code>do cat $file</code>. <code>do</code> is self-explanatory, and <code>cat</code> stands for <code>catenate</code>. Think of it as <code>head</code>, but on all rows instead of just 5; it prints <code>$file</code> to the terminal. <code>$file</code> one element of the list of files I am looping over. But because I don’t want to see the contents of <code>$file</code> on my terminal, I redirect the output with the pipe, <code>|</code> to another command, <code>sed</code>. <code>sed</code> has an option, <code>"1 d"</code>, and what this does is filtering out the first line, containing the header, from <code>$file</code> before appending it with <code>&gt;&gt;</code> to <code>combined.csv</code>. If you found this interesting, read more about it <a href="http://bconnelly.net/working-with-csvs-on-the-command-line/#combining-rows-from-two-or-more-csvs">here</a>.
+</p>
+<p>
+This creates a 30GB CSV file that you can then import. But how? There seems to be different ways to import and work with larger than memory data in R using your personal computer. I chose to use <code>{sparklyr}</code>, an R package that allows you to work with Apache Spark from R. Apache Spark is a <em>fast and general engine for large-scale data processing</em>, and <code>{sparklyr}</code> not only offers bindings to it, but also provides a complete <code>{dplyr}</code> backend. Let’s start:
+</p>
+<pre class="r"><code>library(sparklyr)
+library(tidyverse)
+
+spark_dir = "/my_2_to_disk/spark/"</code></pre>
+<p>
+I first load <code>{sparklyr}</code> and the <code>{tidyverse}</code> and also define a <code>spark_dir</code>. This is because Spark creates a lot of temporary files that I want to save there instead of my root partition, which is on my SSD. My root partition only has around 20GO of space left, so whenever I tried to import the data I would get the following error:
+</p>
+<pre><code>java.io.IOException: No space left on device</code></pre>
+<p>
+In order to avoid this error, I define this directory on my 2TO hard disk. I then define the temporary directory using the two lines below:
+</p>
+<pre class="r"><code>config = spark_config()
+
+config$`sparklyr.shell.driver-java-options` &lt;-  paste0("-Djava.io.tmpdir=", spark_dir)</code></pre>
+<p>
+This is not sufficient however; when I tried to read in the data, I got another error:
+</p>
+<pre><code>java.lang.OutOfMemoryError: Java heap space</code></pre>
+<p>
+The solution for this one is to add the following lines to your <code>config()</code>:
+</p>
+<pre class="r"><code>config$`sparklyr.shell.driver-memory` &lt;- "4G"
+config$`sparklyr.shell.executor-memory` &lt;- "4G"
+config$`spark.yarn.executor.memoryOverhead` &lt;- "512"</code></pre>
+<p>
+Finally, I can load the data. Because I am working on my machine, I <em>connect</em> to a <code>"local"</code> Spark instance. Then, using <code>spark_read_csv()</code>, I specify the Spark connection, <code>sc</code>, I give a name to the data that will be inside the database and the path to it:
+</p>
+<pre class="r"><code>sc = spark_connect(master = "local", config = config)
+
+air = spark_read_csv(sc, name = "air", path = "combined.csv")</code></pre>
+<p>
+On my machine, this took around 25 minutes, and RAM usage was around 6GO.
+</p>
+<p>
+It is possible to use standard <code>{dplyr}</code> verbs with <code>{sparklyr}</code> objects, so if I want the mean delay at departure per day, I can simply write:
+</p>
+<pre class="r"><code>tic = Sys.time()
+mean_dep_delay = air %&gt;%
+  group_by(YEAR, MONTH, DAY_OF_MONTH) %&gt;%
+  summarise(mean_delay = mean(DEP_DELAY))
+(toc = Sys.time() - tic)
+Time difference of 0.05634999 secs</code></pre>
+<p>
+That’s amazing, only 0.06 seconds to compute these means! Wait a minute, that’s weird… I mean my computer is brand new and quite powerful but still… Let’s take a look at <code>mean_dep_delay</code>:
+</p>
+<pre class="r"><code>head(mean_dep_delay)</code></pre>
+<pre class="r"><code># Source:   lazy query [?? x 4]
+# Database: spark_connection
+# Groups:   YEAR, MONTH
+   YEAR MONTH DAY_OF_MONTH mean_delay
+  &lt;int&gt; &lt;int&gt;        &lt;int&gt;      &lt;dbl&gt;
+1  1987    10            9       6.71
+2  1987    10           10       3.72
+3  1987    10           12       4.95
+4  1987    10           14       4.53
+5  1987    10           23       6.48
+6  1987    10           29       5.77
+Warning messages:
+1: Missing values are always removed in SQL.
+Use `AVG(x, na.rm = TRUE)` to silence this warning
+2: Missing values are always removed in SQL.
+Use `AVG(x, na.rm = TRUE)` to silence this warning</code></pre>
+<p>
+Surprisingly, this takes around 5 minutes to print? Why? Look at the class of <code>mean_dep_delay</code>: it’s a lazy query that only gets evaluated once I need it. Look at the first line; <code>lazy query [?? x 4]</code>. This means that I don’t even know how many rows are in <code>mean_dep_delay</code>! The contents of <code>mean_dep_delay</code> only get computed once I explicitly ask for them. I do so with the <code>collect()</code> function, which transfers the Spark object into R’s memory:
+</p>
+<pre class="r"><code>tic = Sys.time()
+r_mean_dep_delay = collect(mean_dep_delay)
+(toc = Sys.time() - tic)
+Time difference of 5.2399 mins</code></pre>
+<p>
+Also, because it took such a long time to compute: I save it to disk:
+</p>
+<pre class="r"><code>saveRDS(r_mean_dep_delay, "mean_dep_delay.rds")</code></pre>
+<p>
+So now that I <em>transferred</em> this sparklyr table to a standard tibble in R, I can create a nice plot of departure delays:
+</p>
+<pre class="r"><code>library(lubridate)
+
+dep_delay =  r_mean_dep_delay %&gt;%
+  arrange(YEAR, MONTH, DAY_OF_MONTH) %&gt;%
+  mutate(date = ymd(paste(YEAR, MONTH, DAY_OF_MONTH, sep = "-")))
+
+ggplot(dep_delay, aes(date, mean_delay)) + geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = 'gam'</code></pre>
+<div style="text-align:center;">
+<p><img src="../assets/img/import_30_gb_of_data.png" class="img-fluid"></p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+That’s it for now, but in a future blog post I will continue to explore this data!
+</p>
+<p>
+If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates.
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -387,7 +281,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

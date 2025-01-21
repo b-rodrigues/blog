@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2018-09-08">
 
-<title>Econometrics and Free Software</title>
+<title>The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,82 +66,23 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count','listing-execute',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count","listing-execute"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
-      <a href="./index.html">Website</a> - 
+      <a href="index.qmd">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
-      <a href="./about.html">About</a> - 
-      <a href="./talks.html">Talks</a> -
-      <a href="./books.html">Books</a> - 
-      <a href="./packages.html">Packages</a> -
+      <a href="about.qmd">About</a> - 
+      <a href="talks.qmd">Talks</a> -
+      <a href="books.qmd">Books</a> - 
+      <a href="packages.qmd">Packages</a> -
       <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,230 +92,352 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 8, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2025
-</h2>
-<ul>
-<li>
-<a href="./posts/2025-01-09-github_pages_setup_with_quarto.html">github pages setup for this website</a>
-</li>
-</ul>
-<h2 class="anchored">
-2024
-</h2>
-<ul>
-<li>
-<a href="./posts/2024-12-09-huhu.html">huhu</a>
-</li>
-<li>
-<a href="./posts/2024-11-09-haha.html">November blog post</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=4QokOwvPxrE"> <img src="../assets/img/want_to_believe.jpg"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+I’ve been using GNU+Linux distros for about 10 years now, and have settled for openSUSE as my main operating system around 3 years ago, perhaps even more. If you’re a gamer, you might have heard about SteamOS and how more and more games are available on GNU+Linux. I don’t really care about games, I play the occasional one (currently <a href="http://www.tangledeep.com/">Tangledeep</a>) when I find the time, but still follow the news about gaming on GNU+Linux. Last week, Valve announced something quite big; it is now possible to run Windows games on GNU+Linux directly from Steam, using a modified version of <a href="https://en.wikipedia.org/wiki/Wine_(software)">Wine</a> they call Proton. The feature is still in Beta, and Valve announced that they guarantee around 30 games to work already flawlessly. Of course, people have tried running a lot of other games, and, as was to be expected from Free Software and Open Source fans, GNU+Linux gamers created a Google Sheet that lists which games were tried and how they run. You can take a look at the sheet <a href="https://docs.google.com/spreadsheets/d/1DcZZQ4HL_Ol969UbXJmFG8TzOHNnHoj8Q1f8DIFe8-8/htmlview?sle=true&amp;pru=AAABZbqTTkc*IvT11ShwA2kjoe_4lPefiQ#gid=1003113831">here</a>.
+</p>
+<p>
+In this blog post, I will play around with this sheet. This blog post lists some <code>{tidyverse}</code> tricks I find useful and use often. Perhaps these tricks will be useful to you too! Let’s start by loading the needed packages:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(magrittr)
+library(readxl)</code></pre>
+<p>
+Since I’m lazy and don’t want to type the whole name of the file I’ll be using some little regex:
+</p>
+<pre class="r"><code>steam &lt;- read_excel(Sys.glob("Steam*"), sheet = "Main", skip = 2)
+
+glimpse(steam)</code></pre>
+<pre><code>## Observations: 8,570
+## Variables: 9
+## $ SteamDB   &lt;chr&gt; "LINK", "LINK", "LINK", "LINK", "LINK", "LINK", "LINK"…
+## $ Game      &lt;chr&gt; "64", "1849", "1982", "1982", "am Weapon: Revival", ".…
+## $ Submitted &lt;chr&gt; "5 days ago", "12 days ago", "11 days ago", "11 days a…
+## $ Status    &lt;chr&gt; "Garbage", "Platinum", "Gold", "Platinum", "Platinum",…
+## $ Notes     &lt;chr&gt; "Crashes with a debug log", "Plays OK.", "Gamepad supp…
+## $ Distro    &lt;chr&gt; "Arch (4.18.5)", "Manjaro XFCE", "Gentoo AMD64 (Kernel…
+## $ Driver    &lt;chr&gt; "Nvidia 396.54 / Intel xf86-video-intel (1:2.99.917+83…
+## $ Specs     &lt;chr&gt; "Intel Core i7-7700HQ / Nvidia GTX 1050 (Mobile)", "Ry…
+## $ Proton    &lt;chr&gt; "3.7 Beta", "3.7-4 Beta", "3.7-4 Beta", "Default", "3.…</code></pre>
+<p>
+Let’s count how many unique games are in the data:
+</p>
+<pre class="r"><code>steam %&gt;%
+    count(Game)</code></pre>
+<pre><code>## # A tibble: 3,855 x 2
+##    Game                                                                   n
+##    &lt;chr&gt;                                                              &lt;int&gt;
+##  1 .hack//G.U. Last Recode                                                2
+##  2 $1 Ride                                                                1
+##  3 0rbitalis                                                              1
+##  4 10 Second Ninja                                                        4
+##  5 100% Orange Juice                                                     17
+##  6 1000 Amps                                                              3
+##  7 12 Labours of Hercules VII: Fleecing the Fleece (Platinum Edition)     1
+##  8 16bit trader                                                           1
+##  9 1849                                                                   1
+## 10 1953 - KGB Unleased                                                    1
+## # … with 3,845 more rows</code></pre>
+<p>
+That’s quite a lot of games! However, not everyone of them is playable:
+</p>
+<pre class="r"><code>steam %&gt;%
+    count(Status)</code></pre>
+<pre><code>## # A tibble: 8 x 2
+##   Status       n
+##   &lt;chr&gt;    &lt;int&gt;
+## 1 Borked     205
+## 2 bronze       1
+## 3 Bronze     423
+## 4 Garbage   2705
+## 5 Gold       969
+## 6 Platinum  2596
+## 7 Primary      1
+## 8 Silver    1670</code></pre>
+<p>
+Around 2500 have the status “Platinum”, but some games might have more than one status:
+</p>
+<pre class="r"><code>steam %&gt;%
+    filter(Game == "100% Orange Juice") %&gt;%
+    count(Status)</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   Status       n
+##   &lt;chr&gt;    &lt;int&gt;
+## 1 Bronze       5
+## 2 Garbage      3
+## 3 Gold         2
+## 4 Platinum     6
+## 5 Silver       1</code></pre>
+<p>
+More games run like <em>Garbage</em> than <em>Platinum</em>. But perhaps we can dig a little deeper and see if we find some patterns.
+</p>
+<p>
+Let’s take a look at the GNU+Linux distros:
+</p>
+<pre class="r"><code>steam %&gt;%
+    count(Distro) </code></pre>
+<pre><code>## # A tibble: 2,085 x 2
+##    Distro                                         n
+##    &lt;chr&gt;                                      &lt;int&gt;
+##  1 &lt;NA&gt;                                           1
+##  2 ?                                              2
+##  3 "\"Arch Linux\" (64 bit)"                      1
+##  4 "\"Linux Mint 18.3 Sylvia 64bit"               1
+##  5 "\"Manjaro Stable 64-bit (Kernel 4.14.66)"     1
+##  6 "\"Solus\" (64 bit)"                           2
+##  7 (K)ubuntu 18.04 64-bit (Kernel 4.15.0)         2
+##  8 (L)Ubuntu 18.04.1 LTS                          1
+##  9 18.04.1                                        1
+## 10 18.04.1 LTS                                    2
+## # … with 2,075 more rows</code></pre>
+<p>
+Ok the distro column is pretty messy. Let’s try to bring some order to it:
+</p>
+<pre class="r"><code>steam %&lt;&gt;%
+    mutate(distribution = as_factor(case_when(
+        grepl("buntu|lementary|antergos|steam|mint|18.|pop|neon", Distro, ignore.case = TRUE) ~ "Ubuntu",
+        grepl("arch|manjaro", Distro, ignore.case = TRUE) ~ "Arch Linux",
+        grepl("gentoo", Distro, ignore.case = TRUE) ~ "Gentoo",
+        grepl("fedora", Distro, ignore.case = TRUE) ~ "Fedora",
+        grepl("suse", Distro, ignore.case = TRUE) ~ "openSUSE",
+        grepl("debian|sid|stretch|lmde", Distro, ignore.case = TRUE) ~ "Debian",
+        grepl("solus", Distro, ignore.case = TRUE) ~ "Solus",
+        grepl("slackware", Distro, ignore.case = TRUE) ~ "Slackware",
+        grepl("void", Distro, ignore.case = TRUE) ~ "Void Linux",
+        TRUE ~ "Other"
+    )))</code></pre>
+<p>
+The <code>%&lt;&gt;%</code> operator is shorthand for <code>a &lt;- a %&gt;% f()</code>. It passes <code>a</code> to <code>f()</code> and assigns the result back to <code>a</code>. Anyways, let’s take a look at the <code>distribution</code> column:
+</p>
+<pre class="r"><code>steam %&gt;%
+    count(distribution)</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    distribution     n
+##    &lt;fct&gt;        &lt;int&gt;
+##  1 Ubuntu        6632
+##  2 Arch Linux     805
+##  3 Solus          175
+##  4 Debian         359
+##  5 Fedora         355
+##  6 Gentoo          42
+##  7 Void Linux      38
+##  8 Other           76
+##  9 openSUSE        66
+## 10 Slackware       22</code></pre>
+<p>
+I will group distributions that have less than 100 occurrences into a single category (meaning I will keep the 5 more common values):
+</p>
+<pre class="r"><code>steam %&lt;&gt;%
+    mutate(distribution = fct_lump(distribution, n = 5, other_level = "Other")) 
+
+steam %&gt;%
+    count(distribution)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   distribution     n
+##   &lt;fct&gt;        &lt;int&gt;
+## 1 Ubuntu        6632
+## 2 Arch Linux     805
+## 3 Solus          175
+## 4 Debian         359
+## 5 Fedora         355
+## 6 Other          244</code></pre>
+<p>
+Let’s do the same for the CPUs:
+</p>
+<pre class="r"><code>steam %&lt;&gt;%
+    mutate(CPU = as_factor(case_when(
+        grepl("intel|i\\d|xeon|core2|\\d{4}k|q\\d{4}|pentium", Specs, ignore.case = TRUE) ~ "Intel",
+        grepl("ryzen|threadripper|tr|amd|fx|r\\d|\\d{4}x|phenom", Specs, ignore.case = TRUE) ~ "AMD",
+        TRUE ~ NA_character_
+    )))
+
+steam %&gt;%
+    count(CPU)</code></pre>
+<pre><code>## Warning: Factor `CPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   CPU       n
+##   &lt;fct&gt; &lt;int&gt;
+## 1 Intel  5768
+## 2 AMD    2319
+## 3 &lt;NA&gt;    483</code></pre>
+<p>
+And the same for the GPUs:
+</p>
+<pre class="r"><code>steam %&lt;&gt;%
+    mutate(GPU = as_factor(case_when(
+        grepl("nvidia|geforce|3\\d{2}|nouveau|gtx|gt\\s?\\d{1,}|9\\d0|1060|1070|1080", Specs, ignore.case = TRUE) ~ "Nvidia",
+        grepl("amd|radeon|ati|rx|vega|r9", Specs, ignore.case = TRUE) ~ "AMD",
+        grepl("intel|igpu|integrated|hd\\d{4}|hd\\sgraphics", Specs, ignore.case = TRUE) ~ "Intel",
+        TRUE ~ NA_character_
+    )))
+
+steam %&gt;%
+    count(GPU)</code></pre>
+<pre><code>## Warning: Factor `GPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   GPU        n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 Nvidia  6086
+## 2 AMD     1374
+## 3 Intel    413
+## 4 &lt;NA&gt;     697</code></pre>
+<p>
+I will also add a rank for the <code>Status</code> column:
+</p>
+<pre class="r"><code>steam %&lt;&gt;%
+    mutate(rank_status = case_when(
+        Status == "Platinum" ~ 5,
+        Status == "Gold" ~ 4,
+        Status == "Silver" ~ 3,
+        Status == "Bronze" ~ 2,
+        Status == "Garbage" ~ 1
+    ))</code></pre>
+<p>
+Now, what are the top 5 most frequent combinations of Status, distribution, CPU and GPU?
+</p>
+<pre class="r"><code>steam %&gt;%
+    filter(!is.na(CPU), !is.na(GPU)) %&gt;%
+    count(Status, distribution, CPU, GPU) %&gt;%
+    mutate(total = sum(n)) %&gt;%
+    mutate(freq = n / total) %&gt;%
+    top_n(5)</code></pre>
+<pre><code>## Selecting by freq</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##   Status   distribution CPU   GPU        n total   freq
+##   &lt;chr&gt;    &lt;fct&gt;        &lt;fct&gt; &lt;fct&gt;  &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;
+## 1 Garbage  Ubuntu       Intel Nvidia  1025  7443 0.138 
+## 2 Gold     Ubuntu       Intel Nvidia   361  7443 0.0485
+## 3 Platinum Ubuntu       Intel Nvidia  1046  7443 0.141 
+## 4 Platinum Ubuntu       AMD   Nvidia   338  7443 0.0454
+## 5 Silver   Ubuntu       Intel Nvidia   650  7443 0.0873</code></pre>
+<p>
+Unsurprisingly, Ubuntu, or distributions using Ubuntu as a base, are the most popular ones. Nvidia is the most popular GPU, Intel for CPUs and in most cases, this combo of hardware and distribution is associated with positive ratings (even though there are almost as many “Garbage” ratings than “Platinum” ratings).
+</p>
+<p>
+Now let’s compute some dumb averages of Statuses by distribution, CPU and GPU. Since I’m going to run the same computation three times, I’ll write a function to do that.
+</p>
+<pre class="r"><code>compute_avg &lt;- function(dataset, var){
+    var &lt;- enquo(var)
+    dataset %&gt;%
+        select(rank_status, (!!var)) %&gt;%
+        group_by((!!var)) %&gt;%
+        mutate(wt = n()) %&gt;%
+        summarise(average_rating = weighted.mean(rank_status, (!!var), wt, na.rm = TRUE))
+}</code></pre>
+<p>
+Let’s see now if we can rank distribution by Steam play rating:
+</p>
+<pre class="r"><code>compute_avg(steam, distribution)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   distribution average_rating
+##   &lt;fct&gt;                 &lt;dbl&gt;
+## 1 Ubuntu                 3.03
+## 2 Arch Linux             3.05
+## 3 Solus                  3.03
+## 4 Debian                 3.01
+## 5 Fedora                 3.07
+## 6 Other                  3.16</code></pre>
+<p>
+How about for hardware?
+</p>
+<pre class="r"><code>compute_avg(steam, GPU)</code></pre>
+<pre><code>## Warning: Factor `GPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`
+
+## Warning: Factor `GPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   GPU    average_rating
+##   &lt;fct&gt;           &lt;dbl&gt;
+## 1 Nvidia           3.07
+## 2 AMD              2.90
+## 3 Intel            3.01
+## 4 &lt;NA&gt;            NA</code></pre>
+<pre class="r"><code>compute_avg(steam, CPU)</code></pre>
+<pre><code>## Warning: Factor `CPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`
+
+## Warning: Factor `CPU` contains implicit NA, consider using
+## `forcats::fct_explicit_na`</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   CPU   average_rating
+##   &lt;fct&gt;          &lt;dbl&gt;
+## 1 Intel           3.03
+## 2 AMD             3.06
+## 3 &lt;NA&gt;           NA</code></pre>
+<p>
+To wrap this up, what are the games with the most ratings? Perhaps this can give us a hint about which games GNU+Linux users prefer:
+</p>
+<pre class="r"><code>steam %&gt;%
+    count(Game) %&gt;%
+    top_n(10)</code></pre>
+<pre><code>## Selecting by n</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    Game                              n
+##    &lt;chr&gt;                         &lt;int&gt;
+##  1 Age of Empires II: HD Edition    43
+##  2 Borderlands                      39
+##  3 DiRT 3 Complete Edition          32
+##  4 DOOM                             62
+##  5 Fallout: New Vegas               45
+##  6 Grim Dawn                        34
+##  7 No Man's Sky                     40
+##  8 Path of Exile                    35
+##  9 Quake Champions                  32
+## 10 The Elder Scrolls V: Skyrim      46</code></pre>
+<p>
+I actually laughed out loud when I saw that DOOM was the game with the most ratings! What else was I expecting, really.
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -387,7 +449,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

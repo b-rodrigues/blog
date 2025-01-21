@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2018-06-10">
+
+<title>Getting data from pdfs using the pdftools package – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="index.qmd">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="about.qmd">About</a> - 
+      <a href="talks.qmd">Talks</a> -
+      <a href="books.qmd">Books</a> - 
+      <a href="packages.qmd">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Getting data from pdfs using the pdftools package</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 10, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>
+It is often the case that data is trapped inside pdfs, but thankfully there are ways to extract it from the pdfs. A very nice package for this task is <code>pdftools</code> (<a href="https://github.com/ropensci/pdftools">Github link</a>) and this blog post will describe some basic functionality from that package.
+</p>
+<p>
+First, let’s find some pdfs that contain interesting data. For this post, I’m using the diabetes country profiles from the World Health Organization. You can find them <a href="http://www.who.int/diabetes/country-profiles/en/#U">here</a>. If you open one of these pdfs, you are going to see this:
+</p>
+<div style="text-align:center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/img/diabetes_lux.png" class="img-fluid figure-img"></p>
+<figcaption>http://www.who.int/diabetes/country-profiles/lux_en.pdf?ua=1</figcaption>
+</figure>
+</div>
+</div>
+<p>
+I’m interested in this table here in the middle:
+</p>
+<div style="text-align:center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/img/diabetes_table.png" class="img-fluid figure-img"></p>
+<figcaption>http://www.who.int/diabetes/country-profiles/lux_en.pdf?ua=1</figcaption>
+</figure>
+</div>
+</div>
+<p>
+I want to get the data from different countries, put it all into a nice data frame and make a simple plot.
+</p>
+<p>
+Let’s first start by loading the needed packages:
+</p>
+<pre class="r"><code>library("pdftools")
+library("glue")
+library("tidyverse")</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.5
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::collapse() masks glue::collapse()
+## ✖ dplyr::filter()   masks stats::filter()
+## ✖ dplyr::lag()      masks stats::lag()</code></pre>
+<pre class="r"><code>library("ggthemes")
+
+country &lt;- c("lux", "fra", "deu", "usa", "prt", "gbr")
+
+url &lt;- "http://www.who.int/diabetes/country-profiles/{country}_en.pdf?ua=1"</code></pre>
+<p>
+The first 4 lines load the needed packages for this exercise: <code>pdftools</code> is the package that I described in the beginning of the post, <code>glue</code> is optional but offers a nice alternative to the <code>paste()</code> and <code>paste0()</code> functions. Take a closer look at the url: you’ll see that I wrote <code>{country}</code>. This is not in the original links; the original links look like this (for example for the USA):
+</p>
+<pre><code>"http://www.who.int/diabetes/country-profiles/usa_en.pdf?ua=1"</code></pre>
+<p>
+So because I’m interested in several countries, I created a vector with the country codes of the countries I’m interested in. Now, using the <code>glue()</code> function, something magical happens:
+</p>
+<pre class="r"><code>(urls &lt;- glue(url))</code></pre>
+<pre><code>## http://www.who.int/diabetes/country-profiles/lux_en.pdf?ua=1
+## http://www.who.int/diabetes/country-profiles/fra_en.pdf?ua=1
+## http://www.who.int/diabetes/country-profiles/deu_en.pdf?ua=1
+## http://www.who.int/diabetes/country-profiles/usa_en.pdf?ua=1
+## http://www.who.int/diabetes/country-profiles/prt_en.pdf?ua=1
+## http://www.who.int/diabetes/country-profiles/gbr_en.pdf?ua=1</code></pre>
+<p>
+This created a vector with all the links where <code>{country}</code> is replaced by each of the codes contained in the variable <code>country</code>.
+</p>
+<p>
+I use the same trick to create the names of the pdfs that I will download:
+</p>
+<pre class="r"><code>pdf_names &lt;- glue("report_{country}.pdf")</code></pre>
+<p>
+And now I can download them:
+</p>
+<pre class="r"><code>walk2(urls, pdf_names, download.file, mode = "wb")</code></pre>
+<p>
+<code>walk2()</code> is a function from the <code>purrr</code> package that is similar to <code>map2()</code>. You could use <code>map2()</code> for this, but <code>walk2()</code> is cleaner here, because <code>dowload.file()</code> is a function with a so-called side effect; it downloads files. <code>map2()</code> is used for functions without side effects.
+</p>
+<p>
+Now, I can finally use the <code>pdf_text()</code> function from the <code>pdftools</code> function to get the text from the pdfs:
+</p>
+<pre class="r"><code>raw_text &lt;- map(pdf_names, pdf_text)</code></pre>
+<p>
+<code>raw_text</code> is a list of where each element is the text from one of the pdfs. Let’s take a look:
+</p>
+<pre class="r"><code>str(raw_text)</code></pre>
+<pre><code>## List of 6
+##  $ : chr "Luxembourg                                                                                                     "| __truncated__
+##  $ : chr "France                                                                                                         "| __truncated__
+##  $ : chr "Germany                                                                                                        "| __truncated__
+##  $ : chr "United States Of America                                                                                       "| __truncated__
+##  $ : chr "Portugal                                                                                                       "| __truncated__
+##  $ : chr "United Kingdom                                                                                                 "| __truncated__</code></pre>
+<p>
+Let’s take a look at one of these elements, which is nothing but a very long character:
+</p>
+<pre class="r"><code>raw_text[[1]]</code></pre>
+<pre><code>## [1] "Luxembourg                                                                                                                                          Total population: 567 000\n                                                                                                                                                         Income group: High\nMortality\nNumber of diabetes deaths                                                                     Number of deaths attributable to high blood glucose\n                                                                     males         females                                                            males       females\nages 30–69                                                           &lt;100            &lt;100     ages 30–69                                              &lt;100          &lt;100\nages 70+                                                             &lt;100            &lt;100     ages 70+                                                &lt;100          &lt;100\nProportional mortality (% of total deaths, all ages)                                          Trends in age-standardized prevalence of diabetes\n                    Communicable,\n                   maternal, perinatal              Injuries                                                    35%\n                    and nutritional                   6%                     Cardiovascular\n                      conditions                                               diseases\n                          6%                                                      33%\n                                                                                                                30%\n                                                                                                                25%\n                                                                                              % of population\n               Other NCDs\n                  16%                                                                                           20%\n                                     No data available                                                          15%           No data available\n              Diabetes                                                                                          10%\n                 2%\n                                                                                                                5%\n                   Respiratory\n                    diseases\n                       6%                                                                                       0%\n                                                           Cancers\n                                                            31%\n                                                                                                                                  males     females\nPrevalence of diabetes and related risk factors\n                                                                                                                      males               females               total\nDiabetes                                                                                                              8.3%                 5.3%                 6.8%\nOverweight                                                                                                            70.7%               51.5%                61.0%\nObesity                                                                                                               28.3%               21.3%                24.8%\nPhysical inactivity                                                                                                   28.2%               31.7%                30.0%\nNational response to diabetes\nPolicies, guidelines and monitoring\nOperational policy/strategy/action plan for diabetes                                                                                                ND\nOperational policy/strategy/action plan to reduce overweight and obesity                                                                            ND\nOperational policy/strategy/action plan to reduce physical inactivity                                                                               ND\nEvidence-based national diabetes guidelines/protocols/standards                                                                                     ND\nStandard criteria for referral of patients from primary care to higher level of care                                                                ND\nDiabetes registry                                                                                                                                   ND\nRecent national risk factor survey in which blood glucose was measured                                                                              ND\nAvailability of medicines, basic technologies and procedures in the public health sector\nMedicines in primary care facilities                                                          Basic technologies in primary care facilities\nInsulin                                                                               ND      Blood glucose measurement                                             ND\nMetformin                                                                             ND      Oral glucose tolerance test                                           ND\nSulphonylurea                                                                         ND      HbA1c test                                                            ND\nProcedures                                                                                    Dilated fundus examination                                            ND\nRetinal photocoagulation                                                              ND      Foot vibration perception by tuning fork                              ND\nRenal replacement therapy by dialysis                                                 ND      Foot vascular status by Doppler                                       ND\nRenal replacement therapy by transplantation                                          ND      Urine strips for glucose and ketone measurement                       ND\nND = country did not respond to country capacity survey\n〇 = not generally available   ● = generally available\nWorld Health Organization – Diabetes country profiles, 2016.\n"</code></pre>
+<p>
+As you can see, this is a very long character string with some line breaks (the <code>""</code> character). So first, we need to split this string into a character vector by the <code>""</code> character. Also, it might be difficult to see, but the table starts at the line with the following string: <code>"Prevalence of diabetes"</code> and ends with <code>"National response to diabetes"</code>. Also, we need to get the name of the country from the text and add it as a column. As you can see, a whole lot of operations are needed, so what I do is put all these operations into a function that I will apply to each element of <code>raw_text</code>:
+</p>
+<pre class="r"><code>clean_table &lt;- function(table){
+    table &lt;- str_split(table, "\n", simplify = TRUE)
+    country_name &lt;- table[1, 1] %&gt;% 
+        stringr::str_squish() %&gt;% 
+        stringr::str_extract(".+?(?=\\sTotal)")
+    table_start &lt;- stringr::str_which(table, "Prevalence of diabetes")
+    table_end &lt;- stringr::str_which(table, "National response to diabetes")
+    table &lt;- table[1, (table_start +1 ):(table_end - 1)]
+    table &lt;- str_replace_all(table, "\\s{2,}", "|")
+    text_con &lt;- textConnection(table)
+    data_table &lt;- read.csv(text_con, sep = "|")
+    colnames(data_table) &lt;- c("Condition", "Males", "Females", "Total")
+    dplyr::mutate(data_table, Country = country_name)
+}</code></pre>
+<p>
+I advise you to go through all these operations and understand what each does. However, I will describe some of the lines, such as this one:
+</p>
+<pre><code>stringr::str_extract(".+?(?=\\sTotal)")</code></pre>
+<p>
+This uses a very bizarre looking regular expression: <code>".+?(?=\sTotal)"</code>. This extracts everything before a space, followed by the string <code>"Total"</code>. This is because the first line, the one that contains the name of the country looks like this: <code>"Luxembourg Total population: 567 000"</code>. So everything before a space followed by the word <code>"Total"</code> is the country name. Then there’s these lines:
+</p>
+<pre><code>table &lt;- str_replace_all(table, "\\s{2,}", "|")
+text_con &lt;- textConnection(table)
+data_table &lt;- read.csv(text_con, sep = "|")</code></pre>
+<p>
+The first lines replaces 2 spaces or more (“<code>\s{2,}</code>”) with <code>"|"</code>. The reason I do this is because then I can read the table back into R as a data frame by specifying the separator as the “|” character. On the second line, I define <code>table</code> as a text connection, that I can then read back into R using <code>read.csv()</code>. On the second to the last line I change the column names and then I add a column called <code>"Country"</code> to the data frame.
+</p>
+<p>
+Now, I can map this useful function to the list of raw text extracted from the pdfs:
+</p>
+<pre class="r"><code>diabetes &lt;- map_df(raw_text, clean_table) %&gt;% 
+    gather(Sex, Share, Males, Females, Total) %&gt;% 
+    mutate(Share = as.numeric(str_extract(Share, "\\d{1,}\\.\\d{1,}")))</code></pre>
+<p>
+I reshape the data with the <code>gather()</code> function (see what the data looks like before and after reshaping). I then convert the <code>"Share"</code> column into a numeric (it goes from something that looks like <code>"12.3 %"</code> into <code>12.3</code>) and then I can create a nice plot. But first let’s take a look at the data:
+</p>
+<pre class="r"><code>diabetes</code></pre>
+<pre><code>##              Condition                  Country     Sex Share
+## 1             Diabetes               Luxembourg   Males   8.3
+## 2           Overweight               Luxembourg   Males  70.7
+## 3              Obesity               Luxembourg   Males  28.3
+## 4  Physical inactivity               Luxembourg   Males  28.2
+## 5             Diabetes                   France   Males   9.5
+## 6           Overweight                   France   Males  69.9
+## 7              Obesity                   France   Males  25.3
+## 8  Physical inactivity                   France   Males  21.2
+## 9             Diabetes                  Germany   Males   8.4
+## 10          Overweight                  Germany   Males  67.0
+## 11             Obesity                  Germany   Males  24.1
+## 12 Physical inactivity                  Germany   Males  20.1
+## 13            Diabetes United States Of America   Males   9.8
+## 14          Overweight United States Of America   Males  74.1
+## 15             Obesity United States Of America   Males  33.7
+## 16 Physical inactivity United States Of America   Males  27.6
+## 17            Diabetes                 Portugal   Males  10.7
+## 18          Overweight                 Portugal   Males  65.0
+## 19             Obesity                 Portugal   Males  21.4
+## 20 Physical inactivity                 Portugal   Males  33.5
+## 21            Diabetes           United Kingdom   Males   8.4
+## 22          Overweight           United Kingdom   Males  71.1
+## 23             Obesity           United Kingdom   Males  28.5
+## 24 Physical inactivity           United Kingdom   Males  35.4
+## 25            Diabetes               Luxembourg Females   5.3
+## 26          Overweight               Luxembourg Females  51.5
+## 27             Obesity               Luxembourg Females  21.3
+## 28 Physical inactivity               Luxembourg Females  31.7
+## 29            Diabetes                   France Females   6.6
+## 30          Overweight                   France Females  58.6
+## 31             Obesity                   France Females  26.1
+## 32 Physical inactivity                   France Females  31.2
+## 33            Diabetes                  Germany Females   6.4
+## 34          Overweight                  Germany Females  52.7
+## 35             Obesity                  Germany Females  21.4
+## 36 Physical inactivity                  Germany Females  26.5
+## 37            Diabetes United States Of America Females   8.3
+## 38          Overweight United States Of America Females  65.3
+## 39             Obesity United States Of America Females  36.3
+## 40 Physical inactivity United States Of America Females  42.1
+## 41            Diabetes                 Portugal Females   7.8
+## 42          Overweight                 Portugal Females  55.0
+## 43             Obesity                 Portugal Females  22.8
+## 44 Physical inactivity                 Portugal Females  40.8
+## 45            Diabetes           United Kingdom Females   6.9
+## 46          Overweight           United Kingdom Females  62.4
+## 47             Obesity           United Kingdom Females  31.1
+## 48 Physical inactivity           United Kingdom Females  44.3
+## 49            Diabetes               Luxembourg   Total   6.8
+## 50          Overweight               Luxembourg   Total  61.0
+## 51             Obesity               Luxembourg   Total  24.8
+## 52 Physical inactivity               Luxembourg   Total  30.0
+## 53            Diabetes                   France   Total   8.0
+## 54          Overweight                   France   Total  64.1
+## 55             Obesity                   France   Total  25.7
+## 56 Physical inactivity                   France   Total  26.4
+## 57            Diabetes                  Germany   Total   7.4
+## 58          Overweight                  Germany   Total  59.7
+## 59             Obesity                  Germany   Total  22.7
+## 60 Physical inactivity                  Germany   Total  23.4
+## 61            Diabetes United States Of America   Total   9.1
+## 62          Overweight United States Of America   Total  69.6
+## 63             Obesity United States Of America   Total  35.0
+## 64 Physical inactivity United States Of America   Total  35.0
+## 65            Diabetes                 Portugal   Total   9.2
+## 66          Overweight                 Portugal   Total  59.8
+## 67             Obesity                 Portugal   Total  22.1
+## 68 Physical inactivity                 Portugal   Total  37.3
+## 69            Diabetes           United Kingdom   Total   7.7
+## 70          Overweight           United Kingdom   Total  66.7
+## 71             Obesity           United Kingdom   Total  29.8
+## 72 Physical inactivity           United Kingdom   Total  40.0</code></pre>
+<p>
+Now let’s go for the plot:
+</p>
+<pre class="r"><code>ggplot(diabetes) + theme_fivethirtyeight() + scale_fill_hc() +
+    geom_bar(aes(y = Share, x = Sex, fill = Country), 
+             stat = "identity", position = "dodge") +
+    facet_wrap(~Condition)</code></pre>
+<div style="text-align:center;">
+<p><img src="../assets/img/scraping_pdfs_diabetes.png" class="img-fluid"></p>
+</div>
+<p>
+That was a whole lot of work for such a simple plot!
+</p>
+<p>
+If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates.
+</p>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

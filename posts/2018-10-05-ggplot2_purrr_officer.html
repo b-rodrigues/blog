@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2018-10-05">
 
-<title>Econometrics and Free Software</title>
+<title>Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-cbe6968800e5b65b1177700465097285.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,82 +66,23 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count','listing-execute',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count","listing-execute"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
-      <a href="./index.html">Website</a> - 
+      <a href="index.qmd">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
-      <a href="./about.html">About</a> - 
-      <a href="./talks.html">Talks</a> -
-      <a href="./books.html">Books</a> - 
-      <a href="./packages.html">Packages</a> -
+      <a href="about.qmd">About</a> - 
+      <a href="talks.qmd">Talks</a> -
+      <a href="books.qmd">Books</a> - 
+      <a href="packages.qmd">Packages</a> -
       <a href="index.xml">RSS</a>
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,230 +92,216 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 5, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2025
-</h2>
-<ul>
-<li>
-<a href="./posts/2025-01-09-github_pages_setup_with_quarto.html">github pages setup for this website</a>
-</li>
-</ul>
-<h2 class="anchored">
-2024
-</h2>
-<ul>
-<li>
-<a href="./posts/2024-12-09-huhu.html">huhu</a>
-</li>
-<li>
-<a href="./posts/2024-11-09-haha.html">November blog post</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=oc9XOxUcvLY"> <img src="../assets/img/officer_meme.jpg"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+A kind reader let me know that the function <code>create_pptx()</code> is now outdated, and proposed an update which you can find here: <a href="https://gist.github.com/b-rodrigues/ef4e97ed75028ca1ddd5987bb4085c1c">here</a>. Thank you <a href="https://twitter.com/jerry_stones/status/1239625489578254336"><span class="citation" data-cites="Jeremy">@Jeremy</span></a>!
+</p>
+<p>
+I was recently confronted to the following problem: creating hundreds of plots that could still be edited by our client. What this meant was that I needed to export the graphs in Excel or Powerpoint or some other such tool that was familiar to the client, and not export the plots directly to pdf or png as I would normally do. I still wanted to use R to do it though, because I could do what I always do to when I need to perform repetitive tasks such as producing hundreds of plots; map over a list of, say, countries, and make one plot per country. This is something I discussed in a previous blog post, <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">Make ggplot2 purrr</a>.
+</p>
+<p>
+So, after some online seaching, I found the <code>{officer}</code> package. This package allows you to put objects into Microsoft documents. For example, editable plots in a Powerpoint document. This is what I will show in this blog post.
+</p>
+<p>
+Let’s start by loading the required packages:
+</p>
+<pre class="r"><code>library("tidyverse")
+library("officer")
+library("rvg")</code></pre>
+<p>
+Then, I will use the data from the time use survey, which I discussed in a previous blog post <a href="http://www.brodrigues.co/blog/2018-09-11-human_to_machine/">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>.
+</p>
+<p>
+You can download the data <a href="https://github.com/rbind/b-rodrigues.github.com/blob/master/content/blog/clean_data.csv">here</a>.
+</p>
+<p>
+Let’s import and prepare it:
+</p>
+<pre class="r"><code>time_use &lt;- rio::import("clean_data.csv")
+
+
+time_use &lt;- time_use %&gt;%
+    filter(population %in% c("Male", "Female")) %&gt;%
+    filter(activities %in% c("Personal care", "Sleep", "Eating", 
+                             "Employment", "Household and family care")) %&gt;%
+    group_by(day) %&gt;%
+    nest()</code></pre>
+<p>
+I only kept two categories, “Male” and “Female” and 5 activities. Then I grouped by day and nested the data. This is how it looks like:
+</p>
+<pre class="r"><code>time_use</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   day                         data             
+##   &lt;chr&gt;                       &lt;list&gt;           
+## 1 Year 2014_Monday til Friday &lt;tibble [10 × 4]&gt;
+## 2 Year 2014_Saturday          &lt;tibble [10 × 4]&gt;
+## 3 Year 2014_Sunday            &lt;tibble [10 × 4]&gt;</code></pre>
+<p>
+As shown, <code>time_use</code> is a tibble with 2 columns, the first <code>day</code> contains the days, and the second <code>data</code>, is of type list, and each element of these lists are tibbles themselves. Let’s take a look inside one:
+</p>
+<pre class="r"><code>time_use$data[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 10 x 4
+##    population activities                time  time_in_minutes
+##    &lt;chr&gt;      &lt;chr&gt;                     &lt;chr&gt;           &lt;int&gt;
+##  1 Male       Personal care             11:00             660
+##  2 Male       Sleep                     08:24             504
+##  3 Male       Eating                    01:46             106
+##  4 Male       Employment                08:11             491
+##  5 Male       Household and family care 01:59             119
+##  6 Female     Personal care             11:15             675
+##  7 Female     Sleep                     08:27             507
+##  8 Female     Eating                    01:48             108
+##  9 Female     Employment                06:54             414
+## 10 Female     Household and family care 03:49             229</code></pre>
+<p>
+I can now create plots for each of the days with the following code:
+</p>
+<pre class="r"><code>my_plots &lt;- time_use %&gt;%
+    mutate(plots = map2(.y = day, .x = data, ~ggplot(data = .x) + theme_minimal() +
+                       geom_col(aes(y = time_in_minutes, x = activities, fill = population), 
+                                position = "dodge") +
+                       ggtitle(.y) +
+                       ylab("Time in minutes") +
+                       xlab("Activities")))</code></pre>
+<p>
+These steps are all detailled in my blog post <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">Make ggplot2 purrr</a>. Let’s take a look at <code>my_plots</code>:
+</p>
+<pre class="r"><code>my_plots</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   day                         data              plots 
+##   &lt;chr&gt;                       &lt;list&gt;            &lt;list&gt;
+## 1 Year 2014_Monday til Friday &lt;tibble [10 × 4]&gt; &lt;gg&gt;  
+## 2 Year 2014_Saturday          &lt;tibble [10 × 4]&gt; &lt;gg&gt;  
+## 3 Year 2014_Sunday            &lt;tibble [10 × 4]&gt; &lt;gg&gt;</code></pre>
+<p>
+The last column, called <code>plots</code> is a list where each element is a plot! We can take a look at one:
+</p>
+<pre class="r"><code>my_plots$plots[1]</code></pre>
+<pre><code>## [[1]]</code></pre>
+<div style="text-align:center;">
+<p><img src="../assets/img/ggplot2_purrr_officer.png" class="img-fluid"></p>
+</div>
+<p>
+Now, this is where I could export these plots as pdfs or pngs. But this is not what I need. I need to export these plots as editable charts for Powerpoint. To do this for one image, I would do the following (as per <code>{officer}</code>’s documentation):
+</p>
+<pre class="r"><code>read_pptx() %&gt;%
+    add_slide(layout = "Title and Content", master = "Office Theme") %&gt;%
+    ph_with_vg(code = print(one_plot), type = "body") %&gt;% 
+    print(target = path)</code></pre>
+<p>
+To map this over a list of arguments, I wrote a wrapper:
+</p>
+<pre class="r"><code>create_pptx &lt;- function(plot, path){
+    if(!file.exists(path)) {
+        out &lt;- read_pptx()
+    } else {
+        out &lt;- read_pptx(path)
+    }
+    
+    out %&gt;%
+        add_slide(layout = "Title and Content", master = "Office Theme") %&gt;%
+        ph_with_vg(code = print(plot), type = "body") %&gt;% 
+        print(target = path)
+}</code></pre>
+<p>
+This function takes two arguments, <code>plot</code> and <code>path</code>. <code>plot</code> must be an plot object such as the ones contained inside the <code>plots</code> column of <code>my_plots</code> tibble. <code>path</code> is the path of where I want to save the pptx.
+</p>
+<p>
+The first lines check if the file exists, if yes, the slides get added to the existing file, if not a new pptx gets created. The rest of the code is very similar to the one from the documentation. Now, to create my pptx I simple need to map over the <code>plots</code> column and provide a <code>path</code>:
+</p>
+<pre class="r"><code>map(my_plots$plots, create_pptx, path = "test.pptx")</code></pre>
+<pre><code>## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]
+
+## Warning in doc_parse_file(con, encoding = encoding, as_html = as_html,
+## options = options): Failed to parse QName 'xsi:xmlns:' [202]</code></pre>
+<pre><code>## [[1]]
+## [1] "/home/cbrunos/Documents/b-rodrigues.github.com/content/blog/test.pptx"
+## 
+## [[2]]
+## [1] "/home/cbrunos/Documents/b-rodrigues.github.com/content/blog/test.pptx"
+## 
+## [[3]]
+## [1] "/home/cbrunos/Documents/b-rodrigues.github.com/content/blog/test.pptx"</code></pre>
+<p>
+Here is the end result:
+</p>
+<p>
+<img src="../assets/img/editable_plots.png"><!-- -->
+</p>
+<p>
+Inside Powerpoint (or in this case Libreoffice), the plots are geometric shapes that can now be edited!
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -387,7 +313,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
