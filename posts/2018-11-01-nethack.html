@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2018-11-01">
+
+<title>From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 1, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+If someone told me a decade ago (back before I'd ever heard the term "roguelike") what I'd be doing today, I would have trouble believing this…<br><br>Yet here we are. <a href="https://t.co/N6Hh6A4tWl">pic.twitter.com/N6Hh6A4tWl</a>
+</p>
+— Josh Ge (<span class="citation" data-cites="GridSageGames">@GridSageGames</span>) <a href="https://twitter.com/GridSageGames/status/1009664438683648001?ref_src=twsrc%5Etfw">June 21, 2018</a>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<section id="update-07-11-2018" class="level2">
+<h2 class="anchored" data-anchor-id="update-07-11-2018">
+Update 07-11-2018
+</h2>
+<p>
+The <code>{nethack}</code> package currently on Github contains a sample of 6000 NetHack games played on the alt.org/nethack public server between April and November 2018. This data was kindly provided by <a href="https://twitter.com/paxed"><code><span class="citation" data-cites="paxed">@paxed</span></code></a>. The tutorial in this blog post is still useful if you want to learn more about scraping with R and building a data package.
+</p>
+</section>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">
+Abstract
+</h2>
+<p>
+In this post, I am going to show you how you can scrape tables from a website, and then create a package with the tidied data to share with the world. The data I am going to scrape comes from a NetHack public server (<a href="https://alt.org/nethack/">link</a>). The data I discuss in this blog post is available in the <code>{nethack}</code> package I created and I will walk you through the process of releasing your package on CRAN. However, <code>{nethack}</code> is too large to be on CRAN (75 mb, while the maximum allowed is 5mb), so you can install it to play around with the data from github:
+</p>
+<pre class="r"><code>devtools::install_github("b-rodrigues/nethack")</code></pre>
+<p>
+And to use it:
+</p>
+<pre class="r"><code>library(nethack)
+data("nethack")</code></pre>
+<p>
+The data contains information on games played from 2001 to 2018; 322485 rows and 14 columns. I will analyze the data in a future blog post. This post focuses on getting and then sharing the data. By the way, all the content from the public server I scrape is under the CC&nbsp;BY 4.0 license.
+</p>
+<p>
+I built the package by using the very useful <code>{devtools}</code> package.
+</p>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">
+Introduction
+</h2>
+<p>
+NetHack is a game released in 1987 that is still being played and developed today. NetHack is a roguelike game, meaning that is has procedurally generated dungeons and permadeath. If you die, you have to start over, and because the dungeons are procedurally generated, this means that you cannot learn the layout of the dungeons you explore or know when ennemies are going to attack or even what ennemies are going to attack. Ennemies are not the only thing that you have to be careful about; you can die from a lot of different events, as you will see in this post. Objects that you find, such as a silver ring, might be helpful in a run, but be cursed in the next run.
+</p>
+<p>
+The latest version of the game, 3.6.1, was released on April 27th 2018, and this is how it looks like:
+</p>
+<p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Nethack.png"><!-- -->
+</p>
+<p>
+The graphics are… bare-bones to say the least. The game runs inside a terminal emulator and is available for any platform. The goal of NetHack is to explore a dungeon and go down every level until you find the Amulet of Yendor. Once you find this Amulet, you have to go all the way back upstairs, enter and fight your way through the Elemental Planes, enter the final Astral Plane, and then finally offer the Amulet of Yendor to your god to finish the game. Needless to say, NetHack is very difficult and players can go years without ever finishing the game.
+</p>
+<p>
+When you start an new game, you have to create a character, which can have several attributes. You have to choose a race (human, elf, orc, etc), a role (tourist, samurai, mage, etc) and an alignment (neutral, law, chaos) and these choices impact your base stats.
+</p>
+<p>
+If you can’t get past the ASCII graphics, you can play NetHack with tileset:
+</p>
+<p>
+<img src="https://vignette.wikia.nocookie.net/nethack/images/8/80/Vultures_eye.png/revision/latest?cb=20070313215112"><!-- -->
+</p>
+<p>
+You can install NetHack on your computer or you can play online on a public server, such as this <a href="https://alt.org/nethack/">one</a>. There are several advantages when playing on a pubic server; the player does not have to install anyhing, and we data enthusiasts have access to a mine of information! For example, you can view the following <a href="https://alt.org/nethack/gamesday.php?date=20181025">table</a> which contains data on all the games played on October 25th 2018. These tables start in the year 2001, and I am going to scrape the info from these tables, which will allow me to answer several questions. For instance, what is the floor most players die on? What kills most players? What role do players choose more often? I will explore this questions in a future blog post, but for now I will focus on scraping the data and realeasing it as a package to CRAN.
+</p>
+</section>
+<section id="scraping-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="scraping-the-data">
+Scraping the data
+</h2>
+<p>
+To scrape the data I&nbsp;wrote a big function that does several things:
+</p>
+<pre class="r"><code>library("tidyverse")
+library("rvest")
+
+
+scrape_one_day &lt;- function(link){
+
+    convert_to_seconds &lt;- function(time_string){
+        time_numeric &lt;- time_string %&gt;%
+            str_split(":", simplify = TRUE) %&gt;%
+            as.numeric
+     
+     time_in_seconds &lt;- time_numeric * c(3600, 60, 1)
+     
+     if(is.na(time_in_seconds)){
+         time_in_seconds &lt;- 61
+     } else {
+         time_in_seconds &lt;- sum(time_in_seconds)
+     }
+     return(time_in_seconds)
+    }
+
+    Sys.sleep(1)
+
+    date &lt;- str_extract(link, "\\d{8}")
+
+    read_lines_slow &lt;- function(...){
+        Sys.sleep(1)
+        read_lines(...)
+    }
+    
+    page &lt;- read_html(link)
+
+        # Get links
+    dumplogs &lt;- page %&gt;% 
+        html_nodes(xpath = '//*[(@id = "perday")]//td') %&gt;%
+        html_children() %&gt;%
+        html_attr("href") %&gt;%
+        keep(str_detect(., "dumplog"))
+
+    # Get table
+    table &lt;- page %&gt;%
+        html_node(xpath = '//*[(@id = "perday")]') %&gt;%
+        html_table(fill = TRUE)
+
+    if(is_empty(dumplogs)){
+        print("dumplogs empty")
+        dumplogs &lt;- rep(NA, nrow(table))
+    } else {
+        dumplogs &lt;- dumplogs
+    }
+    
+    final &lt;- table %&gt;%
+        janitor::clean_names() %&gt;%
+        mutate(dumplog_links = dumplogs)
+
+    print(paste0("cleaning data of date ", date))
+    
+    clean_final &lt;- final %&gt;%
+        select(-x) %&gt;%
+        rename(role = x_2,
+               race = x_3,
+               gender = x_4,
+               alignment = x_5) %&gt;%
+        mutate(time_in_seconds = map(time, convert_to_seconds)) %&gt;%
+        filter(!(death %in% c("quit", "escaped")), time_in_seconds &gt; 60) %&gt;%
+        mutate(dumplog = map(dumplog_links, ~possibly(read_lines_slow, otherwise = NA)(.))) %&gt;%
+        mutate(time_in_seconds = ifelse(time_in_seconds == 61, NA, time_in_seconds))
+
+    saveRDS(clean_final, paste0("datasets/data_", date, ".rds"))
+
+}</code></pre>
+<p>
+Let’s go through each part. The first part is a function that converts strings like “02:21:76” to seconds:
+</p>
+<pre class="r"><code>convert_to_seconds &lt;- function(time_string){
+    time_numeric &lt;- time_string %&gt;%
+        str_split(":", simplify = TRUE) %&gt;%
+        as.numeric
+ 
+time_in_seconds &lt;- time_numeric * c(3600, 60, 1)
+ 
+if(is.na(time_in_seconds)){
+  time_in_seconds &lt;- 61
+  } else {
+    time_in_seconds &lt;- sum(time_in_seconds)
+    }
+return(time_in_seconds)
+}</code></pre>
+<p>
+I will use this function on the column that gives the length of the run. However, before March 2008 this column is always empty, this is why I have the <code>if()…else()</code> statement at the end; if the time in seconds is <code>NA</code>, then I make it 61&nbsp;seconds. I do this because I want to keep runs longer than 60 seconds, something I use <code>filter()</code> for later. But when filtering, if the condition returns <code>NA</code> (which happens when you do <code>NA &gt; 60</code>) then you get an error, and the function fails.
+</p>
+<p>
+The website links I am going to scrape all have the date of the day the runs took place. I am going to keep this date because I will need to name the datasets I am going to write to disk:
+</p>
+<pre class="r"><code>date &lt;- str_extract(link, "\\d{8}")</code></pre>
+<p>
+Next, I define this function:
+</p>
+<pre class="r"><code>read_lines_slow &lt;- function(...){
+    Sys.sleep(1)
+    read_lines(...)
+}</code></pre>
+<p>
+It is a wrapper around the <code>readr::read_lines()</code> with a call to <code>Sys.sleep(1)</code>. I will be scraping a lot of pages, so letting one second pass between each page will not overload the servers so much.
+</p>
+<p>
+I then read the link with <code>read_html()</code> and start by getting the links of the dumplogs:
+</p>
+<pre class="r"><code>page &lt;- read_html(link)
+
+# Get links
+dumplogs &lt;- page %&gt;% 
+    html_nodes(xpath = '//*[(@id = "perday")]//td') %&gt;%
+    html_children() %&gt;%
+    html_attr("href") %&gt;%
+    keep(str_detect(., "dumplog"))</code></pre>
+<p>
+You might be wondering what are dumplogs. Take a look at this screenshot:
+</p>
+<p>
+<img src="../assets/img/dumplogs.png"><!-- -->
+</p>
+<p>
+When you click on those <code>d</code>’s, you land on a page like this <a href="http://archive.is/wljb3">one</a> (I archived it to be sure that this link will not die). These logs contain a lot of info that I want to keep. To find the right <code>xpath</code> to scrape the links, <code>//*[(@id = "perday")]//td</code>, I used the SelectorGadget* extension for Chrome. First I chose the table:
+</p>
+<p>
+<img src="../assets/img/selectorgadget1.png"><!-- -->
+</p>
+<p>
+and then the links I am interested in:
+</p>
+<p>
+<img src="../assets/img/selectorgadget2.png"><!-- -->
+</p>
+<p>
+Putting them together, I get the right “xpath”. But just as with the time of the run, dumplogs are only available after a certain date. So in case the <code>dumplogs</code> column is empty, I relpace it with <code>NA</code>.
+</p>
+<pre class="r"><code>if(is_empty(dumplogs)){
+    print("dumplogs empty")
+    dumplogs &lt;- rep(NA, nrow(table))
+} else {
+    dumplogs &lt;- dumplogs
+}</code></pre>
+<p>
+The rest is quite simple:
+</p>
+<pre class="r"><code># Get table
+table &lt;- page %&gt;%
+    html_node(xpath = '//*[(@id = "perday")]') %&gt;%
+    html_table(fill = TRUE)
+               
+final &lt;- table %&gt;%
+    janitor::clean_names() %&gt;%
+    mutate(dumplog_links = dumplogs)
+           
+print(paste0("cleaning data of date ", date))</code></pre>
+<p>
+I scrape the table, and then join the dumplog links to the table inside a new column called “dumplog_links”.
+</p>
+<p>
+Because what follows is a long process, I print a message to let me know the progress of the scraping.
+</p>
+<p>
+Now the last part:
+</p>
+<pre class="r"><code>clean_final &lt;- final %&gt;%
+    select(-x) %&gt;%
+    rename(role = x_2,
+           race = x_3,
+           gender = x_4,
+           alignment = x_5) %&gt;%
+    mutate(time_in_seconds = map(time, convert_to_seconds)) %&gt;%
+    filter(!(death %in% c("quit", "escaped")), time_in_seconds &gt; 60) %&gt;%
+    mutate(dumplog = map(dumplog_links, ~possibly(read_lines_slow, otherwise = NA)(.))) %&gt;%
+    mutate(time_in_seconds = ifelse(time_in_seconds == 61, NA, time_in_seconds))</code></pre>
+<p>
+I first remove and remane columns. Then I convert the “time” column into seconds and also remove runs that lasted less than 60 seconds or that ended either in “quit” (the player left the game) or “escaped” (the player left the dungeon and the game ended immediately). There are a lot of runs like that and they’re not interesting. Finally, and this is what takes long, I create a new list-column where each element is the contents of the dumplog for that run. I wrap <code>read_lines_slow()</code> around <code>purrr::possibly()</code> because dumplogs are missing for certains runs and when I try to read them I get an 404 error back. Getting such an error stops the whole process, so with <code>purrr::possibly()</code> I can specify that in that case I want <code>NA</code> back. Basically, a function wrapped inside <code>purrr::possibly()</code> never fails! Finally, if a game lasts for 61 seconds, I convert it back to <code>NA</code> (remember this was used to avoid having problems with the <code>filter()</code> function).
+</p>
+<p>
+Finally, I export what I scraped to disk:
+</p>
+<pre class="r"><code>saveRDS(clean_final, paste0("datasets/data_", date, ".rds"))</code></pre>
+<p>
+This is where I use the date; to name the data. This is really important because scraping takes a very long time, so if I don’t write the progress to disk as it goes, I might lose hours of work if my internet goes down, or if computer freezes or whatever.
+</p>
+<p>
+In the lines below I build the links that I am going to scrape. They’re all of the form: <code>https://alt.org/nethack/gamesday.php?date=YYYYMMDD</code> so it’s quite easy to create a list of dates to scrape, for example, for the year 2017:
+</p>
+<pre class="r"><code>link &lt;- "https://alt.org/nethack/gamesday.php?date="
+
+dates &lt;- seq(as.Date("2017/01/01"), as.Date("2017/12/31"), by = "day") %&gt;%
+    str_remove_all("-")
+
+links &lt;- paste0(link, dates)</code></pre>
+<p>
+Now I can easily scrape the data. To make extra sure that I will not have problems during the scraping process, for example if on a given day no games were played (and thus there is no table to scrape, which would result in an error) , I use the same trick as above by using <code>purrr::possibly()</code>:
+</p>
+<pre class="r"><code>map(links, ~possibly(scrape_one_day, otherwise = NULL)(.))</code></pre>
+<p>
+The scraping process took a very long time. I scraped all the data by letting my computer run for three days!
+</p>
+<p>
+After this long process, I import all the <code>.rds</code> files into R:
+</p>
+<pre class="r"><code>path_to_data &lt;- Sys.glob("datasets/*.rds")
+nethack_data &lt;- map(path_to_data, readRDS)</code></pre>
+<p>
+and take a look at one of them:
+</p>
+<pre class="r"><code>nethack_data[[5812]] %&gt;% 
+  View()</code></pre>
+<p>
+Let’s convert the “score” column to integer. For this, I will need to convert strings that look like “12,232” to integers. I’ll write a short function to do this:
+</p>
+<pre class="r"><code>to_numeric &lt;- function(string){
+  str_remove_all(string, ",") %&gt;%
+    as.numeric
+}</code></pre>
+<pre class="r"><code>nethack_data &lt;- nethack_data %&gt;%
+  map(~mutate(., score = to_numeric(score)))</code></pre>
+<p>
+Let’s merge the data into a single data frame:
+</p>
+<pre class="r"><code>nethack_data &lt;- bind_rows(nethack_data)</code></pre>
+<p>
+Now that I have a nice data frame, I will remove some columns and start the process of making a packages. I remove the columns that I created and that are now useless (such as the <code>dumplog_links</code> column).
+</p>
+<pre class="r"><code>nethack_data &lt;- nethack_data %&gt;%
+  select(rank, score, name, time, turns, lev_max, hp_max, role, race, gender, alignment, death,
+         date, dumplog)</code></pre>
+<p>
+Export this to <code>.rds</code> format, as it will be needed later:
+</p>
+<pre class="r"><code>saveRDS(nethack_data, "nethack_data.rds")</code></pre>
+</section>
+<section id="making-a-package-to-share-your-data-with-the-world" class="level2">
+<h2 class="anchored" data-anchor-id="making-a-package-to-share-your-data-with-the-world">
+Making a package to share your data with the world
+</h2>
+<p>
+As stated in the beginning of this post, I will walk you through the process of creating and releasing your package on CRAN. However, the data I scraped was too large to be made available as a CRAN package. But you can still get the data from Github (link is in the abstract at the beginning of the post).
+</p>
+<p>
+Making a data package is a great way to learn how to make packages, because it is relatively easy to do (for example, you do not need to write unit tests). First, let’s start a new project in RStudio:
+</p>
+<p>
+<img src="../assets/img/r_package1.png"><!-- -->
+</p>
+<p>
+Then select “R package”:
+</p>
+<p>
+<img src="../assets/img/r_package2.png"><!-- -->
+</p>
+<p>
+Then name your package, create a git repository and then click on “Create Project”:
+</p>
+<p>
+<img src="../assets/img/r_package3.png"><!-- -->
+</p>
+<p>
+RStudio wil open the <code>hello.R</code> script which you can now modify. You got to learn from the best, so I suggest that you modify <code>hello.R</code> by taking inspiration from the <code>babynames</code> package made by Hadley Wickham which you can find <a href="https://github.com/hadley/babynames/blob/master/R/data.R">here</a>. You do not need the first two lines, and can focus on lines 4 to 13. Then, rename the script to <code>data.R</code>. This is how <code>{nethack}’s</code> looks like:
+</p>
+<pre class="r"><code>#' NetHack runs data.
+#'
+#' Data on NetHack runs scraped from https://alt.org/nethack/gamesday.php
+#'
+#' @format A data frame with 14 variables: \code{rank}, \code{score},
+#'   \code{name}, \code{time}, \code{turns}, \code{lev_max}, \code{hp_max}, \code{role}, \code{race},
+#'   \code{gender}, \code{alignment}, \code{death}, \code{date} and \code{dumplog}
+#' \describe{
+#' \item{rank}{The rank of the player on that day}
+#' \item{score}{The score the player achieved on that run}
+#' \item{name}{The name of the player}
+#' \item{time}{The time the player took to finish the game}
+#' \item{turns}{The number of turns the player played before finishing the game}
+#' \item{lev_max}{First digit: the level the player died on; second digit: the deepest explored level}
+#' \item{hp_max}{The maximum character health points the player achieved}
+#' \item{role}{The role the player chose to play as}
+#' \item{race}{The race the player chose to play as}
+#' \item{gender}{The gender the playr chose to play as}
+#' \item{alignement}{The alignement the playr chose to play as}
+#' \item{death}{The reason of death of the character}
+#' \item{date}{The date the game took place}
+#' \item{dumplog}{The log of the end game; this is a list column}
+#' }
+"nethack"</code></pre>
+<p>
+The comments are special, the “#” is followed by a <code>’</code>; these are special comments that will be parsed by <code>roxygen2::roxygenise()</code> and converted to documentation files.
+</p>
+<p>
+Next is the <code>DESCRIPTION</code> file. Here is how <code>{nethack}</code>’s looks like:
+</p>
+<pre><code>Package: nethack
+Type: Package
+Title: Data from the Video Game NetHack
+Version: 0.1.0
+Authors@R: person("Bruno André", "Rodrigues Coelho", email = "bruno@brodrigues.co",
+                  role = c("aut", "cre"))
+Description: Data from NetHack runs played between 2001 to 2018 on 
+    &lt;https://alt.org/nethack/&gt;, a NetHack public server.
+Depends: R (&gt;= 2.10)
+License: CC BY 4.0
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0</code></pre>
+<p>
+Adapt yours accordingly. I chose the license <code>CC BY 4.0</code> because this was the licence under which the original data was published. It is also a good idea to add a <em>Vignette</em>:
+</p>
+<pre class="r"><code>devtools::use_vignette("the_nethack_package")</code></pre>
+<p>
+Vignettes are very useful documentation with more details and examples.
+</p>
+<p>
+It is also good practice to add the script that was used to scrape the data. Such scripts go into <code>data-raw/</code>. Create this folder with:
+</p>
+<pre class="r"><code>devtools::use_data_raw()</code></pre>
+<p>
+This creates the <code>data-raw/</code> folder where I save the script that scrapes the data. Now is time to put the data in the package. Start by importing the data:
+</p>
+<pre class="r"><code>nethack &lt;- readRDS("nethack_data.rds")</code></pre>
+<p>
+To add the data to your package, you can use the following command:
+</p>
+<pre class="r"><code>devtools::use_data(nethack, compress = "xz")</code></pre>
+<p>
+This will create the <code>data/</code> folder and put the data in there in the <code>.rda</code> format. I use the “compress” option to make the data smaller. You can now create the documentation by running:
+</p>
+<pre class="r"><code>roxygen2::roxygenise()</code></pre>
+<p>
+Pay attention to the log messages: you might need to remove files (for example the documentation <code>hello.R</code>, under the folder <code>man/</code>).
+</p>
+<p>
+Now you can finaly run <code>R CMD Check</code> by clicking the <code>Check</code> button on the “Build” pane:
+</p>
+<p>
+<img src="../assets/img/r_package_check.png"><!-- -->
+</p>
+<p>
+This will extensively check the package for <code>ERRORS</code>, <code>WARNINGS</code> and <code>NOTES</code>. You need to make sure that the check passes without any <code>ERRORS</code> or <code>WARNINGS</code> and try as much as possible to remove all <code>NOTES</code> too. If you cannot remove a <code>NOTE</code>, for example in my case the following:
+</p>
+<pre><code>checking installed package size ... NOTE
+  installed size is 169.7Mb
+  sub-directories of 1Mb or more:
+    data  169.6Mb
+R CMD check results
+0 errors | 0 warnings  | 1 note </code></pre>
+<p>
+You should document it in a new file called <code>cran-comments.md</code>:
+</p>
+<pre><code>## Test environments
+* local openSUSE Tumbleweed install, R 3.5.1
+* win-builder (devel and release)
+
+## R CMD check results
+There were no ERRORs or WARNINGs.
+
+There was 1 NOTE:
+
+    *   installed size is 169.7Mb
+sub-directories of 1Mb or more:
+    data  169.6Mb
+
+The dataset contains 17 years of NetHack games played, hence the size. This package will not be updated often (max once a year).</code></pre>
+<p>
+Once you have eliminated all errors and warnings, you are almost ready to go.
+</p>
+<p>
+You need now to test the package on different platforms. This depends a bit on the system you run, for me, because I run openSUSE (a GNU+Linux distribution) I have to test on Windows. This can be done with:
+</p>
+<pre class="r"><code> devtools::build_win(version = "R-release")</code></pre>
+<p>
+and:
+</p>
+<pre class="r"><code> devtools::build_win(version = "R-devel")</code></pre>
+<p>
+Explain that you have tested your package on several platforms in the <code>cran-comments.md</code> file.
+</p>
+<p>
+Finally you can add a <code>README.md</code> and a <code>NEWS.md</code> file and start the process of publishing the package on CRAN:
+</p>
+<pre class="r"><code>devtools:release()</code></pre>
+<p>
+If you want many more details than what you can find in this blog post, I urge you to read “R Packages” by Hadley Wickham, which you can read for free <a href="http://r-pkgs.had.co.nz/">here</a>.
+</p>
+</section>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

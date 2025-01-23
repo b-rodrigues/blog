@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2018-10-27">
+
+<title>Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 27, 2018</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=Bw8g_1VEEL8"> <img src="../assets/img/europe_map_lux.png"></a>
+</p>
+</div>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">
+Abstract
+</h2>
+<p>
+You can find the data used in this blog post here: <a href="https://github.com/b-rodrigues/elections_lux" class="uri">https://github.com/b-rodrigues/elections_lux</a>
+</p>
+<p>
+This is a follow up to a <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">previous blog post</a> where I extracted data of the 2018 Luxembourguish elections from Excel Workbooks. Now that I have the data, I will create a map of Luxembourg by commune, with pie charts of the results on top of each commune! To do this, I use good ol’ <code>{ggplot2}</code> and another packages called <code>{scatterpie}</code>. As a bonus, I have added the code to extract the data from the 2013 elections from Excel. You’ll find this code in the appendix at the end of the blog post.
+</p>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">
+Introduction
+</h2>
+<p>
+Before importing the data for the elections of 2018, let’s install some packages:
+</p>
+<pre class="r"><code>install.packages('rgeos', type='source') # Dependency of rgdal
+install.packages('rgdal', type='source') # To read in the shapefile</code></pre>
+<p>
+These packages might be very tricky to install on OSX and Linux, but they’re needed to import the shapefile of the country, which is needed to draw a map. So to make things easier, I have created an <code>rds</code> object, from the shapefile of Luxembourg, that you can import natively in R without needing these two packages. But if you want to use them, here is how:
+</p>
+<pre class="r"><code>communes &lt;- readOGR("Limadmin_SHP/LIMADM_COMMUNES.shp")</code></pre>
+<p>
+By the way, you can download the shapefile for Luxembourg <a href="https://data.public.lu/en/datasets/limites-administratives-du-grand-duche-de-luxembourg/#_">here</a>.
+</p>
+<p>
+I’ll use my shapefile though (that you can download from the same github repo as the data):
+</p>
+<pre class="r"><code>communes_df &lt;- readRDS("commune_shapefile.rds")</code></pre>
+<p>
+Here’s how it looks like:
+</p>
+<pre class="r"><code>head(communes_df)</code></pre>
+<pre><code>##       long      lat order  hole piece      group       id
+## 1 91057.65 101536.6     1 FALSE     1 Beaufort.1 Beaufort
+## 2 91051.79 101487.3     2 FALSE     1 Beaufort.1 Beaufort
+## 3 91043.43 101461.7     3 FALSE     1 Beaufort.1 Beaufort
+## 4 91043.37 101449.8     4 FALSE     1 Beaufort.1 Beaufort
+## 5 91040.42 101432.1     5 FALSE     1 Beaufort.1 Beaufort
+## 6 91035.44 101405.6     6 FALSE     1 Beaufort.1 Beaufort</code></pre>
+<p>
+Now let’s load some packages:
+</p>
+<pre class="r"><code>library("tidyverse")
+library("tidyxl")
+library("ggplot2")
+library("scatterpie")</code></pre>
+<p>
+Ok, now, let’s import the elections results data, which is the output of <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">last week’s blog post</a>:
+</p>
+<pre class="r"><code>elections &lt;- read_csv("elections_2018.csv")</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Party = col_character(),
+##   Year = col_double(),
+##   Variables = col_character(),
+##   Values = col_double(),
+##   locality = col_character(),
+##   division = col_character()
+## )</code></pre>
+<p>
+I will only focus on the data at the commune level, and only use the share of votes for each party:
+</p>
+<pre class="r"><code>elections_map &lt;- elections %&gt;%
+    filter(division == "Commune",
+           Variables == "Pourcentage")</code></pre>
+<p>
+Now I need to make sure that the names of the communes are the same between the elections data and the shapefile. Usual suspects are the “Haute-Sûre” and the “Redange-sur-Attert” communes, but let’s take a look:
+</p>
+<pre class="r"><code>locality_elections &lt;- unique(elections_map$locality)
+locality_shapefile &lt;- unique(communes_df$id)
+
+setdiff(locality_elections, locality_shapefile)</code></pre>
+<pre><code>## [1] "Lac de la Haute-Sûre" "Redange Attert"</code></pre>
+<p>
+Yep, exactly as expected. I’ve had problems with the names of these two communes in the past already. Let’s rename these two communes in the elections data:
+</p>
+<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
+    mutate(commune = case_when(locality == "Lac de la Haute-Sûre" ~ "Lac de la Haute Sûre",
+                          locality == "Redange Attert" ~ "Redange",
+                          TRUE ~ locality))</code></pre>
+<p>
+Now, I can select the relevant columns from the shapefile:
+</p>
+<pre class="r"><code>communes_df &lt;- communes_df %&gt;%
+    select(long, lat, commune = id)</code></pre>
+<p>
+and from the elections data:
+</p>
+<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
+    select(commune, Party, Variables, Values)</code></pre>
+</section>
+<section id="plotting-the-data-on-a-map" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-the-data-on-a-map">
+Plotting the data on a map
+</h2>
+<p>
+Now, for the type of plot I want to make, using the <code>{scatterpie}</code> package, I need the data to be in the wide format, not long. For this I will use <code>tidyr::spread()</code>:
+</p>
+<pre class="r"><code>elections_map &lt;- elections_map %&gt;% 
+    spread(Party, Values)</code></pre>
+<p>
+This is how the data looks now:
+</p>
+<pre class="r"><code>glimpse(elections_map)</code></pre>
+<pre><code>## Observations: 102
+## Variables: 10
+## $ commune     &lt;chr&gt; "Beaufort", "Bech", "Beckerich", "Berdorf", "Bertran…
+## $ Variables   &lt;chr&gt; "Pourcentage", "Pourcentage", "Pourcentage", "Pource…
+## $ ADR         &lt;dbl&gt; 0.12835106, 0.09848661, 0.08596748, 0.16339234, 0.04…
+## $ CSV         &lt;dbl&gt; 0.2426239, 0.2945285, 0.3004751, 0.2604552, 0.290278…
+## $ `déi gréng` &lt;dbl&gt; 0.15695672, 0.21699651, 0.24072721, 0.15619529, 0.15…
+## $ `déi Lénk`  &lt;dbl&gt; 0.04043732, 0.03934808, 0.05435776, 0.02295273, 0.04…
+## $ DP          &lt;dbl&gt; 0.15875393, 0.19394645, 0.12899689, 0.15444466, 0.30…
+## $ KPL         &lt;dbl&gt; 0.015875393, 0.006519208, 0.004385164, 0.011476366, …
+## $ LSAP        &lt;dbl&gt; 0.11771754, 0.11455180, 0.08852549, 0.16592103, 0.09…
+## $ PIRATEN     &lt;dbl&gt; 0.13928411, 0.03562282, 0.09656496, 0.06516242, 0.04…</code></pre>
+<p>
+For this to work, I need two datasets; one to draw the map (<code>commune_df</code>) and one to draw the pie charts over each commune, with the data to draw the charts, but also the position of where I want the pie charts. For this, I will compute the average of the longitude and latitude, which should be good enough:
+</p>
+<pre class="r"><code>scatterpie_data &lt;- communes_df %&gt;%
+    group_by(commune) %&gt;%
+    summarise(long = mean(long),
+              lat = mean(lat))</code></pre>
+<p>
+Now, let’s join the two datasets:
+</p>
+<pre class="r"><code>final_data &lt;- left_join(scatterpie_data, elections_map, by = "commune") </code></pre>
+<p>
+I have all the ingredients to finally plot the data:
+</p>
+<pre class="r"><code>ggplot() +
+    geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
+    geom_scatterpie(data = final_data, aes(x=long, y=lat, group=commune), 
+                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
+    labs(title = "Share of total vote in each commune, 2018 elections") +
+    theme_void() +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text = element_text(colour = "white"),
+          plot.background = element_rect("#272b30"),
+          plot.title = element_text(colour = "white")) +
+    scale_fill_manual(values = c("ADR" = "#009dd1",
+                                 "CSV" = "#ee7d00",
+                                 "déi gréng" = "#45902c",
+                                 "déi Lénk" = "#e94067",
+                                 "DP" = "#002a54",
+                                 "KPL" = "#ff0000",
+                                 "LSAP" = "#ad3648",
+                                 "PIRATEN" = "#ad5ea9"))</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-17-1.png" width="768">
+</p>
+<p>
+Not too bad, but we can’t really read anything from the pie charts. I will now make their size proportional to the number of voters in each commune. For this, I need to go back to the Excel sheets, and look for the right cell:
+</p>
+<p>
+<img src="../img/electeurs_inscrits.png"><!-- -->
+</p>
+<p>
+It will be easy to extract this info. It located in cell “E5”:
+</p>
+<pre class="r"><code>elections_raw_2018 &lt;- xlsx_cells("leg-2018-10-14-22-58-09-737.xlsx")
+
+electors_commune &lt;- elections_raw_2018 %&gt;%
+    filter(!(sheet %in% c("Le Grand-Duché de Luxembourg", "Centre", "Est", "Nord", "Sud", "Sommaire"))) %&gt;%
+    filter(address == "E5") %&gt;%
+    select(sheet, numeric) %&gt;%
+    rename(commune = sheet,
+           electors = numeric)</code></pre>
+<p>
+I can now add this to the data:
+</p>
+<pre class="r"><code>final_data &lt;- final_data %&gt;% 
+    full_join(electors_commune) %&gt;%
+    mutate(log_electors = log(electors) * 200)</code></pre>
+<pre><code>## Joining, by = "commune"</code></pre>
+<p>
+In the last line, I create a new column called <code>log_electors</code> that I then multiply by 200. This will be useful later.
+</p>
+<p>
+Now I can add the <code>r</code> argument inside the <code>aes()</code> function on the third line, to make the pie chart size proportional to the number of electors in that commune:
+</p>
+<pre class="r"><code>ggplot() +
+  geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
+    geom_scatterpie(data = final_data, aes(x=long, y=lat, group = commune, r = electors), 
+                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
+    labs(title = "Share of total vote in each commune, 2018 elections") +
+    theme_void() +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text = element_text(colour = "white"),
+          plot.background = element_rect("#272b30"),
+          plot.title = element_text(colour = "white")) +
+    scale_fill_manual(values = c("ADR" = "#009dd1",
+                                 "CSV" = "#ee7d00",
+                                 "déi gréng" = "#45902c",
+                                 "déi Lénk" = "#182024",
+                                 "DP" = "#002a54",
+                                 "KPL" = "#ff0000",
+                                 "LSAP" = "#ad3648",
+                                 "PIRATEN" = "#ad5ea9"))</code></pre>
+<pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-21-1.png" width="768">
+</p>
+<p>
+Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription. For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are the lists:
+</p>
+<pre class="r"><code>centre &lt;- c("Bissen", "Colmar-Berg", "Fischbach", "Heffingen", "Larochette",
+            "Lintgen", "Lorentzweiler", "Mersch", "Nommern", "Helperknapp", "Bertrange", "Contern", 
+            "Hesperange", "Luxembourg", "Niederanven", "Sandweiler", "Schuttrange", "Steinsel", 
+            "Strassen", "Walferdange", "Weiler-la-Tour")
+
+est &lt;- c("Beaufort", "Bech", "Berdorf", "Consdorf", "Echternach", "Rosport-Mompach", "Waldbillig",
+         "Betzdorf", "Biwer", "Flaxweiler", "Grevenmacher", "Junglinster", "Manternach", "Mertert",
+         "Wormeldange","Bous", "Dalheim", "Lenningen", "Mondorf-les-Bains", "Remich", "Schengen",
+         "Stadtbredimus", "Waldbredimus")
+
+nord &lt;- c("Clervaux", "Parc Hosingen", "Troisvierges", "Weiswampach", "Wincrange", "Bettendorf", 
+          "Bourscheid", "Diekirch", "Erpeldange-sur-Sûre", "Ettelbruck", "Feulen", "Mertzig", "Reisdorf", 
+          "Schieren", "Vallée de l'Ernz", "Beckerich", "Ell", "Grosbous", "Préizerdaul", 
+          "Rambrouch", "Redange", "Saeul", "Useldange", "Vichten", "Wahl", "Putscheid", "Tandel",
+          "Vianden", "Boulaide", "Esch-sur-Sûre", "Goesdorf", "Kiischpelt", "Lac de la Haute Sûre",
+          "Wiltz", "Winseler")
+
+sud &lt;- c("Dippach", "Garnich", "Käerjeng", "Kehlen", "Koerich", "Kopstal", "Mamer", 
+         "Habscht", "Steinfort", "Bettembourg", "Differdange", "Dudelange", "Esch-sur-Alzette", 
+         "Frisange", "Kayl", "Leudelange", "Mondercange", "Pétange", "Reckange-sur-Mess", "Roeser",
+         "Rumelange", "Sanem", "Schifflange")
+
+circonscriptions &lt;- list("centre" = centre, "est" = est,
+                         "nord" = nord, "sud" = sud)</code></pre>
+<p>
+Now, I can make one map per circonscription. First, let’s split the data sets by circonscription:
+</p>
+<pre class="r"><code>communes_df_by_circonscription &lt;- circonscriptions %&gt;%
+    map(~filter(communes_df, commune %in% .))
+
+final_data_by_circonscription &lt;- circonscriptions %&gt;%
+    map(~filter(final_data, commune %in% .))</code></pre>
+<p>
+By using <code>pmap()</code>, I can reuse the code to generate the plot to each element of the two lists. This is nice because I do not need to copy and paste the code 4 times:
+</p>
+<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
+          y = final_data_by_circonscription,
+          z = names(communes_df_by_circonscription)),
+     function(x, y, z){
+         ggplot() +
+        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
+                     colour = "grey", fill = NA) +
+        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune), 
+                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
+        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
+        theme_void() +
+        theme(legend.position = "bottom",
+              legend.title = element_blank(),
+              legend.text = element_text(colour = "white"),
+              plot.background = element_rect("#272b30"),
+              plot.title = element_text(colour = "white")) + 
+        scale_fill_manual(values = c("ADR" = "#009dd1",
+                                     "CSV" = "#ee7d00",
+                                     "déi gréng" = "#45902c",
+                                     "déi Lénk" = "#182024",
+                                     "DP" = "#002a54",
+                                     "KPL" = "#ff0000",
+                                     "LSAP" = "#ad3648",
+                                     "PIRATEN" = "#ad5ea9"))
+     }
+)</code></pre>
+<pre><code>## $centre</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-1.png" width="768">
+</p>
+<pre><code>## 
+## $est</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-2.png" width="768">
+</p>
+<pre><code>## 
+## $nord</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-3.png" width="768">
+</p>
+<pre><code>## 
+## $sud</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-4.png" width="768">
+</p>
+<p>
+I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!
+</p>
+<p>
+The pie charts are still quite small, but if I try to change the size of the pie charts, I’ll have the same problem as before: inside the same circonscription, some communes have really a lot of electors, and some a very small number. Perhaps I can try with the log of the electors?
+</p>
+<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
+          y = final_data_by_circonscription,
+          z = names(communes_df_by_circonscription)),
+     function(x, y, z){
+         ggplot() +
+        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
+                     colour = "grey", fill = NA) +
+        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune, r = log_electors), 
+                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
+        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
+        theme_void() +
+        theme(legend.position = "bottom",
+              legend.title = element_blank(),
+              legend.text = element_text(colour = "white"),
+              plot.background = element_rect("#272b30"),
+              plot.title = element_text(colour = "white")) + 
+        scale_fill_manual(values = c("ADR" = "#009dd1",
+                                     "CSV" = "#ee7d00",
+                                     "déi gréng" = "#45902c",
+                                     "déi Lénk" = "#182024",
+                                     "DP" = "#002a54",
+                                     "KPL" = "#ff0000",
+                                     "LSAP" = "#ad3648",
+                                     "PIRATEN" = "#ad5ea9"))
+     }
+)</code></pre>
+<pre><code>## $centre</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-1.png" width="768">
+</p>
+<pre><code>## 
+## $est</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-2.png" width="768">
+</p>
+<pre><code>## 
+## $nord</code></pre>
+<pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-3.png" width="768">
+</p>
+<pre><code>## 
+## $sud</code></pre>
+<p>
+<img src="../blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-4.png" width="768">
+</p>
+<p>
+This looks better now!
+</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">
+Conclusion
+</h2>
+<p>
+Having data in a machine readable format is really important. The amount of code I had to write to go from the Excel Workbooks that contained the data to this plots is quite large, but if the data was in a machine readable format to start with, I could have focused on the plots immediately.
+</p>
+<p>
+The good thing is that I got to practice my skills and discovered <code>{scatterpie}</code>!
+</p>
+<p>
+Hope you enjoyed! If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or <a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a>.
+</p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+</section>
+<section id="appendix" class="level2">
+<h2 class="anchored" data-anchor-id="appendix">
+Appendix
+</h2>
+<p>
+The following lines of code extract the data (from the 2013 elections) from the Excel Workbooks that can be found in Luxembourguish <a href="https://data.public.lu/fr/datasets/elections-legislatives-2013-donnees-officieuses/#_">Open Data Portal</a>.
+</p>
+<p>
+I will not comment them, as they work in a similar way than in the previous blog post where I extracted the data from the 2018 elections. The only difference, is that the sheet with the national level data was totally different, so I did not extract it. The first reason is because I don’t need it for this blog post, the second is because I was lazy. For me, that’s two pretty good reasons not to do something. If you have a question concerning the code below, don’t hesitate to reach out though!
+</p>
+<pre class="r"><code>library("tidyverse")
+library("tidyxl")
+library("brotools")
+
+path &lt;- Sys.glob("content/blog/2013*xlsx")[-5]
+
+elections_raw_2013 &lt;- map(path, xlsx_cells) %&gt;%
+    map(~filter(., sheet != "Sommaire"))
+
+elections_sheets_2013 &lt;- map(map(path, xlsx_sheet_names), ~`%-l%`(., "Sommaire"))
+
+list_targets &lt;- list("Centre" = seq(9, 32),
+                    "Est" = seq(9, 18),
+                    "Nord" = seq(9, 20),
+                    "Sud" = seq(9, 34))
+
+position_parties_national &lt;- seq(1, 24, by = 3)
+
+extract_party &lt;- function(dataset, starting_col, target_rows){
+    
+    almost_clean &lt;- dataset %&gt;%
+        filter(row %in% target_rows) %&gt;%
+        filter(col %in% c(starting_col, starting_col + 1)) %&gt;%
+        select(character, numeric) %&gt;%
+        fill(numeric, .direction = "up") %&gt;%
+        filter(!is.na(character))
+    
+    party_name &lt;- almost_clean$character[1]
+    
+    almost_clean$character[1] &lt;- "Pourcentage"
+    
+    almost_clean$party &lt;- party_name
+    
+    colnames(almost_clean) &lt;- c("Variables", "Values", "Party")
+    
+    almost_clean %&gt;%
+        mutate(Year = 2013) %&gt;%
+        select(Party, Year, Variables, Values)
+    
+}
+
+
+# Treat one district
+
+extract_district &lt;- function(dataset, sheets, target_rows, position_parties_national){
+
+    list_data_districts &lt;- map(sheets, ~filter(.data = dataset, sheet == .)) 
+
+    elections_districts_2013 &lt;- map(.x = list_data_districts,
+                                    ~map_df(position_parties_national, extract_party, dataset = .x, target_rows = target_rows))
+
+    map2(.y = elections_districts_2013, .x = sheets,
+         ~mutate(.y, locality = .x, division = "Commune", Year = "2013")) %&gt;%
+        bind_rows()
+}
+
+elections_2013 &lt;- pmap_dfr(list(x = elections_raw_2013, 
+          y = elections_sheets_2013,
+          z = list_targets), 
+     function(x, y, z){
+         map_dfr(position_parties_national, 
+             ~extract_district(dataset = x, sheets = y, target_rows = z, position_parties_national = .))
+     })
+
+# Correct districts
+elections_2013 &lt;- elections_2013 %&gt;%
+    mutate(division = case_when(locality == "CENTRE" ~ "Electoral district",
+                                locality == "EST" ~ "Electoral district",
+                                locality == "NORD" ~ "Electoral district",
+                                locality == "SUD" ~ "Electoral district",
+                                TRUE ~ division))</code></pre>
+</section>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
