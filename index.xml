@@ -10,7 +10,532 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Sun, 30 Dec 2018 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 31 Jan 2019 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</title>
+  <link>https://b-rodrigues.github.io/posts/2019-01-31-newspapers_shiny_app.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="https://b-rodrigues.github.io/assets/img/tf_idf.png" title="Click here to go the app"></a>
+</p>
+</div>
+<p>
+I have been playing around with historical newspaper data (see <a href="../posts/2019-01-04-newspapers.html">here</a> and <a href="../posts/2019-01-13-newspapers_mets_alto.html">here</a>). I have extracted the data from the largest archive available, as described in the previous blog post, and now created a shiny dashboard where it is possible to visualize the most common words per article, as well as read a summary of each article. The summary was made using a method called <em>textrank</em>, using the <code>{textrank}</code> package, which extracts relevant sentences using the Pagerank (developed by Google) algorithm. You can read the scientific paper <a href="https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">here</a> for more info.
+</p>
+<p>
+You can play around with the app by clicking <a href="https://brodriguesco.shinyapps.io/newspapers_app/">here</a>. In the next blog post, I will explain how I created the app, step by step. It’s going to be a long blog post!
+</p>
+<p>
+Using the app, I noticed that some war happened around November 1860 in China, which turned out to be the <a href="https://en.wikipedia.org/wiki/Second_Opium_War">Second Opium War</a>. The war actually ended in October 1860, but apparently the news took several months to travel to Europe.
+</p>
+<p>
+I also learned that already in the 1861, there was public transportation between some Luxembourguish villages, and French villages that were by the border (see the publication from the 17th of December 1861).
+</p>
+<p>
+Let me know if you find about historical events using my app!
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-01-31-newspapers_shiny_app.html</guid>
+  <pubDate>Thu, 31 Jan 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Making sense of the METS and ALTO XML standards</title>
+  <link>https://b-rodrigues.github.io/posts/2019-01-13-newspapers_mets_alto.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="https://b-rodrigues.github.io/assets/img/union.png" title="The 19th century was a tough place"></a>
+</p>
+</div>
+<p>
+Last week I wrote a <a href="https://www.brodrigues.co/blog/2019-01-04-newspapers/">blog post</a> where I analyzed one year of newspapers ads from 19th century newspapers. The data is made available by the <a href="https://data.bnl.lu/data/historical-newspapers/">national library of Luxembourg</a>. In this blog post, which is part 1 of a 2 part series, I extract data from the 257gb archive, which contains 10 years of publications of the <em>L’Union</em>, another 19th century Luxembourguish newspaper written in French. As I explained in the previous post, to make life easier to data scientists, the national library also included ALTO and METS files (which are a XML files used to describe the layout and contents of physical text sources, such as pages of a book or newspaper) which can be easily parsed by R.
+</p>
+<p>
+This is how a ALTO file looks like:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/alto.png"><!-- -->
+</p>
+<p>
+Each page of the newspaper of a given day has one ALTO file. This is how a METS file looks like:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/mets.png"><!-- -->
+</p>
+<p>
+For each daily issue of the newspaper, there is a METS file. So 1 METS file for 4 ALTO files.
+</p>
+<p>
+In my last blog post, I only extracted the words from the ALTO file (red rectangles of the first screenshot) and did not touch the METS file. The problem of doing this is that I get all the words for each page, without knowing which come from the same article. If I want to know which words come from the same article, I need to use the info from the METS file. From the METS file I have the ID of the article, and some other metadata, such as the title of the article and the type of the article (which can be <em>article</em>, <em>advertisement</em>, etc). The information highlighted with the green rectangles in the METS file can be linked to the green rectangles from the ALTO files. My goal is to get the following data frame from the METS file:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/mets_df.png"><!-- -->
+</p>
+<p>
+and this data frame from the ALTO files:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/alto_df.png"><!-- -->
+</p>
+<p>
+As you can see, by combining both data frames I can know which words come from the same article, which will be helpful for further analysis. <a href="https://en.wikipedia.org/wiki/1860s">A lot of things happened in the 1860s.</a> I am really curious to see if and how these events where reported in a Luxembourguish newspaper. I am particularly curious about how long it took to report certain news from far away, such as the assassination of Abraham Lincoln. But before that I need to extract the data!
+</p>
+<p>
+I will only focus on the METS file. The logic for the ALTO file is the same. All the source code will be in the appendix of this blog post.
+</p>
+<p>
+First, let’s take a look at a METS file:
+</p>
+<pre class="r"><code>library(tidyverse)
+mets &lt;- read_file("1533660_newspaper_lunion_1860-11-14/1533660_newspaper_lunion_1860-11-14-mets.xml")</code></pre>
+<p>
+This is how it looks like:
+</p>
+<pre><code>"&lt;?xml version='1.0' encoding='utf-8'?&gt;\r\n&lt;mets xmlns=\"http://www.loc.gov/METS/\" xmlns:mix=\"http://www.loc.gov/mix/v20\" xmlns:mods=\"http://www.loc.gov/mods/v3\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" LABEL=\"L'UNION. 1860-11-14_01\" OBJID=\"https://persist.lu/ark:/70795/m62fcm\" TYPE=\"Newspaper\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd http://www.loc.gov/mix/v20 http://www.loc.gov/standards/mix/mix.xsd\"&gt;\r\n  &lt;metsHdr CREATEDATE=\"2010-12-03T20:35:05\" LASTMODDATE=\"2018-05-09T05:35:51Z\"&gt;\r\n    &lt;agent OTHERTYPE=\"SOFTWARE\" ROLE=\"CREATOR\" TYPE=\"OTHER\"&gt;\r\n      &lt;name&gt;CCS docWORKS/METAe Version 6.4-3&lt;/name&gt;\r\n      &lt;note&gt;docWORKS-ID: 101636&lt;/note&gt;\r\n    &lt;/agent&gt;\r\n  &lt;/metsHdr&gt;\r\n  &lt;dmdSec ID=\"MODSMD_COLLECTION\"&gt;\r\n    &lt;mdWrap LABEL=\"Bibliographic meta-data of the collection\" MDTYPE=\"MODS\" MIMETYPE=\"text/xml\"&gt;\r\n      &lt;xmlData&gt;\r\n        &lt;mods:mods&gt;\r\n          &lt;mods:identifier type=\"local\"&gt;lunion&lt;/mods:identifier&gt;\r\n          &lt;mods:titleInfo ID=\"MODSMD_COLLECTION_TI1\" xml:lang=\"fr\"&gt;\r\n            &lt;mods:title&gt;L'UNION.&lt;/mods:title&gt;\r\n          &lt;/mods:titleInfo&gt;\r\n        &lt;/mods:mods&gt;\r\n      &lt;/xmlData&gt;\r\n    &lt;/mdWrap&gt;\r\n  &lt;/dmdSec&gt;\r\n  &lt;dmdSec ID=\"MODSMD_SECTION1\"&gt;\r\n    &lt;mdWrap MDTYPE=\"MODS\" MIMETYPE=\"text/xml\"&gt;\r\n      &lt;xmlData&gt;\r\n        &lt;mods:mods&gt;\r\n          &lt;mods:titleInfo ID=\"MODSMD_SECTION1_TI1\" xml:lang=\"fr\"&gt;\r\n            &lt;mods:title&gt;Chemins de fer. — Service d'hiver.&lt;/mods:title&gt;\r\n          &lt;/mods:titleInfo&gt;\r\n          &lt;mods:language&gt;\r\n            &lt;mods:languageTerm authority=\"rfc3066\" type=\"code\"&gt;fr&lt;/mods:languageTerm&gt;\r\n ...."</code></pre>
+<p>
+As usual when you import text files like this, it’s always a good idea to split the file. I will split at the <code>“DMDID”</code> character. Take a look back at the second screenshot. The very first tag, first row, first word after <code>div</code> is <code>“DMDID”</code>. By splitting at this level, I will get back a list, where each element is the content of this <code>div DMDID</code> block. This is exactly what I need, since this block contains the information from the green rectangles. So let’s split the <code>mets</code> variable at this level:
+</p>
+<pre class="r"><code>mets_articles &lt;- mets %&gt;%
+    str_split("DMDID") %&gt;%
+    flatten_chr()</code></pre>
+<p>
+Let’s take a look at <code>mets_articles</code>:
+</p>
+<pre class="r"><code>str(mets_articles)</code></pre>
+<pre><code> chr [1:25] "&lt;?xml version='1.0' encoding='utf-8'?&gt;\r\n&lt;mets xmlns=\"http://www.loc.gov/METS/\" xmlns:mix=\"http://www.loc.g"| __truncated__ ...</code></pre>
+<p>
+Doesn’t seem to be very helpful, but actually it is. We can see that <code>mets_articles</code> is a now a list of 25 elements.
+</p>
+<p>
+This means that for each element of <code>mets_articles</code>, I need to get the identifier, the label, the type (the red rectangles from the screenshot), but also the information from the <code>“BEGIN”</code> element (the green rectangle).
+</p>
+<p>
+To do this, I’ll be using regular expressions. In general, I start by experimenting in the console, and then when things start looking good, I write a function. Here is this function:
+</p>
+<pre class="r"><code>extractor &lt;- function(string, regex, all = FALSE){
+    if(all) {
+        string %&gt;%
+            str_extract_all(regex) %&gt;%
+            flatten_chr() %&gt;%
+            str_extract_all("[:alnum:]+", simplify = FALSE) %&gt;%
+            map(paste, collapse = "_") %&gt;%
+            flatten_chr()
+    } else {
+        string %&gt;%
+            str_extract(regex) %&gt;%
+            str_extract_all("[:alnum:]+", simplify = TRUE) %&gt;%
+            paste(collapse = " ") %&gt;%
+            tolower()
+    }
+}</code></pre>
+<p>
+This function may seem complicated, but it simply encapsulates some pretty standard steps to get the data I need. I had to consider two cases. The first case is when I need to extract all the elements with <code>str_extract_all()</code>, or only the first occurrence, with <code>str_extract()</code>. Let’s test it on the first article of the <code>mets_articles</code> list:
+</p>
+<pre class="r"><code>mets_articles_1 &lt;- mets_articles[1]</code></pre>
+<pre class="r"><code>extractor(mets_articles_1, "ID", all = FALSE)</code></pre>
+<pre><code>## [1] "id"</code></pre>
+<p>
+Let’s see what happens with <code>all = TRUE</code>:
+</p>
+<pre class="r"><code>extractor(mets_articles_1, "ID", all = TRUE)</code></pre>
+<pre><code>##   [1] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [15] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [29] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [43] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [57] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [71] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [85] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [99] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+## [113] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+## [127] "ID" "ID" "ID" "ID" "ID"</code></pre>
+<p>
+This seems to work as intended. Since I need to call this function several times, I’ll be writing another function that extracts all I need:
+</p>
+<pre class="r"><code>extract_mets &lt;- function(article){
+
+    id &lt;- article %&gt;%
+        extractor("(?&lt;=ID)(.*?)(?=LABEL)")
+
+    label &lt;- article %&gt;%
+        extractor("(?&lt;=LABEL)(.*?)(?=TYPE)")
+
+    type &lt;- article %&gt;%
+        extractor("(?&lt;=TYPE)(.*?)(?=&gt;)")
+
+    begins &lt;- article %&gt;%
+        extractor("(?&lt;=BEGIN)(.*?)(?=BETYPE)", all = TRUE)
+
+    tibble::tribble(~label, ~type, ~begins, ~id,
+                    label, type, begins, id) %&gt;%
+        unnest()
+}</code></pre>
+<p>
+This function uses complex regular expressions to extract the strings I need, and then puts the result into a data frame, with the <code>tibble()</code> function. I then use <code>unnest()</code>, because <code>label</code>, <code>type</code>, <code>begins</code> and <code>id</code> are not the same length. <code>label</code>, <code>type</code> and <code>id</code> are of length 1, while <code>begins</code> is longer. This means that when I put them into a data frame it looks like this:
+</p>
+<pre class="r"><code>tribble(~a, ~b,
+"a", rep("b", 4))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   a     b        
+##   &lt;chr&gt; &lt;list&gt;   
+## 1 a     &lt;chr [4]&gt;</code></pre>
+<p>
+With <code>unnest()</code>, I get a nice data frame:
+</p>
+<pre class="r"><code>tribble(~a, ~b,
+"a", rep("b", 4)) %&gt;% 
+  unnest()</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   a     b    
+##   &lt;chr&gt; &lt;chr&gt;
+## 1 a     b    
+## 2 a     b    
+## 3 a     b    
+## 4 a     b</code></pre>
+<p>
+Now, I simply need to map this function to all the files and that’s it! For this, I will write yet another helper function:
+</p>
+<pre class="r"><code>mets_csv &lt;- function(page_path){
+    
+    page &lt;- read_file(page_path)
+    
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/).*")
+    
+    mets_articles &lt;- page %&gt;%
+        str_split("DMDID") %&gt;%
+        flatten_chr()
+    
+    mets_df &lt;- map_df(mets_articles, extract_mets)
+    
+    mets_df &lt;- mets_df %&gt;%
+        mutate(document = doc_name)
+    
+    write_csv(mets_df, paste0(page_path, ".csv"))
+}</code></pre>
+<p>
+This function takes the path to a METS file as input, and processes it using the steps I explained above. The only difference is that I add a column containing the name of the file that was processed, and write the resulting data frame directly to disk as a data frame. Finally, I can map this function to all the METS files:
+</p>
+<pre class="r"><code># Extract content from METS files
+
+pages_mets &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*mets.xml") %&gt;%
+    discard(is.na)
+
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_mets, mets_csv)
+toc &lt;- Sys.time()
+
+toc - tic</code></pre>
+<p>
+I use <code>{furrr}</code> to extract the data from all the files in parallel, by putting 8 cores of my CPU to work. This took around 3 minutes and 20 seconds to finish.
+</p>
+<p>
+That’s it for now, stay tuned for part 2 where I will analyze this fresh data!
+</p>
+<section id="appendix" class="level2">
+<h2 class="anchored" data-anchor-id="appendix">
+Appendix
+</h2>
+<pre class="r"><code>extract_alto &lt;- function(article){
+    begins &lt;- article[1] %&gt;%
+        extractor("(?&lt;=^ID)(.*?)(?=HPOS)", all = TRUE)
+
+    content &lt;- article %&gt;%
+        extractor("(?&lt;=CONTENT)(.*?)(?=WC)", all = TRUE)
+
+    tibble::tribble(~begins, ~content,
+                    begins, content) %&gt;%
+        unnest()
+}
+
+alto_csv &lt;- function(page_path){
+
+    page &lt;- read_file(page_path)
+
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/text/).*")
+
+    alto_articles &lt;- page %&gt;%
+        str_split("TextBlock ") %&gt;%
+        flatten_chr()
+
+    alto_df &lt;- map_df(alto_articles, extract_alto)
+
+    alto_df &lt;- alto_df %&gt;%
+        mutate(document = doc_name)
+
+    write_csv(alto_df, paste0(page_path, ".csv"))
+}
+
+
+alto &lt;- read_file("1533660_newspaper_lunion_1860-11-14/text/1860-11-14_01-00001.xml")
+
+
+# Extract content from alto files
+
+pages_alto &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*/text/.*.xml") %&gt;%
+    discard(is.na)
+
+
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_alto, alto_csv)
+toc &lt;- Sys.time()
+
+toc - tic
+
+#Time difference of 18.64776 mins</code></pre>
+</section>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-01-13-newspapers_mets_alto.html</guid>
+  <pubDate>Sun, 13 Jan 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Looking into 19th century ads from a Luxembourguish newspaper with R</title>
+  <link>https://b-rodrigues.github.io/posts/2019-01-04-newspapers.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=0xzN6FM5x_E"> <img src="https://b-rodrigues.github.io/assets/img/Wales.jpg" title="Sometimes ads are better than this. Especially if it's Flex Tape ® ads."></a>
+</p>
+</div>
+<p>
+The <a href="https://data.bnl.lu/data/historical-newspapers/">national library of Luxembourg</a> published some very interesting data sets; scans of historical newspapers! There are several data sets that you can download, from 250mb up to 257gb. I decided to take a look at the 32gb “ML Starter Pack”. It contains high quality scans of one year of the <em>L’indépendence Luxembourgeoise</em> (Luxembourguish independence) from the year 1877. To make life easier to data scientists, the national library also included ALTO and METS files (which is a XML schema that is used to describe the layout and contents of physical text sources, such as pages of a book or newspaper) which can be easily parsed by R.
+</p>
+<p>
+<em>L’indépendence Luxembourgeoise</em> is quite interesting in that it is a Luxembourguish newspaper written in French. Luxembourg always had 3 languages that were used in different situations, French, German and Luxembourguish. Luxembourguish is the language people used (and still use) for day to day life and to speak to their baker. Historically however, it was not used for the press or in politics. Instead it was German that was used for the press (or so I thought) and French in politics (only in <a href="http://legilux.public.lu/eli/etat/leg/loi/1984/02/24/n1/jo">1984</a> was Luxembourguish made an official Language of Luxembourg). It turns out however that <em>L’indépendence Luxembourgeoise</em>, a daily newspaper that does not exist anymore, was in French. This piqued my interest, and it also made analysis easier, for 2 reasons: I first started with the <em>Luxemburger Wort</em> (Luxembourg’s Word I guess would be a translation), which still exists today, but which is in German. And at that time, German was written using the Fraktur font, which makes it barely readable. Look at the alphabet in Fraktur:
+</p>
+<pre><code>𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅
+𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟</code></pre>
+<p>
+It’s not like German is already hard enough, they had to invent the least readable font ever to write German in, to make extra sure it would be hell to decipher.
+</p>
+<p>
+So basically I couldn’t be bothered to try to read a German newspaper in Fraktur. That’s when I noticed the <em>L’indépendence Luxembourgeoise</em>… A Luxembourguish newspaper? Written in French? Sounds interesting.
+</p>
+<p>
+And oh boy. Interesting it was.
+</p>
+<p>
+19th century newspapers articles were something else. There’s this article for instance:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/pray for senators.png"><!-- -->
+</p>
+<p>
+For those of you that do not read French, this article relates that in France, the ministry of justice required priests to include prayers on the Sunday that follows the start of the new season of parliamentary discussions, in order for God to provide senators his help.
+</p>
+<p>
+There this gem too:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/tallest_soldier.jpg"><!-- -->
+</p>
+<p>
+This article presents the tallest soldier of the German army, called Emhke, and nominated by the German Emperor himself to accompany him during his visit to Palestine. Emhke was 2.08 meters tall and weighted 236 pounds (apparently at the time Luxembourg was not fully sold on the metric system).
+</p>
+<p>
+Anyway, I decided to take a look at ads. The last paper of this 4 page newspaper always contained ads and other announcements. For example, there’s this ad for a pharmacy:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/pharmacy.png"><!-- -->
+</p>
+<p>
+that sells tea, and mineral water. Yes, tea and mineral water. In a pharmacy. Or this one:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/upside_down.png"><!-- -->
+</p>
+<p>
+which is literally upside down in the newspaper (the one from the 10th of April 1877). I don’t know if it’s a mistake or if it’s a marketing ploy, but it did catch my attention, 140 years later, so <em>bravo</em>. This is an announcement made by a shop owner that wants to sell all his merchandise for cheap, perhaps to make space for new stuff coming in?
+</p>
+<p>
+So I decided brush up on my natural language processing skills with R and do topic modeling on these ads. The challenge here is that a single document, the 4th page of the newspaper, contains a lot of ads. So it will probably be difficult to clearly isolate topics. But let’s try nonetheless. First of all, let’s load all the <code>.xml</code> files that contain the data. These files look like this:
+</p>
+<pre><code>&lt;TextLine ID="LINE6" STYLEREFS="TS11" HEIGHT="42" WIDTH="449" HPOS="165" VPOS="493"&gt;
+                                    &lt;String ID="S16" CONTENT="l’après-midi," WC="0.638" CC="0803367024653" HEIGHT="42" WIDTH="208" HPOS="165" VPOS="493"/&gt;
+                                    &lt;SP ID="SP11" WIDTH="24" HPOS="373" VPOS="493"/&gt;
+                                    &lt;String ID="S17" CONTENT="le" WC="0.8" CC="40" HEIGHT="30" WIDTH="29" HPOS="397" VPOS="497"/&gt;
+                                    &lt;SP ID="SP12" WIDTH="14" HPOS="426" VPOS="497"/&gt;
+                                    &lt;String ID="S18" CONTENT="Gouverne" WC="0.638" CC="72370460" HEIGHT="31" WIDTH="161" HPOS="440" VPOS="496" SUBS_TYPE="HypPart1" SUBS_CONTENT="Gouvernement"/&gt;
+                                    &lt;HYP CONTENT="-" WIDTH="11" HPOS="603" VPOS="514"/&gt;
+                                  &lt;/TextLine&gt;
+                        &lt;TextLine ID="LINE7" STYLEREFS="TS11" HEIGHT="41" WIDTH="449" HPOS="166" VPOS="541"&gt;
+                                    &lt;String ID="S19" CONTENT="ment" WC="0.725" CC="0074" HEIGHT="26" WIDTH="81" HPOS="166" VPOS="545" SUBS_TYPE="HypPart2" SUBS_CONTENT="Gouvernement"/&gt;
+                                    &lt;SP ID="SP13" WIDTH="24" HPOS="247" VPOS="545"/&gt;
+                                    &lt;String ID="S20" CONTENT="Royal" WC="0.62" CC="74503" HEIGHT="41" WIDTH="100" HPOS="271" VPOS="541"/&gt;
+                                    &lt;SP ID="SP14" WIDTH="26" HPOS="371" VPOS="541"/&gt;
+                                    &lt;String ID="S21" CONTENT="Grand-Ducal" WC="0.682" CC="75260334005" HEIGHT="32" WIDTH="218" HPOS="397" VPOS="541"/&gt;
+                                  &lt;/TextLine&gt;</code></pre>
+<p>
+I’m interested in the “CONTENT” tag, which contains the words. Let’s first get that into R.
+</p>
+<p>
+Load the packages, and the files:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(tidytext)
+library(topicmodels)
+library(brotools)
+
+ad_pages &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*4-alto.xml") %&gt;%
+    discard(is.na)</code></pre>
+<p>
+I save the path of all the pages at once into the <code>ad_pages</code> variables. To understand how and why this works, you must take a look at the hierarchy of the folder:
+</p>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/layout.png"><!-- -->
+</p>
+<p>
+Inside each of these folder, there is a <code>text</code> folder, and inside this folder there are the <code>.xml</code> files. Because this structure is bit complex, I use the <code>list.files()</code> function with the <code>all.files</code> and <code>recursive</code> argument set to <code>TRUE</code> which allow me to dig deep into the folder structure and list every single file. I am only interested into the 4th page though, so that’s why I use <code>str_match()</code> to only keep the 4th page using the <code>“.*4-alto.xml”</code> regular expression. This is the right regular expression, because the files are named like so:
+</p>
+<pre><code>1877-12-29_01-00004-alto.xml</code></pre>
+<p>
+So in the end, <code>ad_pages</code> is a list of all the paths to these files. I then write a function to extract the contents of the “CONTENT” tag. Here is the function.
+</p>
+<pre class="r"><code>get_words &lt;- function(page_path){
+    
+    page &lt;- read_file(page_path)
+    
+    page_name &lt;- str_extract(page_path, "1.*(?=-0000)") 
+    
+    page %&gt;%  
+        str_split("\n", simplify = TRUE) %&gt;% 
+        keep(str_detect(., "CONTENT")) %&gt;% 
+        str_extract("(?&lt;=CONTENT)(.*?)(?=WC)") %&gt;% 
+        discard(is.na) %&gt;% 
+        str_extract("[:alpha:]+") %&gt;% 
+        tolower %&gt;% 
+        as_tibble %&gt;% 
+        rename(tokens = value) %&gt;% 
+        mutate(page = page_name)
+}</code></pre>
+<p>
+This function takes the path to a page as argument, and returns a tibble with the two columns: one containing the words, which I called <code>tokens</code> and the second the name of the document this word was found. I uploaded on <code>.xml</code> file <a href="https://gist.github.com/b-rodrigues/a22d2aa63dff01d88acc2916c003489d">here</a> so that you can try the function yourself. The difficult part is <code>str_extract(“(?&lt;=CONTENT)(.*?)(?=WC)“)</code> which is were the words inside the “CONTENT” tag get extracted.
+</p>
+<p>
+I then map this function to all the pages, and get a nice tibble with all the words:
+</p>
+<pre class="r"><code>ad_words &lt;- map_dfr(ad_pages, get_words)</code></pre>
+<pre class="r"><code>ad_words</code></pre>
+<pre><code>## # A tibble: 1,114,662 x 2
+##    tokens     page                            
+##    &lt;chr&gt;      &lt;chr&gt;                           
+##  1 afin       1877-01-05_01/text/1877-01-05_01
+##  2 de         1877-01-05_01/text/1877-01-05_01
+##  3 mettre     1877-01-05_01/text/1877-01-05_01
+##  4 mes        1877-01-05_01/text/1877-01-05_01
+##  5 honorables 1877-01-05_01/text/1877-01-05_01
+##  6 clients    1877-01-05_01/text/1877-01-05_01
+##  7 à          1877-01-05_01/text/1877-01-05_01
+##  8 même       1877-01-05_01/text/1877-01-05_01
+##  9 d          1877-01-05_01/text/1877-01-05_01
+## 10 avantages  1877-01-05_01/text/1877-01-05_01
+## # … with 1,114,652 more rows</code></pre>
+<p>
+I then do some further cleaning, removing stop words (French and German, because there are some ads in German) and a bunch of garbage characters and words, which are probably when the OCR failed. I also remove some German words from the few German ads that are in the paper, because they have a very high tf-idf (I’ll explain below what that is). I also remove very common words in ads that were just like stopwords. Every ad of a shop mentioned their clients with <em>honorable clientèle</em>, or used the word <em>vente</em>, and so on. This is what you see below in the very long calls to <code>str_remove_all</code>. I also compute the <code>tf_idf</code> and I am grateful to ThinkR blog post on that, which you can read <a href="https://thinkr.fr/text-mining-et-topic-modeling-avec-r/">here</a>. It’s in French though, but the idea of the blog post is to present topic modeling with Wikipedia articles. You can also read the section on tf-idf from the Text Mining with R ebook, <a href="https://www.tidytextmining.com/tfidf.html">here</a>. tf-idf gives a measure of how common words are. Very common words, like stopwords, have a tf-idf of 0. So I use this to further remove very common words, by only keeping words with a tf-idf greater than 0.01. This is why I manually remove garbage words and German words below, because they are so uncommon that they have a very high tf-idf and mess up the rest of the analysis. To find these words I had to go back and forth between the tibble of cleaned words and my code, and manually add all these exceptions. It took some time, but definitely made the results of the next steps better.<br> I then use <code>cast_dtm</code> to cast the tibble into a DocumentTermMatrix object, which is needed for the <code>LDA()</code> function that does the topic modeling:
+</p>
+<pre class="r"><code>stopwords_fr &lt;- read_csv("https://raw.githubusercontent.com/stopwords-iso/stopwords-fr/master/stopwords-fr.txt",
+                         col_names = FALSE)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_character()
+## )</code></pre>
+<pre class="r"><code>stopwords_de &lt;- read_csv("https://raw.githubusercontent.com/stopwords-iso/stopwords-de/master/stopwords-de.txt",
+                         col_names = FALSE)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_character()
+## )</code></pre>
+<pre><code>## Warning: 1 parsing failure.
+## row col  expected    actual                                                                                   file
+## 157  -- 1 columns 2 columns 'https://raw.githubusercontent.com/stopwords-iso/stopwords-de/master/stopwords-de.txt'</code></pre>
+<pre class="r"><code>ad_words2 &lt;- ad_words %&gt;% 
+    filter(!is.na(tokens)) %&gt;% 
+    mutate(tokens = str_remove_all(tokens, 
+                                   '[|\\|!|"|#|$|%|&amp;|\\*|+|,|-|.|/|:|;|&lt;|=|&gt;|?|@|^|_|`|’|\'|‘|(|)|\\||~|=|]|°|&lt;|&gt;|«|»|\\d{1,100}|©|®|•|—|„|“|-|¦\\\\|”')) %&gt;%
+    mutate(tokens = str_remove_all(tokens,
+                                   "j'|j’|m’|m'|n’|n'|c’|c'|qu’|qu'|s’|s'|t’|t'|l’|l'|d’|d'|luxembourg|honneur|rue|prix|maison|frs|ber|adresser|unb|mois|vente|informer|sann|neben|rbudj|artringen|salz|eingetragen|ort|ftofjenb|groifdjen|ort|boch|chem|jahrgang|uoa|genannt|neuwahl|wechsel|sittroe|yerlorenkost|beichsmark|tttr|slpril|ofto|rbudj|felben|acferftücf|etr|eft|sbege|incl|estce|bes|franzosengrund|qne|nne|mme|qni|faire|id|kil")) %&gt;%
+    anti_join(stopwords_de, by = c("tokens" = "X1")) %&gt;% 
+    filter(!str_detect(tokens, "§")) %&gt;% 
+    mutate(tokens = ifelse(tokens == "inédite", "inédit", tokens)) %&gt;% 
+    filter(tokens != "") %&gt;% 
+    anti_join(stopwords_fr, by = c("tokens" = "X1")) %&gt;% 
+    count(page, tokens) %&gt;% 
+    bind_tf_idf(tokens, page, n) %&gt;% 
+    arrange(desc(tf_idf))
+
+dtm_long &lt;- ad_words2 %&gt;% 
+    filter(tf_idf &gt; 0.01) %&gt;% 
+    cast_dtm(page, tokens, n)</code></pre>
+<p>
+To read more details on this, I suggest you take a look at the following section of the Text Mining with R ebook: <a href="https://www.tidytextmining.com/topicmodeling.html#latent-dirichlet-allocation">Latent Dirichlet Allocation</a>.
+</p>
+<p>
+I choose to model 10 topics (<code>k = 10</code>), and set the <code>alpha</code> parameter to 5. This hyperparamater controls how many topics are present in one document. Since my ads are all in one page (one document), I increased it. Let’s fit the model, and plot the results:
+</p>
+<pre class="r"><code>lda_model_long &lt;- LDA(dtm_long, k = 10, control = list(alpha = 5))</code></pre>
+<p>
+I plot the per-topic-per-word probabilities, the “beta” from the model and plot the 5 words that contribute the most to each topic:
+</p>
+<pre class="r"><code>result &lt;- tidy(lda_model_long, "beta")
+
+result %&gt;%
+    group_by(topic) %&gt;%
+    top_n(5, beta) %&gt;%
+    ungroup() %&gt;%
+    arrange(topic, -beta) %&gt;% 
+    mutate(term = reorder(term, beta)) %&gt;%
+    ggplot(aes(term, beta, fill = factor(topic))) +
+    geom_col(show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free") +
+    coord_flip() +
+    theme_blog()</code></pre>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/newspapers-13-1.png" width="672">
+</p>
+<p>
+So some topics seem clear to me, other not at all. For example topic 4 seems to be about shoes made out of leather. The word <code>semelle</code>, sole, also appears. Then there’s a lot of topics that reference either music, bals, or instruments. I guess these are ads for local music festivals, or similar events. There’s also an ad for what seems to be bundles of sticks, topic 3: <code>chêne</code> is oak, <code>copeaux</code> is shavings and you know what <code>fagots</code> is. The first word <code>stère</code> which I did not know is a unit of volume equal to one cubic meter (see <a href="https://en.wikipedia.org/wiki/Stere">Wikipedia</a>). So they were likely selling bundle of oak sticks by the cubic meter. For the other topics, I either lack context or perhaps I just need to adjust <code>k</code>, the number of topics to model, and <code>alpha</code> to get better results. In the meantime, topic 1 is about shoes (<code>chaussures</code>), theatre, fuel (<code>combustible</code>) and farts (<code>pet</code>). Really wonder what they were selling in that shop.
+</p>
+<p>
+In any case, this was quite an interesting project. I learned a lot about topic modeling and historical newspapers of my country! I do not know if I will continue exploring it myself, but I am really curious to see what others will do with it!
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-01-04-newspapers.html</guid>
+  <pubDate>Fri, 04 Jan 2019 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>R or Python? Why not both? Using Anaconda Python within R with {reticulate}</title>
   <link>https://b-rodrigues.github.io/posts/2018-12-30-reticulate.html</link>
@@ -1037,6 +1562,8 @@ and many others…
 
 
  ]]></description>
+  <category>R</category>
+  <category>data-science</category>
   <guid>https://b-rodrigues.github.io/posts/2018-12-24-modern_objects.html</guid>
   <pubDate>Mon, 24 Dec 2018 00:00:00 GMT</pubDate>
 </item>
@@ -6699,13 +7226,13 @@ I have all the ingredients to finally plot the data:
                                  "LSAP" = "#ad3648",
                                  "PIRATEN" = "#ad5ea9"))</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-17-1.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-17-1.png" width="768">
 </p>
 <p>
 Not too bad, but we can’t really read anything from the pie charts. I will now make their size proportional to the number of voters in each commune. For this, I need to go back to the Excel sheets, and look for the right cell:
 </p>
 <p>
-<img src="https://b-rodrigues.github.io/img/electeurs_inscrits.png"><!-- -->
+<img src="https://b-rodrigues.github.io/assets/img/electeurs_inscrits.png"><!-- -->
 </p>
 <p>
 It will be easy to extract this info. It located in cell “E5”:
@@ -6752,7 +7279,7 @@ Now I can add the <code>r</code> argument inside the <code>aes()</code> function
                                  "PIRATEN" = "#ad5ea9"))</code></pre>
 <pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-21-1.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-21-1.png" width="768">
 </p>
 <p>
 Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription. For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are the lists:
@@ -6820,22 +7347,22 @@ By using <code>pmap()</code>, I can reuse the code to generate the plot to each 
 )</code></pre>
 <pre><code>## $centre</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-1.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-24-1.png" width="768">
 </p>
 <pre><code>## 
 ## $est</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-2.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-24-2.png" width="768">
 </p>
 <pre><code>## 
 ## $nord</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-3.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-24-3.png" width="768">
 </p>
 <pre><code>## 
 ## $sud</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-4.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-24-4.png" width="768">
 </p>
 <p>
 I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!
@@ -6871,23 +7398,23 @@ The pie charts are still quite small, but if I try to change the size of the pie
 )</code></pre>
 <pre><code>## $centre</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-1.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-25-1.png" width="768">
 </p>
 <pre><code>## 
 ## $est</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-2.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-25-2.png" width="768">
 </p>
 <pre><code>## 
 ## $nord</code></pre>
 <pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-3.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-25-3.png" width="768">
 </p>
 <pre><code>## 
 ## $sud</code></pre>
 <p>
-<img src="https://b-rodrigues.github.io/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-4.png" width="768">
+<img src="https://b-rodrigues.github.io/assets/img/lux_elections_analysis-25-4.png" width="768">
 </p>
 <p>
 This looks better now!
@@ -6903,14 +7430,6 @@ Having data in a machine readable format is really important. The amount of code
 <p>
 The good thing is that I got to practice my skills and discovered <code>{scatterpie}</code>!
 </p>
-<p>
-Hope you enjoyed! If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or <a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a>.
-</p>
-<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
-<p>
-<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
-</p>
-</section>
 <section id="appendix" class="level2">
 <h2 class="anchored" data-anchor-id="appendix">
 Appendix
@@ -6995,6 +7514,7 @@ elections_2013 &lt;- elections_2013 %&gt;%
 </section>
 
 
+</section>
 
  ]]></description>
   <category>R</category>
@@ -7553,708 +8073,6 @@ Inside Powerpoint (or in this case Libreoffice), the plots are geometric shapes 
   <category>programming</category>
   <guid>https://b-rodrigues.github.io/posts/2018-10-05-ggplot2_purrr_officer.html</guid>
   <pubDate>Fri, 05 Oct 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</title>
-  <link>https://b-rodrigues.github.io/posts/2018-09-15-time_use.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align: center; transform: scale(0.7); transform-origin: center;">
-<p>
-<a href="https://brodriguesco.shinyapps.io/time_use_luxembourg/"> <img src="https://b-rodrigues.github.io/assets/img/time_use_dashboard.png"> </a>
-</p>
-</div>
-<p>
-In a <a href="../posts/2018-09-11-human_to_machine.html">previous blog post</a> I have showed how you could use the <code>{tidyxl}</code> package to go from a human readable Excel Workbook to a tidy data set (or flat file, as they are also called). Some people then contributed their solutions, which is always something I really enjoy when it happens. This way, I also get to learn things!
-</p>
-<p>
-<a href="https://twitter.com/expersso"><code><span class="citation" data-cites="expersso">@expersso</span></code></a> proposed a solution without <code>{tidyxl}</code>:
-</p>
-<blockquote class="twitter-tweet blockquote" data-lang="en">
-<p lang="en" dir="ltr">
-Interesting data wrangling exercise in <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a>. <br>My solution (without using {tidyxl}): <a href="https://t.co/VjuOoM82yX">https://t.co/VjuOoM82yX</a> <a href="https://t.co/VsXFyowigu">https://t.co/VsXFyowigu</a>
-</p>
-— Eric (<span class="citation"><span class="citation" data-cites="expersso">@expersso</span></span>) <a href="https://twitter.com/expersso/status/1039894727808757761?ref_src=twsrc%5Etfw">September 12, 2018</a>
-</blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-<a href="https://www.benstenhaug.com/">Ben Stenhaug</a> also proposed a solution on his <a href="https://github.com/stenhaug/shared/blob/master/tidyxl_bruno_blog.md">github</a> which is simpler than my code in a lot of ways!
-</p>
-<p>
-Update: <a href="https://twitter.com/nacnudus"><code><span class="citation" data-cites="nacnudus">@nacnudus</span></code></a> also contributed his own version using <code>{unpivotr}</code>:
-</p>
-<blockquote class="twitter-tweet blockquote" data-lang="en">
-<p lang="en" dir="ltr">
-Here’s a version using unpivotr <a href="https://t.co/l2hy6zCuKj">https://t.co/l2hy6zCuKj</a>
-</p>
-— Duncan Garmonsway (<span class="citation"><span class="citation" data-cites="nacnudus">@nacnudus</span></span>) <a href="https://twitter.com/nacnudus/status/1040905626317217792?ref_src=twsrc%5Etfw">September 15, 2018</a>
-</blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-Now, it would be too bad not to further analyze this data. I’ve been wanting to play around with the <code>{flexdashboard}</code> package for some time now, but never really got the opportunity to do so. The opportunity has now arrived. Using the cleaned data from the last post, I will further tweak it a little bit, and then produce a very simple dashboard using <code>{flexdashboard}</code>.
-</p>
-<p>
-If you want to skip the rest of the blog post and go directly to the dashboard, just click <a href="https://brodriguesco.shinyapps.io/time_use_luxembourg/">here</a>.
-</p>
-<p>
-To make the data useful, I need to convert the strings that represent the amount of time spent doing a task (for example “1:23”) to minutes. For this I use the <code>{chron}</code> package:
-</p>
-<pre class="r"><code>clean_data &lt;- clean_data %&gt;%
-    mutate(time_in_minutes = paste0(time, ":00")) %&gt;% # I need to add ":00" for the seconds else it won't work
-    mutate(time_in_minutes = 
-               chron::hours(chron::times(time_in_minutes)) * 60 + 
-               chron::minutes(chron::times(time_in_minutes)))
-
-rio::export(clean_data, "clean_data.csv")</code></pre>
-<p>
-Now we’re ready to go! Below is the code to build the dashboard; if you want to try, you should copy and paste the code inside a Rmd document:
-</p>
-<pre><code>---
-title: "Time Use Survey of Luxembourguish residents"
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
-runtime: shiny
-
----
-
-`` `{r setup, include=FALSE}
-library(flexdashboard)
-library(shiny)
-library(tidyverse)
-library(plotly)
-library(ggthemes)
-
-main_categories &lt;- c("Personal care",
-                     "Employment",
-                     "Study",
-                     "Household and family care",
-                     "Voluntary work and meetings",
-                     "Social life and entertainment",
-                     "Sports and outdoor activities",
-                     "Hobbies and games",
-                     "Media",
-                     "Travel")
-
-df &lt;- read.csv("clean_data.csv") %&gt;%
-    rename(Population = population) %&gt;%
-    rename(Activities = activities)
-`` `
-
-Inputs {.sidebar}
------------------------------------------------------------------------
-
-`` `{r}
-
-selectInput(inputId = "activitiesName", 
-            label = "Choose an activity", 
-            choices = unique(df$Activities))
-
-selectInput(inputId = "dayName", 
-            label = "Choose a day", 
-            choices = unique(df$day), 
-            selected = "Year 2014_Monday til Friday")
-
-selectInput(inputId = "populationName", 
-            label = "Choose a population", 
-            choices = unique(df$Population), 
-            multiple = TRUE, selected = c("Male", "Female"))
-
-`` `
-
-The Time Use Survey (TUS) aims to measure accurately how people allocate their time across different day-to-day activities. To this end, people are asked to keep records of all their activities in a time diary. For each activity, additional information is collected about whether or not the person was alone doing it or together with other persons, where did the activity take place, etc. The main studies on time use have been conducted to calculate indicators making possible comparative analysis of quality of life within the same population or between countries. International studies care more about specific activities such as work (unpaid or not), free time, leisure, personal care (including sleep), etc.
-Source:&nbsp;http://statistiques.public.lu/en/surveys/espace-households/time-use/index.html
-
-Layout based on https://jjallaire.shinyapps.io/shiny-biclust/
-
-Row
------------------------------------------------------------------------
-
-### Minutes spent per day on certain activities
-    
-`` `{r}
-dfInput &lt;- reactive({
-        df %&gt;% filter(Activities == input$activitiesName,
-                      Population %in% input$populationName,
-                      day %in% input$dayName)
-    })
-
-    dfInput2 &lt;- reactive({
-        df %&gt;% filter(Activities %in% main_categories,
-                      Population %in% input$populationName,
-                      day %in% input$dayName)
-    })
-    
-  renderPlotly({
-
-        df1 &lt;- dfInput()
-
-        p1 &lt;- ggplot(df1, 
-                     aes(x = Activities, y = time_in_minutes, fill = Population)) +
-            geom_col(position = "dodge") + 
-            theme_minimal() + 
-            xlab("Activities") + 
-            ylab("Time in minutes") +
-            scale_fill_gdocs()
-
-        ggplotly(p1)})
-`` `
-
-Row 
------------------------------------------------------------------------
-
-### Proportion of the day spent on main activities
-    
-`` `{r}
-renderPlotly({
-    
-       df2 &lt;- dfInput2()
-       
-       p2 &lt;- ggplot(df2, 
-                   aes(x = Population, y = time_in_minutes, fill = Activities)) +
-           geom_bar(stat="identity", position="fill") + 
-            xlab("Proportion") + 
-            ylab("Proportion") +
-           theme_minimal() +
-           scale_fill_gdocs()
-       
-       ggplotly(p2)
-   })
-`` `</code></pre>
-<p>
-You will see that I have defined the following atomic vector:
-</p>
-<pre class="r"><code>main_categories &lt;- c("Personal care",
-                     "Employment",
-                     "Study",
-                     "Household and family care",
-                     "Voluntary work and meetings",
-                     "Social life and entertainment",
-                     "Sports and outdoor activities",
-                     "Hobbies and games",
-                     "Media",
-                     "Travel")</code></pre>
-<p>
-If you go back to the raw Excel file, you will see that these main categories are then split into secondary activities. The first bar plot of the dashboard does not distinguish between the main and secondary activities, whereas the second barplot only considers the main activities. I could have added another column to the data that helped distinguish whether an activity was a main or secondary one, but I was lazy. The source code of the dashboard is very simple as it uses R Markdown. To have interactivity, I’ve used Shiny to dynamically filter the data, and built the plots with <code>{ggplot2}</code>. Finally, I’ve passed the plots to the <code>ggplotly()</code> function from the <code>{plotly}</code> package for some quick and easy javascript goodness!
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>programming</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-09-15-time_use.html</guid>
-  <pubDate>Fri, 14 Sep 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Going from a human readable Excel file to a machine-readable csv with {tidyxl}</title>
-  <link>https://b-rodrigues.github.io/posts/2018-09-11-human_to_machine.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=m-PE3OkJ8XE"> <video width="854" height="480" controls="" autoplay="" muted="" loop=""> <source src="../assets/img/1a9.mp4" type="video/mp4"></video></a>
-</p>
-
-</div>
-<p>
-I won’t write a very long introduction; we all know that Excel is ubiquitous in business, and that it has a lot of very nice features, especially for business practitioners that do not know any programming. However, when people use Excel for purposes it was not designed for, it can be a hassle. Often, people use Excel as a reporting tool, which it is not; they create very elaborated and complicated spreadsheets that are human readable, but impossible to import within any other tool.
-</p>
-<p>
-In this blog post (which will probably be part of a series), I show you how you can go from this:
-</p>
-<div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/assets/img/time_use.png" class="img-fluid"></p>
-</div>
-<p>
-to this:
-</p>
-<div style="text-align:center;">
-<p><img src="https://b-rodrigues.github.io/assets/img/time_use2.png" class="img-fluid"></p>
-</div>
-<p>
-You can find the data I will use <a href="http://statistiques.public.lu/stat/ReportFolders/ReportFolder.aspx?IF_Language=eng&amp;MainTheme=3&amp;FldrName=1&amp;RFPath=14306">here</a>. Click on the “Time use” folder and you can download the workbook.
-</p>
-<p>
-The Excel workbook contains several sheets (in French and English) of the amount of time Luxembourguish citizens spend from Monday to Sunday. For example, on average, people that are in employment spend almost 8 hours sleeping during the week days, and 8:45 hours on Saturday.
-</p>
-<p>
-As you can see from the screenshot, each sheet contains several tables that have lots of headers and these tables are next to one another. Trying to import these sheets with good ol’ <code>readxl::read_excel()</code> produces a monster.
-</p>
-<p>
-This is where <code>{tidyxl}</code> comes into play. Let’s import the workbook with <code>{tidyxl}</code>:
-</p>
-<pre class="r"><code>library(tidyverse)
-library(tidyxl)
-
-time_use_xl &lt;- xlsx_cells("time-use.xlsx")</code></pre>
-<p>
-Let’s see what happened:
-</p>
-<pre class="r"><code>head(time_use_xl)</code></pre>
-<pre><code>## # A tibble: 6 x 21
-##   sheet address   row   col is_blank data_type error logical numeric
-##   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;lgl&gt;    &lt;chr&gt;     &lt;chr&gt; &lt;lgl&gt;     &lt;dbl&gt;
-## 1 Index A1          1     1 FALSE    character &lt;NA&gt;  NA           NA
-## 2 Index B1          1     2 TRUE     blank     &lt;NA&gt;  NA           NA
-## 3 Index C1          1     3 TRUE     blank     &lt;NA&gt;  NA           NA
-## 4 Index D1          1     4 TRUE     blank     &lt;NA&gt;  NA           NA
-## 5 Index E1          1     5 TRUE     blank     &lt;NA&gt;  NA           NA
-## 6 Index F1          1     6 TRUE     blank     &lt;NA&gt;  NA           NA
-## # … with 12 more variables: date &lt;dttm&gt;, character &lt;chr&gt;,
-## #   character_formatted &lt;list&gt;, formula &lt;chr&gt;, is_array &lt;lgl&gt;,
-## #   formula_ref &lt;chr&gt;, formula_group &lt;int&gt;, comment &lt;chr&gt;, height &lt;dbl&gt;,
-## #   width &lt;dbl&gt;, style_format &lt;chr&gt;, local_format_id &lt;int&gt;</code></pre>
-<p>
-As you can see, the sheet was imported, but the result might be unexpected. Actually, <code>time_use_xl</code> is a <code>tibble</code> object, where each row is one cell of the Excel sheet. This might seem very complicated to handle, but you will see that it actually makes things way easier.
-</p>
-<p>
-I only want to work on the English sheets so I use the following code to ignore the French ones:
-</p>
-<pre class="r"><code>sheets &lt;- xlsx_sheet_names("time-use.xlsx") %&gt;%
-    keep(grepl(pattern = ".*day$", .))</code></pre>
-<p>
-Also, there’s a sheet that aggregates the results for week days and weekends, which I also ignore.
-</p>
-<p>
-Now, to extract the tables from each sheet I wrote the following function:
-</p>
-<pre class="r"><code>extract_data &lt;- function(sheet){
-    activities &lt;- sheet %&gt;%
-        filter(col == 2) %&gt;%
-        select(row, character) %&gt;%
-        filter(row %in% seq(6,58)) %&gt;%
-        rename(activities = character) %&gt;%
-        select(-row)
-    
-    cols_to_extract &lt;- sheet %&gt;% 
-        filter(grepl("Population who completed.*", character)) %&gt;% 
-        pull(col)
-    
-    headers_pos &lt;- cols_to_extract - 1
-    
-    headers &lt;- sheet %&gt;%
-        filter(col %in% headers_pos, row == 3) %&gt;%
-        pull(character)
-    
-    cols_to_extract %&gt;% 
-        map(~filter(sheet, col %in% .)) %&gt;%
-        map(~select(., sheet, address, row, col, character)) %&gt;%
-        map(~filter(., row %in% seq(6,58))) %&gt;%
-        map(~select(., character)) %&gt;%
-        map2(.x = ., .y = headers, ~mutate(.x, "population" = .y)) %&gt;%
-        map(., ~bind_cols(activities, .)) %&gt;%
-        bind_rows()
-}</code></pre>
-<p>
-Let’s study it step by step and see how it works. First, there’s the argument, <code>sheet</code>. This function will be mapped to each sheet of the workbook. Then, the first block I wrote, extracts the activities:
-</p>
-<pre class="r"><code>    activities &lt;- sheet %&gt;%
-        filter(col == 2) %&gt;%
-        select(row, character) %&gt;%
-        filter(row %in% seq(6,58)) %&gt;%
-        rename(activities = character) %&gt;%
-        select(-row)</code></pre>
-<p>
-I only keep the second column (<code>filter(col == 2)</code>); <code>col</code> is a column of the <code>tibble</code> and if you look inside the workbook, you will notice that the activities are on the second column, or the B column. Then, I select two columns, the <code>row</code> and the <code>character</code> column. <code>row</code> is self-explanatory and <code>character</code> actually contains whatever is written inside the cells. Then, I only keep rows 6 to 58, because that is what interests me; the rest is either empty cells, or unneeded. Finally, I rename the <code>character</code> column to activities and remove the <code>row</code> column.
-</p>
-<p>
-The second block:
-</p>
-<pre class="r"><code>    cols_to_extract &lt;- sheet %&gt;% 
-        filter(grepl("Population who completed.*", character)) %&gt;% 
-        pull(col)</code></pre>
-<p>
-returns the index of the columns I want to extract. I am only interested in the people that have completed the activities, so using <code>grepl()</code> inside <code>filter()</code>, I located these columns, and use <code>pull()</code>… to pull them out of the data frame! <code>cols_to_extract</code> is thus a nice atomic vector of columns that I want to keep.
-</p>
-<p>
-In the third block, I extract the headers:
-</p>
-<pre class="r"><code>    headers_pos &lt;- cols_to_extract - 1</code></pre>
-<p>
-Why <code>- 1</code>? This is because if you look in the Excel, you will see that the headers are one column before the column labeled “People who completed the activity”. For example on column G, I have “People who completed the activity” and on column F I have the header, in this case “Male”.
-</p>
-<p>
-Now I actually extract the headers:
-</p>
-<pre class="r"><code>    headers &lt;- sheet %&gt;%
-        filter(col %in% headers_pos, row == 3) %&gt;%
-        pull(character)</code></pre>
-<p>
-Headers are always on the third row, but on different columns, hence the <code>col %in% headers_pos</code>. I then pull out the values inside the cells with <code>pull(character)</code>. So my <code>headers</code> object will be an atomic vector with “All”, “Male”, “Female”, “10 - 19 years”, etc… everything on row 3.
-</p>
-<p>
-Finally, the last block, actually extracts the data:
-</p>
-<pre class="r"><code>    cols_to_extract %&gt;% 
-        map(~filter(sheet, col %in% .)) %&gt;%
-        map(~select(., sheet, address, row, col, character)) %&gt;%
-        map(~filter(., row %in% seq(6,58))) %&gt;%
-        map(~select(., character)) %&gt;%
-        map2(.x = ., .y = headers, ~mutate(.x, "population" = .y)) %&gt;%
-        map(., ~bind_cols(activities, .)) %&gt;%
-        bind_rows()</code></pre>
-<p>
-<code>cols_to_extract</code> is a vector with the positions of the columns that interest me. So for example “4”, “7”, “10” and so on. I map this vector to the sheet, which returns me a list of extracted data frames. I pass this down to a <code>select()</code> (which is inside <code>map()</code>… why? Because the input parameter is a list of data frames). So for each data frame inside the list, I select the columns <code>sheet</code>, <code>address</code>, <code>row</code>, <code>col</code> and <code>character</code>. Then, for each data frame inside the list, I use <code>filter()</code> to only keep the rows from position 6 to 58. Then, I only select the <code>character</code> column, which actually contains the text inside the cell. Then, using <code>map2()</code>, I add the values inside the <code>headers</code> object as a new column, called <code>population</code>. Then, I bind the <code>activities</code> column to the data frame and bind all the rows together.
-</p>
-<p>
-Time to use this function! Let’s see:
-</p>
-<pre class="r"><code>clean_data &lt;- sheets %&gt;%
-    map(~filter(time_use_xl, sheet %in% .)) %&gt;%
-    set_names(sheets) %&gt;%
-    map(extract_data) %&gt;%
-    map2(.x = ., .y = sheets, ~mutate(.x, "day" = .y)) %&gt;%
-    bind_rows() %&gt;%
-    select(day, population, activities, time = character)
-
-glimpse(clean_data)</code></pre>
-<pre><code>## Observations: 2,968
-## Variables: 4
-## $ day        &lt;chr&gt; "Year 2014_Monday til Friday", "Year 2014_Monday til …
-## $ population &lt;chr&gt; "All", "All", "All", "All", "All", "All", "All", "All…
-## $ activities &lt;chr&gt; "Personal care", "Sleep", "Eating", "Other personal c…
-## $ time       &lt;chr&gt; "11:07", "08:26", "01:47", "00:56", "07:37", "07:47",…</code></pre>
-<p>
-So I map my list of sheets to the <code>tibble</code> I imported with <code>readxl</code>, use <code>set_names</code> to name the elements of my list (which is superfluous, but I wanted to show this; might interest you!) and then map this result to my little function. I could stop here, but I then add a new column to each data frame that contains the day on which the data was measured, bind the rows together and reorder the columns. Done!
-</p>
-<p>
-Now, how did I come up with this function? I did not start with a function. I started by writing some code that did what I wanted for one table only, inside one sheet only. Only when I got something that worked, did I start to generalize to several tables and then to several sheets. Most of the time spent was actually in trying to find patterns in the Excel sheet that I could use to write my function (for example noticing that the headers I wanted where always one column before the column I was interested in). This is my advice when working with function programming; always solve the issue for one element, wrap this code inside a function, and then simply map this function to a list of elements!
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>programming</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-09-11-human_to_machine.html</guid>
-  <pubDate>Tue, 11 Sep 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</title>
-  <link>https://b-rodrigues.github.io/posts/2018-09-08-steam_linux.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=4QokOwvPxrE"> <img src="https://b-rodrigues.github.io/assets/img/want_to_believe.jpg"></a>
-</p>
-</div>
-<p>
-I’ve been using GNU+Linux distros for about 10 years now, and have settled for openSUSE as my main operating system around 3 years ago, perhaps even more. If you’re a gamer, you might have heard about SteamOS and how more and more games are available on GNU+Linux. I don’t really care about games, I play the occasional one (currently <a href="http://www.tangledeep.com/">Tangledeep</a>) when I find the time, but still follow the news about gaming on GNU+Linux. Last week, Valve announced something quite big; it is now possible to run Windows games on GNU+Linux directly from Steam, using a modified version of <a href="https://en.wikipedia.org/wiki/Wine_(software)">Wine</a> they call Proton. The feature is still in Beta, and Valve announced that they guarantee around 30 games to work already flawlessly. Of course, people have tried running a lot of other games, and, as was to be expected from Free Software and Open Source fans, GNU+Linux gamers created a Google Sheet that lists which games were tried and how they run. You can take a look at the sheet <a href="https://docs.google.com/spreadsheets/d/1DcZZQ4HL_Ol969UbXJmFG8TzOHNnHoj8Q1f8DIFe8-8/htmlview?sle=true&amp;pru=AAABZbqTTkc*IvT11ShwA2kjoe_4lPefiQ#gid=1003113831">here</a>.
-</p>
-<p>
-In this blog post, I will play around with this sheet. This blog post lists some <code>{tidyverse}</code> tricks I find useful and use often. Perhaps these tricks will be useful to you too! Let’s start by loading the needed packages:
-</p>
-<pre class="r"><code>library(tidyverse)
-library(magrittr)
-library(readxl)</code></pre>
-<p>
-Since I’m lazy and don’t want to type the whole name of the file I’ll be using some little regex:
-</p>
-<pre class="r"><code>steam &lt;- read_excel(Sys.glob("Steam*"), sheet = "Main", skip = 2)
-
-glimpse(steam)</code></pre>
-<pre><code>## Observations: 8,570
-## Variables: 9
-## $ SteamDB   &lt;chr&gt; "LINK", "LINK", "LINK", "LINK", "LINK", "LINK", "LINK"…
-## $ Game      &lt;chr&gt; "64", "1849", "1982", "1982", "am Weapon: Revival", ".…
-## $ Submitted &lt;chr&gt; "5 days ago", "12 days ago", "11 days ago", "11 days a…
-## $ Status    &lt;chr&gt; "Garbage", "Platinum", "Gold", "Platinum", "Platinum",…
-## $ Notes     &lt;chr&gt; "Crashes with a debug log", "Plays OK.", "Gamepad supp…
-## $ Distro    &lt;chr&gt; "Arch (4.18.5)", "Manjaro XFCE", "Gentoo AMD64 (Kernel…
-## $ Driver    &lt;chr&gt; "Nvidia 396.54 / Intel xf86-video-intel (1:2.99.917+83…
-## $ Specs     &lt;chr&gt; "Intel Core i7-7700HQ / Nvidia GTX 1050 (Mobile)", "Ry…
-## $ Proton    &lt;chr&gt; "3.7 Beta", "3.7-4 Beta", "3.7-4 Beta", "Default", "3.…</code></pre>
-<p>
-Let’s count how many unique games are in the data:
-</p>
-<pre class="r"><code>steam %&gt;%
-    count(Game)</code></pre>
-<pre><code>## # A tibble: 3,855 x 2
-##    Game                                                                   n
-##    &lt;chr&gt;                                                              &lt;int&gt;
-##  1 .hack//G.U. Last Recode                                                2
-##  2 $1 Ride                                                                1
-##  3 0rbitalis                                                              1
-##  4 10 Second Ninja                                                        4
-##  5 100% Orange Juice                                                     17
-##  6 1000 Amps                                                              3
-##  7 12 Labours of Hercules VII: Fleecing the Fleece (Platinum Edition)     1
-##  8 16bit trader                                                           1
-##  9 1849                                                                   1
-## 10 1953 - KGB Unleased                                                    1
-## # … with 3,845 more rows</code></pre>
-<p>
-That’s quite a lot of games! However, not everyone of them is playable:
-</p>
-<pre class="r"><code>steam %&gt;%
-    count(Status)</code></pre>
-<pre><code>## # A tibble: 8 x 2
-##   Status       n
-##   &lt;chr&gt;    &lt;int&gt;
-## 1 Borked     205
-## 2 bronze       1
-## 3 Bronze     423
-## 4 Garbage   2705
-## 5 Gold       969
-## 6 Platinum  2596
-## 7 Primary      1
-## 8 Silver    1670</code></pre>
-<p>
-Around 2500 have the status “Platinum”, but some games might have more than one status:
-</p>
-<pre class="r"><code>steam %&gt;%
-    filter(Game == "100% Orange Juice") %&gt;%
-    count(Status)</code></pre>
-<pre><code>## # A tibble: 5 x 2
-##   Status       n
-##   &lt;chr&gt;    &lt;int&gt;
-## 1 Bronze       5
-## 2 Garbage      3
-## 3 Gold         2
-## 4 Platinum     6
-## 5 Silver       1</code></pre>
-<p>
-More games run like <em>Garbage</em> than <em>Platinum</em>. But perhaps we can dig a little deeper and see if we find some patterns.
-</p>
-<p>
-Let’s take a look at the GNU+Linux distros:
-</p>
-<pre class="r"><code>steam %&gt;%
-    count(Distro) </code></pre>
-<pre><code>## # A tibble: 2,085 x 2
-##    Distro                                         n
-##    &lt;chr&gt;                                      &lt;int&gt;
-##  1 &lt;NA&gt;                                           1
-##  2 ?                                              2
-##  3 "\"Arch Linux\" (64 bit)"                      1
-##  4 "\"Linux Mint 18.3 Sylvia 64bit"               1
-##  5 "\"Manjaro Stable 64-bit (Kernel 4.14.66)"     1
-##  6 "\"Solus\" (64 bit)"                           2
-##  7 (K)ubuntu 18.04 64-bit (Kernel 4.15.0)         2
-##  8 (L)Ubuntu 18.04.1 LTS                          1
-##  9 18.04.1                                        1
-## 10 18.04.1 LTS                                    2
-## # … with 2,075 more rows</code></pre>
-<p>
-Ok the distro column is pretty messy. Let’s try to bring some order to it:
-</p>
-<pre class="r"><code>steam %&lt;&gt;%
-    mutate(distribution = as_factor(case_when(
-        grepl("buntu|lementary|antergos|steam|mint|18.|pop|neon", Distro, ignore.case = TRUE) ~ "Ubuntu",
-        grepl("arch|manjaro", Distro, ignore.case = TRUE) ~ "Arch Linux",
-        grepl("gentoo", Distro, ignore.case = TRUE) ~ "Gentoo",
-        grepl("fedora", Distro, ignore.case = TRUE) ~ "Fedora",
-        grepl("suse", Distro, ignore.case = TRUE) ~ "openSUSE",
-        grepl("debian|sid|stretch|lmde", Distro, ignore.case = TRUE) ~ "Debian",
-        grepl("solus", Distro, ignore.case = TRUE) ~ "Solus",
-        grepl("slackware", Distro, ignore.case = TRUE) ~ "Slackware",
-        grepl("void", Distro, ignore.case = TRUE) ~ "Void Linux",
-        TRUE ~ "Other"
-    )))</code></pre>
-<p>
-The <code>%&lt;&gt;%</code> operator is shorthand for <code>a &lt;- a %&gt;% f()</code>. It passes <code>a</code> to <code>f()</code> and assigns the result back to <code>a</code>. Anyways, let’s take a look at the <code>distribution</code> column:
-</p>
-<pre class="r"><code>steam %&gt;%
-    count(distribution)</code></pre>
-<pre><code>## # A tibble: 10 x 2
-##    distribution     n
-##    &lt;fct&gt;        &lt;int&gt;
-##  1 Ubuntu        6632
-##  2 Arch Linux     805
-##  3 Solus          175
-##  4 Debian         359
-##  5 Fedora         355
-##  6 Gentoo          42
-##  7 Void Linux      38
-##  8 Other           76
-##  9 openSUSE        66
-## 10 Slackware       22</code></pre>
-<p>
-I will group distributions that have less than 100 occurrences into a single category (meaning I will keep the 5 more common values):
-</p>
-<pre class="r"><code>steam %&lt;&gt;%
-    mutate(distribution = fct_lump(distribution, n = 5, other_level = "Other")) 
-
-steam %&gt;%
-    count(distribution)</code></pre>
-<pre><code>## # A tibble: 6 x 2
-##   distribution     n
-##   &lt;fct&gt;        &lt;int&gt;
-## 1 Ubuntu        6632
-## 2 Arch Linux     805
-## 3 Solus          175
-## 4 Debian         359
-## 5 Fedora         355
-## 6 Other          244</code></pre>
-<p>
-Let’s do the same for the CPUs:
-</p>
-<pre class="r"><code>steam %&lt;&gt;%
-    mutate(CPU = as_factor(case_when(
-        grepl("intel|i\\d|xeon|core2|\\d{4}k|q\\d{4}|pentium", Specs, ignore.case = TRUE) ~ "Intel",
-        grepl("ryzen|threadripper|tr|amd|fx|r\\d|\\d{4}x|phenom", Specs, ignore.case = TRUE) ~ "AMD",
-        TRUE ~ NA_character_
-    )))
-
-steam %&gt;%
-    count(CPU)</code></pre>
-<pre><code>## Warning: Factor `CPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   CPU       n
-##   &lt;fct&gt; &lt;int&gt;
-## 1 Intel  5768
-## 2 AMD    2319
-## 3 &lt;NA&gt;    483</code></pre>
-<p>
-And the same for the GPUs:
-</p>
-<pre class="r"><code>steam %&lt;&gt;%
-    mutate(GPU = as_factor(case_when(
-        grepl("nvidia|geforce|3\\d{2}|nouveau|gtx|gt\\s?\\d{1,}|9\\d0|1060|1070|1080", Specs, ignore.case = TRUE) ~ "Nvidia",
-        grepl("amd|radeon|ati|rx|vega|r9", Specs, ignore.case = TRUE) ~ "AMD",
-        grepl("intel|igpu|integrated|hd\\d{4}|hd\\sgraphics", Specs, ignore.case = TRUE) ~ "Intel",
-        TRUE ~ NA_character_
-    )))
-
-steam %&gt;%
-    count(GPU)</code></pre>
-<pre><code>## Warning: Factor `GPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   GPU        n
-##   &lt;fct&gt;  &lt;int&gt;
-## 1 Nvidia  6086
-## 2 AMD     1374
-## 3 Intel    413
-## 4 &lt;NA&gt;     697</code></pre>
-<p>
-I will also add a rank for the <code>Status</code> column:
-</p>
-<pre class="r"><code>steam %&lt;&gt;%
-    mutate(rank_status = case_when(
-        Status == "Platinum" ~ 5,
-        Status == "Gold" ~ 4,
-        Status == "Silver" ~ 3,
-        Status == "Bronze" ~ 2,
-        Status == "Garbage" ~ 1
-    ))</code></pre>
-<p>
-Now, what are the top 5 most frequent combinations of Status, distribution, CPU and GPU?
-</p>
-<pre class="r"><code>steam %&gt;%
-    filter(!is.na(CPU), !is.na(GPU)) %&gt;%
-    count(Status, distribution, CPU, GPU) %&gt;%
-    mutate(total = sum(n)) %&gt;%
-    mutate(freq = n / total) %&gt;%
-    top_n(5)</code></pre>
-<pre><code>## Selecting by freq</code></pre>
-<pre><code>## # A tibble: 5 x 7
-##   Status   distribution CPU   GPU        n total   freq
-##   &lt;chr&gt;    &lt;fct&gt;        &lt;fct&gt; &lt;fct&gt;  &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;
-## 1 Garbage  Ubuntu       Intel Nvidia  1025  7443 0.138 
-## 2 Gold     Ubuntu       Intel Nvidia   361  7443 0.0485
-## 3 Platinum Ubuntu       Intel Nvidia  1046  7443 0.141 
-## 4 Platinum Ubuntu       AMD   Nvidia   338  7443 0.0454
-## 5 Silver   Ubuntu       Intel Nvidia   650  7443 0.0873</code></pre>
-<p>
-Unsurprisingly, Ubuntu, or distributions using Ubuntu as a base, are the most popular ones. Nvidia is the most popular GPU, Intel for CPUs and in most cases, this combo of hardware and distribution is associated with positive ratings (even though there are almost as many “Garbage” ratings than “Platinum” ratings).
-</p>
-<p>
-Now let’s compute some dumb averages of Statuses by distribution, CPU and GPU. Since I’m going to run the same computation three times, I’ll write a function to do that.
-</p>
-<pre class="r"><code>compute_avg &lt;- function(dataset, var){
-    var &lt;- enquo(var)
-    dataset %&gt;%
-        select(rank_status, (!!var)) %&gt;%
-        group_by((!!var)) %&gt;%
-        mutate(wt = n()) %&gt;%
-        summarise(average_rating = weighted.mean(rank_status, (!!var), wt, na.rm = TRUE))
-}</code></pre>
-<p>
-Let’s see now if we can rank distribution by Steam play rating:
-</p>
-<pre class="r"><code>compute_avg(steam, distribution)</code></pre>
-<pre><code>## # A tibble: 6 x 2
-##   distribution average_rating
-##   &lt;fct&gt;                 &lt;dbl&gt;
-## 1 Ubuntu                 3.03
-## 2 Arch Linux             3.05
-## 3 Solus                  3.03
-## 4 Debian                 3.01
-## 5 Fedora                 3.07
-## 6 Other                  3.16</code></pre>
-<p>
-How about for hardware?
-</p>
-<pre class="r"><code>compute_avg(steam, GPU)</code></pre>
-<pre><code>## Warning: Factor `GPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`
-
-## Warning: Factor `GPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   GPU    average_rating
-##   &lt;fct&gt;           &lt;dbl&gt;
-## 1 Nvidia           3.07
-## 2 AMD              2.90
-## 3 Intel            3.01
-## 4 &lt;NA&gt;            NA</code></pre>
-<pre class="r"><code>compute_avg(steam, CPU)</code></pre>
-<pre><code>## Warning: Factor `CPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`
-
-## Warning: Factor `CPU` contains implicit NA, consider using
-## `forcats::fct_explicit_na`</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   CPU   average_rating
-##   &lt;fct&gt;          &lt;dbl&gt;
-## 1 Intel           3.03
-## 2 AMD             3.06
-## 3 &lt;NA&gt;           NA</code></pre>
-<p>
-To wrap this up, what are the games with the most ratings? Perhaps this can give us a hint about which games GNU+Linux users prefer:
-</p>
-<pre class="r"><code>steam %&gt;%
-    count(Game) %&gt;%
-    top_n(10)</code></pre>
-<pre><code>## Selecting by n</code></pre>
-<pre><code>## # A tibble: 10 x 2
-##    Game                              n
-##    &lt;chr&gt;                         &lt;int&gt;
-##  1 Age of Empires II: HD Edition    43
-##  2 Borderlands                      39
-##  3 DiRT 3 Complete Edition          32
-##  4 DOOM                             62
-##  5 Fallout: New Vegas               45
-##  6 Grim Dawn                        34
-##  7 No Man's Sky                     40
-##  8 Path of Exile                    35
-##  9 Quake Champions                  32
-## 10 The Elder Scrolls V: Skyrim      46</code></pre>
-<p>
-I actually laughed out loud when I saw that DOOM was the game with the most ratings! What else was I expecting, really.
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>programming</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-09-08-steam_linux.html</guid>
-  <pubDate>Sat, 08 Sep 2018 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

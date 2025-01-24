@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2018-10-27">
+<meta name="dcterms.date" content="2019-01-13">
 
-<title>Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data – Econometrics and Free Software</title>
+<title>Making sense of the METS and ALTO XML standards – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +100,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</h1>
+<h1 class="title">Making sense of the METS and ALTO XML standards</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">data-science</div>
@@ -115,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 27, 2018</p>
+      <p class="date">January 13, 2019</p>
     </div>
   </div>
   
@@ -129,451 +129,254 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=Bw8g_1VEEL8"> <img src="../assets/img/europe_map_lux.png"></a>
+<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="../assets/img/union.png" title="The 19th century was a tough place"></a>
 </p>
 </div>
-<section id="abstract" class="level2">
-<h2 class="anchored" data-anchor-id="abstract">
-Abstract
-</h2>
 <p>
-You can find the data used in this blog post here: <a href="https://github.com/b-rodrigues/elections_lux" class="uri">https://github.com/b-rodrigues/elections_lux</a>
+Last week I wrote a <a href="https://www.brodrigues.co/blog/2019-01-04-newspapers/">blog post</a> where I analyzed one year of newspapers ads from 19th century newspapers. The data is made available by the <a href="https://data.bnl.lu/data/historical-newspapers/">national library of Luxembourg</a>. In this blog post, which is part 1 of a 2 part series, I extract data from the 257gb archive, which contains 10 years of publications of the <em>L’Union</em>, another 19th century Luxembourguish newspaper written in French. As I explained in the previous post, to make life easier to data scientists, the national library also included ALTO and METS files (which are a XML files used to describe the layout and contents of physical text sources, such as pages of a book or newspaper) which can be easily parsed by R.
 </p>
 <p>
-This is a follow up to a <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">previous blog post</a> where I extracted data of the 2018 Luxembourguish elections from Excel Workbooks. Now that I have the data, I will create a map of Luxembourg by commune, with pie charts of the results on top of each commune! To do this, I use good ol’ <code>{ggplot2}</code> and another packages called <code>{scatterpie}</code>. As a bonus, I have added the code to extract the data from the 2013 elections from Excel. You’ll find this code in the appendix at the end of the blog post.
-</p>
-</section>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">
-Introduction
-</h2>
-<p>
-Before importing the data for the elections of 2018, let’s install some packages:
-</p>
-<pre class="r"><code>install.packages('rgeos', type='source') # Dependency of rgdal
-install.packages('rgdal', type='source') # To read in the shapefile</code></pre>
-<p>
-These packages might be very tricky to install on OSX and Linux, but they’re needed to import the shapefile of the country, which is needed to draw a map. So to make things easier, I have created an <code>rds</code> object, from the shapefile of Luxembourg, that you can import natively in R without needing these two packages. But if you want to use them, here is how:
-</p>
-<pre class="r"><code>communes &lt;- readOGR("Limadmin_SHP/LIMADM_COMMUNES.shp")</code></pre>
-<p>
-By the way, you can download the shapefile for Luxembourg <a href="https://data.public.lu/en/datasets/limites-administratives-du-grand-duche-de-luxembourg/#_">here</a>.
+This is how a ALTO file looks like:
 </p>
 <p>
-I’ll use my shapefile though (that you can download from the same github repo as the data):
+<img src="../assets/img/alto.png"><!-- -->
 </p>
-<pre class="r"><code>communes_df &lt;- readRDS("commune_shapefile.rds")</code></pre>
 <p>
-Here’s how it looks like:
+Each page of the newspaper of a given day has one ALTO file. This is how a METS file looks like:
 </p>
-<pre class="r"><code>head(communes_df)</code></pre>
-<pre><code>##       long      lat order  hole piece      group       id
-## 1 91057.65 101536.6     1 FALSE     1 Beaufort.1 Beaufort
-## 2 91051.79 101487.3     2 FALSE     1 Beaufort.1 Beaufort
-## 3 91043.43 101461.7     3 FALSE     1 Beaufort.1 Beaufort
-## 4 91043.37 101449.8     4 FALSE     1 Beaufort.1 Beaufort
-## 5 91040.42 101432.1     5 FALSE     1 Beaufort.1 Beaufort
-## 6 91035.44 101405.6     6 FALSE     1 Beaufort.1 Beaufort</code></pre>
 <p>
-Now let’s load some packages:
+<img src="../assets/img/mets.png"><!-- -->
 </p>
-<pre class="r"><code>library("tidyverse")
-library("tidyxl")
-library("ggplot2")
-library("scatterpie")</code></pre>
 <p>
-Ok, now, let’s import the elections results data, which is the output of <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">last week’s blog post</a>:
+For each daily issue of the newspaper, there is a METS file. So 1 METS file for 4 ALTO files.
 </p>
-<pre class="r"><code>elections &lt;- read_csv("elections_2018.csv")</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Party = col_character(),
-##   Year = col_double(),
-##   Variables = col_character(),
-##   Values = col_double(),
-##   locality = col_character(),
-##   division = col_character()
-## )</code></pre>
 <p>
-I will only focus on the data at the commune level, and only use the share of votes for each party:
+In my last blog post, I only extracted the words from the ALTO file (red rectangles of the first screenshot) and did not touch the METS file. The problem of doing this is that I get all the words for each page, without knowing which come from the same article. If I want to know which words come from the same article, I need to use the info from the METS file. From the METS file I have the ID of the article, and some other metadata, such as the title of the article and the type of the article (which can be <em>article</em>, <em>advertisement</em>, etc). The information highlighted with the green rectangles in the METS file can be linked to the green rectangles from the ALTO files. My goal is to get the following data frame from the METS file:
 </p>
-<pre class="r"><code>elections_map &lt;- elections %&gt;%
-    filter(division == "Commune",
-           Variables == "Pourcentage")</code></pre>
 <p>
-Now I need to make sure that the names of the communes are the same between the elections data and the shapefile. Usual suspects are the “Haute-Sûre” and the “Redange-sur-Attert” communes, but let’s take a look:
+<img src="../assets/img/mets_df.png"><!-- -->
 </p>
-<pre class="r"><code>locality_elections &lt;- unique(elections_map$locality)
-locality_shapefile &lt;- unique(communes_df$id)
+<p>
+and this data frame from the ALTO files:
+</p>
+<p>
+<img src="../assets/img/alto_df.png"><!-- -->
+</p>
+<p>
+As you can see, by combining both data frames I can know which words come from the same article, which will be helpful for further analysis. <a href="https://en.wikipedia.org/wiki/1860s">A lot of things happened in the 1860s.</a> I am really curious to see if and how these events where reported in a Luxembourguish newspaper. I am particularly curious about how long it took to report certain news from far away, such as the assassination of Abraham Lincoln. But before that I need to extract the data!
+</p>
+<p>
+I will only focus on the METS file. The logic for the ALTO file is the same. All the source code will be in the appendix of this blog post.
+</p>
+<p>
+First, let’s take a look at a METS file:
+</p>
+<pre class="r"><code>library(tidyverse)
+mets &lt;- read_file("1533660_newspaper_lunion_1860-11-14/1533660_newspaper_lunion_1860-11-14-mets.xml")</code></pre>
+<p>
+This is how it looks like:
+</p>
+<pre><code>"&lt;?xml version='1.0' encoding='utf-8'?&gt;\r\n&lt;mets xmlns=\"http://www.loc.gov/METS/\" xmlns:mix=\"http://www.loc.gov/mix/v20\" xmlns:mods=\"http://www.loc.gov/mods/v3\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" LABEL=\"L'UNION. 1860-11-14_01\" OBJID=\"https://persist.lu/ark:/70795/m62fcm\" TYPE=\"Newspaper\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd http://www.loc.gov/mix/v20 http://www.loc.gov/standards/mix/mix.xsd\"&gt;\r\n  &lt;metsHdr CREATEDATE=\"2010-12-03T20:35:05\" LASTMODDATE=\"2018-05-09T05:35:51Z\"&gt;\r\n    &lt;agent OTHERTYPE=\"SOFTWARE\" ROLE=\"CREATOR\" TYPE=\"OTHER\"&gt;\r\n      &lt;name&gt;CCS docWORKS/METAe Version 6.4-3&lt;/name&gt;\r\n      &lt;note&gt;docWORKS-ID: 101636&lt;/note&gt;\r\n    &lt;/agent&gt;\r\n  &lt;/metsHdr&gt;\r\n  &lt;dmdSec ID=\"MODSMD_COLLECTION\"&gt;\r\n    &lt;mdWrap LABEL=\"Bibliographic meta-data of the collection\" MDTYPE=\"MODS\" MIMETYPE=\"text/xml\"&gt;\r\n      &lt;xmlData&gt;\r\n        &lt;mods:mods&gt;\r\n          &lt;mods:identifier type=\"local\"&gt;lunion&lt;/mods:identifier&gt;\r\n          &lt;mods:titleInfo ID=\"MODSMD_COLLECTION_TI1\" xml:lang=\"fr\"&gt;\r\n            &lt;mods:title&gt;L'UNION.&lt;/mods:title&gt;\r\n          &lt;/mods:titleInfo&gt;\r\n        &lt;/mods:mods&gt;\r\n      &lt;/xmlData&gt;\r\n    &lt;/mdWrap&gt;\r\n  &lt;/dmdSec&gt;\r\n  &lt;dmdSec ID=\"MODSMD_SECTION1\"&gt;\r\n    &lt;mdWrap MDTYPE=\"MODS\" MIMETYPE=\"text/xml\"&gt;\r\n      &lt;xmlData&gt;\r\n        &lt;mods:mods&gt;\r\n          &lt;mods:titleInfo ID=\"MODSMD_SECTION1_TI1\" xml:lang=\"fr\"&gt;\r\n            &lt;mods:title&gt;Chemins de fer. — Service d'hiver.&lt;/mods:title&gt;\r\n          &lt;/mods:titleInfo&gt;\r\n          &lt;mods:language&gt;\r\n            &lt;mods:languageTerm authority=\"rfc3066\" type=\"code\"&gt;fr&lt;/mods:languageTerm&gt;\r\n ...."</code></pre>
+<p>
+As usual when you import text files like this, it’s always a good idea to split the file. I will split at the <code>“DMDID”</code> character. Take a look back at the second screenshot. The very first tag, first row, first word after <code>div</code> is <code>“DMDID”</code>. By splitting at this level, I will get back a list, where each element is the content of this <code>div DMDID</code> block. This is exactly what I need, since this block contains the information from the green rectangles. So let’s split the <code>mets</code> variable at this level:
+</p>
+<pre class="r"><code>mets_articles &lt;- mets %&gt;%
+    str_split("DMDID") %&gt;%
+    flatten_chr()</code></pre>
+<p>
+Let’s take a look at <code>mets_articles</code>:
+</p>
+<pre class="r"><code>str(mets_articles)</code></pre>
+<pre><code> chr [1:25] "&lt;?xml version='1.0' encoding='utf-8'?&gt;\r\n&lt;mets xmlns=\"http://www.loc.gov/METS/\" xmlns:mix=\"http://www.loc.g"| __truncated__ ...</code></pre>
+<p>
+Doesn’t seem to be very helpful, but actually it is. We can see that <code>mets_articles</code> is a now a list of 25 elements.
+</p>
+<p>
+This means that for each element of <code>mets_articles</code>, I need to get the identifier, the label, the type (the red rectangles from the screenshot), but also the information from the <code>“BEGIN”</code> element (the green rectangle).
+</p>
+<p>
+To do this, I’ll be using regular expressions. In general, I start by experimenting in the console, and then when things start looking good, I write a function. Here is this function:
+</p>
+<pre class="r"><code>extractor &lt;- function(string, regex, all = FALSE){
+    if(all) {
+        string %&gt;%
+            str_extract_all(regex) %&gt;%
+            flatten_chr() %&gt;%
+            str_extract_all("[:alnum:]+", simplify = FALSE) %&gt;%
+            map(paste, collapse = "_") %&gt;%
+            flatten_chr()
+    } else {
+        string %&gt;%
+            str_extract(regex) %&gt;%
+            str_extract_all("[:alnum:]+", simplify = TRUE) %&gt;%
+            paste(collapse = " ") %&gt;%
+            tolower()
+    }
+}</code></pre>
+<p>
+This function may seem complicated, but it simply encapsulates some pretty standard steps to get the data I need. I had to consider two cases. The first case is when I need to extract all the elements with <code>str_extract_all()</code>, or only the first occurrence, with <code>str_extract()</code>. Let’s test it on the first article of the <code>mets_articles</code> list:
+</p>
+<pre class="r"><code>mets_articles_1 &lt;- mets_articles[1]</code></pre>
+<pre class="r"><code>extractor(mets_articles_1, "ID", all = FALSE)</code></pre>
+<pre><code>## [1] "id"</code></pre>
+<p>
+Let’s see what happens with <code>all = TRUE</code>:
+</p>
+<pre class="r"><code>extractor(mets_articles_1, "ID", all = TRUE)</code></pre>
+<pre><code>##   [1] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [15] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [29] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [43] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [57] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [71] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [85] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+##  [99] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+## [113] "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID" "ID"
+## [127] "ID" "ID" "ID" "ID" "ID"</code></pre>
+<p>
+This seems to work as intended. Since I need to call this function several times, I’ll be writing another function that extracts all I need:
+</p>
+<pre class="r"><code>extract_mets &lt;- function(article){
 
-setdiff(locality_elections, locality_shapefile)</code></pre>
-<pre><code>## [1] "Lac de la Haute-Sûre" "Redange Attert"</code></pre>
-<p>
-Yep, exactly as expected. I’ve had problems with the names of these two communes in the past already. Let’s rename these two communes in the elections data:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
-    mutate(commune = case_when(locality == "Lac de la Haute-Sûre" ~ "Lac de la Haute Sûre",
-                          locality == "Redange Attert" ~ "Redange",
-                          TRUE ~ locality))</code></pre>
-<p>
-Now, I can select the relevant columns from the shapefile:
-</p>
-<pre class="r"><code>communes_df &lt;- communes_df %&gt;%
-    select(long, lat, commune = id)</code></pre>
-<p>
-and from the elections data:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
-    select(commune, Party, Variables, Values)</code></pre>
-</section>
-<section id="plotting-the-data-on-a-map" class="level2">
-<h2 class="anchored" data-anchor-id="plotting-the-data-on-a-map">
-Plotting the data on a map
-</h2>
-<p>
-Now, for the type of plot I want to make, using the <code>{scatterpie}</code> package, I need the data to be in the wide format, not long. For this I will use <code>tidyr::spread()</code>:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;% 
-    spread(Party, Values)</code></pre>
-<p>
-This is how the data looks now:
-</p>
-<pre class="r"><code>glimpse(elections_map)</code></pre>
-<pre><code>## Observations: 102
-## Variables: 10
-## $ commune     &lt;chr&gt; "Beaufort", "Bech", "Beckerich", "Berdorf", "Bertran…
-## $ Variables   &lt;chr&gt; "Pourcentage", "Pourcentage", "Pourcentage", "Pource…
-## $ ADR         &lt;dbl&gt; 0.12835106, 0.09848661, 0.08596748, 0.16339234, 0.04…
-## $ CSV         &lt;dbl&gt; 0.2426239, 0.2945285, 0.3004751, 0.2604552, 0.290278…
-## $ `déi gréng` &lt;dbl&gt; 0.15695672, 0.21699651, 0.24072721, 0.15619529, 0.15…
-## $ `déi Lénk`  &lt;dbl&gt; 0.04043732, 0.03934808, 0.05435776, 0.02295273, 0.04…
-## $ DP          &lt;dbl&gt; 0.15875393, 0.19394645, 0.12899689, 0.15444466, 0.30…
-## $ KPL         &lt;dbl&gt; 0.015875393, 0.006519208, 0.004385164, 0.011476366, …
-## $ LSAP        &lt;dbl&gt; 0.11771754, 0.11455180, 0.08852549, 0.16592103, 0.09…
-## $ PIRATEN     &lt;dbl&gt; 0.13928411, 0.03562282, 0.09656496, 0.06516242, 0.04…</code></pre>
-<p>
-For this to work, I need two datasets; one to draw the map (<code>commune_df</code>) and one to draw the pie charts over each commune, with the data to draw the charts, but also the position of where I want the pie charts. For this, I will compute the average of the longitude and latitude, which should be good enough:
-</p>
-<pre class="r"><code>scatterpie_data &lt;- communes_df %&gt;%
-    group_by(commune) %&gt;%
-    summarise(long = mean(long),
-              lat = mean(lat))</code></pre>
-<p>
-Now, let’s join the two datasets:
-</p>
-<pre class="r"><code>final_data &lt;- left_join(scatterpie_data, elections_map, by = "commune") </code></pre>
-<p>
-I have all the ingredients to finally plot the data:
-</p>
-<pre class="r"><code>ggplot() +
-    geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
-    geom_scatterpie(data = final_data, aes(x=long, y=lat, group=commune), 
-                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-    labs(title = "Share of total vote in each commune, 2018 elections") +
-    theme_void() +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          legend.text = element_text(colour = "white"),
-          plot.background = element_rect("#272b30"),
-          plot.title = element_text(colour = "white")) +
-    scale_fill_manual(values = c("ADR" = "#009dd1",
-                                 "CSV" = "#ee7d00",
-                                 "déi gréng" = "#45902c",
-                                 "déi Lénk" = "#e94067",
-                                 "DP" = "#002a54",
-                                 "KPL" = "#ff0000",
-                                 "LSAP" = "#ad3648",
-                                 "PIRATEN" = "#ad5ea9"))</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-17-1.png" width="768">
-</p>
-<p>
-Not too bad, but we can’t really read anything from the pie charts. I will now make their size proportional to the number of voters in each commune. For this, I need to go back to the Excel sheets, and look for the right cell:
-</p>
-<p>
-<img src="../assets/img/electeurs_inscrits.png"><!-- -->
-</p>
-<p>
-It will be easy to extract this info. It located in cell “E5”:
-</p>
-<pre class="r"><code>elections_raw_2018 &lt;- xlsx_cells("leg-2018-10-14-22-58-09-737.xlsx")
+    id &lt;- article %&gt;%
+        extractor("(?&lt;=ID)(.*?)(?=LABEL)")
 
-electors_commune &lt;- elections_raw_2018 %&gt;%
-    filter(!(sheet %in% c("Le Grand-Duché de Luxembourg", "Centre", "Est", "Nord", "Sud", "Sommaire"))) %&gt;%
-    filter(address == "E5") %&gt;%
-    select(sheet, numeric) %&gt;%
-    rename(commune = sheet,
-           electors = numeric)</code></pre>
-<p>
-I can now add this to the data:
-</p>
-<pre class="r"><code>final_data &lt;- final_data %&gt;% 
-    full_join(electors_commune) %&gt;%
-    mutate(log_electors = log(electors) * 200)</code></pre>
-<pre><code>## Joining, by = "commune"</code></pre>
-<p>
-In the last line, I create a new column called <code>log_electors</code> that I then multiply by 200. This will be useful later.
-</p>
-<p>
-Now I can add the <code>r</code> argument inside the <code>aes()</code> function on the third line, to make the pie chart size proportional to the number of electors in that commune:
-</p>
-<pre class="r"><code>ggplot() +
-  geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
-    geom_scatterpie(data = final_data, aes(x=long, y=lat, group = commune, r = electors), 
-                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-    labs(title = "Share of total vote in each commune, 2018 elections") +
-    theme_void() +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          legend.text = element_text(colour = "white"),
-          plot.background = element_rect("#272b30"),
-          plot.title = element_text(colour = "white")) +
-    scale_fill_manual(values = c("ADR" = "#009dd1",
-                                 "CSV" = "#ee7d00",
-                                 "déi gréng" = "#45902c",
-                                 "déi Lénk" = "#182024",
-                                 "DP" = "#002a54",
-                                 "KPL" = "#ff0000",
-                                 "LSAP" = "#ad3648",
-                                 "PIRATEN" = "#ad5ea9"))</code></pre>
-<pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-21-1.png" width="768">
-</p>
-<p>
-Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription. For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are the lists:
-</p>
-<pre class="r"><code>centre &lt;- c("Bissen", "Colmar-Berg", "Fischbach", "Heffingen", "Larochette",
-            "Lintgen", "Lorentzweiler", "Mersch", "Nommern", "Helperknapp", "Bertrange", "Contern", 
-            "Hesperange", "Luxembourg", "Niederanven", "Sandweiler", "Schuttrange", "Steinsel", 
-            "Strassen", "Walferdange", "Weiler-la-Tour")
+    label &lt;- article %&gt;%
+        extractor("(?&lt;=LABEL)(.*?)(?=TYPE)")
 
-est &lt;- c("Beaufort", "Bech", "Berdorf", "Consdorf", "Echternach", "Rosport-Mompach", "Waldbillig",
-         "Betzdorf", "Biwer", "Flaxweiler", "Grevenmacher", "Junglinster", "Manternach", "Mertert",
-         "Wormeldange","Bous", "Dalheim", "Lenningen", "Mondorf-les-Bains", "Remich", "Schengen",
-         "Stadtbredimus", "Waldbredimus")
+    type &lt;- article %&gt;%
+        extractor("(?&lt;=TYPE)(.*?)(?=&gt;)")
 
-nord &lt;- c("Clervaux", "Parc Hosingen", "Troisvierges", "Weiswampach", "Wincrange", "Bettendorf", 
-          "Bourscheid", "Diekirch", "Erpeldange-sur-Sûre", "Ettelbruck", "Feulen", "Mertzig", "Reisdorf", 
-          "Schieren", "Vallée de l'Ernz", "Beckerich", "Ell", "Grosbous", "Préizerdaul", 
-          "Rambrouch", "Redange", "Saeul", "Useldange", "Vichten", "Wahl", "Putscheid", "Tandel",
-          "Vianden", "Boulaide", "Esch-sur-Sûre", "Goesdorf", "Kiischpelt", "Lac de la Haute Sûre",
-          "Wiltz", "Winseler")
+    begins &lt;- article %&gt;%
+        extractor("(?&lt;=BEGIN)(.*?)(?=BETYPE)", all = TRUE)
 
-sud &lt;- c("Dippach", "Garnich", "Käerjeng", "Kehlen", "Koerich", "Kopstal", "Mamer", 
-         "Habscht", "Steinfort", "Bettembourg", "Differdange", "Dudelange", "Esch-sur-Alzette", 
-         "Frisange", "Kayl", "Leudelange", "Mondercange", "Pétange", "Reckange-sur-Mess", "Roeser",
-         "Rumelange", "Sanem", "Schifflange")
+    tibble::tribble(~label, ~type, ~begins, ~id,
+                    label, type, begins, id) %&gt;%
+        unnest()
+}</code></pre>
+<p>
+This function uses complex regular expressions to extract the strings I need, and then puts the result into a data frame, with the <code>tibble()</code> function. I then use <code>unnest()</code>, because <code>label</code>, <code>type</code>, <code>begins</code> and <code>id</code> are not the same length. <code>label</code>, <code>type</code> and <code>id</code> are of length 1, while <code>begins</code> is longer. This means that when I put them into a data frame it looks like this:
+</p>
+<pre class="r"><code>tribble(~a, ~b,
+"a", rep("b", 4))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   a     b        
+##   &lt;chr&gt; &lt;list&gt;   
+## 1 a     &lt;chr [4]&gt;</code></pre>
+<p>
+With <code>unnest()</code>, I get a nice data frame:
+</p>
+<pre class="r"><code>tribble(~a, ~b,
+"a", rep("b", 4)) %&gt;% 
+  unnest()</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   a     b    
+##   &lt;chr&gt; &lt;chr&gt;
+## 1 a     b    
+## 2 a     b    
+## 3 a     b    
+## 4 a     b</code></pre>
+<p>
+Now, I simply need to map this function to all the files and that’s it! For this, I will write yet another helper function:
+</p>
+<pre class="r"><code>mets_csv &lt;- function(page_path){
+    
+    page &lt;- read_file(page_path)
+    
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/).*")
+    
+    mets_articles &lt;- page %&gt;%
+        str_split("DMDID") %&gt;%
+        flatten_chr()
+    
+    mets_df &lt;- map_df(mets_articles, extract_mets)
+    
+    mets_df &lt;- mets_df %&gt;%
+        mutate(document = doc_name)
+    
+    write_csv(mets_df, paste0(page_path, ".csv"))
+}</code></pre>
+<p>
+This function takes the path to a METS file as input, and processes it using the steps I explained above. The only difference is that I add a column containing the name of the file that was processed, and write the resulting data frame directly to disk as a data frame. Finally, I can map this function to all the METS files:
+</p>
+<pre class="r"><code># Extract content from METS files
 
-circonscriptions &lt;- list("centre" = centre, "est" = est,
-                         "nord" = nord, "sud" = sud)</code></pre>
-<p>
-Now, I can make one map per circonscription. First, let’s split the data sets by circonscription:
-</p>
-<pre class="r"><code>communes_df_by_circonscription &lt;- circonscriptions %&gt;%
-    map(~filter(communes_df, commune %in% .))
+pages_mets &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*mets.xml") %&gt;%
+    discard(is.na)
 
-final_data_by_circonscription &lt;- circonscriptions %&gt;%
-    map(~filter(final_data, commune %in% .))</code></pre>
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_mets, mets_csv)
+toc &lt;- Sys.time()
+
+toc - tic</code></pre>
 <p>
-By using <code>pmap()</code>, I can reuse the code to generate the plot to each element of the two lists. This is nice because I do not need to copy and paste the code 4 times:
-</p>
-<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
-          y = final_data_by_circonscription,
-          z = names(communes_df_by_circonscription)),
-     function(x, y, z){
-         ggplot() +
-        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
-                     colour = "grey", fill = NA) +
-        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune), 
-                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
-        theme_void() +
-        theme(legend.position = "bottom",
-              legend.title = element_blank(),
-              legend.text = element_text(colour = "white"),
-              plot.background = element_rect("#272b30"),
-              plot.title = element_text(colour = "white")) + 
-        scale_fill_manual(values = c("ADR" = "#009dd1",
-                                     "CSV" = "#ee7d00",
-                                     "déi gréng" = "#45902c",
-                                     "déi Lénk" = "#182024",
-                                     "DP" = "#002a54",
-                                     "KPL" = "#ff0000",
-                                     "LSAP" = "#ad3648",
-                                     "PIRATEN" = "#ad5ea9"))
-     }
-)</code></pre>
-<pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-1.png" width="768">
-</p>
-<pre><code>## 
-## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-2.png" width="768">
-</p>
-<pre><code>## 
-## $nord</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-3.png" width="768">
-</p>
-<pre><code>## 
-## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-4.png" width="768">
+I use <code>{furrr}</code> to extract the data from all the files in parallel, by putting 8 cores of my CPU to work. This took around 3 minutes and 20 seconds to finish.
 </p>
 <p>
-I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!
-</p>
-<p>
-The pie charts are still quite small, but if I try to change the size of the pie charts, I’ll have the same problem as before: inside the same circonscription, some communes have really a lot of electors, and some a very small number. Perhaps I can try with the log of the electors?
-</p>
-<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
-          y = final_data_by_circonscription,
-          z = names(communes_df_by_circonscription)),
-     function(x, y, z){
-         ggplot() +
-        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
-                     colour = "grey", fill = NA) +
-        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune, r = log_electors), 
-                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
-        theme_void() +
-        theme(legend.position = "bottom",
-              legend.title = element_blank(),
-              legend.text = element_text(colour = "white"),
-              plot.background = element_rect("#272b30"),
-              plot.title = element_text(colour = "white")) + 
-        scale_fill_manual(values = c("ADR" = "#009dd1",
-                                     "CSV" = "#ee7d00",
-                                     "déi gréng" = "#45902c",
-                                     "déi Lénk" = "#182024",
-                                     "DP" = "#002a54",
-                                     "KPL" = "#ff0000",
-                                     "LSAP" = "#ad3648",
-                                     "PIRATEN" = "#ad5ea9"))
-     }
-)</code></pre>
-<pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-1.png" width="768">
-</p>
-<pre><code>## 
-## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-2.png" width="768">
-</p>
-<pre><code>## 
-## $nord</code></pre>
-<pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-3.png" width="768">
-</p>
-<pre><code>## 
-## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-4.png" width="768">
-</p>
-<p>
-This looks better now!
-</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">
-Conclusion
-</h2>
-<p>
-Having data in a machine readable format is really important. The amount of code I had to write to go from the Excel Workbooks that contained the data to this plots is quite large, but if the data was in a machine readable format to start with, I could have focused on the plots immediately.
-</p>
-<p>
-The good thing is that I got to practice my skills and discovered <code>{scatterpie}</code>!
+That’s it for now, stay tuned for part 2 where I will analyze this fresh data!
 </p>
 <section id="appendix" class="level2">
 <h2 class="anchored" data-anchor-id="appendix">
 Appendix
 </h2>
-<p>
-The following lines of code extract the data (from the 2013 elections) from the Excel Workbooks that can be found in Luxembourguish <a href="https://data.public.lu/fr/datasets/elections-legislatives-2013-donnees-officieuses/#_">Open Data Portal</a>.
-</p>
-<p>
-I will not comment them, as they work in a similar way than in the previous blog post where I extracted the data from the 2018 elections. The only difference, is that the sheet with the national level data was totally different, so I did not extract it. The first reason is because I don’t need it for this blog post, the second is because I was lazy. For me, that’s two pretty good reasons not to do something. If you have a question concerning the code below, don’t hesitate to reach out though!
-</p>
-<pre class="r"><code>library("tidyverse")
-library("tidyxl")
-library("brotools")
+<pre class="r"><code>extract_alto &lt;- function(article){
+    begins &lt;- article[1] %&gt;%
+        extractor("(?&lt;=^ID)(.*?)(?=HPOS)", all = TRUE)
 
-path &lt;- Sys.glob("content/blog/2013*xlsx")[-5]
+    content &lt;- article %&gt;%
+        extractor("(?&lt;=CONTENT)(.*?)(?=WC)", all = TRUE)
 
-elections_raw_2013 &lt;- map(path, xlsx_cells) %&gt;%
-    map(~filter(., sheet != "Sommaire"))
+    tibble::tribble(~begins, ~content,
+                    begins, content) %&gt;%
+        unnest()
+}
 
-elections_sheets_2013 &lt;- map(map(path, xlsx_sheet_names), ~`%-l%`(., "Sommaire"))
+alto_csv &lt;- function(page_path){
 
-list_targets &lt;- list("Centre" = seq(9, 32),
-                    "Est" = seq(9, 18),
-                    "Nord" = seq(9, 20),
-                    "Sud" = seq(9, 34))
+    page &lt;- read_file(page_path)
 
-position_parties_national &lt;- seq(1, 24, by = 3)
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/text/).*")
 
-extract_party &lt;- function(dataset, starting_col, target_rows){
-    
-    almost_clean &lt;- dataset %&gt;%
-        filter(row %in% target_rows) %&gt;%
-        filter(col %in% c(starting_col, starting_col + 1)) %&gt;%
-        select(character, numeric) %&gt;%
-        fill(numeric, .direction = "up") %&gt;%
-        filter(!is.na(character))
-    
-    party_name &lt;- almost_clean$character[1]
-    
-    almost_clean$character[1] &lt;- "Pourcentage"
-    
-    almost_clean$party &lt;- party_name
-    
-    colnames(almost_clean) &lt;- c("Variables", "Values", "Party")
-    
-    almost_clean %&gt;%
-        mutate(Year = 2013) %&gt;%
-        select(Party, Year, Variables, Values)
-    
+    alto_articles &lt;- page %&gt;%
+        str_split("TextBlock ") %&gt;%
+        flatten_chr()
+
+    alto_df &lt;- map_df(alto_articles, extract_alto)
+
+    alto_df &lt;- alto_df %&gt;%
+        mutate(document = doc_name)
+
+    write_csv(alto_df, paste0(page_path, ".csv"))
 }
 
 
-# Treat one district
+alto &lt;- read_file("1533660_newspaper_lunion_1860-11-14/text/1860-11-14_01-00001.xml")
 
-extract_district &lt;- function(dataset, sheets, target_rows, position_parties_national){
 
-    list_data_districts &lt;- map(sheets, ~filter(.data = dataset, sheet == .)) 
+# Extract content from alto files
 
-    elections_districts_2013 &lt;- map(.x = list_data_districts,
-                                    ~map_df(position_parties_national, extract_party, dataset = .x, target_rows = target_rows))
+pages_alto &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*/text/.*.xml") %&gt;%
+    discard(is.na)
 
-    map2(.y = elections_districts_2013, .x = sheets,
-         ~mutate(.y, locality = .x, division = "Commune", Year = "2013")) %&gt;%
-        bind_rows()
-}
 
-elections_2013 &lt;- pmap_dfr(list(x = elections_raw_2013, 
-          y = elections_sheets_2013,
-          z = list_targets), 
-     function(x, y, z){
-         map_dfr(position_parties_national, 
-             ~extract_district(dataset = x, sheets = y, target_rows = z, position_parties_national = .))
-     })
+library(furrr)
 
-# Correct districts
-elections_2013 &lt;- elections_2013 %&gt;%
-    mutate(division = case_when(locality == "CENTRE" ~ "Electoral district",
-                                locality == "EST" ~ "Electoral district",
-                                locality == "NORD" ~ "Electoral district",
-                                locality == "SUD" ~ "Electoral district",
-                                TRUE ~ division))</code></pre>
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_alto, alto_csv)
+toc &lt;- Sys.time()
+
+toc - tic
+
+#Time difference of 18.64776 mins</code></pre>
 </section>
 
 
-</section>
 
 </main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2018-10-27">
+<meta name="dcterms.date" content="2019-01-04">
 
-<title>Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data – Econometrics and Free Software</title>
+<title>Looking into 19th century ads from a Luxembourguish newspaper with R – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +100,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</h1>
+<h1 class="title">Looking into 19th century ads from a Luxembourguish newspaper with R</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">data-science</div>
@@ -115,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 27, 2018</p>
+      <p class="date">January 4, 2019</p>
     </div>
   </div>
   
@@ -129,451 +129,212 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=Bw8g_1VEEL8"> <img src="../assets/img/europe_map_lux.png"></a>
+<a href="https://www.youtube.com/watch?v=0xzN6FM5x_E"> <img src="../assets/img/Wales.jpg" title="Sometimes ads are better than this. Especially if it's Flex Tape ® ads."></a>
 </p>
 </div>
-<section id="abstract" class="level2">
-<h2 class="anchored" data-anchor-id="abstract">
-Abstract
-</h2>
 <p>
-You can find the data used in this blog post here: <a href="https://github.com/b-rodrigues/elections_lux" class="uri">https://github.com/b-rodrigues/elections_lux</a>
+The <a href="https://data.bnl.lu/data/historical-newspapers/">national library of Luxembourg</a> published some very interesting data sets; scans of historical newspapers! There are several data sets that you can download, from 250mb up to 257gb. I decided to take a look at the 32gb “ML Starter Pack”. It contains high quality scans of one year of the <em>L’indépendence Luxembourgeoise</em> (Luxembourguish independence) from the year 1877. To make life easier to data scientists, the national library also included ALTO and METS files (which is a XML schema that is used to describe the layout and contents of physical text sources, such as pages of a book or newspaper) which can be easily parsed by R.
 </p>
 <p>
-This is a follow up to a <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">previous blog post</a> where I extracted data of the 2018 Luxembourguish elections from Excel Workbooks. Now that I have the data, I will create a map of Luxembourg by commune, with pie charts of the results on top of each commune! To do this, I use good ol’ <code>{ggplot2}</code> and another packages called <code>{scatterpie}</code>. As a bonus, I have added the code to extract the data from the 2013 elections from Excel. You’ll find this code in the appendix at the end of the blog post.
+<em>L’indépendence Luxembourgeoise</em> is quite interesting in that it is a Luxembourguish newspaper written in French. Luxembourg always had 3 languages that were used in different situations, French, German and Luxembourguish. Luxembourguish is the language people used (and still use) for day to day life and to speak to their baker. Historically however, it was not used for the press or in politics. Instead it was German that was used for the press (or so I thought) and French in politics (only in <a href="http://legilux.public.lu/eli/etat/leg/loi/1984/02/24/n1/jo">1984</a> was Luxembourguish made an official Language of Luxembourg). It turns out however that <em>L’indépendence Luxembourgeoise</em>, a daily newspaper that does not exist anymore, was in French. This piqued my interest, and it also made analysis easier, for 2 reasons: I first started with the <em>Luxemburger Wort</em> (Luxembourg’s Word I guess would be a translation), which still exists today, but which is in German. And at that time, German was written using the Fraktur font, which makes it barely readable. Look at the alphabet in Fraktur:
 </p>
-</section>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">
-Introduction
-</h2>
+<pre><code>𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅
+𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟</code></pre>
 <p>
-Before importing the data for the elections of 2018, let’s install some packages:
-</p>
-<pre class="r"><code>install.packages('rgeos', type='source') # Dependency of rgdal
-install.packages('rgdal', type='source') # To read in the shapefile</code></pre>
-<p>
-These packages might be very tricky to install on OSX and Linux, but they’re needed to import the shapefile of the country, which is needed to draw a map. So to make things easier, I have created an <code>rds</code> object, from the shapefile of Luxembourg, that you can import natively in R without needing these two packages. But if you want to use them, here is how:
-</p>
-<pre class="r"><code>communes &lt;- readOGR("Limadmin_SHP/LIMADM_COMMUNES.shp")</code></pre>
-<p>
-By the way, you can download the shapefile for Luxembourg <a href="https://data.public.lu/en/datasets/limites-administratives-du-grand-duche-de-luxembourg/#_">here</a>.
+It’s not like German is already hard enough, they had to invent the least readable font ever to write German in, to make extra sure it would be hell to decipher.
 </p>
 <p>
-I’ll use my shapefile though (that you can download from the same github repo as the data):
+So basically I couldn’t be bothered to try to read a German newspaper in Fraktur. That’s when I noticed the <em>L’indépendence Luxembourgeoise</em>… A Luxembourguish newspaper? Written in French? Sounds interesting.
 </p>
-<pre class="r"><code>communes_df &lt;- readRDS("commune_shapefile.rds")</code></pre>
 <p>
-Here’s how it looks like:
+And oh boy. Interesting it was.
 </p>
-<pre class="r"><code>head(communes_df)</code></pre>
-<pre><code>##       long      lat order  hole piece      group       id
-## 1 91057.65 101536.6     1 FALSE     1 Beaufort.1 Beaufort
-## 2 91051.79 101487.3     2 FALSE     1 Beaufort.1 Beaufort
-## 3 91043.43 101461.7     3 FALSE     1 Beaufort.1 Beaufort
-## 4 91043.37 101449.8     4 FALSE     1 Beaufort.1 Beaufort
-## 5 91040.42 101432.1     5 FALSE     1 Beaufort.1 Beaufort
-## 6 91035.44 101405.6     6 FALSE     1 Beaufort.1 Beaufort</code></pre>
 <p>
-Now let’s load some packages:
+19th century newspapers articles were something else. There’s this article for instance:
 </p>
-<pre class="r"><code>library("tidyverse")
-library("tidyxl")
-library("ggplot2")
-library("scatterpie")</code></pre>
 <p>
-Ok, now, let’s import the elections results data, which is the output of <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">last week’s blog post</a>:
+<img src="../assets/img/pray for senators.png"><!-- -->
 </p>
-<pre class="r"><code>elections &lt;- read_csv("elections_2018.csv")</code></pre>
+<p>
+For those of you that do not read French, this article relates that in France, the ministry of justice required priests to include prayers on the Sunday that follows the start of the new season of parliamentary discussions, in order for God to provide senators his help.
+</p>
+<p>
+There this gem too:
+</p>
+<p>
+<img src="../assets/img/tallest_soldier.jpg"><!-- -->
+</p>
+<p>
+This article presents the tallest soldier of the German army, called Emhke, and nominated by the German Emperor himself to accompany him during his visit to Palestine. Emhke was 2.08 meters tall and weighted 236 pounds (apparently at the time Luxembourg was not fully sold on the metric system).
+</p>
+<p>
+Anyway, I decided to take a look at ads. The last paper of this 4 page newspaper always contained ads and other announcements. For example, there’s this ad for a pharmacy:
+</p>
+<p>
+<img src="../assets/img/pharmacy.png"><!-- -->
+</p>
+<p>
+that sells tea, and mineral water. Yes, tea and mineral water. In a pharmacy. Or this one:
+</p>
+<p>
+<img src="../assets/img/upside_down.png"><!-- -->
+</p>
+<p>
+which is literally upside down in the newspaper (the one from the 10th of April 1877). I don’t know if it’s a mistake or if it’s a marketing ploy, but it did catch my attention, 140 years later, so <em>bravo</em>. This is an announcement made by a shop owner that wants to sell all his merchandise for cheap, perhaps to make space for new stuff coming in?
+</p>
+<p>
+So I decided brush up on my natural language processing skills with R and do topic modeling on these ads. The challenge here is that a single document, the 4th page of the newspaper, contains a lot of ads. So it will probably be difficult to clearly isolate topics. But let’s try nonetheless. First of all, let’s load all the <code>.xml</code> files that contain the data. These files look like this:
+</p>
+<pre><code>&lt;TextLine ID="LINE6" STYLEREFS="TS11" HEIGHT="42" WIDTH="449" HPOS="165" VPOS="493"&gt;
+                                    &lt;String ID="S16" CONTENT="l’après-midi," WC="0.638" CC="0803367024653" HEIGHT="42" WIDTH="208" HPOS="165" VPOS="493"/&gt;
+                                    &lt;SP ID="SP11" WIDTH="24" HPOS="373" VPOS="493"/&gt;
+                                    &lt;String ID="S17" CONTENT="le" WC="0.8" CC="40" HEIGHT="30" WIDTH="29" HPOS="397" VPOS="497"/&gt;
+                                    &lt;SP ID="SP12" WIDTH="14" HPOS="426" VPOS="497"/&gt;
+                                    &lt;String ID="S18" CONTENT="Gouverne" WC="0.638" CC="72370460" HEIGHT="31" WIDTH="161" HPOS="440" VPOS="496" SUBS_TYPE="HypPart1" SUBS_CONTENT="Gouvernement"/&gt;
+                                    &lt;HYP CONTENT="-" WIDTH="11" HPOS="603" VPOS="514"/&gt;
+                                  &lt;/TextLine&gt;
+                        &lt;TextLine ID="LINE7" STYLEREFS="TS11" HEIGHT="41" WIDTH="449" HPOS="166" VPOS="541"&gt;
+                                    &lt;String ID="S19" CONTENT="ment" WC="0.725" CC="0074" HEIGHT="26" WIDTH="81" HPOS="166" VPOS="545" SUBS_TYPE="HypPart2" SUBS_CONTENT="Gouvernement"/&gt;
+                                    &lt;SP ID="SP13" WIDTH="24" HPOS="247" VPOS="545"/&gt;
+                                    &lt;String ID="S20" CONTENT="Royal" WC="0.62" CC="74503" HEIGHT="41" WIDTH="100" HPOS="271" VPOS="541"/&gt;
+                                    &lt;SP ID="SP14" WIDTH="26" HPOS="371" VPOS="541"/&gt;
+                                    &lt;String ID="S21" CONTENT="Grand-Ducal" WC="0.682" CC="75260334005" HEIGHT="32" WIDTH="218" HPOS="397" VPOS="541"/&gt;
+                                  &lt;/TextLine&gt;</code></pre>
+<p>
+I’m interested in the “CONTENT” tag, which contains the words. Let’s first get that into R.
+</p>
+<p>
+Load the packages, and the files:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(tidytext)
+library(topicmodels)
+library(brotools)
+
+ad_pages &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*4-alto.xml") %&gt;%
+    discard(is.na)</code></pre>
+<p>
+I save the path of all the pages at once into the <code>ad_pages</code> variables. To understand how and why this works, you must take a look at the hierarchy of the folder:
+</p>
+<p>
+<img src="../assets/img/layout.png"><!-- -->
+</p>
+<p>
+Inside each of these folder, there is a <code>text</code> folder, and inside this folder there are the <code>.xml</code> files. Because this structure is bit complex, I use the <code>list.files()</code> function with the <code>all.files</code> and <code>recursive</code> argument set to <code>TRUE</code> which allow me to dig deep into the folder structure and list every single file. I am only interested into the 4th page though, so that’s why I use <code>str_match()</code> to only keep the 4th page using the <code>“.*4-alto.xml”</code> regular expression. This is the right regular expression, because the files are named like so:
+</p>
+<pre><code>1877-12-29_01-00004-alto.xml</code></pre>
+<p>
+So in the end, <code>ad_pages</code> is a list of all the paths to these files. I then write a function to extract the contents of the “CONTENT” tag. Here is the function.
+</p>
+<pre class="r"><code>get_words &lt;- function(page_path){
+    
+    page &lt;- read_file(page_path)
+    
+    page_name &lt;- str_extract(page_path, "1.*(?=-0000)") 
+    
+    page %&gt;%  
+        str_split("\n", simplify = TRUE) %&gt;% 
+        keep(str_detect(., "CONTENT")) %&gt;% 
+        str_extract("(?&lt;=CONTENT)(.*?)(?=WC)") %&gt;% 
+        discard(is.na) %&gt;% 
+        str_extract("[:alpha:]+") %&gt;% 
+        tolower %&gt;% 
+        as_tibble %&gt;% 
+        rename(tokens = value) %&gt;% 
+        mutate(page = page_name)
+}</code></pre>
+<p>
+This function takes the path to a page as argument, and returns a tibble with the two columns: one containing the words, which I called <code>tokens</code> and the second the name of the document this word was found. I uploaded on <code>.xml</code> file <a href="https://gist.github.com/b-rodrigues/a22d2aa63dff01d88acc2916c003489d">here</a> so that you can try the function yourself. The difficult part is <code>str_extract(“(?&lt;=CONTENT)(.*?)(?=WC)“)</code> which is were the words inside the “CONTENT” tag get extracted.
+</p>
+<p>
+I then map this function to all the pages, and get a nice tibble with all the words:
+</p>
+<pre class="r"><code>ad_words &lt;- map_dfr(ad_pages, get_words)</code></pre>
+<pre class="r"><code>ad_words</code></pre>
+<pre><code>## # A tibble: 1,114,662 x 2
+##    tokens     page                            
+##    &lt;chr&gt;      &lt;chr&gt;                           
+##  1 afin       1877-01-05_01/text/1877-01-05_01
+##  2 de         1877-01-05_01/text/1877-01-05_01
+##  3 mettre     1877-01-05_01/text/1877-01-05_01
+##  4 mes        1877-01-05_01/text/1877-01-05_01
+##  5 honorables 1877-01-05_01/text/1877-01-05_01
+##  6 clients    1877-01-05_01/text/1877-01-05_01
+##  7 à          1877-01-05_01/text/1877-01-05_01
+##  8 même       1877-01-05_01/text/1877-01-05_01
+##  9 d          1877-01-05_01/text/1877-01-05_01
+## 10 avantages  1877-01-05_01/text/1877-01-05_01
+## # … with 1,114,652 more rows</code></pre>
+<p>
+I then do some further cleaning, removing stop words (French and German, because there are some ads in German) and a bunch of garbage characters and words, which are probably when the OCR failed. I also remove some German words from the few German ads that are in the paper, because they have a very high tf-idf (I’ll explain below what that is). I also remove very common words in ads that were just like stopwords. Every ad of a shop mentioned their clients with <em>honorable clientèle</em>, or used the word <em>vente</em>, and so on. This is what you see below in the very long calls to <code>str_remove_all</code>. I also compute the <code>tf_idf</code> and I am grateful to ThinkR blog post on that, which you can read <a href="https://thinkr.fr/text-mining-et-topic-modeling-avec-r/">here</a>. It’s in French though, but the idea of the blog post is to present topic modeling with Wikipedia articles. You can also read the section on tf-idf from the Text Mining with R ebook, <a href="https://www.tidytextmining.com/tfidf.html">here</a>. tf-idf gives a measure of how common words are. Very common words, like stopwords, have a tf-idf of 0. So I use this to further remove very common words, by only keeping words with a tf-idf greater than 0.01. This is why I manually remove garbage words and German words below, because they are so uncommon that they have a very high tf-idf and mess up the rest of the analysis. To find these words I had to go back and forth between the tibble of cleaned words and my code, and manually add all these exceptions. It took some time, but definitely made the results of the next steps better.<br> I then use <code>cast_dtm</code> to cast the tibble into a DocumentTermMatrix object, which is needed for the <code>LDA()</code> function that does the topic modeling:
+</p>
+<pre class="r"><code>stopwords_fr &lt;- read_csv("https://raw.githubusercontent.com/stopwords-iso/stopwords-fr/master/stopwords-fr.txt",
+                         col_names = FALSE)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
-##   Party = col_character(),
-##   Year = col_double(),
-##   Variables = col_character(),
-##   Values = col_double(),
-##   locality = col_character(),
-##   division = col_character()
+##   X1 = col_character()
 ## )</code></pre>
-<p>
-I will only focus on the data at the commune level, and only use the share of votes for each party:
-</p>
-<pre class="r"><code>elections_map &lt;- elections %&gt;%
-    filter(division == "Commune",
-           Variables == "Pourcentage")</code></pre>
-<p>
-Now I need to make sure that the names of the communes are the same between the elections data and the shapefile. Usual suspects are the “Haute-Sûre” and the “Redange-sur-Attert” communes, but let’s take a look:
-</p>
-<pre class="r"><code>locality_elections &lt;- unique(elections_map$locality)
-locality_shapefile &lt;- unique(communes_df$id)
+<pre class="r"><code>stopwords_de &lt;- read_csv("https://raw.githubusercontent.com/stopwords-iso/stopwords-de/master/stopwords-de.txt",
+                         col_names = FALSE)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_character()
+## )</code></pre>
+<pre><code>## Warning: 1 parsing failure.
+## row col  expected    actual                                                                                   file
+## 157  -- 1 columns 2 columns 'https://raw.githubusercontent.com/stopwords-iso/stopwords-de/master/stopwords-de.txt'</code></pre>
+<pre class="r"><code>ad_words2 &lt;- ad_words %&gt;% 
+    filter(!is.na(tokens)) %&gt;% 
+    mutate(tokens = str_remove_all(tokens, 
+                                   '[|\\|!|"|#|$|%|&amp;|\\*|+|,|-|.|/|:|;|&lt;|=|&gt;|?|@|^|_|`|’|\'|‘|(|)|\\||~|=|]|°|&lt;|&gt;|«|»|\\d{1,100}|©|®|•|—|„|“|-|¦\\\\|”')) %&gt;%
+    mutate(tokens = str_remove_all(tokens,
+                                   "j'|j’|m’|m'|n’|n'|c’|c'|qu’|qu'|s’|s'|t’|t'|l’|l'|d’|d'|luxembourg|honneur|rue|prix|maison|frs|ber|adresser|unb|mois|vente|informer|sann|neben|rbudj|artringen|salz|eingetragen|ort|ftofjenb|groifdjen|ort|boch|chem|jahrgang|uoa|genannt|neuwahl|wechsel|sittroe|yerlorenkost|beichsmark|tttr|slpril|ofto|rbudj|felben|acferftücf|etr|eft|sbege|incl|estce|bes|franzosengrund|qne|nne|mme|qni|faire|id|kil")) %&gt;%
+    anti_join(stopwords_de, by = c("tokens" = "X1")) %&gt;% 
+    filter(!str_detect(tokens, "§")) %&gt;% 
+    mutate(tokens = ifelse(tokens == "inédite", "inédit", tokens)) %&gt;% 
+    filter(tokens != "") %&gt;% 
+    anti_join(stopwords_fr, by = c("tokens" = "X1")) %&gt;% 
+    count(page, tokens) %&gt;% 
+    bind_tf_idf(tokens, page, n) %&gt;% 
+    arrange(desc(tf_idf))
 
-setdiff(locality_elections, locality_shapefile)</code></pre>
-<pre><code>## [1] "Lac de la Haute-Sûre" "Redange Attert"</code></pre>
+dtm_long &lt;- ad_words2 %&gt;% 
+    filter(tf_idf &gt; 0.01) %&gt;% 
+    cast_dtm(page, tokens, n)</code></pre>
 <p>
-Yep, exactly as expected. I’ve had problems with the names of these two communes in the past already. Let’s rename these two communes in the elections data:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
-    mutate(commune = case_when(locality == "Lac de la Haute-Sûre" ~ "Lac de la Haute Sûre",
-                          locality == "Redange Attert" ~ "Redange",
-                          TRUE ~ locality))</code></pre>
-<p>
-Now, I can select the relevant columns from the shapefile:
-</p>
-<pre class="r"><code>communes_df &lt;- communes_df %&gt;%
-    select(long, lat, commune = id)</code></pre>
-<p>
-and from the elections data:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;%
-    select(commune, Party, Variables, Values)</code></pre>
-</section>
-<section id="plotting-the-data-on-a-map" class="level2">
-<h2 class="anchored" data-anchor-id="plotting-the-data-on-a-map">
-Plotting the data on a map
-</h2>
-<p>
-Now, for the type of plot I want to make, using the <code>{scatterpie}</code> package, I need the data to be in the wide format, not long. For this I will use <code>tidyr::spread()</code>:
-</p>
-<pre class="r"><code>elections_map &lt;- elections_map %&gt;% 
-    spread(Party, Values)</code></pre>
-<p>
-This is how the data looks now:
-</p>
-<pre class="r"><code>glimpse(elections_map)</code></pre>
-<pre><code>## Observations: 102
-## Variables: 10
-## $ commune     &lt;chr&gt; "Beaufort", "Bech", "Beckerich", "Berdorf", "Bertran…
-## $ Variables   &lt;chr&gt; "Pourcentage", "Pourcentage", "Pourcentage", "Pource…
-## $ ADR         &lt;dbl&gt; 0.12835106, 0.09848661, 0.08596748, 0.16339234, 0.04…
-## $ CSV         &lt;dbl&gt; 0.2426239, 0.2945285, 0.3004751, 0.2604552, 0.290278…
-## $ `déi gréng` &lt;dbl&gt; 0.15695672, 0.21699651, 0.24072721, 0.15619529, 0.15…
-## $ `déi Lénk`  &lt;dbl&gt; 0.04043732, 0.03934808, 0.05435776, 0.02295273, 0.04…
-## $ DP          &lt;dbl&gt; 0.15875393, 0.19394645, 0.12899689, 0.15444466, 0.30…
-## $ KPL         &lt;dbl&gt; 0.015875393, 0.006519208, 0.004385164, 0.011476366, …
-## $ LSAP        &lt;dbl&gt; 0.11771754, 0.11455180, 0.08852549, 0.16592103, 0.09…
-## $ PIRATEN     &lt;dbl&gt; 0.13928411, 0.03562282, 0.09656496, 0.06516242, 0.04…</code></pre>
-<p>
-For this to work, I need two datasets; one to draw the map (<code>commune_df</code>) and one to draw the pie charts over each commune, with the data to draw the charts, but also the position of where I want the pie charts. For this, I will compute the average of the longitude and latitude, which should be good enough:
-</p>
-<pre class="r"><code>scatterpie_data &lt;- communes_df %&gt;%
-    group_by(commune) %&gt;%
-    summarise(long = mean(long),
-              lat = mean(lat))</code></pre>
-<p>
-Now, let’s join the two datasets:
-</p>
-<pre class="r"><code>final_data &lt;- left_join(scatterpie_data, elections_map, by = "commune") </code></pre>
-<p>
-I have all the ingredients to finally plot the data:
-</p>
-<pre class="r"><code>ggplot() +
-    geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
-    geom_scatterpie(data = final_data, aes(x=long, y=lat, group=commune), 
-                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-    labs(title = "Share of total vote in each commune, 2018 elections") +
-    theme_void() +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          legend.text = element_text(colour = "white"),
-          plot.background = element_rect("#272b30"),
-          plot.title = element_text(colour = "white")) +
-    scale_fill_manual(values = c("ADR" = "#009dd1",
-                                 "CSV" = "#ee7d00",
-                                 "déi gréng" = "#45902c",
-                                 "déi Lénk" = "#e94067",
-                                 "DP" = "#002a54",
-                                 "KPL" = "#ff0000",
-                                 "LSAP" = "#ad3648",
-                                 "PIRATEN" = "#ad5ea9"))</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-17-1.png" width="768">
+To read more details on this, I suggest you take a look at the following section of the Text Mining with R ebook: <a href="https://www.tidytextmining.com/topicmodeling.html#latent-dirichlet-allocation">Latent Dirichlet Allocation</a>.
 </p>
 <p>
-Not too bad, but we can’t really read anything from the pie charts. I will now make their size proportional to the number of voters in each commune. For this, I need to go back to the Excel sheets, and look for the right cell:
+I choose to model 10 topics (<code>k = 10</code>), and set the <code>alpha</code> parameter to 5. This hyperparamater controls how many topics are present in one document. Since my ads are all in one page (one document), I increased it. Let’s fit the model, and plot the results:
 </p>
+<pre class="r"><code>lda_model_long &lt;- LDA(dtm_long, k = 10, control = list(alpha = 5))</code></pre>
 <p>
-<img src="../assets/img/electeurs_inscrits.png"><!-- -->
+I plot the per-topic-per-word probabilities, the “beta” from the model and plot the 5 words that contribute the most to each topic:
 </p>
-<p>
-It will be easy to extract this info. It located in cell “E5”:
-</p>
-<pre class="r"><code>elections_raw_2018 &lt;- xlsx_cells("leg-2018-10-14-22-58-09-737.xlsx")
+<pre class="r"><code>result &lt;- tidy(lda_model_long, "beta")
 
-electors_commune &lt;- elections_raw_2018 %&gt;%
-    filter(!(sheet %in% c("Le Grand-Duché de Luxembourg", "Centre", "Est", "Nord", "Sud", "Sommaire"))) %&gt;%
-    filter(address == "E5") %&gt;%
-    select(sheet, numeric) %&gt;%
-    rename(commune = sheet,
-           electors = numeric)</code></pre>
+result %&gt;%
+    group_by(topic) %&gt;%
+    top_n(5, beta) %&gt;%
+    ungroup() %&gt;%
+    arrange(topic, -beta) %&gt;% 
+    mutate(term = reorder(term, beta)) %&gt;%
+    ggplot(aes(term, beta, fill = factor(topic))) +
+    geom_col(show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free") +
+    coord_flip() +
+    theme_blog()</code></pre>
 <p>
-I can now add this to the data:
-</p>
-<pre class="r"><code>final_data &lt;- final_data %&gt;% 
-    full_join(electors_commune) %&gt;%
-    mutate(log_electors = log(electors) * 200)</code></pre>
-<pre><code>## Joining, by = "commune"</code></pre>
-<p>
-In the last line, I create a new column called <code>log_electors</code> that I then multiply by 200. This will be useful later.
+<img src="../assets/img/newspapers-13-1.png" width="672">
 </p>
 <p>
-Now I can add the <code>r</code> argument inside the <code>aes()</code> function on the third line, to make the pie chart size proportional to the number of electors in that commune:
-</p>
-<pre class="r"><code>ggplot() +
-  geom_polygon(data = communes_df, aes(x = long, y = lat, group = commune), colour = "grey", fill = NA) +
-    geom_scatterpie(data = final_data, aes(x=long, y=lat, group = commune, r = electors), 
-                    cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-    labs(title = "Share of total vote in each commune, 2018 elections") +
-    theme_void() +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          legend.text = element_text(colour = "white"),
-          plot.background = element_rect("#272b30"),
-          plot.title = element_text(colour = "white")) +
-    scale_fill_manual(values = c("ADR" = "#009dd1",
-                                 "CSV" = "#ee7d00",
-                                 "déi gréng" = "#45902c",
-                                 "déi Lénk" = "#182024",
-                                 "DP" = "#002a54",
-                                 "KPL" = "#ff0000",
-                                 "LSAP" = "#ad3648",
-                                 "PIRATEN" = "#ad5ea9"))</code></pre>
-<pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-21-1.png" width="768">
+So some topics seem clear to me, other not at all. For example topic 4 seems to be about shoes made out of leather. The word <code>semelle</code>, sole, also appears. Then there’s a lot of topics that reference either music, bals, or instruments. I guess these are ads for local music festivals, or similar events. There’s also an ad for what seems to be bundles of sticks, topic 3: <code>chêne</code> is oak, <code>copeaux</code> is shavings and you know what <code>fagots</code> is. The first word <code>stère</code> which I did not know is a unit of volume equal to one cubic meter (see <a href="https://en.wikipedia.org/wiki/Stere">Wikipedia</a>). So they were likely selling bundle of oak sticks by the cubic meter. For the other topics, I either lack context or perhaps I just need to adjust <code>k</code>, the number of topics to model, and <code>alpha</code> to get better results. In the meantime, topic 1 is about shoes (<code>chaussures</code>), theatre, fuel (<code>combustible</code>) and farts (<code>pet</code>). Really wonder what they were selling in that shop.
 </p>
 <p>
-Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription. For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are the lists:
+In any case, this was quite an interesting project. I learned a lot about topic modeling and historical newspapers of my country! I do not know if I will continue exploring it myself, but I am really curious to see what others will do with it!
 </p>
-<pre class="r"><code>centre &lt;- c("Bissen", "Colmar-Berg", "Fischbach", "Heffingen", "Larochette",
-            "Lintgen", "Lorentzweiler", "Mersch", "Nommern", "Helperknapp", "Bertrange", "Contern", 
-            "Hesperange", "Luxembourg", "Niederanven", "Sandweiler", "Schuttrange", "Steinsel", 
-            "Strassen", "Walferdange", "Weiler-la-Tour")
-
-est &lt;- c("Beaufort", "Bech", "Berdorf", "Consdorf", "Echternach", "Rosport-Mompach", "Waldbillig",
-         "Betzdorf", "Biwer", "Flaxweiler", "Grevenmacher", "Junglinster", "Manternach", "Mertert",
-         "Wormeldange","Bous", "Dalheim", "Lenningen", "Mondorf-les-Bains", "Remich", "Schengen",
-         "Stadtbredimus", "Waldbredimus")
-
-nord &lt;- c("Clervaux", "Parc Hosingen", "Troisvierges", "Weiswampach", "Wincrange", "Bettendorf", 
-          "Bourscheid", "Diekirch", "Erpeldange-sur-Sûre", "Ettelbruck", "Feulen", "Mertzig", "Reisdorf", 
-          "Schieren", "Vallée de l'Ernz", "Beckerich", "Ell", "Grosbous", "Préizerdaul", 
-          "Rambrouch", "Redange", "Saeul", "Useldange", "Vichten", "Wahl", "Putscheid", "Tandel",
-          "Vianden", "Boulaide", "Esch-sur-Sûre", "Goesdorf", "Kiischpelt", "Lac de la Haute Sûre",
-          "Wiltz", "Winseler")
-
-sud &lt;- c("Dippach", "Garnich", "Käerjeng", "Kehlen", "Koerich", "Kopstal", "Mamer", 
-         "Habscht", "Steinfort", "Bettembourg", "Differdange", "Dudelange", "Esch-sur-Alzette", 
-         "Frisange", "Kayl", "Leudelange", "Mondercange", "Pétange", "Reckange-sur-Mess", "Roeser",
-         "Rumelange", "Sanem", "Schifflange")
-
-circonscriptions &lt;- list("centre" = centre, "est" = est,
-                         "nord" = nord, "sud" = sud)</code></pre>
-<p>
-Now, I can make one map per circonscription. First, let’s split the data sets by circonscription:
-</p>
-<pre class="r"><code>communes_df_by_circonscription &lt;- circonscriptions %&gt;%
-    map(~filter(communes_df, commune %in% .))
-
-final_data_by_circonscription &lt;- circonscriptions %&gt;%
-    map(~filter(final_data, commune %in% .))</code></pre>
-<p>
-By using <code>pmap()</code>, I can reuse the code to generate the plot to each element of the two lists. This is nice because I do not need to copy and paste the code 4 times:
-</p>
-<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
-          y = final_data_by_circonscription,
-          z = names(communes_df_by_circonscription)),
-     function(x, y, z){
-         ggplot() +
-        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
-                     colour = "grey", fill = NA) +
-        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune), 
-                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
-        theme_void() +
-        theme(legend.position = "bottom",
-              legend.title = element_blank(),
-              legend.text = element_text(colour = "white"),
-              plot.background = element_rect("#272b30"),
-              plot.title = element_text(colour = "white")) + 
-        scale_fill_manual(values = c("ADR" = "#009dd1",
-                                     "CSV" = "#ee7d00",
-                                     "déi gréng" = "#45902c",
-                                     "déi Lénk" = "#182024",
-                                     "DP" = "#002a54",
-                                     "KPL" = "#ff0000",
-                                     "LSAP" = "#ad3648",
-                                     "PIRATEN" = "#ad5ea9"))
-     }
-)</code></pre>
-<pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-1.png" width="768">
-</p>
-<pre><code>## 
-## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-2.png" width="768">
-</p>
-<pre><code>## 
-## $nord</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-3.png" width="768">
-</p>
-<pre><code>## 
-## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-4.png" width="768">
-</p>
-<p>
-I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!
-</p>
-<p>
-The pie charts are still quite small, but if I try to change the size of the pie charts, I’ll have the same problem as before: inside the same circonscription, some communes have really a lot of electors, and some a very small number. Perhaps I can try with the log of the electors?
-</p>
-<pre class="r"><code>pmap(list(x = communes_df_by_circonscription,
-          y = final_data_by_circonscription,
-          z = names(communes_df_by_circonscription)),
-     function(x, y, z){
-         ggplot() +
-        geom_polygon(data = x, aes(x = long, y = lat, group = commune), 
-                     colour = "grey", fill = NA) +
-        geom_scatterpie(data = y, aes(x=long, y=lat, group = commune, r = log_electors), 
-                        cols = c("ADR", "CSV", "déi gréng", "déi Lénk", "DP", "KPL", "LSAP", "PIRATEN")) +
-        labs(title = paste0("Share of total vote in each commune, 2018 elections for circonscription ", z)) +
-        theme_void() +
-        theme(legend.position = "bottom",
-              legend.title = element_blank(),
-              legend.text = element_text(colour = "white"),
-              plot.background = element_rect("#272b30"),
-              plot.title = element_text(colour = "white")) + 
-        scale_fill_manual(values = c("ADR" = "#009dd1",
-                                     "CSV" = "#ee7d00",
-                                     "déi gréng" = "#45902c",
-                                     "déi Lénk" = "#182024",
-                                     "DP" = "#002a54",
-                                     "KPL" = "#ff0000",
-                                     "LSAP" = "#ad3648",
-                                     "PIRATEN" = "#ad5ea9"))
-     }
-)</code></pre>
-<pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-1.png" width="768">
-</p>
-<pre><code>## 
-## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-2.png" width="768">
-</p>
-<pre><code>## 
-## $nord</code></pre>
-<pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-3.png" width="768">
-</p>
-<pre><code>## 
-## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-4.png" width="768">
-</p>
-<p>
-This looks better now!
-</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">
-Conclusion
-</h2>
-<p>
-Having data in a machine readable format is really important. The amount of code I had to write to go from the Excel Workbooks that contained the data to this plots is quite large, but if the data was in a machine readable format to start with, I could have focused on the plots immediately.
-</p>
-<p>
-The good thing is that I got to practice my skills and discovered <code>{scatterpie}</code>!
-</p>
-<section id="appendix" class="level2">
-<h2 class="anchored" data-anchor-id="appendix">
-Appendix
-</h2>
-<p>
-The following lines of code extract the data (from the 2013 elections) from the Excel Workbooks that can be found in Luxembourguish <a href="https://data.public.lu/fr/datasets/elections-legislatives-2013-donnees-officieuses/#_">Open Data Portal</a>.
-</p>
-<p>
-I will not comment them, as they work in a similar way than in the previous blog post where I extracted the data from the 2018 elections. The only difference, is that the sheet with the national level data was totally different, so I did not extract it. The first reason is because I don’t need it for this blog post, the second is because I was lazy. For me, that’s two pretty good reasons not to do something. If you have a question concerning the code below, don’t hesitate to reach out though!
-</p>
-<pre class="r"><code>library("tidyverse")
-library("tidyxl")
-library("brotools")
-
-path &lt;- Sys.glob("content/blog/2013*xlsx")[-5]
-
-elections_raw_2013 &lt;- map(path, xlsx_cells) %&gt;%
-    map(~filter(., sheet != "Sommaire"))
-
-elections_sheets_2013 &lt;- map(map(path, xlsx_sheet_names), ~`%-l%`(., "Sommaire"))
-
-list_targets &lt;- list("Centre" = seq(9, 32),
-                    "Est" = seq(9, 18),
-                    "Nord" = seq(9, 20),
-                    "Sud" = seq(9, 34))
-
-position_parties_national &lt;- seq(1, 24, by = 3)
-
-extract_party &lt;- function(dataset, starting_col, target_rows){
-    
-    almost_clean &lt;- dataset %&gt;%
-        filter(row %in% target_rows) %&gt;%
-        filter(col %in% c(starting_col, starting_col + 1)) %&gt;%
-        select(character, numeric) %&gt;%
-        fill(numeric, .direction = "up") %&gt;%
-        filter(!is.na(character))
-    
-    party_name &lt;- almost_clean$character[1]
-    
-    almost_clean$character[1] &lt;- "Pourcentage"
-    
-    almost_clean$party &lt;- party_name
-    
-    colnames(almost_clean) &lt;- c("Variables", "Values", "Party")
-    
-    almost_clean %&gt;%
-        mutate(Year = 2013) %&gt;%
-        select(Party, Year, Variables, Values)
-    
-}
 
 
-# Treat one district
-
-extract_district &lt;- function(dataset, sheets, target_rows, position_parties_national){
-
-    list_data_districts &lt;- map(sheets, ~filter(.data = dataset, sheet == .)) 
-
-    elections_districts_2013 &lt;- map(.x = list_data_districts,
-                                    ~map_df(position_parties_national, extract_party, dataset = .x, target_rows = target_rows))
-
-    map2(.y = elections_districts_2013, .x = sheets,
-         ~mutate(.y, locality = .x, division = "Commune", Year = "2013")) %&gt;%
-        bind_rows()
-}
-
-elections_2013 &lt;- pmap_dfr(list(x = elections_raw_2013, 
-          y = elections_sheets_2013,
-          z = list_targets), 
-     function(x, y, z){
-         map_dfr(position_parties_national, 
-             ~extract_district(dataset = x, sheets = y, target_rows = z, position_parties_national = .))
-     })
-
-# Correct districts
-elections_2013 &lt;- elections_2013 %&gt;%
-    mutate(division = case_when(locality == "CENTRE" ~ "Electoral district",
-                                locality == "EST" ~ "Electoral district",
-                                locality == "NORD" ~ "Electoral district",
-                                locality == "SUD" ~ "Electoral district",
-                                TRUE ~ division))</code></pre>
-</section>
-
-
-</section>
 
 </main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
