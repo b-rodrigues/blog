@@ -138,11 +138,13 @@ should be good enough:</p>
                                  &quot;KPL&quot; = &quot;#ff0000&quot;,
                                  &quot;LSAP&quot; = &quot;#ad3648&quot;,
                                  &quot;PIRATEN&quot; = &quot;#ad5ea9&quot;))</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-17-1.png" width="768" /></p>
+
+<p><img src="../assets/img/lux_elections_analysis-17-1.png" width="768" /></p>
+
 <p>Not too bad, but we can’t really read anything from the pie charts. I will now make their size
 proportional to the number of voters in each commune. For this, I need to go back to the Excel
 sheets, and look for the right cell:</p>
-<p><img src="/img/electeurs_inscrits.png" /><!-- --></p>
+<p><img src="../assets/img/electeurs_inscrits.png" /><!-- --></p>
 <p>It will be easy to extract this info. It located in cell “E5”:</p>
 <pre class="r"><code>elections_raw_2018 &lt;- xlsx_cells(&quot;leg-2018-10-14-22-58-09-737.xlsx&quot;)
 
@@ -181,7 +183,9 @@ size proportional to the number of electors in that commune:</p>
                                  &quot;LSAP&quot; = &quot;#ad3648&quot;,
                                  &quot;PIRATEN&quot; = &quot;#ad5ea9&quot;))</code></pre>
 <pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-21-1.png" width="768" /></p>
+
+<p><img src="../assets/img/lux_elections_analysis-21-1.png" width="768" /></p>
+
 <p>Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription.
 For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are
 the lists:</p>
@@ -244,16 +248,18 @@ This is nice because I do not need to copy and paste the code 4 times:</p>
      }
 )</code></pre>
 <pre><code>## $centre</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-1.png" width="768" /></p>
+
+<p><img src="../assets/img/lux_elections_analysis-24-1.png" width="768" /></p>
+
 <pre><code>## 
 ## $est</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-2.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-24-2.png" width="768" /></p>
 <pre><code>## 
 ## $nord</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-3.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-24-3.png" width="768" /></p>
 <pre><code>## 
 ## $sud</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-24-4.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-24-4.png" width="768" /></p>
 <p>I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with
 <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!</p>
 <p>The pie charts are still quite small, but if I try to change the size of the pie charts,
@@ -286,17 +292,17 @@ lot of electors, and some a very small number. Perhaps I can try with the log of
      }
 )</code></pre>
 <pre><code>## $centre</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-1.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-25-1.png" width="768" /></p>
 <pre><code>## 
 ## $est</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-2.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-25-2.png" width="768" /></p>
 <pre><code>## 
 ## $nord</code></pre>
 <pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-3.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-25-3.png" width="768" /></p>
 <pre><code>## 
 ## $sud</code></pre>
-<p><img src="/blog/2018-10-27-lux_elections_analysis_files/figure-html/unnamed-chunk-25-4.png" width="768" /></p>
+<p><img src="../assets/img/lux_elections_analysis-25-4.png" width="768" /></p>
 <p>This looks better now!</p>
 </div>
 <div id="conclusion" class="section level2">
@@ -305,12 +311,6 @@ lot of electors, and some a very small number. Perhaps I can try with the log of
 to go from the Excel Workbooks that contained the data to this plots is quite large, but if the
 data was in a machine readable format to start with, I could have focused on the plots immediately.</p>
 <p>The good thing is that I got to practice my skills and discovered <code>{scatterpie}</code>!</p>
-<p>Hope you enjoyed! If you found this blog post useful, you might want to follow
-me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a>.</p>
-<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
-<p><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a></p>
-</div>
 <div id="appendix" class="section level2">
 <h2>Appendix</h2>
 <p>The following lines of code extract the data (from the 2013 elections) from the Excel Workbooks

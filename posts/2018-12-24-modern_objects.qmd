@@ -1,14 +1,13 @@
 ---
 date: 2018-12-24
 title: "Objects types and some useful R functions for beginners"
-tags: [R]
-menu:
-  main:
-    parent: Blog
-    identifier: /blog/modern_objects
-    weight: 1
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
 ---
-
 
 
 <div style="text-align:center;">

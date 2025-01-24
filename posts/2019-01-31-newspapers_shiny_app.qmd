@@ -1,0 +1,33 @@
+---
+date: 2019-01-31
+title: "Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+
+<div style="text-align:center;">
+<p><a href="https://brodriguesco.shinyapps.io/newspapers_app/">
+<img src="../assets/img/tf_idf.png" title = "Click here to go the app"></a></p>
+</div>
+<p>I have been playing around with historical newspaper data (see
+<a href="2019-01-04-newspapers.qmd">here</a> and
+<a href="2019-01-13-newspapers_mets_alto.qmd">here</a>). I have extracted the
+data from the largest archive available, as described in the previous blog post, and now created
+a shiny dashboard where it is possible to visualize the most common words per article, as well as
+read a summary of each article.
+The summary was made using a method called <em>textrank</em>, using the <code>{textrank}</code> package, which extracts
+relevant sentences using the Pagerank (developed by Google) algorithm. You can read the scientific
+paper <a href="https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">here</a> for more info.</p>
+<p>You can play around with the app by clicking <a href="https://brodriguesco.shinyapps.io/newspapers_app/">here</a>.
+In the next blog post, I will explain how I created the app, step by step. It’s going to be a long blog post!</p>
+<p>Using the app, I noticed that some war happened around November 1860 in China, which turned out to
+be the <a href="https://en.wikipedia.org/wiki/Second_Opium_War">Second Opium War</a>. The war actually ended
+in October 1860, but apparently the news took several months to travel to Europe.</p>
+<p>I also learned that already in the 1861, there was public transportation between some Luxembourguish villages,
+and French villages that were by the border (see the publication from the 17th of December 1861).</p>
+<p>Let me know if you find about historical events using my app!</p>
