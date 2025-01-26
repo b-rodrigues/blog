@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2019-03-05">
 
-<title>Econometrics and Free Software</title>
+<title>Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2 – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,40 +66,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-execute','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-execute","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
       <a href="../index.html">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
@@ -112,37 +81,8 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,303 +92,313 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 5, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2019
-</h2>
-<ul>
-<li>
-<a href="./posts/2019-05-19-spacemacs.html">The never-ending editor war (?)</a>
-</li>
-<li>
-<a href="./posts/2019-05-18-xml2.html">For posterity: install {xml2} on GNU/Linux distros</a>
-</li>
-<li>
-<a href="./posts/2019-05-04-diffindiff_part2.html">Fast food, causality and R packages, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-04-28-diffindiff_part1.html">Fast food, causality and R packages, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-04-07-historical_newspaper_scraping_tesseract.html">Historical newspaper scraping with {tesseract} and R</a>
-</li>
-<li>
-<a href="./posts/2019-03-31-tesseract.html">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</a>
-</li>
-<li>
-<a href="./posts/2019-03-20-pivot.html">Pivoting data frames just got easier thanks to <code>pivot_wide()</code> and <code>pivot_long()</code></a>
-</li>
-<li>
-<a href="./posts/2019-03-05-historical_vowpal_part2.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-03-03-historical_vowpal.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-02-10-stringr_package.html">Manipulating strings with the {stringr} package</a>
-</li>
-<li>
-<a href="./posts/2019-02-04-newspapers_shiny_app_tutorial.html">Building a shiny app to explore historical newspapers: a step-by-step guide</a>
-</li>
-<li>
-<a href="./posts/2019-01-31-newspapers_shiny_app.html">Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</a>
-</li>
-<li>
-<a href="./posts/2019-01-13-newspapers_mets_alto.html">Making sense of the METS and ALTO XML standards</a>
-</li>
-<li>
-<a href="./posts/2019-01-04-newspapers.html">Looking into 19th century ads from a Luxembourguish newspaper with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-12-30-reticulate.html">R or Python? Why not both? Using Anaconda Python within R with {reticulate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-27-fun_gganimate.html">Some fun with {gganimate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-24-modern_objects.html">Objects types and some useful R functions for beginners</a>
-</li>
-<li>
-<a href="./posts/2018-12-21-tidyverse_pi.html">Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</a>
-</li>
-<li>
-<a href="./posts/2018-12-15-lubridate_africa.html">Manipulate dates easily with {lubridate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-02-hyper-parameters.html">What hyper-parameters are, and what to do with them; an illustration with ridge regression</a>
-</li>
-<li>
-<a href="./posts/2018-11-25-tidy_cv.html">A tutorial on tidy cross-validation with R</a>
-</li>
-<li>
-<a href="./posts/2018-11-21-lux_castle.html">The best way to visit Luxembourguish castles is doing data science + combinatorial optimization</a>
-</li>
-<li>
-<a href="./posts/2018-11-16-rgenoud_arima.html">Using a genetic algorithm for the hyperparameter optimization of a SARIMA model</a>
-</li>
-<li>
-<a href="./posts/2018-11-15-tidy_gridsearch.html">Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach</a>
-</li>
-<li>
-<a href="./posts/2018-11-14-luxairport.html">Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport</a>
-</li>
-<li>
-<a href="./posts/2018-11-10-nethack_analysis_part2.html">Analyzing NetHack data, part 2: What players kill the most</a>
-</li>
-<li>
-<a href="./posts/2018-11-03-nethack_analysis.html">Analyzing NetHack data, part 1: What kills the players</a>
-</li>
-<li>
-<a href="./posts/2018-11-01-nethack.html">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</a>
-</li>
-<li>
-<a href="./posts/2018-10-27-lux_elections_analysis.html">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</a>
-</li>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://youtu.be/BilPXIt0R2w?t=41"> <img src="../assets/img/wabbit_reading.jpg" title="Vowpal Wabbit is fast as heck"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+In <a href="../posts/2019-03-03-historical_vowpal.html">part 1</a> of this series I set up Vowpal Wabbit to classify newspapers content. Now, let’s use the model to make predictions and see how and if we can improve the model. Then, let’s train the model on the whole data.
+</p>
+<section id="step-1-prepare-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-prepare-the-data">
+Step 1: prepare the data
+</h2>
+<p>
+The first step consists in importing the test data and preparing it. The test data need not be large and thus can be imported and worked on in R.
+</p>
+<p>
+I need to remove the target column from the test set, or else it will be used to make predictions. If you do not remove this column the accuracy of the model will be very high, but it will be wrong since, of course, you do not have the target column at running time… because it is the column that you want to predict!
+</p>
+<pre class="r"><code>library("tidyverse")
+library("yardstick")
+
+small_test &lt;- read_delim("data_split/small_test.txt", "|",
+                      escape_double = FALSE, col_names = FALSE,
+                      trim_ws = TRUE)
+
+small_test %&gt;%
+    mutate(X1= " ") %&gt;%
+    write_delim("data_split/small_test2.txt", col_names = FALSE, delim = "|")</code></pre>
+<p>
+I wrote the data in a file called <code>small_test2.txt</code> and can now use my model to make predictions:
+</p>
+<pre class="r"><code>system2("/home/cbrunos/miniconda3/bin/vw", args = "-t -i vw_models/small_oaa.model data_split/small_test2.txt -p data_split/small_oaa.predict")</code></pre>
+<p>
+The predictions get saved in the file <code>small_oaa.predict</code>, which is a plain text file. Let’s add these predictions to the original test set:
+</p>
+<pre class="r"><code>small_predictions &lt;- read_delim("data_split/small_oaa.predict", "|",
+                          escape_double = FALSE, col_names = FALSE,
+                          trim_ws = TRUE)
+
+small_test &lt;- small_test %&gt;%
+    rename(truth = X1) %&gt;%
+    mutate(truth = factor(truth, levels = c("1", "2", "3", "4", "5")))
+
+small_predictions &lt;- small_predictions %&gt;%
+    rename(predictions = X1) %&gt;%
+    mutate(predictions = factor(predictions, levels = c("1", "2", "3", "4", "5")))
+
+small_test &lt;- small_test %&gt;%
+    bind_cols(small_predictions)</code></pre>
+</section>
+<section id="step-2-use-the-model-and-test-data-to-evaluate-performance" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-use-the-model-and-test-data-to-evaluate-performance">
+Step 2: use the model and test data to evaluate performance
+</h2>
+<p>
+We can use the several metrics included in <code>{yardstick}</code> to evaluate the model’s performance:
+</p>
+<pre class="r"><code>conf_mat(small_test, truth = truth, estimate = predictions)
+
+accuracy(small_test, truth = truth, estimate = predictions)</code></pre>
+<pre class="r"><code>          Truth
+Prediction  1  2  3  4  5
+         1 51 15  2 10  1
+         2 11  6  3  1  0
+         3  0  0  0  0  0
+         4  0  0  0  0  0
+         5  0  0  0  0  0</code></pre>
+<pre class="r"><code># A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.570</code></pre>
+<p>
+We can see that the model never predicted class <code>3</code>, <code>4</code> or <code>5</code>. Can we improve by adding some regularization? Let’s find out!
+</p>
+</section>
+<section id="step-3-adding-regularization" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-adding-regularization">
+Step 3: adding regularization
+</h2>
+<p>
+Before trying regularization, let’s try changing the cost function from the logistic function to the hinge function:
+</p>
+<pre class="r"><code># Train the model
+hinge_oaa_fit &lt;- system2("/home/cbrunos/miniconda3/bin/vw", args = "--oaa 5 -d data_split/small_train.txt --loss_function hinge -f vw_models/hinge_oaa.model", stderr = TRUE)
+
+system2("/home/cbrunos/miniconda3/bin/vw", args = "-i vw_models/hinge_oaa.model -t -d data_split/small_test2.txt -p data_split/hinge_oaa.predict")
+
+
+predictions &lt;- read_delim("data_split/hinge_oaa.predict", "|",
+                          escape_double = FALSE, col_names = FALSE,
+                          trim_ws = TRUE)
+
+test &lt;- test %&gt;%
+    select(-predictions)
+
+predictions &lt;- predictions %&gt;%
+    rename(predictions = X1) %&gt;%
+    mutate(predictions = factor(predictions, levels = c("1", "2", "3", "4", "5")))
+
+test &lt;- test %&gt;%
+    bind_cols(predictions)</code></pre>
+<pre class="r"><code>conf_mat(test, truth = truth, estimate = predictions)
+
+accuracy(test, truth = truth, estimate = predictions)</code></pre>
+<pre class="r"><code>          Truth
+Prediction   1   2   3   4   5
+         1 411 120  45  92   1
+         2 355 189  12  17   0
+         3  11   2   0   0   0
+         4  36   4   0   1   0
+         5   3   0   3   0   0</code></pre>
+<pre class="r"><code># A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.462</code></pre>
+<p>
+Well, didn’t work out so well, but at least we now know how to change the loss function. Let’s go back to the logistic loss and add some regularization. First, let’s train the model:
+</p>
+<pre class="r"><code>regul_oaa_fit &lt;- system2("/home/cbrunos/miniconda3/bin/vw", args = "--oaa 5 --l1 0.005 --l2 0.005 -d data_split/small_train.txt -f vw_models/small_regul_oaa.model", stderr = TRUE)</code></pre>
+<p>
+Now we can use it for prediction:
+</p>
+<pre class="r"><code>system2("/home/cbrunos/miniconda3/bin/vw", args = "-i vw_models/small_regul_oaa.model -t -d data_split/test2.txt -p data_split/small_regul_oaa.predict")
+
+
+predictions &lt;- read_delim("data_split/small_regul_oaa.predict", "|",
+                          escape_double = FALSE, col_names = FALSE,
+                          trim_ws = TRUE)
+
+test &lt;- test %&gt;%
+    select(-predictions)
+
+predictions &lt;- predictions %&gt;%
+    rename(predictions = X1) %&gt;%
+    mutate(predictions = factor(predictions, levels = c("1", "2", "3", "4", "5")))
+
+test &lt;- test %&gt;%
+    bind_cols(predictions)</code></pre>
+<p>
+We can now use it for predictions:
+</p>
+<pre class="r"><code>conf_mat(test, truth = truth, estimate = predictions)
+
+accuracy(test, truth = truth, estimate = predictions)</code></pre>
+<pre class="r"><code>          Truth
+Prediction   1   2   3   4   5
+         1 816 315  60 110   1
+         2   0   0   0   0   0
+         3   0   0   0   0   0
+         4   0   0   0   0   0
+         5   0   0   0   0   0</code></pre>
+<pre class="r"><code># A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.627</code></pre>
+<p>
+So accuracy improved, but the model only predicts class 1 now… let’s try with other hyper-parameters values:
+</p>
+<pre class="r"><code>regul_oaa_fit &lt;- system2("/home/cbrunos/miniconda3/bin/vw", args = "--oaa 5 --l1 0.00015 --l2 0.00015 -d data_split/small_train.txt -f vw_models/small_regul_oaa.model", stderr = TRUE)</code></pre>
+<pre class="r"><code>conf_mat(test, truth = truth, estimate = predictions)
+
+accuracy(test, truth = truth, estimate = predictions)</code></pre>
+<pre class="r"><code>          Truth
+Prediction   1   2   3   4   5
+         1 784 300  57 108   1
+         2  32  14   3   2   0
+         3   0   1   0   0   0
+         4   0   0   0   0   0
+         5   0   0   0   0   0</code></pre>
+<pre class="r"><code># A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.613</code></pre>
+<p>
+So accuracy is lower than previously, but at least more categories get correctly predicted. Depending on your needs, you should consider different metrics. Especially for classification problems, you might not be interested in accuracy, in particular if the data is severely unbalanced.
+</p>
+<p>
+Anyhow, to finish this blog post, let’s train the model on the whole data and measure the time it takes to run the full model.
+</p>
+</section>
+<section id="step-4-training-on-the-whole-data" class="level2">
+<h2 class="anchored" data-anchor-id="step-4-training-on-the-whole-data">
+Step 4: Training on the whole data
+</h2>
+<p>
+Let’s first split the whole data into a training and a testing set:
+</p>
+<pre class="r"><code>nb_lines &lt;- system2("cat", args = "text_fr.txt | wc -l", stdout = TRUE)
+
+system2("split", args = paste0("-l", floor(as.numeric(nb_lines)*0.995), " text_fr.txt data_split/"))
+
+system2("mv", args = "data_split/aa data_split/train.txt")
+system2("mv", args = "data_split/ab data_split/test.txt")</code></pre>
+<p>
+The whole data contains 260247 lines, and the training set weighs 667MB, which is quite large. Let’s train the simple multiple classifier on the data and see how long it takes:
+</p>
+<pre class="r"><code>tic &lt;- Sys.time()
+oaa_fit &lt;- system2("/home/cbrunos/miniconda3/bin/vw", args = "--oaa 5 -d data_split/train.txt -f vw_models/oaa.model", stderr = TRUE)
+Sys.time() - tic</code></pre>
+<pre class="r"><code>Time difference of 4.73266 secs</code></pre>
+<p>
+Yep, you read that right. Training the classifier on 667MB of data took less than 5 seconds!
+</p>
+<p>
+Let’s take a look at the final object:
+</p>
+<pre class="r"><code>oaa_fit</code></pre>
+<pre class="r"><code> [1] "final_regressor = vw_models/oaa.model"                                   
+ [2] "Num weight bits = 18"                                                    
+ [3] "learning rate = 0.5"                                                     
+ [4] "initial_t = 0"                                                           
+ [5] "power_t = 0.5"                                                           
+ [6] "using no cache"                                                          
+ [7] "Reading datafile = data_split/train.txt"                                 
+ [8] "num sources = 1"                                                         
+ [9] "average  since         example        example  current  current  current"
+[10] "loss     last          counter         weight    label  predict features"
+[11] "1.000000 1.000000            1            1.0        2        1      253"
+[12] "0.500000 0.000000            2            2.0        2        2      499"
+[13] "0.250000 0.000000            4            4.0        2        2        6"
+[14] "0.250000 0.250000            8            8.0        1        1     2268"
+[15] "0.312500 0.375000           16           16.0        1        1      237"
+[16] "0.250000 0.187500           32           32.0        1        1      557"
+[17] "0.171875 0.093750           64           64.0        1        1      689"
+[18] "0.179688 0.187500          128          128.0        2        2      208"
+[19] "0.144531 0.109375          256          256.0        1        1      856"
+[20] "0.136719 0.128906          512          512.0        4        4        4"
+[21] "0.122070 0.107422         1024         1024.0        1        1     1353"
+[22] "0.106934 0.091797         2048         2048.0        1        1      571"
+[23] "0.098633 0.090332         4096         4096.0        1        1       43"
+[24] "0.080566 0.062500         8192         8192.0        1        1      885"
+[25] "0.069336 0.058105        16384        16384.0        1        1      810"
+[26] "0.062683 0.056030        32768        32768.0        2        2      467"
+[27] "0.058167 0.053650        65536        65536.0        1        1       47"
+[28] "0.056061 0.053955       131072       131072.0        1        1      495"
+[29] ""                                                                        
+[30] "finished run"                                                            
+[31] "number of examples = 258945"                                             
+[32] "weighted example sum = 258945.000000"                                    
+[33] "weighted label sum = 0.000000"                                           
+[34] "average loss = 0.054467"                                                 
+[35] "total feature number = 116335486"  </code></pre>
+<p>
+Let’s use the test set and see how the model fares:
+</p>
+<pre class="r"><code>conf_mat(test, truth = truth, estimate = predictions)
+
+accuracy(test, truth = truth, estimate = predictions)</code></pre>
+<pre class="r"><code>          Truth
+Prediction   1   2   3   4   5
+         1 537 175  52 100   1
+         2 271 140   8   9   0
+         3   1   0   0   0   0
+         4   7   0   0   1   0
+         5   0   0   0   0   0</code></pre>
+<pre class="r"><code># A tibble: 1 x 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.521</code></pre>
+<p>
+Better accuracy can certainly be achieved with hyper-parameter tuning… maybe the subject for a future blog post? In any case I am very impressed with Vowpal Wabbit and am certainly looking forward to future developments of <code>{RVowpalWabbit}</code>!
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -460,7 +410,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

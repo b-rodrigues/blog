@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2019-02-10">
+
+<title>Manipulating strings with the {stringr} package – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Manipulating strings with the {stringr} package</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 10, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://b-rodrigues.github.io/modern_R/descriptive-statistics-and-data-manipulation.html#manipulate-strings-with-stringr"> <img src="../assets/img/string.jpg" title="Click here to go the ebook"></a>
+</p>
+</div>
+<p>
+This blog post is an excerpt of my ebook Modern R with the tidyverse that you can read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 4, in which I introduce the <code>{stringr}</code> package.
+</p>
+<section id="manipulate-strings-with-stringr" class="level2">
+<h2 class="anchored" data-anchor-id="manipulate-strings-with-stringr">
+Manipulate strings with <code>{stringr}</code>
+</h2>
+<p>
+<code>{stringr}</code> contains functions to manipulate strings. In Chapter 10, I will teach you about regular expressions, but the functions contained in <code>{stringr}</code> allow you to already do a lot of work on strings, without needing to be a regular expression expert.
+</p>
+<p>
+I will discuss the most common string operations: detecting, locating, matching, searching and replacing, and exctracting/removing strings.
+</p>
+<p>
+To introduce these operations, let us use an ALTO file of an issue of <em>The Winchester News</em> from October 31, 1910, which you can find on this <a href="https://gist.githubusercontent.com/b-rodrigues/5139560e7d0f2ecebe5da1df3629e015/raw/e3031d894ffb97217ddbad1ade1b307c9937d2c8/gistfile1.txt">link</a> (to see how the newspaper looked like, <a href="https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/">click here</a>). I re-hosted the file on a public gist for archiving purposes. While working on the book, the original site went down several times…
+</p>
+<p>
+ALTO is an XML schema for the description of text OCR and layout information of pages for digitzed material, such as newspapers (source: <a href="https://en.wikipedia.org/wiki/ALTO_(XML)">ALTO Wikipedia page</a>). For more details, you can read my <a href="https://www.brodrigues.co/blog/2019-01-13-newspapers_mets_alto/">blogpost</a> on the matter, but for our current purposes, it is enough to know that the file contains the text of newspaper articles. The file looks like this:
+</p>
+<pre><code>&lt;TextLine HEIGHT="138.0" WIDTH="2434.0" HPOS="4056.0" VPOS="5814.0"&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="108.0" WIDTH="393.0" HPOS="4056.0" VPOS="5838.0" CONTENT="timore" WC="0.82539684"&gt;
+&lt;ALTERNATIVE&gt;timole&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;tlnldre&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;timor&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;insole&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;landed&lt;/ALTERNATIVE&gt;
+&lt;/String&gt;
+&lt;SP WIDTH="74.0" HPOS="4449.0" VPOS="5838.0"/&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="105.0" WIDTH="432.0" HPOS="4524.0" VPOS="5847.0" CONTENT="market" WC="0.95238096"/&gt;
+&lt;SP WIDTH="116.0" HPOS="4956.0" VPOS="5847.0"/&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="69.0" WIDTH="138.0" HPOS="5073.0" VPOS="5883.0" CONTENT="as" WC="0.96825397"/&gt;
+&lt;SP WIDTH="74.0" HPOS="5211.0" VPOS="5883.0"/&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="69.0" WIDTH="285.0" HPOS="5286.0" VPOS="5877.0" CONTENT="were" WC="1.0"&gt;
+&lt;ALTERNATIVE&gt;verc&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;veer&lt;/ALTERNATIVE&gt;
+&lt;/String&gt;
+&lt;SP WIDTH="68.0" HPOS="5571.0" VPOS="5877.0"/&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="111.0" WIDTH="147.0" HPOS="5640.0" VPOS="5838.0" CONTENT="all" WC="1.0"/&gt;
+&lt;SP WIDTH="83.0" HPOS="5787.0" VPOS="5838.0"/&gt;
+&lt;String STYLEREFS="ID7" HEIGHT="111.0" WIDTH="183.0" HPOS="5871.0" VPOS="5835.0" CONTENT="the" WC="0.95238096"&gt;
+&lt;ALTERNATIVE&gt;tll&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;Cu&lt;/ALTERNATIVE&gt;
+&lt;ALTERNATIVE&gt;tall&lt;/ALTERNATIVE&gt;
+&lt;/String&gt;
+&lt;SP WIDTH="75.0" HPOS="6054.0" VPOS="5835.0"/&gt;
+&lt;String STYLEREFS="ID3" HEIGHT="132.0" WIDTH="351.0" HPOS="6129.0" VPOS="5814.0" CONTENT="cattle" WC="0.95238096"/&gt;
+&lt;/TextLine&gt;</code></pre>
+<p>
+We are interested in the strings after <code>CONTENT=</code>. We are going to use functions from the <code>{stringr}</code> package to get the strings after <code>CONTENT=</code>. In Chapter 10, we are going to explore this file again, but using complex regular expressions to get all the content in one go.
+</p>
+<section id="getting-text-data-into-rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="getting-text-data-into-rstudio">
+Getting text data into Rstudio
+</h3>
+<p>
+First of all, let us read in the file:
+</p>
+<pre class="r"><code>winchester &lt;- read_lines("https://gist.githubusercontent.com/b-rodrigues/5139560e7d0f2ecebe5da1df3629e015/raw/e3031d894ffb97217ddbad1ade1b307c9937d2c8/gistfile1.txt")</code></pre>
+<p>
+Even though the file is an XML file, I still read it in using <code>read_lines()</code> and not <code>read_xml()</code> from the <code>{xml2}</code> package. This is for the purposes of the current exercise, and also because I always have trouble with XML files, and prefer to treat them as simple text files, and use regular expressions to get what I need.
+</p>
+<p>
+Now that the ALTO file is read in and saved in the <code>winchester</code> variable, you might want to print the whole thing in the console. Before that, take a look at the structure:
+</p>
+<pre class="r"><code>str(winchester)</code></pre>
+<pre><code>##  chr [1:43] "" ...</code></pre>
+<p>
+So the <code>winchester</code> variable is a character atomic vector with 43 elements. So first, we need to understand what these elements are. Let’s start with the first one:
+</p>
+<pre class="r"><code>winchester[1]</code></pre>
+<pre><code>## [1] ""</code></pre>
+<p>
+Ok, so it seems like the first element is part of the header of the file. What about the second one?
+</p>
+<pre class="r"><code>winchester[2]</code></pre>
+<pre><code>## [1] "&lt;meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"&gt;&lt;base href=\"https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml\"&gt;&lt;style&gt;body{margin-left:0;margin-right:0;margin-top:0}#bN015htcoyT__google-cache-hdr{background:#f5f5f5;font:13px arial,sans-serif;text-align:left;color:#202020;border:0;margin:0;border-bottom:1px solid #cecece;line-height:16px;padding:16px 28px 24px 28px}#bN015htcoyT__google-cache-hdr *{display:inline;font:inherit;text-align:inherit;color:inherit;line-height:inherit;background:none;border:0;margin:0;padding:0;letter-spacing:0}#bN015htcoyT__google-cache-hdr a{text-decoration:none;color:#1a0dab}#bN015htcoyT__google-cache-hdr a:hover{text-decoration:underline}#bN015htcoyT__google-cache-hdr a:visited{color:#609}#bN015htcoyT__google-cache-hdr div{display:block;margin-top:4px}#bN015htcoyT__google-cache-hdr b{font-weight:bold;display:inline-block;direction:ltr}&lt;/style&gt;&lt;div id=\"bN015htcoyT__google-cache-hdr\"&gt;&lt;div&gt;&lt;span&gt;This is Google's cache of &lt;a href=\"https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml\"&gt;https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml&lt;/a&gt;.&lt;/span&gt;&amp;nbsp;&lt;span&gt;It is a snapshot of the page as it appeared on 21 Jan 2019 05:18:18 GMT.&lt;/span&gt;&amp;nbsp;&lt;span&gt;The &lt;a href=\"https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml\"&gt;current page&lt;/a&gt; could have changed in the meantime.&lt;/span&gt;&amp;nbsp;&lt;a href=\"http://support.google.com/websearch/bin/answer.py?hl=en&amp;amp;p=cached&amp;amp;answer=1687222\"&gt;&lt;span&gt;Learn more&lt;/span&gt;.&lt;/a&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=\"display:inline-block;margin-top:8px;margin-right:104px;white-space:nowrap\"&gt;&lt;span style=\"margin-right:28px\"&gt;&lt;span style=\"font-weight:bold\"&gt;Full version&lt;/span&gt;&lt;/span&gt;&lt;span style=\"margin-right:28px\"&gt;&lt;a href=\"http://webcache.googleusercontent.com/search?q=cache:2BVPV8QGj3oJ:https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml&amp;amp;hl=en&amp;amp;gl=lu&amp;amp;strip=1&amp;amp;vwsrc=0\"&gt;&lt;span&gt;Text-only version&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;span style=\"margin-right:28px\"&gt;&lt;a href=\"http://webcache.googleusercontent.com/search?q=cache:2BVPV8QGj3oJ:https://chroniclingamerica.loc.gov/lccn/sn86069133/1910-10-31/ed-1/seq-1/ocr.xml&amp;amp;hl=en&amp;amp;gl=lu&amp;amp;strip=0&amp;amp;vwsrc=1\"&gt;&lt;span&gt;View source&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;span style=\"display:inline-block;margin-top:8px;color:#717171\"&gt;&lt;span&gt;Tip: To quickly find your search term on this page, press &lt;b&gt;Ctrl+F&lt;/b&gt; or &lt;b&gt;⌘-F&lt;/b&gt; (Mac) and use the find bar.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=\"position:relative;\"&gt;&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;"</code></pre>
+<p>
+Same. So where is the content? The file is very large, so if you print it in the console, it will take quite some time to print, and you will not really be able to make out anything. The best way would be to try to detect the string <code>CONTENT</code> and work from there.
+</p>
+</section>
+<section id="detecting-getting-the-position-and-locating-strings" class="level3">
+<h3 class="anchored" data-anchor-id="detecting-getting-the-position-and-locating-strings">
+Detecting, getting the position and locating strings
+</h3>
+<p>
+When confronted to an atomic vector of strings, you might want to know inside which elements you can find certain strings. For example, to know which elements of <code>winchester</code> contain the string <code>CONTENT</code>, use <code>str_detect()</code>:
+</p>
+<pre class="r"><code>winchester %&gt;%
+  str_detect("CONTENT")</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [34] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE</code></pre>
+<p>
+This returns a boolean atomic vector of the same length as <code>winchester</code>. If the string <code>CONTENT</code> is nowhere to be found, the result will equal <code>FALSE</code>, if not it will equal <code>TRUE</code>. Here it is easy to see that the last element contains the string <code>CONTENT</code>. But what if instead of having 43 elements, the vector had 24192 elements? And hundreds would contain the string <code>CONTENT</code>? It would be easier to instead have the indices of the vector where one can find the word <code>CONTENT</code>. This is possible with <code>str_which()</code>:
+</p>
+<pre class="r"><code>winchester %&gt;%
+  str_which("CONTENT")</code></pre>
+<pre><code>## [1] 43</code></pre>
+<p>
+Here, the result is 43, meaning that the 43rd element of <code>winchester</code> contains the string <code>CONTENT</code> somewhere. If we need more precision, we can use <code>str_locate()</code> and <code>str_locate_all()</code>. To explain how both these functions work, let’s create a very small example:
+</p>
+<pre class="r"><code>ancient_philosophers &lt;- c("aristotle", "plato", "epictetus", "seneca the younger", "epicurus", "marcus aurelius")</code></pre>
+<p>
+Now suppose I am interested in philosophers whose name ends in <code>us</code>. Let us use <code>str_locate()</code> first:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_locate("us")</code></pre>
+<pre><code>##      start end
+## [1,]    NA  NA
+## [2,]    NA  NA
+## [3,]     8   9
+## [4,]    NA  NA
+## [5,]     7   8
+## [6,]     5   6</code></pre>
+<p>
+You can interpret the result as follows: in the rows, the index of the vector where the string <code>us</code> is found. So the 3rd, 5th and 6th philosopher have <code>us</code> somewhere in their name. The result also has two columns: <code>start</code> and <code>end</code>. These give the position of the string. So the string <code>us</code> can be found starting at position 8 of the 3rd element of the vector, and ends at position 9. Same goes for the other philisophers. However, consider Marcus Aurelius. He has two names, both ending with <code>us</code>. However, <code>str_locate()</code> only shows the position of the <code>us</code> in <code>Marcus</code>.
+</p>
+<p>
+To get both <code>us</code> strings, you need to use <code>str_locate_all()</code>:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_locate_all("us")</code></pre>
+<pre><code>## [[1]]
+##      start end
+## 
+## [[2]]
+##      start end
+## 
+## [[3]]
+##      start end
+## [1,]     8   9
+## 
+## [[4]]
+##      start end
+## 
+## [[5]]
+##      start end
+## [1,]     7   8
+## 
+## [[6]]
+##      start end
+## [1,]     5   6
+## [2,]    14  15</code></pre>
+<p>
+Now we get the position of the two <code>us</code> in Marcus Aurelius. Doing this on the <code>winchester</code> vector will give use the position of the <code>CONTENT</code> string, but this is not really important right now. What matters is that you know how <code>str_locate()</code> and <code>str_locate_all()</code> work.
+</p>
+<p>
+So now that we know what interests us in the 43nd element of <code>winchester</code>, let’s take a closer look at it:
+</p>
+<pre class="r"><code>winchester[43]</code></pre>
+<p>
+As you can see, it’s a mess:
+</p>
+<pre><code>&lt;TextLine HEIGHT=\"126.0\" WIDTH=\"1731.0\" HPOS=\"17160.0\" VPOS=\"21252.0\"&gt;&lt;String HEIGHT=\"114.0\" WIDTH=\"354.0\" HPOS=\"17160.0\" VPOS=\"21264.0\" CONTENT=\"0tV\" WC=\"0.8095238\"/&gt;&lt;SP WIDTH=\"131.0\" HPOS=\"17514.0\" VPOS=\"21264.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"111.0\" WIDTH=\"474.0\" HPOS=\"17646.0\" VPOS=\"21258.0\" CONTENT=\"BATES\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"140.0\" HPOS=\"18120.0\" VPOS=\"21258.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"114.0\" WIDTH=\"630.0\" HPOS=\"18261.0\" VPOS=\"21252.0\" CONTENT=\"President\" WC=\"1.0\"&gt;&lt;ALTERNATIVE&gt;Prcideht&lt;/ALTERNATIVE&gt;&lt;ALTERNATIVE&gt;Pride&lt;/ALTERNATIVE&gt;&lt;/String&gt;&lt;/TextLine&gt;&lt;TextLine HEIGHT=\"153.0\" WIDTH=\"1689.0\" HPOS=\"17145.0\" VPOS=\"21417.0\"&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"105.0\" WIDTH=\"258.0\" HPOS=\"17145.0\" VPOS=\"21439.0\" CONTENT=\"WM\" WC=\"0.82539684\"&gt;&lt;TextLine HEIGHT=\"120.0\" WIDTH=\"2211.0\" HPOS=\"16788.0\" VPOS=\"21870.0\"&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"96.0\" WIDTH=\"102.0\" HPOS=\"16788.0\" VPOS=\"21894.0\" CONTENT=\"It\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"72.0\" HPOS=\"16890.0\" VPOS=\"21894.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"96.0\" WIDTH=\"93.0\" HPOS=\"16962.0\" VPOS=\"21885.0\" CONTENT=\"is\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"80.0\" HPOS=\"17055.0\" VPOS=\"21885.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"102.0\" WIDTH=\"417.0\" HPOS=\"17136.0\" VPOS=\"21879.0\" CONTENT=\"seldom\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"80.0\" HPOS=\"17553.0\" VPOS=\"21879.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"96.0\" WIDTH=\"267.0\" HPOS=\"17634.0\" VPOS=\"21873.0\" CONTENT=\"hard\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"81.0\" HPOS=\"17901.0\" VPOS=\"21873.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"87.0\" WIDTH=\"111.0\" HPOS=\"17982.0\" VPOS=\"21879.0\" CONTENT=\"to\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"81.0\" HPOS=\"18093.0\" VPOS=\"21879.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"96.0\" WIDTH=\"219.0\" HPOS=\"18174.0\" VPOS=\"21870.0\" CONTENT=\"find\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"77.0\" HPOS=\"18393.0\" VPOS=\"21870.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"69.0\" WIDTH=\"66.0\" HPOS=\"18471.0\" VPOS=\"21894.0\" CONTENT=\"a\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"77.0\" HPOS=\"18537.0\" VPOS=\"21894.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"78.0\" WIDTH=\"384.0\" HPOS=\"18615.0\" VPOS=\"21888.0\" CONTENT=\"succes\" WC=\"0.82539684\"&gt;&lt;ALTERNATIVE&gt;success&lt;/ALTERNATIVE&gt;&lt;/String&gt;&lt;/TextLine&gt;&lt;TextLine HEIGHT=\"126.0\" WIDTH=\"2316.0\" HPOS=\"16662.0\" VPOS=\"22008.0\"&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"75.0\" WIDTH=\"183.0\" HPOS=\"16662.0\" VPOS=\"22059.0\" CONTENT=\"sor\" WC=\"1.0\"&gt;&lt;ALTERNATIVE&gt;soar&lt;/ALTERNATIVE&gt;&lt;/String&gt;&lt;SP WIDTH=\"72.0\" HPOS=\"16845.0\" VPOS=\"22059.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"90.0\" WIDTH=\"168.0\" HPOS=\"16917.0\" VPOS=\"22035.0\" CONTENT=\"for\" WC=\"1.0\"/&gt;&lt;SP WIDTH=\"72.0\" HPOS=\"17085.0\" VPOS=\"22035.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"69.0\" WIDTH=\"267.0\" HPOS=\"17157.0\" VPOS=\"22050.0\" CONTENT=\"even\" WC=\"1.0\"&gt;&lt;ALTERNATIVE&gt;cen&lt;/ALTERNATIVE&gt;&lt;ALTERNATIVE&gt;cent&lt;/ALTERNATIVE&gt;&lt;/String&gt;&lt;SP WIDTH=\"77.0\" HPOS=\"17434.0\" VPOS=\"22050.0\"/&gt;&lt;String STYLEREFS=\"ID7\" HEIGHT=\"66.0\" WIDTH=\"63.0\" HPOS=\"17502.0\" VPOS=\"22044.0\"</code></pre>
+<p>
+The file was imported without any newlines. So we need to insert them ourselves, by splitting the string in a clever way.
+</p>
+</section>
+<section id="splitting-strings" class="level3">
+<h3 class="anchored" data-anchor-id="splitting-strings">
+Splitting strings
+</h3>
+<p>
+There are two functions included in <code>{stringr}</code> to split strings, <code>str_split()</code> and <code>str_split_fixed()</code>. Let’s go back to our ancient philosophers. Two of them, Seneca the Younger and Marcus Aurelius have something else in common than both being Roman Stoic philosophers. Their names are composed of several words. If we want to split their names at the space character, we can use <code>str_split()</code> like this:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_split(" ")</code></pre>
+<pre><code>## [[1]]
+## [1] "aristotle"
+## 
+## [[2]]
+## [1] "plato"
+## 
+## [[3]]
+## [1] "epictetus"
+## 
+## [[4]]
+## [1] "seneca"  "the"     "younger"
+## 
+## [[5]]
+## [1] "epicurus"
+## 
+## [[6]]
+## [1] "marcus"   "aurelius"</code></pre>
+<p>
+<code>str_split()</code> also has a <code>simplify = TRUE</code> option:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_split(" ", simplify = TRUE)</code></pre>
+<pre><code>##      [,1]        [,2]       [,3]     
+## [1,] "aristotle" ""         ""       
+## [2,] "plato"     ""         ""       
+## [3,] "epictetus" ""         ""       
+## [4,] "seneca"    "the"      "younger"
+## [5,] "epicurus"  ""         ""       
+## [6,] "marcus"    "aurelius" ""</code></pre>
+<p>
+This time, the returned object is a matrix.
+</p>
+<p>
+What about <code>str_split_fixed()</code>? The difference is that here you can specify the number of pieces to return. For example, you could consider the name “Aurelius” to be the middle name of Marcus Aurelius, and the “the younger” to be the middle name of Seneca the younger. This means that you would want to split the name only at the first space character, and not at all of them. This is easily achieved with <code>str_split_fixed()</code>:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_split_fixed(" ", 2)</code></pre>
+<pre><code>##      [,1]        [,2]         
+## [1,] "aristotle" ""           
+## [2,] "plato"     ""           
+## [3,] "epictetus" ""           
+## [4,] "seneca"    "the younger"
+## [5,] "epicurus"  ""           
+## [6,] "marcus"    "aurelius"</code></pre>
+<p>
+This gives the expected result.
+</p>
+<p>
+So how does this help in our case? Well, if you look at how the ALTO file looks like, at the beginning of this section, you will notice that every line ends with the “&gt;” character. So let’s split at that character!
+</p>
+<pre class="r"><code>winchester_text &lt;- winchester[43] %&gt;%
+  str_split("&gt;")</code></pre>
+<p>
+Let’s take a closer look at <code>winchester_text</code>:
+</p>
+<pre class="r"><code>str(winchester_text)</code></pre>
+<pre><code>## List of 1
+##  $ : chr [1:19706] "&lt;/processingStepSettings" "&lt;processingSoftware" "&lt;softwareCreator" "iArchives&lt;/softwareCreator" ...</code></pre>
+<p>
+So this is a list of length one, and the first, and only, element of that list is an atomic vector with 19706 elements. Since this is a list of only one element, we can simplify it by saving the atomic vector in a variable:
+</p>
+<pre class="r"><code>winchester_text &lt;- winchester_text[[1]]</code></pre>
+<p>
+Let’s now look at some lines:
+</p>
+<pre class="r"><code>winchester_text[1232:1245]</code></pre>
+<pre><code>##  [1] "&lt;SP WIDTH=\"66.0\" HPOS=\"5763.0\" VPOS=\"9696.0\"/"                                                                         
+##  [2] "&lt;String STYLEREFS=\"ID7\" HEIGHT=\"108.0\" WIDTH=\"612.0\" HPOS=\"5829.0\" VPOS=\"9693.0\" CONTENT=\"Louisville\" WC=\"1.0\""
+##  [3] "&lt;ALTERNATIVE"                                                                                                                
+##  [4] "Loniile&lt;/ALTERNATIVE"                                                                                                        
+##  [5] "&lt;ALTERNATIVE"                                                                                                                
+##  [6] "Lenities&lt;/ALTERNATIVE"                                                                                                       
+##  [7] "&lt;/String"                                                                                                                    
+##  [8] "&lt;/TextLine"                                                                                                                  
+##  [9] "&lt;TextLine HEIGHT=\"150.0\" WIDTH=\"2520.0\" HPOS=\"4032.0\" VPOS=\"9849.0\""                                                 
+## [10] "&lt;String STYLEREFS=\"ID7\" HEIGHT=\"108.0\" WIDTH=\"510.0\" HPOS=\"4032.0\" VPOS=\"9861.0\" CONTENT=\"Tobacco\" WC=\"1.0\"/"  
+## [11] "&lt;SP WIDTH=\"113.0\" HPOS=\"4542.0\" VPOS=\"9861.0\"/"                                                                        
+## [12] "&lt;String STYLEREFS=\"ID7\" HEIGHT=\"105.0\" WIDTH=\"696.0\" HPOS=\"4656.0\" VPOS=\"9861.0\" CONTENT=\"Warehouse\" WC=\"1.0\"" 
+## [13] "&lt;ALTERNATIVE"                                                                                                                
+## [14] "WHrchons&lt;/ALTERNATIVE"</code></pre>
+<p>
+This now looks easier to handle. We can narrow it down to the lines that only contain the string we are interested in, “CONTENT”. First, let’s get the indices:
+</p>
+<pre class="r"><code>content_winchester_index &lt;- winchester_text %&gt;%
+  str_which("CONTENT")</code></pre>
+<p>
+How many lines contain the string “CONTENT”?
+</p>
+<pre class="r"><code>length(content_winchester_index)</code></pre>
+<pre><code>## [1] 4462</code></pre>
+<p>
+As you can see, this reduces the amount of data we have to work with. Let us save this is a new variable:
+</p>
+<pre class="r"><code>content_winchester &lt;- winchester_text[content_winchester_index]</code></pre>
+</section>
+<section id="matching-strings" class="level3">
+<h3 class="anchored" data-anchor-id="matching-strings">
+Matching strings
+</h3>
+<p>
+Matching strings is useful, but only in combination with regular expressions. As stated at the beginning of this section, we are going to learn about regular expressions in Chapter 10, but in order to make this section useful, we are going to learn the easiest, but perhaps the most useful regular expression: <code>.*</code>.
+</p>
+<p>
+Let’s go back to our ancient philosophers, and use <code>str_match()</code> and see what happens. Let’s match the “us” string:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match("us")</code></pre>
+<pre><code>##      [,1]
+## [1,] NA  
+## [2,] NA  
+## [3,] "us"
+## [4,] NA  
+## [5,] "us"
+## [6,] "us"</code></pre>
+<p>
+Not very useful, but what about the regular expression <code>.*</code>? How could it help?
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match(".*us")</code></pre>
+<pre><code>##      [,1]             
+## [1,] NA               
+## [2,] NA               
+## [3,] "epictetus"      
+## [4,] NA               
+## [5,] "epicurus"       
+## [6,] "marcus aurelius"</code></pre>
+<p>
+That’s already very interesting! So how does <code>.*</code> work? To understand, let’s first start by using <code>.</code> alone:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match(".us")</code></pre>
+<pre><code>##      [,1] 
+## [1,] NA   
+## [2,] NA   
+## [3,] "tus"
+## [4,] NA   
+## [5,] "rus"
+## [6,] "cus"</code></pre>
+<p>
+This also matched whatever symbol comes just before the “u” from “us”. What if we use two <code>.</code> instead?
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match("..us")</code></pre>
+<pre><code>##      [,1]  
+## [1,] NA    
+## [2,] NA    
+## [3,] "etus"
+## [4,] NA    
+## [5,] "urus"
+## [6,] "rcus"</code></pre>
+<p>
+This time, we get the two symbols that immediately precede “us”. Instead of continuing like this we now use the <code><em></em></code><em>, which matches zero or more of <code>.</code>. So by combining <code></code></em> and <code>.</code>, we can match any symbol repeatedly, until there is nothing more to match. Note that there is also <code>+</code>, which works similarly to <code>*</code>, but it matches one or more symbols.
+</p>
+<p>
+There is also a <code>str_match_all()</code>:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match_all(".*us")</code></pre>
+<pre><code>## [[1]]
+##      [,1]
+## 
+## [[2]]
+##      [,1]
+## 
+## [[3]]
+##      [,1]       
+## [1,] "epictetus"
+## 
+## [[4]]
+##      [,1]
+## 
+## [[5]]
+##      [,1]      
+## [1,] "epicurus"
+## 
+## [[6]]
+##      [,1]             
+## [1,] "marcus aurelius"</code></pre>
+<p>
+In this particular case it does not change the end result, but keep it in mind for cases like this one:
+</p>
+<pre class="r"><code>c("haha", "huhu") %&gt;%
+  str_match("ha")</code></pre>
+<pre><code>##      [,1]
+## [1,] "ha"
+## [2,] NA</code></pre>
+<p>
+and:
+</p>
+<pre class="r"><code>c("haha", "huhu") %&gt;%
+  str_match_all("ha")</code></pre>
+<pre><code>## [[1]]
+##      [,1]
+## [1,] "ha"
+## [2,] "ha"
+## 
+## [[2]]
+##      [,1]</code></pre>
+<p>
+What if we want to match names containing the letter “t”? Easy:
+</p>
+<pre class="r"><code>ancient_philosophers %&gt;%
+  str_match(".*t.*")</code></pre>
+<pre><code>##      [,1]                
+## [1,] "aristotle"         
+## [2,] "plato"             
+## [3,] "epictetus"         
+## [4,] "seneca the younger"
+## [5,] NA                  
+## [6,] NA</code></pre>
+<p>
+So how does this help us with our historical newspaper? Let’s try to get the strings that come after “CONTENT”:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_text %&gt;%
+  str_match("CONTENT.*")</code></pre>
+<p>
+Let’s use our faithful <code>str()</code> function to take a look:
+</p>
+<pre class="r"><code>winchester_content %&gt;%
+  str</code></pre>
+<pre><code>##  chr [1:19706, 1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA ...</code></pre>
+<p>
+Hum, there’s a lot of <code>NA</code> values! This is because a lot of the lines from the file did not have the string “CONTENT”, so there is no match possible. Let’s us remove all these <code>NA</code>s. Because the result is a matrix, we cannot use the <code>filter()</code> function from <code>{dplyr}</code>. So we need to convert it to a tibble first:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;%
+  as.tibble() %&gt;%
+  filter(!is.na(V1))</code></pre>
+<pre><code>## Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
+## This warning is displayed once per session.</code></pre>
+<p>
+Because matrix columns do not have names, when a matrix gets converted into a tibble, the firt column gets automatically called <code>V1</code>. This is why I filter on this column. Let’s take a look at the data:
+</p>
+<pre class="r"><code>head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   V1                                  
+##   &lt;chr&gt;                               
+## 1 "CONTENT=\"J\" WC=\"0.8095238\"/"   
+## 2 "CONTENT=\"a\" WC=\"0.8095238\"/"   
+## 3 "CONTENT=\"Ira\" WC=\"0.95238096\"/"
+## 4 "CONTENT=\"mj\" WC=\"0.8095238\"/"  
+## 5 "CONTENT=\"iI\" WC=\"0.8095238\"/"  
+## 6 "CONTENT=\"tE1r\" WC=\"0.8095238\"/"</code></pre>
+</section>
+<section id="searching-and-replacing-strings" class="level3">
+<h3 class="anchored" data-anchor-id="searching-and-replacing-strings">
+Searching and replacing strings
+</h3>
+<p>
+We are getting close to the final result. We still need to do some cleaning however. Since our data is inside a nice tibble, we might as well stick with it. So let’s first rename the column and change all the strings to lowercase:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = tolower(V1)) %&gt;% 
+  select(-V1)</code></pre>
+<p>
+Let’s take a look at the result:
+</p>
+<pre class="r"><code>head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content                             
+##   &lt;chr&gt;                               
+## 1 "content=\"j\" wc=\"0.8095238\"/"   
+## 2 "content=\"a\" wc=\"0.8095238\"/"   
+## 3 "content=\"ira\" wc=\"0.95238096\"/"
+## 4 "content=\"mj\" wc=\"0.8095238\"/"  
+## 5 "content=\"ii\" wc=\"0.8095238\"/"  
+## 6 "content=\"te1r\" wc=\"0.8095238\"/"</code></pre>
+<p>
+The second part of the string, “wc=….” is not really interesting. Let’s search and replace this with an empty string, using <code>str_replace()</code>:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = str_replace(content, "wc.*", ""))
+
+head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content            
+##   &lt;chr&gt;              
+## 1 "content=\"j\" "   
+## 2 "content=\"a\" "   
+## 3 "content=\"ira\" " 
+## 4 "content=\"mj\" "  
+## 5 "content=\"ii\" "  
+## 6 "content=\"te1r\" "</code></pre>
+<p>
+We need to use the regular expression from before to replace “wc” and every character that follows. The same can be use to remove “content=”:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = str_replace(content, "content=", ""))
+
+head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content    
+##   &lt;chr&gt;      
+## 1 "\"j\" "   
+## 2 "\"a\" "   
+## 3 "\"ira\" " 
+## 4 "\"mj\" "  
+## 5 "\"ii\" "  
+## 6 "\"te1r\" "</code></pre>
+<p>
+We are almost done, but some cleaning is still necessary:
+</p>
+</section>
+<section id="exctracting-or-removing-strings" class="level3">
+<h3 class="anchored" data-anchor-id="exctracting-or-removing-strings">
+Exctracting or removing strings
+</h3>
+<p>
+Now, because I now the ALTO spec, I know how to find words that are split between two sentences:
+</p>
+<pre class="r"><code>winchester_content %&gt;% 
+  filter(str_detect(content, "hyppart"))</code></pre>
+<pre><code>## # A tibble: 64 x 1
+##    content                                                               
+##    &lt;chr&gt;                                                                 
+##  1 "\"aver\" subs_type=\"hyppart1\" subs_content=\"average\" "           
+##  2 "\"age\" subs_type=\"hyppart2\" subs_content=\"average\" "            
+##  3 "\"considera\" subs_type=\"hyppart1\" subs_content=\"consideration\" "
+##  4 "\"tion\" subs_type=\"hyppart2\" subs_content=\"consideration\" "     
+##  5 "\"re\" subs_type=\"hyppart1\" subs_content=\"resigned\" "            
+##  6 "\"signed\" subs_type=\"hyppart2\" subs_content=\"resigned\" "        
+##  7 "\"install\" subs_type=\"hyppart1\" subs_content=\"installed\" "      
+##  8 "\"ed\" subs_type=\"hyppart2\" subs_content=\"installed\" "           
+##  9 "\"be\" subs_type=\"hyppart1\" subs_content=\"before\" "              
+## 10 "\"fore\" subs_type=\"hyppart2\" subs_content=\"before\" "            
+## # … with 54 more rows</code></pre>
+<p>
+For instance, the word “average” was split over two lines, the first part of the word, “aver” on the first line, and the second part of the word, “age”, on the second line. We want to keep what comes after “subs_content”. Let’s extract the word “average” using <code>str_extract()</code>. However, because only some words were split between two lines, we first need to detect where the string “hyppart1” is located, and only then can we extract what comes after “subs_content”. Thus, we need to combine <code>str_detect()</code> to first detect the string, and then <code>str_extract()</code> to extract what comes after “subs_content”:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = if_else(str_detect(content, "hyppart1"), 
+                           str_extract_all(content, "content=.*", simplify = TRUE), 
+                           content))</code></pre>
+<p>
+Let’s take a look at the result:
+</p>
+<pre class="r"><code>winchester_content %&gt;% 
+  filter(str_detect(content, "content"))</code></pre>
+<pre><code>## # A tibble: 64 x 1
+##    content                                                          
+##    &lt;chr&gt;                                                            
+##  1 "content=\"average\" "                                           
+##  2 "\"age\" subs_type=\"hyppart2\" subs_content=\"average\" "       
+##  3 "content=\"consideration\" "                                     
+##  4 "\"tion\" subs_type=\"hyppart2\" subs_content=\"consideration\" "
+##  5 "content=\"resigned\" "                                          
+##  6 "\"signed\" subs_type=\"hyppart2\" subs_content=\"resigned\" "   
+##  7 "content=\"installed\" "                                         
+##  8 "\"ed\" subs_type=\"hyppart2\" subs_content=\"installed\" "      
+##  9 "content=\"before\" "                                            
+## 10 "\"fore\" subs_type=\"hyppart2\" subs_content=\"before\" "       
+## # … with 54 more rows</code></pre>
+<p>
+We still need to get rid of the string “content=” and then of all the strings that contain “hyppart2”, which are not needed now:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = str_replace(content, "content=", "")) %&gt;% 
+  mutate(content = if_else(str_detect(content, "hyppart2"), NA_character_, content))
+
+head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content    
+##   &lt;chr&gt;      
+## 1 "\"j\" "   
+## 2 "\"a\" "   
+## 3 "\"ira\" " 
+## 4 "\"mj\" "  
+## 5 "\"ii\" "  
+## 6 "\"te1r\" "</code></pre>
+<p>
+Almost done! We only need to remove the <code>“</code> characters:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = str_replace_all(content, "\"", "")) 
+
+head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content
+##   &lt;chr&gt;  
+## 1 "j "   
+## 2 "a "   
+## 3 "ira " 
+## 4 "mj "  
+## 5 "ii "  
+## 6 "te1r "</code></pre>
+<p>
+Let’s remove space characters with <code>str_trim()</code>:
+</p>
+<pre class="r"><code>winchester_content &lt;- winchester_content %&gt;% 
+  mutate(content = str_trim(content)) 
+
+head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content
+##   &lt;chr&gt;  
+## 1 j      
+## 2 a      
+## 3 ira    
+## 4 mj     
+## 5 ii     
+## 6 te1r</code></pre>
+<p>
+To finish off this section, let’s remove stop words (words that do not add any meaning to a sentence, such as “as”, “and”…) and words that are composed of less than 3 characters. You can find a dataset with stopwords inside the <code>{stopwords}</code> package:
+</p>
+<pre class="r"><code>library(stopwords)
+
+data(data_stopwords_stopwordsiso)
+
+eng_stopwords &lt;- tibble("content" = data_stopwords_stopwordsiso$en)
+
+winchester_content &lt;- winchester_content %&gt;% 
+  anti_join(eng_stopwords) %&gt;% 
+  filter(nchar(content) &gt; 3)</code></pre>
+<pre><code>## Joining, by = "content"</code></pre>
+<pre class="r"><code>head(winchester_content)</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   content   
+##   &lt;chr&gt;     
+## 1 te1r      
+## 2 jilas     
+## 3 edition   
+## 4 winchester
+## 5 news      
+## 6 injuries</code></pre>
+<p>
+That’s it for this section! You now know how to work with strings, but in Chapter 10 we are going one step further by learning about regular expressions, which offer much more power.
+</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

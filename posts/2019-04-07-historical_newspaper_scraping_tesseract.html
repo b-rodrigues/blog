@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2019-04-07">
+
+<title>Historical newspaper scraping with {tesseract} and R – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Historical newspaper scraping with {tesseract} and R</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 7, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Cliometrics"> <img src="../assets/img/clio.jpg" title="Historical newspapers as a source to practice cliometrics?"></a>
+</p>
+</div>
+<p>
+I have been playing around with historical newspapers data for some months now. The “obvious” type of analysis to do is NLP, but there is also a lot of numerical data inside historical newspapers. For instance, you can find these tables that show the market prices of the day in the <em>L’Indépendance Luxembourgeoise</em>:
+</p>
+<p>
+<img src="../assets/img/market_price_table.png"><!-- -->
+</p>
+<p>
+I wanted to see how easy it was to extract these tables from the newspapers and then make it available. It was a bit more complicated than anticipated.
+</p>
+<section id="download-data" class="level2">
+<h2 class="anchored" data-anchor-id="download-data">
+Download data
+</h2>
+<p>
+The first step is to download the data. For this, I have used the code <a href="https://twitter.com/yvesmaurer"><code><span class="citation" data-cites="yvesmaurer">@yvesmaurer</span></code></a> which you can find <a href="https://github.com/ymaurer/eluxemburgensia-opendata-ark">here</a>. This code makes it easy to download individual pages of certain newspapers, for instance <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F1drtkj%2Fpages%2F1/full/full/0/default.jpg">this one</a>. The pages I am interested in are pages 3, which contain the tables I need, for example <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F1drtkj%2Fpages%2F3/full/full/0/default.jpg">here</a>. <a href="https://twitter.com/yvesmaurer"><code><span class="citation" data-cites="yvesmaurer">@yvesmaurer</span></code></a>’s code makes it easy to find the download links, which look like this: <code>https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F1drtkj%2Fpages%2F3/full/full/0/default.jpg</code>. It is also possible to crop the image by changing some parameters <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fwsvhwh%2Fpages%2F3/pct:74,0,100,100/full/0/default.jpg">like so</a>. This is helpful, because it makes the image smaller. The tables I’m interested in are always in the last column, so I can can use this feature to get smaller images. However, not every issue contains these tables, and I only want to download the ones that have these tables. So I wrote the following code to download the images I’m interested in:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(magick)
+library(tesseract)
+library(furrr)
+
+download_image &lt;- function(link){
+
+    print(link)
+
+    isok &lt;- image_read(link) %&gt;%
+        ocr(engine = "fra") %&gt;%
+        str_to_lower() %&gt;%
+        str_detect("marché de luxembourg")
+
+    if(isok){
+        date_link &lt;- link %&gt;%
+            str_replace("pages%2f3", "pages%2f1") %&gt;%
+            str_replace("pct:74,0,100,100", "pct:76,1,17,5")
+
+        paper_date &lt;- image_read(date_link) %&gt;%
+            ocr(engine = "fra") %&gt;%
+            str_squish() %&gt;%
+            str_remove("%") %&gt;%
+            str_remove("&amp;") %&gt;%
+            str_remove("/")
+
+        ark &lt;- link %&gt;%
+            str_sub(53, 60)
+
+        download.file(link, paste0("indep_pages/", ark, "-", paper_date, ".jpg"))
+    } else {
+        NULL
+        }
+}</code></pre>
+<p>
+This code only downloads an image if the <code>ocr()</code> from the {tesseract} (which does, you guessed it, OCR) detects the string “marché de luxembourg” which is the title of the tables. This is a bit extreme, because if a single letter cannot be correctly detected by the OCR, the page will not be downloaded. But I figured that if this string could not be easily recognized, this would be a canary telling me that the text inside the table would also not be easily recognized. So it might be extreme, but my hope was that it would make detecting the table itself easier. Turned out it wasn’t so easy, but more on this later.
+</p>
+</section>
+<section id="preparing-images" class="level2">
+<h2 class="anchored" data-anchor-id="preparing-images">
+Preparing images
+</h2>
+<p>
+Now that I have the images, I will prepare them to make character recognition easier. To do this, I’m using the <code>{magick}</code> package:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(magick)
+library(tesseract)
+library(furrr)
+
+prepare_image &lt;- function(image_path){
+    image &lt;- image_read(image_path)
+
+    image &lt;- image %&gt;%
+        image_modulate(brightness = 150) %&gt;%
+        image_convolve('DoG:0,0,2', scaling = '1000, 100%') %&gt;%
+        image_despeckle(times = 10)
+
+    image_write(image, paste0(getwd(), "/edited/", str_remove(image_path, ".jpg"), "edited.jpg"))
+}
+
+
+image_paths &lt;- dir(path = "indep_pages", pattern = "*.jpg", full.names = TRUE)
+
+plan(multiprocess, workers = 8)
+
+image_paths %&gt;%
+    future_map(prepare_image)</code></pre>
+<p>
+The picture below shows the result:
+</p>
+<p>
+<img src="../assets/img/table_and_edit.jpg"><!-- -->
+</p>
+<p>
+Now comes the complicated part, which is going from the image above, to the dataset below:
+</p>
+<pre><code>good_fr,good_en,unit,market_date,price,source_url
+Froment,Wheat,hectolitre,1875-08-28,23,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Métail,Meslin,hectolitre,1875-08-28,21,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Seigle,Rye,hectolitre,1875-08-28,15,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Orge,Barley,hectolitre,1875-08-28,16,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Orge mondé,Pot Barley,kilogram,1875-08-28,0.85,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Orge perlé,Pearl barley,kilogram,1875-08-28,0.8,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Avoine,Oats,hectolitre,1875-08-28,8.5,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
+Pois,Peas,hectolitre,1875-08-28,NA,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg</code></pre>
+</section>
+<section id="ocr-with-tesseract" class="level2">
+<h2 class="anchored" data-anchor-id="ocr-with-tesseract">
+OCR with {tesseract}
+</h2>
+<p>
+The first step was to get the date. For this, I have used the following function, which will then be used inside another function, which will extract the data and prices.
+</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(magick)
+library(tesseract)
+library(furrr)
+library(janitor)
+
+is_empty_line &lt;- function(line){
+    ifelse(line == "", TRUE, FALSE)
+}
+
+Sys.setlocale('LC_TIME', "fr_FR")
+
+get_date &lt;- function(string, annee){
+
+    liste_mois &lt;- c("janvier", "février", "mars", "avril", "mai", "juin", "juillet",
+                    "août", "septembre", "octobre", "novembre", "décembre")
+
+    raw_date &lt;- string %&gt;%
+      str_to_lower() %&gt;%
+        str_remove_all("\\.") %&gt;%
+        str_extract("\\d{1,2} .{3,9}(\\s+)?\\d{0,4}") %&gt;%
+        str_split("\\s+", simplify = TRUE)
+
+    if(ncol(raw_date) == 2){
+        raw_date &lt;- cbind(raw_date, "annee")
+    }
+
+    raw_date[1, 3] &lt;- annee
+
+    raw_date &lt;- str_to_lower(raw_date[1:1, 1:3])
+
+    long_month &lt;- case_when(
+      raw_date[2] == "janv" ~ "janvier",
+      raw_date[2] == "févr" ~ "février",
+      raw_date[2] == "sept" ~ "septembre",
+      raw_date[2] == "oct" ~ "octobre",
+      raw_date[2] == "nov" ~ "novembre",
+      raw_date[2] == "dec" ~ "décembre",
+      TRUE ~ as.character(raw_date[2]))
+
+    raw_date[2] &lt;- long_month
+
+    is_it_date &lt;- as.Date(paste0(raw_date, collapse = "-"), format = "%d-%b-%Y") %&gt;%
+        is.na() %&gt;% `!`()
+
+    if(is_it_date){
+        return(as.Date(paste0(raw_date, collapse = "-"), format = "%d-%b-%Y"))
+    } else {
+        if(!(raw_date[2] %in% liste_mois)){
+            raw_date[2] &lt;- liste_mois[stringdist::amatch(raw_date[2], liste_mois, maxDist = 2)]
+            return(as.Date(paste0(raw_date, collapse = "-"), format = "%d-%b-%Y"))
+        }
+    }
+}</code></pre>
+<p>
+This function is more complicated than I had hoped. This is because dates come in different formats. For example, there are dates written like this “21 Janvier 1872”, or “12 Septembre” or “12 sept.”. The biggest problem here is that sometimes the year is missing. I deal with this in the next function, which is again, more complicated than what I had hoped. I won’t go into details and explain every step of the function above, but the idea is to extract the data from the raw text, replace abbreviated months with the full month name if needed, and then check if I get a valid date. If not, I try my luck with <code>stringdist::amatch()</code>, to try to match, say “jonvier” with “janvier”. This is in case the OCR made a mistake. I am not very happy with this solution, because it is very approximative, but oh well.
+</p>
+<p>
+The second step is to get the data. I noticed that the rows stay consistent, but do change after June 1st 1876. So I simply hardcoded the goods names, and was only concerned with extracting the prices. I also apply some manual corrections inside the function; mainly dates that were wrongly recognized by the OCR engine, and which were causing problems. Again, not an optimal solution, the other alternative was to simply drop this data, which I did not want to do. Here is the function:
+</p>
+<pre class="r"><code>extract_table &lt;- function(image_path){
+
+  image &lt;- image_read(image_path)
+
+  annee &lt;- image_path %&gt;%
+    str_extract("187\\d")
+
+  ark &lt;- image_path %&gt;%
+    str_sub(22, 27)
+
+  source_url &lt;- str_glue("https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F{ark}%2Fpages%2F1/full/full/0/default.jpg",
+                         ark = ark)
+
+  text &lt;- ocr(image, engine = "fra")
+
+    text &lt;- text %&gt;%
+      str_split("\n") %&gt;%
+      unlist %&gt;%
+      str_squish() %&gt;%
+      str_remove_all("^.{1,10}$") %&gt;%
+      discard(is_empty_line) %&gt;%
+      str_replace("Mercuriale du \\+ Nov. 1831.", "Mercuriale du 4 Nov. 1831.") %&gt;%
+      str_replace("….u .T juillet.", "du 7 juillet") %&gt;%
+      str_replace("octobré", "octobre") %&gt;%
+      str_replace("AT octobre", "17 octobre") %&gt;% # correction for "f8g6kq8-18  LUNDI 19 OCTOBRÉ 1874. BUREAUX de fa RÉDACTIGedited.jpg"
+      str_replace("T norembre", "7 novembre") %&gt;%  # correction for fcrhrn5-LE 8  LUNDI 9 NOVEMBRE 1874 BUREAUX de la RÉDedited.jpg
+      str_replace("À oc demain 5", "27 mai") %&gt;% # correction for fd61vzp-MARDI 50. MAI 1876 BUREAUX de la. RED, n VE DE L’ADMINISTRAedited.jpg
+      str_replace("G", "6") %&gt;%
+      str_replace("Hercariale du 80 nov. 1872,", "du 30 novembre 1872") %&gt;%
+      str_replace("….u .T juillet.", "du 7 juillet") %&gt;%
+      str_replace("Rs ne its du 28-octobré.: :!: :", "28 octobre") %&gt;%
+      str_replace("De routes due 98-juilléle. à eat", "28 juillet") %&gt;%
+      str_replace("\\| Mereariale dn 14 dre. 1872,", "14 décembre 1872")
+
+
+  start &lt;- text %&gt;%
+    str_which("MARCH(É|E).*D(E|É).*LUXEMBOUR(G|6)") + 2
+
+  start &lt;- ifelse(is_empty(start), str_which(text, ".*D.*UXEM.*") + 2, start)
+
+  end &lt;- start + 40
+
+  pricing_date &lt;- text[start - 1] %&gt;%
+    str_remove("%") %&gt;%
+    str_remove("er") %&gt;%
+    str_remove("\\.+") %&gt;%
+    str_remove("\\*") %&gt;%
+    str_remove("®") %&gt;%
+    str_remove(":") %&gt;%
+    str_remove("\\?") %&gt;%
+    str_replace("\\$", "9") %&gt;%
+    str_remove("°") %&gt;%
+    str_replace("‘du 14août.. - ; En", "14 août") %&gt;%
+    str_replace("OP PE CN AP PP", "du 28 juin") %&gt;%
+    str_replace("‘ du 81 janvi Le", "31 janvier") %&gt;%
+    str_replace("\\| \\| du AT août", "17 août") %&gt;%
+    str_replace("Su”  du 81 juillet. L", "31 juillet") %&gt;%
+    str_replace("0 du 29 avril \" \\|", "29 avril") %&gt;%
+    str_replace("LU 0 du 28 ail", "28 avril") %&gt;%
+    str_replace("Rs ne its du 28-octobre :!: :", "23 octobre") %&gt;%
+    str_replace("7 F \\|  du 13 octobre LA LOTS", "13 octobre") %&gt;%
+    str_replace("À. du 18 juin UT ET", "13 juin")
+
+
+  market_date &lt;- get_date(pricing_date, annee)
+
+  items &lt;- c("Froment", "Métail", "Seigle", "Orge", "Orge mondé", "Orge perlé", "Avoine", "Pois", "Haricots",
+             "Lentilles", "Pommes de terre", "Bois de hêtre", "Bois de chêne", "Beurre", "Oeufs", "Foin",
+             "Paille", "Viande de boeuf", "Viande de vache", "Viande de veau", "Viande de mouton",
+             "Viande fraîche de cochon", "Viande fumée de cochon", "Haricots", "Pois", "Lentilles",
+             "Farines de froment", "Farines de méteil", "Farines de seigle")
+
+  items_en &lt;- c("Wheat", "Meslin", "Rye", "Barley", "Pot Barley", "Pearl barley", "Oats", "Peas", "Beans",
+    "Lentils", "Potatoes", "Beech wood", "Oak wood", "Butter", "Eggs", "Hay", "Straw", "Beef meat",
+    "Cow meat", "Veal meat", "Sheep meat", "Fresh pig meat", "Smoked pig meat", "Beans", "Peas",
+    "Lentils", "Wheat flours", "Meslin flours", "Rye flours")
+
+
+  unit &lt;- c("hectolitre", "hectolitre", "hectolitre", "hectolitre", "kilogram", "kilogram", "hectolitre",
+            "hectolitre", "hectolitre", "hectolitre", "hectolitre", "stere", "stere", "kilogram", "dozen",
+            "500 kilogram", "500 kilogram", "kilogram", "kilogram", "kilogram", "kilogram", "kilogram",
+            "kilogram", "litre", "litre", "litre", "kilogram", "kilogram", "kilogram")
+
+  # starting with june 1876, the order of the items changes
+  items_06_1876 &lt;- c("Froment", "Métail", "Seigle", "Orge", "Avoine", "Pois", "Haricots", "Lentilles",
+                     "Pommes de terre", "Farines de froment", "Farines de méteil", "Farines de seigle", "Orge mondé",
+                     "Beurre", "Oeufs", "Foins", "Paille", "Bois de hêtre", "Bois de chêne", "Viande de boeuf", "Viande de vache",
+                     "Viande de veau", "Viande de mouton", "Viande fraîche de cochon", "Viande fumée de cochon")
+
+  items_06_1876_en &lt;- c("Wheat", "Meslin", "Rye", "Barley", "Oats", "Peas", "Beans", "Lentils",
+                        "Potatoes", "Wheat flours", "Meslin flours", "Rye flours", "Pot barley",
+                        "Butter", "Eggs", "Hay", "Straw", "Beechwood", "Oakwood", "Beef meat", "Cow meat",
+                        "Veal meat", "Sheep meat", "Fresh pig meat", "Smoked pig meat")
+
+  units_06_1876 &lt;- c(rep("hectolitre", 9), rep("kilogram", 5), "douzaine", rep("500 kilogram", 2),
+                     "stere", "stere", rep("kilogram", 6))
+
+  raw_data &lt;- text[start:end]
+
+  prices &lt;- raw_data %&gt;%
+    str_replace_all("©", "0") %&gt;%
+    str_extract("\\d{1,2}\\s\\d{2}") %&gt;%
+    str_replace("\\s", "\\.") %&gt;%
+    as.numeric
+
+  if(is.na(prices[1])){
+    prices &lt;- tail(prices, -1)
+  } else {
+    prices &lt;- prices
+  }
+
+  if(market_date &lt; as.Date("01-06-1876", format = "%d-%m-%Y")){
+    prices &lt;- prices[1:length(items)]
+    tibble("good_fr" = items, "good_en" = items_en, "unit" = unit, "market_date" = market_date,
+           "price" = prices, "source_url" = source_url)
+  } else {
+    prices &lt;- prices[1:length(items_06_1876_en)]
+    tibble("good_fr" = items_06_1876, "good_en" = items_06_1876_en, "unit" = units_06_1876,
+           "market_date" = market_date, "price" = prices, "source_url" = source_url)
+  }
+}</code></pre>
+<p>
+As I wrote previously, I had to deal with the missing year in the date inside this function. To do that, I extracted the year from the name of the file, and pasted it then into the date. The file name contains the data because the function in the function that downloads the files I also performed OCR on the first page, to get the date of the newspaper issue. The sole purpose of this was to get the year. Again, the function is more complex than what I hoped, but it did work well overall. There are still mistakes in the data, for example sometimes the prices are in the wrong order; meaning that they’re “shifted”, for example instead of the prices for eggs, I have the prices of the good that comes next. So obviously be careful if you decide to analyze the data, and double-check if something seems weird. I have made the data available on Luxembourg Open Data Portal, <a href="https://data.public.lu/fr/datasets/digitised-luxembourg-historical-newspapers-journaux-historiques-luxembourgeois-numerises/#resource-community-27293c42-22e5-4811-aee8-89d6f7fa9533">here</a>.
+</p>
+</section>
+<section id="analyzing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="analyzing-the-data">
+Analyzing the data
+</h2>
+<p>
+And now, to the fun part. I want to know what was the price of smoked pig meat, and how it varied through time:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)
+library(brotools)</code></pre>
+<pre class="r"><code>market_price &lt;- read_csv("https://download.data.public.lu/resources/digitised-luxembourg-historical-newspapers-journaux-historiques-luxembourgeois-numerises/20190407-183605/market-price.csv")</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   good_fr = col_character(),
+##   good_en = col_character(),
+##   unit = col_character(),
+##   market_date = col_date(format = ""),
+##   price = col_double(),
+##   source_url = col_character()
+## )</code></pre>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Smoked pig meat") %&gt;%
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of smoked pig meat at the Luxembourg-City market in the 19th century")</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_path).</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-9-1.png" width="672">
+</p>
+<p>
+As you can see, there is a huge spike somewhere in 1874. Maybe there was a very severe smoked pig meat shortage that caused the prices to increase dramatically, but the more likely explanation is that there was some sort of mistake, either in the OCR step, or when I extracted the prices, and somehow that particular price of smoked pig meat is actually the price of another, more expensive good.
+</p>
+<p>
+So let’s only consider prices that are below, say, 20 franks, which is already very high:
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Smoked pig meat") %&gt;%
+    filter(price &lt; 20) %&gt;% 
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of smoked pig meat at the Luxembourg-City market in the 1870s")</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-10-1.png" width="672">
+</p>
+<p>
+Now, some prices are very high. Let’s check if it’s a mistake:
+</p>
+<pre class="r"><code>market_price %&gt;% 
+    filter(good_en == "Smoked pig meat") %&gt;% 
+    filter(between(price, 5, 20)) %&gt;% 
+    pull(source_url)</code></pre>
+<pre><code>## [1] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fbs2fs6%2Fpages%2F1/full/full/0/default.jpg"
+## [2] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fd61vzp%2Fpages%2F1/full/full/0/default.jpg"
+## [3] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fjdwb6m%2Fpages%2F1/full/full/0/default.jpg"
+## [4] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fng14m3%2Fpages%2F1/full/full/0/default.jpg"
+## [5] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fw9jdrb%2Fpages%2F1/full/full/0/default.jpg"</code></pre>
+<p>
+If you go to the first url, you will land on the first page of the newspaper. To check the table, you need to check the third page, by changing this part of the url “pages%2F1” to this “pages%2F3”.
+</p>
+<p>
+You will then find the following:
+</p>
+<p>
+<img src="../assets/img/price_smoked_pig.png"><!-- -->
+</p>
+<p>
+As you can see, the price was 2.5, but the OCR returned 7.5. This is a problem that is unavoidable with OCR; there is no way of knowing a priori if characters were not well recognized. It is actually quite interesting how the price for smoked pig meat stayed constant through all these years. A density plot shows that most prices were around 2.5:
+</p>
+<pre class="r"><code>market_price %&gt;% 
+    filter(good_en == "Smoked pig meat") %&gt;% 
+    filter(price &lt; 20) %&gt;% 
+    ggplot() + 
+    geom_density(aes(price), colour = "#82518c") + 
+    theme_blog()</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-13-1.png" width="672">
+</p>
+<p>
+What about another good, say, barley?
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Barley") %&gt;%
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of barley at the Luxembourg-City market in the 1870s")</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-14-1.png" width="672">
+</p>
+<p>
+Here again, we see some very high spikes, most likely due to errors. Let’s try to limit the prices to likely values:
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Barley") %&gt;%
+    filter(between(price, 10, 40)) %&gt;%
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of barley at the Luxembourg-City market in the 1870s")</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-15-1.png" width="672">
+</p>
+<pre class="r"><code>market_price %&gt;% 
+    filter(good_en == "Barley") %&gt;% 
+    ggplot() + 
+    geom_density(aes(price), colour = "#82518c") + 
+    theme_blog()</code></pre>
+<pre><code>## Warning: Removed 39 rows containing non-finite values (stat_density).</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-16-1.png" width="672">
+</p>
+<p>
+Let’s finish this with one of my favourite legume, lentils:
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Lentils") %&gt;%
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of lentils at the Luxembourg-City market in the 1870s")</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-17-1.png" width="672">
+</p>
+<pre class="r"><code>market_price %&gt;% 
+    filter(good_en == "Lentils") %&gt;% 
+    ggplot() + 
+    geom_density(aes(price), colour = "#82518c") + 
+    theme_blog()</code></pre>
+<pre><code>## Warning: Removed 79 rows containing non-finite values (stat_density).</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-18-1.png" width="672">
+</p>
+<p>
+All these 0’s might be surprising, but in most cases, they are actually true zeros! For example, you can check this <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fwsvhwh%2Fpages%2F3/pct:74,0,100,100/full/0/default.jpg">issue</a>. This very likely means that no lentils were available that day at the market. Let’s get rid of the 0s and other extreme values:
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Lentils") %&gt;%
+    filter(between(price, 1, 40)) %&gt;% 
+    ggplot(aes(x = market_date, y = price)) +
+    geom_line(aes(group = 1), colour = "#82518c") + 
+    theme_blog() + 
+    labs(title = "Prices of lentils at the Luxembourg-City market in the 1870s")</code></pre>
+<p>
+<img src="../assets/img/historical_newspaper_scraping_tesseract-19-1.png" width="672">
+</p>
+<p>
+I would like to see if the spikes above 30 are errors or not:
+</p>
+<pre class="r"><code>market_price %&gt;% 
+    filter(good_en == "Lentils") %&gt;% 
+    filter(between(price, 30, 40)) %&gt;% 
+    pull(source_url)</code></pre>
+<pre><code>## [1] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F04mb5t%2Fpages%2F1/full/full/0/default.jpg"
+## [2] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fb8zp31%2Fpages%2F1/full/full/0/default.jpg"
+## [3] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fkzrj53%2Fpages%2F1/full/full/0/default.jpg"
+## [4] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fs8sw2v%2Fpages%2F1/full/full/0/default.jpg"
+## [5] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fsjptsk%2Fpages%2F1/full/full/0/default.jpg"
+## [6] "https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fwk65b6%2Fpages%2F1/full/full/0/default.jpg"</code></pre>
+<p>
+The price was recognized as being 35, and turns out it was correct as you can see <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F04mb5t%2Fpages%2F3/full/full/0/default.jpg">here</a>. This is quite interesting, because the average price was way lower than that:
+</p>
+<pre class="r"><code>market_price %&gt;%
+    filter(good_en == "Lentils") %&gt;%
+    filter(between(price, 1, 40)) %&gt;% 
+    summarise(mean_price = mean(price), 
+              sd_price = sd(price))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   mean_price sd_price
+##        &lt;dbl&gt;    &lt;dbl&gt;
+## 1       20.8     5.82</code></pre>
+<p>
+I’m going to finish here; it was an interesting project, and I can’t wait for more newspapers to be digitized and OCR to work even better. There is a lot more historical data trapped in these newspapers that could provide a lot insights on Luxembourg’s society in the 19th century.
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

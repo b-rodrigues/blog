@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2019-02-04">
+
+<title>Building a shiny app to explore historical newspapers: a step-by-step guide – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Building a shiny app to explore historical newspapers: a step-by-step guide</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 4, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="../assets/img/tf_idf.png" title="Click here to go the app"></a>
+</p>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">
+Introduction
+</h2>
+<p>
+I started off this year by exploring a world that was unknown to me, the world of historical newspapers. I did not know that historical newspapers data was a thing, and have been thoroughly enjoying myself exploring the different datasets published by the National Library of Luxembourg. You can find the data <a href="https://data.bnl.lu/data/historical-newspapers/">here</a>.
+</p>
+<p>
+In my <a href="../posts/2019-01-04-newspapers.html">first blog post</a>, I analyzed data from <em>L’indépendence Luxembourgeoise</em>. I focused on the ads, which were for the most part in the 4th and last page of the newspaper. I did so by extracting the data from the ALTO files. ALTO files contain the content of the newspapers, (basically, the words that make up the article). For this first exercise, I disregarded the METS files, for two reasons. First, I simply wanted to have something quick, and get used to the data. And second, I did not know about ALTO and METS files enough to truly make something out of them. The problem of disregarding the METS file is that I only had a big dump of words, and did not know which words came from which article, or ad in this case.
+</p>
+<p>
+In the <a href="../posts/2019-01-13-newspapers_mets_alto.html">second blog post</a>), I extracted data from the <em>L’Union</em> newspaper, this time by using the metadata from the METS files too. By combining the data from the ALTO files with the metadata from the METS files, I know which words came from which article, which would make further analysis much more interesting.
+</p>
+<p>
+In the <a href="https://www.brodrigues.co/blog/2019-01-31-newspapers_shiny_app/">third blog post</a> of this series, I built a Shiny app which makes it easy to explore the 10 years of publications of <em>L’Union</em>. In this blog post, I will explain in great detail how I created this app.
+</p>
+</section>
+<section id="part-1-getting-the-data-ready-for-the-shiny-app" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-getting-the-data-ready-for-the-shiny-app">
+Part 1: Getting the data ready for the Shiny app
+</h2>
+<section id="step-1-extracting-the-needed-data" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-extracting-the-needed-data">
+Step 1: Extracting the needed data
+</h3>
+<p>
+If you want to follow along with a dataset from a single publication, you can download the following archive on <a href="https://www.dropbox.com/s/56ttqetz4cirsja/1533660_newspaper_lunion_1860-11-14.zip?dl=0">dropbox</a>. Extract this archive, and you will find the data exactly as you would get it from the the big archive you can download from the website of the National Library of Luxembourg. However, to keep the size of the archive small, I removed the .pdf and .jpeg scans.
+</p>
+<p>
+In the <a href="https://www.brodrigues.co/blog/2019-01-13-newspapers_mets_alto/">second blog post</a>) I wrote some functions that made extracting the needed data from the files easy. However, after I wrote the article, I noticed that in some cases these functions were not working exactly as intended. I rewrote them a little bit to overcome these issues. You can find the code I used right below. I won’t explain it too much, because you can read the details in the previous blog post. However, should something be unclear, just drop me an email or a tweet!
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code># This functions will be used within the next functions to extract the relevant pieces
+
+extractor &lt;- function(string, regex, all = FALSE){
+    if(all) {
+        string %&gt;%
+            str_extract_all(regex) %&gt;%
+            flatten_chr() %&gt;%
+            str_remove_all("=|\\\"") %&gt;%
+            #str_extract_all("[:alnum:]+|.|,|\\?|!", simplify = FALSE) %&gt;%
+            map(paste, collapse = "") %&gt;%
+            flatten_chr()
+    } else {
+        string %&gt;%
+            str_extract(regex) %&gt;%
+            str_remove_all("=|\\\"") %&gt;%
+            #str_extract_all("[:alnum:]+|.|,|\\?|!", simplify = TRUE) %&gt;%
+            paste(collapse = " ") %&gt;%
+            tolower()
+    }
+}
+
+# This function extracts the data from the METS files, and returns a tibble:
+
+extract_mets &lt;- function(article){
+    id &lt;- article %&gt;%
+        extractor("(?&lt;=ID)(.*?)(?=LABEL)")
+
+    label &lt;- article %&gt;%
+        extractor("(?&lt;=LABEL)(.*?)(?=TYPE)")
+
+    type &lt;- article %&gt;%
+        extractor("(?&lt;=TYPE)(.*?)(?=&gt;)")
+
+    begins &lt;- article %&gt;%
+        extractor("(?&lt;=BEGIN)(.*?)(?=BETYPE)", all = TRUE)
+
+    tibble::tribble(~label, ~type, ~begins, ~id,
+                    label, type, begins, id) %&gt;%
+        unnest()
+}
+
+# This function extracts the data from the ALTO files, and also returns a tibble:
+
+extract_alto &lt;- function(article){
+    begins &lt;- article[1] %&gt;%
+        extractor("(?&lt;=^ID)(.*?)(?=HPOS)", all = TRUE)
+
+    content &lt;- article %&gt;%
+        extractor("(?&lt;=CONTENT)(.*?)(?=WC)", all = TRUE)
+
+    tibble::tribble(~begins, ~content,
+                    begins, content) %&gt;%
+        unnest()
+}
+
+# This function takes the path to a page as an argument, and extracts the data from 
+# each article using the function defined above. It then writes a flat CSV to disk.
+
+alto_csv &lt;- function(page_path){
+
+    page &lt;- read_file(page_path)
+
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/text/).*")
+
+    alto_articles &lt;- page %&gt;%
+        str_split("TextBlock ") %&gt;%
+        flatten_chr()
+
+    alto_df &lt;- map_df(alto_articles, extract_alto)
+
+    alto_df &lt;- alto_df %&gt;%
+        mutate(document = doc_name)
+
+    write_csv(alto_df, paste0(page_path, ".csv"))
+}
+
+# Same as above, but for the METS file:
+
+mets_csv &lt;- function(page_path){
+
+    page &lt;- read_file(page_path)
+
+    doc_name &lt;- str_extract(page_path, "(?&lt;=/).*")
+
+    mets_articles &lt;- page %&gt;%
+        str_split("DMDID") %&gt;%
+        flatten_chr()
+
+    mets_df &lt;- map_df(mets_articles, extract_mets)
+
+    mets_df &lt;- mets_df %&gt;%
+        mutate(document = doc_name)
+
+    write_csv(mets_df, paste0(page_path, ".csv"))
+}
+
+# Time to use the above defined functions. First, let's save the path of all the ALTO files
+# into a list:
+
+pages_alto &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*/text/.*.xml") %&gt;%
+    discard(is.na)
+
+# I use the {furrr} library to do the extraction in parallel, using 8 cores:
+
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_alto, alto_csv)
+toc &lt;- Sys.time()
+
+toc - tic
+
+#Time difference of 18.64776 mins
+
+
+# Same for the METS files:
+
+pages_mets &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = TRUE), ".*mets.xml") %&gt;%
+    discard(is.na)
+
+
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+tic &lt;- Sys.time()
+future_map(pages_mets, mets_csv)
+toc &lt;- Sys.time()
+
+toc - tic
+
+#Time difference of 18.64776 mins</code></pre>
+</details>
+<p>
+If you want to try the above code for one ALTO and METS files, you can use the following lines (use the download link in the beginning of the blog post to get the required data):
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>mets &lt;- read_file("1533660_newspaper_lunion_1860-11-14/1533660_newspaper_lunion_1860-11-14-mets.xml")
+
+mets_articles2 &lt;- mets %&gt;%
+    str_split("DMDID") %&gt;%
+    flatten_chr()
+
+
+alto &lt;- read_file("1533660_newspaper_lunion_1860-11-14/text/1860-11-14_01-00001.xml")
+
+alto_articles &lt;- alto %&gt;%
+    str_split("TextBlock ") %&gt;%
+    flatten_chr()
+
+mets_df2 &lt;- mets_articles2 %&gt;%
+    map_df(extract_mets)
+
+# Same exercice for ALTO
+
+alto_df &lt;- alto_articles %&gt;%
+    map_df(extract_alto)</code></pre>
+</details>
+</section>
+<section id="step-2-joining-the-data-and-the-metadata" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-joining-the-data-and-the-metadata">
+Step 2: Joining the data and the metadata
+</h3>
+<p>
+Now that I extracted the data from the ALTO files, and the metadata from the METS files, I still need to join both data sets and do some cleaning. What is the goal of joining these two sources? Remember, by doing this I will know which words come from which article, which will make things much easier later on. I explain how the code works as comments in the code block below:
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>library(tidyverse)
+library(udpipe)
+library(textrank)
+library(tidytext)
+
+# First, I need the path to each folder that contains the ALTO and METS files. Each newspaper
+# data is inside its own folder, one folder per publication. Inside, there's `text` folder that
+# contains the ALTO and METS files. This is also where I saved the .csv files from before.
+
+pathdirs &lt;- list.dirs(recursive = FALSE) %&gt;%
+    str_match(".*lunion.*") %&gt;%
+    discard(is.na)
+
+# The following function imports the METS and the ALTO csv files, joins them, and does some 
+# basic cleaning. I used a trick to detect German articles (even though L'Union is a French publication
+# some articles are in German) and then remove them.
+
+tidy_papers &lt;- function(path){
+    mets_path &lt;- paste0(path, "/", list.files(path, ".*.xml.csv"))
+    mets_csv &lt;- data.table::fread(mets_path)
+
+    alto_path &lt;- paste0(path, "/text/", list.files(paste0(path, "/text/"), ".*.csv"))
+    alto_csv &lt;- map_dfr(alto_path, data.table::fread)
+
+    final &lt;- full_join(alto_csv, mets_csv, by = "begins") %&gt;%
+        mutate(content = tolower(content)) %&gt;%
+        mutate(content = if_else(str_detect(content, "hyppart1"), str_extract_all(content, "(?&lt;=CONTENT_).*", simplify = TRUE), content)) %&gt;%
+        mutate(content = if_else(str_detect(content, "hyppart2"), NA_character_, content)) %&gt;%
+        # When words are separated by a hyphen and split over two lines, it looks like this in the data.
+        # ex SUBS_TYPEHypPart1 SUBS_CONTENTexceptée
+        # ceptée SUBS_TYPEHypPart2 SUBS_CONTENTexceptée
+        # Here, the word `exceptée` is split over two lines, so using a regular expression, I keep
+        # the string `exceptée`, which comes after the string `CONTENT`,  from the first line and 
+        # replace the second line by an NA_character_
+        mutate(content = if_else(str_detect(content, "superscript"), NA_character_, content)) %&gt;%
+        mutate(content = if_else(str_detect(content, "subscript"), NA_character_, content)) %&gt;%
+        filter(!is.na(content)) %&gt;%
+        filter(type == "article") %&gt;%
+        group_by(id) %&gt;%
+        nest %&gt;%
+        # Below I create a list column with all the content of the article in a single string.
+        mutate(article_text = map(data, ~paste(.$content, collapse = " "))) %&gt;%
+        mutate(article_text = as.character(article_text)) %&gt;%
+        # Detecting and removing german articles
+        mutate(german = str_detect(article_text, "wenn|wird|und")) %&gt;%
+        filter(german == FALSE) %&gt;%
+        select(-german) %&gt;%
+        # Finally, creating the label of the article (the title), and removing things that are 
+        # not articles, such as the daily feuilleton.
+        mutate(label = map(data, ~`[`(.$label, 1))) %&gt;%
+        filter(!str_detect(label, "embranchement|ligne|bourse|abonnés|feuilleton")) %&gt;%
+        filter(label != "na")
+
+    # Save the data in the rds format, as it is not a flat file
+    saveRDS(final, paste0(path, "/", str_sub(path, 11, -1), ".rds"))
+}
+
+# Here again, I do this in parallel
+
+library(furrr)
+
+plan(multiprocess, workers = 8)
+
+future_map(pathdirs, tidy_papers)</code></pre>
+</details>
+<p>
+This is how one of these files looks like, after passing through this function:
+</p>
+<p>
+<img src="../assets/img/articles_rds.png"><!-- -->
+</p>
+<p>
+One line is one article. The first column is the id of the article, the second column contains a data frame, the text of the article and finally the title of the article. Let’s take a look at the content of the first element of the <em>data</em> column:
+</p>
+<p>
+<img src="../assets/img/merged_alto_mets.png"><!-- -->
+</p>
+<p>
+This is the result of the merger of the METS and ALTO csv files. The first column is the id of the article, the second column contains each individual word of the article, the <em>label</em> column the label, or title of the article.
+</p>
+</section>
+<section id="step-3-part-of-speech-annotation" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-part-of-speech-annotation">
+Step 3: Part-of-speech annotation
+</h3>
+<p>
+Part-of-speech annotation is a technique with the aim of assigning to each word its part of speech. Basically, Pos annotation tells us whether a word is a verb, a noun, an adjective… This will be quite useful for the analysis. To perform Pos annotation, you need to install the <code>{udpipe}</code> package, and download the pre-trained model for the language you want to annotate, in my case French:
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code># Only run this once. This downloads the model for French
+udpipe_download_model(language = "french")
+
+# Load the model
+udmodel_french &lt;- udpipe_load_model(file = 'french-gsd-ud-2.3-181115.udpipe')
+
+# Save the path of the files to annotate in a list:
+pathrds &lt;- list.files(path = "./", all.files = TRUE, recursive = TRUE) %&gt;% 
+  str_match(".*.rds") %&gt;%
+  discard(is.na)
+
+annotate_rds &lt;- function(path, udmodel){
+
+    newspaper &lt;- readRDS(path)
+
+    s &lt;- udpipe_annotate(udmodel, newspaper$article_text, doc_id = newspaper$label)
+    x &lt;- data.frame(s)
+
+    saveRDS(x, str_replace(path, ".rds", "_annotated.rds"))
+}
+
+library(furrr)
+plan(multiprocess, workers = 8)
+tic &lt;- Sys.time()
+future_map(pathrds, annotate_rds, udmodel = udmodel_french)
+toc &lt;- Sys.time()
+toc - tic</code></pre>
+</details>
+<p>
+And here is the result:
+</p>
+<p>
+<img src="../assets/img/pos_article.png"><!-- -->
+</p>
+<p>
+The <em>upos</em> column contains the tags. Now I know which words are nouns, verbs, adjectives, stopwords… Meaning that I can easily focus on the type of words that interest me. Plus, as an added benefit, I can focus on the lemma of the words. For example, the word <em>viennent</em>, is the <a href="https://en.wikipedia.org/wiki/French_conjugation">conjugated</a> form of the verb <em>venir</em>. <em>venir</em> is thus the lemma of <em>viennent</em>. This means that I can focus my analysis on lemmata. This is useful, because if I compute the frequency of words, <em>viennent</em> would be different from <em>venir</em>, which is not really what we want.
+</p>
+</section>
+<section id="step-4-tf-idf" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-tf-idf">
+Step 4: tf-idf
+</h3>
+<p>
+Just like what I did in my <a href="https://www.brodrigues.co/blog/2019-01-04-newspapers/">first blog post</a>, I compute the tf-idf of words. The difference, is that here the “document” is the article. This means that I will get the most frequent words inside each article, but who are at the same time rare in the other articles. Doing this ensures that I will only get very relevant words for each article.
+</p>
+<p>
+In the lines below, I prepare the data to then make the plots. The files that are created using the code below are available in the following <a href="https://github.com/b-rodrigues/newspapers_shinyapp/tree/master/tf_idf_data">Github link</a>.
+</p>
+<p>
+In the Shiny app, I read the data directly from the repo. This way, I can keep the app small in size.
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>path_annotatedrds &lt;- list.files(path = "./", all.files = TRUE, recursive = TRUE) %&gt;% str_match(".*_annotated.rds") %&gt;%
+    discard(is.na)
+
+prepare_tf_idf &lt;- function(path){
+
+    annotated_newspaper &lt;- readRDS(path)
+
+    tf_idf_data &lt;- annotated_newspaper %&gt;%
+        filter(upos %in% c("NOUN", "VERB", "ADJ", "PROPN")) %&gt;%
+        filter(nchar(lemma) &gt; 3) %&gt;%
+        count(doc_id, lemma) %&gt;%
+        bind_tf_idf(lemma, doc_id, n) %&gt;%
+        arrange(desc(tf_idf)) %&gt;%
+        group_by(doc_id)
+
+    name_tf_idf_data &lt;- str_split(path, "/", simplify = 1)[1] %&gt;%
+        paste0("_tf_idf_data.rds")  %&gt;%
+        str_sub(start = 9, -1)
+
+    saveRDS(tf_idf_data, paste0("tf_idf_data/", name_tf_idf_data))
+}
+
+library(furrr)
+plan(multiprocess, workers = 8)
+
+future_map(path_annotatedrds, prepare_tf_idf)</code></pre>
+</details>
+</section>
+<section id="step-5-summarizing-articles-by-extracting-the-most-relevant-sentences-using-textrank" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-summarizing-articles-by-extracting-the-most-relevant-sentences-using-textrank">
+Step 5: Summarizing articles by extracting the most relevant sentences, using <code>{textrank}</code>
+</h3>
+<p>
+The last step in data preparation is to extract the most relevant sentences of each articles, using the <code>{textrank}</code> package. This packages implements the <em>PageRank</em> algorithm developed by Larry Page and Sergey Brin in 1995. This algorithm ranks pages by the number of links that point to the pages; the most popular and important pages are also the ones with more links to them. A similar approach is used by the implementation of <code>{textrank}</code>. The algorithm is explained in detail in the following <a href="https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf">paper</a>.
+</p>
+<p>
+However, I cannot simply apply <code>{textrank}</code> to the annotated data frame as it is. Because I have several articles, I have to run the <code>textrank_sentences()</code> function, which extracts the relevant sentences, article by article. For this I still need to transform the data set and also need to prepare the data in a way that makes it digestible by the function. I will not explain the code below line by line, since the documentation of the package is quite straightforward. However, keep in mind that I have to run the <code>textrank_sentences()</code> function for each article, which explains that as some point I use the following:
+</p>
+<pre class="r"><code>group_by(doc_id) %&gt;%
+    nest() %&gt;%</code></pre>
+<p>
+which then makes it easy to work by article (<em>doc_id</em> is the id of the articles). This part is definitely the most complex, so if you’re interested in the methodology described here, really take your time to understand this function. Let me know if I can clarify things!
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>library(textrank)
+library(brotools)
+
+path_annotatedrds &lt;- list.files(path = "./", all.files = TRUE, recursive = TRUE) %&gt;% str_match(".*_annotated.rds") %&gt;%
+    discard(is.na)
+
+prepare_textrank &lt;- function(path){
+
+    annotated_newspaper &lt;- readRDS(path)
+
+    # sentences summary
+    x_text_rank &lt;- annotated_newspaper %&gt;%
+        group_by(doc_id) %&gt;%
+        nest() %&gt;%
+        mutate(textrank_id = map(data, ~unique_identifier(., c("paragraph_id", "sentence_id")))) %&gt;%
+        mutate(cleaned = map2(.x = data, .y = textrank_id, ~cbind(.x, "textrank_id" = .y))) %&gt;%
+        select(doc_id, cleaned)
+
+    x_text_rank2 &lt;- x_text_rank %&gt;%
+        mutate(sentences = map(cleaned, ~select(., textrank_id, sentence))) %&gt;%
+        # one_row() is a function from my own package, which eliminates duplicates rows
+        # from a data frame
+        mutate(sentences = map(sentences, ~one_row(., c("textrank_id", "sentence"))))
+
+    x_terminology &lt;- x_text_rank %&gt;%
+        mutate(terminology = map(cleaned, ~filter(., upos %in% c("NOUN", "ADJ")))) %&gt;%
+        mutate(terminology = map(terminology, ~select(., textrank_id, "lemma"))) %&gt;%
+        select(terminology)
+
+    x_final &lt;- bind_cols(x_text_rank2, x_terminology)
+
+    possibly_textrank_sentences &lt;- possibly(textrank_sentences, otherwise = NULL)
+
+    x_final &lt;- x_final %&gt;%
+        mutate(summary = map2(sentences, terminology, possibly_textrank_sentences)) %&gt;%
+        select(doc_id, summary)
+
+    name_textrank_data &lt;- str_split(path, "/", simplify = 1)[1] %&gt;%
+        paste0("_textrank_data.rds") %&gt;%
+        str_sub(start = 9, -1)
+
+    saveRDS(x_final, paste0("textrank_data/", name_textrank_data))
+}
+
+library(furrr)
+plan(multiprocess, workers = 8)
+
+future_map(path_annotatedrds, prepare_textrank)</code></pre>
+</details>
+<p>
+You can download the annotated data sets from the following <a href="https://github.com/b-rodrigues/newspapers_shinyapp/tree/master/textrank_data">link</a>. This is how the data looks like:
+</p>
+<p>
+<img src="../assets/img/textrank_df.png"><!-- -->
+</p>
+<p>
+Using the <code>summary()</code> function on an element of the <em>summary</em> column returns the 5 most relevant sentences as extracted by <code>{textrank}</code>.
+</p>
+</section>
+</section>
+<section id="part-2-building-the-shiny-app" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-building-the-shiny-app">
+Part 2: Building the shiny app
+</h2>
+<p>
+The most difficult parts are behind us! Building a dashboard is quite easy thanks to the <code>{flexdashboard}</code> package. You need to know Markdown and some Shiny, but it’s way easier than building a complete Shiny app. First of all, install the <code>{fleshdashboard}</code> package, and start from a template, or from <a href="https://rmarkdown.rstudio.com/flexdashboard/layouts.html">this list of layouts</a>.
+</p>
+<p>
+I think that the only trick worth mentioning is that I put the data in a Github repo, and read it directly from the Shiny app. Users choose a date, which I save in a reactive variable. I then build the right url that points towards the right data set, and read it:
+</p>
+<pre class="r"><code>path_tf_idf &lt;- reactive({
+    paste0("https://raw.githubusercontent.com/b-rodrigues/newspapers_shinyapp/master/tf_idf_data/newspaper_lunion_", as.character(input$date2), "_tf_idf_data.rds")
+})
+
+dfInput &lt;- reactive({
+        read_rds(url(path_tf_idf())) %&gt;%
+        top_n(as.numeric(input$tf_df_words), tf_idf) %&gt;%
+        mutate(word = reorder(lemma, tf_idf)) 
+})</code></pre>
+<p>
+Because I did all the computations beforehand, the app simply reads the data and creates the bar plots for the tf-idf data, or prints the sentences for the textrank data. To print the sentences correcly, I had to use some html tags, using the <code>{htmltools}</code> package. Below you can find the source code of the app:
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre><code>---
+title: "Exploring 10 years of daily publications of the Luxembourguish newspaper, *L'Union*"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: yeti
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+
+---
+
+`` `{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(tidyverse)
+library(textrank)
+library(tidytext)
+library(udpipe)
+library(plotly)
+library(ggthemes)
+`` `
+
+Sidebar {.sidebar}
+=====================================
+
+`` `{r}
+dateInput('date2',
+      label = paste('Select date'),
+      value = as.character(as.Date("1860-11-14")),
+      min = as.Date("1860-11-12"), max = as.Date("1869-12-31"),
+      format = "yyyy/mm/dd",
+      startview = 'year', language = 'en-GB', weekstart = 1
+    )
+selectInput(inputId = "tf_df_words", 
+            label = "Select number of unique words for tf-idf", 
+            choices = seq(1:10),
+            selected = 5)
+selectInput(inputId = "textrank_n_sentences", 
+            label = "Select the number of sentences for the summary of the article", 
+            choices = seq(1:20), 
+            selected = 5)
+`` `
+
+*The BnL has digitised over 800.000 pages of Luxembourg newspapers. From those, more than 700.000 
+pages have rich metadata using international XML standards such as METS and ALTO. 
+Multiple datasets are available for download. Each one is of different size and contains different
+newspapers. All the digitised material can also be found on our search platform a-z.lu 
+(Make sure to filter by “eluxemburgensia”). All datasets contain XML (METS + ALTO), PDF, original 
+TIFF and PNG files for every newspaper issue.* 
+Source: https://data.bnl.lu/data/historical-newspapers/
+
+This Shiny app allows you to get summaries of the 10 years of daily issues of the "L'Union" newspaper.
+In the first tab, a simple word frequency per article is shown, using the tf-idf method. In the 
+second tab, summary sentences have been extracted using the `{textrank}` package.
+
+
+Word frequency per article
+===================================== 
+Row
+-----------------------------------------------------------------------
+
+### Note: there might be days without any publication. In case of an error, select another date.
+    
+`` `{r}
+path_tf_idf &lt;- reactive({
+    paste0("https://raw.githubusercontent.com/b-rodrigues/newspapers_shinyapp/master/tf_idf_data/newspaper_lunion_", as.character(input$date2), "_tf_idf_data.rds")
+})
+dfInput &lt;- reactive({
+        read_rds(url(path_tf_idf())) %&gt;%
+        top_n(as.numeric(input$tf_df_words), tf_idf) %&gt;%
+        mutate(word = reorder(lemma, tf_idf)) 
+})
+renderPlotly({
+    df_tf_idf &lt;- dfInput()
+    p1 &lt;- ggplot(df_tf_idf,
+                 aes(word, tf_idf)) +
+                 geom_col(show.legend = FALSE, fill = "#82518c") +
+                 labs(x = NULL, y = "tf-doc_idf") +
+                 facet_wrap(~doc_id, ncol = 2, scales = "free") +
+                 coord_flip() +
+                 theme_dark()
+    ggplotly(p1)
+})
+`` `
+
+Summary of articles {data-orientation=rows}
+===================================== 
+Row 
+-----------------------------------------------------------------------
+
+### The sentence in bold is the title of the article. You can show more sentences in the summary by using the input in the sidebar.
+    
+`` `{r}
+print_summary_textrank &lt;- function(doc_id, summary, n_sentences){
+    htmltools::HTML(paste0("&lt;b&gt;", doc_id, "&lt;/b&gt;"), paste("&lt;p&gt;", summary(summary, n_sentences), sep = "", collapse = "&lt;br/&gt;"), "&lt;/p&gt;")
+}
+path_textrank &lt;- reactive({
+    paste0("https://raw.githubusercontent.com/b-rodrigues/newspapers_shinyapp/master/textrank_data/newspaper_lunion_", as.character(input$date2), "_textrank_data.rds")
+})
+dfInput2 &lt;- reactive({
+        read_rds(url(path_textrank()))
+})
+renderUI({
+    df_textrank &lt;- dfInput2()
+    
+df_textrank &lt;- df_textrank %&gt;% 
+    mutate(to_print = map2(doc_id, summary, print_summary_textrank, n_sentences = as.numeric(input$textrank_n_sentences)))
+df_textrank$to_print
+})
+`` `
+</code></pre>
+</details>
+<p>
+I host the app on Shinyapps.io, which is really easy to do from within Rstudio.
+</p>
+<p>
+That was quite long, I’m not sure that anyone will read this blog post completely, but oh well. Better to put the code online, might help someone one day, that leave it to rot on my hard drive.
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

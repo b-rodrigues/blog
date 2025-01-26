@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2019-05-04">
 
-<title>Econometrics and Free Software</title>
+<title>Fast food, causality and R packages, part 2 – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,40 +66,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-execute','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-execute","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
       <a href="../index.html">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
@@ -112,37 +81,8 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,303 +92,298 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Fast food, causality and R packages, part 2</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 4, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2019
-</h2>
-<ul>
-<li>
-<a href="./posts/2019-05-19-spacemacs.html">The never-ending editor war (?)</a>
-</li>
-<li>
-<a href="./posts/2019-05-18-xml2.html">For posterity: install {xml2} on GNU/Linux distros</a>
-</li>
-<li>
-<a href="./posts/2019-05-04-diffindiff_part2.html">Fast food, causality and R packages, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-04-28-diffindiff_part1.html">Fast food, causality and R packages, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-04-07-historical_newspaper_scraping_tesseract.html">Historical newspaper scraping with {tesseract} and R</a>
-</li>
-<li>
-<a href="./posts/2019-03-31-tesseract.html">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</a>
-</li>
-<li>
-<a href="./posts/2019-03-20-pivot.html">Pivoting data frames just got easier thanks to <code>pivot_wide()</code> and <code>pivot_long()</code></a>
-</li>
-<li>
-<a href="./posts/2019-03-05-historical_vowpal_part2.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-03-03-historical_vowpal.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-02-10-stringr_package.html">Manipulating strings with the {stringr} package</a>
-</li>
-<li>
-<a href="./posts/2019-02-04-newspapers_shiny_app_tutorial.html">Building a shiny app to explore historical newspapers: a step-by-step guide</a>
-</li>
-<li>
-<a href="./posts/2019-01-31-newspapers_shiny_app.html">Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</a>
-</li>
-<li>
-<a href="./posts/2019-01-13-newspapers_mets_alto.html">Making sense of the METS and ALTO XML standards</a>
-</li>
-<li>
-<a href="./posts/2019-01-04-newspapers.html">Looking into 19th century ads from a Luxembourguish newspaper with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-12-30-reticulate.html">R or Python? Why not both? Using Anaconda Python within R with {reticulate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-27-fun_gganimate.html">Some fun with {gganimate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-24-modern_objects.html">Objects types and some useful R functions for beginners</a>
-</li>
-<li>
-<a href="./posts/2018-12-21-tidyverse_pi.html">Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</a>
-</li>
-<li>
-<a href="./posts/2018-12-15-lubridate_africa.html">Manipulate dates easily with {lubridate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-02-hyper-parameters.html">What hyper-parameters are, and what to do with them; an illustration with ridge regression</a>
-</li>
-<li>
-<a href="./posts/2018-11-25-tidy_cv.html">A tutorial on tidy cross-validation with R</a>
-</li>
-<li>
-<a href="./posts/2018-11-21-lux_castle.html">The best way to visit Luxembourguish castles is doing data science + combinatorial optimization</a>
-</li>
-<li>
-<a href="./posts/2018-11-16-rgenoud_arima.html">Using a genetic algorithm for the hyperparameter optimization of a SARIMA model</a>
-</li>
-<li>
-<a href="./posts/2018-11-15-tidy_gridsearch.html">Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach</a>
-</li>
-<li>
-<a href="./posts/2018-11-14-luxairport.html">Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport</a>
-</li>
-<li>
-<a href="./posts/2018-11-10-nethack_analysis_part2.html">Analyzing NetHack data, part 2: What players kill the most</a>
-</li>
-<li>
-<a href="./posts/2018-11-03-nethack_analysis.html">Analyzing NetHack data, part 1: What kills the players</a>
-</li>
-<li>
-<a href="./posts/2018-11-01-nethack.html">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</a>
-</li>
-<li>
-<a href="./posts/2018-10-27-lux_elections_analysis.html">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</a>
-</li>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Joke"> <img src="../assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+I am currently working on a package for the R programming language; its initial goal was to simply distribute the data used in the Card and Krueger 1994 paper that you can read <a href="http://davidcard.berkeley.edu/papers/njmin-aer.pdf">here</a> (PDF warning). However, I decided that I would add code to perform diff-in-diff.
+</p>
+<p>
+In my <a href="https://www.brodrigues.co/blog/2019-04-28-diffindiff_part1/">previous blog post</a> I showed how to set up the structure of your new package. In this blog post, I will only focus on getting Card and Krueger’s data and prepare it for distribution. The next blog posts will focus on writing a function to perform difference-in-differences.
+</p>
+<p>
+If you want to distribute data through a package, you first need to use the <code>usethis::use_data_raw()</code> function (as shown in part 1).
+</p>
+<p>
+This creates a <code>data-raw</code> folder, and inside you will find the <code>DATASET.R</code> script. You can edit this script to prepare the data.
+</p>
+<p>
+First, let’s download the data from Card’s website, unzip it and load the data into R. All these operations will be performed from R:
+</p>
+<pre class="r"><code>library(tidyverse)
+
+tempfile_path &lt;- tempfile()
+
+download.file("http://davidcard.berkeley.edu/data_sets/njmin.zip", destfile = tempfile_path)
+
+tempdir_path &lt;- tempdir()
+
+unzip(tempfile_path, exdir = tempdir_path)</code></pre>
+<p>
+To download and unzip a file from R, first, you need to define where you want to save the file. Because I am not interested in keeping the downloaded file, I use the <code>tempfile()</code> function to get a temporary file in my <code>/tmp/</code> folder (which is the folder that contains temporary files and folders in a GNU+Linux system). Then, using <code>download.file()</code> I download the file, and save it in my temporary file. I then create a temporary directory using <code>tempdir()</code> (the idea is the same as with <code>tempfile()</code>), and use this folder to save the files that I will unzip, using the <code>unzip()</code> function. This folder now contains several files:
+</p>
+<pre><code>check.sas
+codebook
+public.csv
+read.me
+survey1.nj
+survey2.nj</code></pre>
+<p>
+<code>check.sas</code> is the SAS script Card and Krueger used. It’s interesting, because it is quite simple, quite short (170 lines long) and yet the impact of Card and Krueger’s research was and has been very important for the field of econometrics. This script will help me define my own functions. <code>codebook</code>, you guessed it, contains the variables’ descriptions. I will use this to name the columns of the data and to write the dataset’s documentation.
+</p>
+<p>
+<code>public.csv</code> is the data. It does not contain any column names:
+</p>
+<pre><code> 46 1 0 0 0 0 0 1 0 0  0 30.00 15.00  3.00   .    19.0   .   1    .  2  6.50 16.50  1.03  1.03  0.52  3  3 1 1 111792  1  3.50 35.00  3.00  4.30  26.0  0.08 1 2  6.50 16.50  1.03   .    0.94  4  4    
+ 49 2 0 0 0 0 0 1 0 0  0  6.50  6.50  4.00   .    26.0   .   0    .  2 10.00 13.00  1.01  0.90  2.35  4  3 1 1 111292  .  0.00 15.00  4.00  4.45  13.0  0.05 0 2 10.00 13.00  1.01  0.89  2.35  4  4    
+506 2 1 0 0 0 0 1 0 0  0  3.00  7.00  2.00   .    13.0  0.37 0  30.0 2 11.00 10.00  0.95  0.74  2.33  3  3 1 1 111292  .  3.00  7.00  4.00  5.00  19.0  0.25 . 1 11.00 11.00  0.95  0.74  2.33  4  3    
+ 56 4 1 0 0 0 0 1 0 0  0 20.00 20.00  4.00  5.00  26.0  0.10 1   0.0 2 10.00 12.00  0.87  0.82  1.79  2  2 1 1 111492  .  0.00 36.00  2.00  5.25  26.0  0.15 0 2 10.00 12.00  0.92  0.79  0.87  2  2    
+ 61 4 1 0 0 0 0 1 0 0  0  6.00 26.00  5.00  5.50  52.0  0.15 1   0.0 3 10.00 12.00  0.87  0.77  1.65  2  2 1 1 111492  . 28.00  3.00  6.00  4.75  13.0  0.15 0 2 10.00 12.00  1.01  0.84  0.95  2  2    
+ 62 4 1 0 0 0 0 1 0 0  2  0.00 31.00  5.00  5.00  26.0  0.07 0  45.0 2 10.00 12.00  0.87  0.77  0.95  2  2 1 1 111492  .   .     .     .     .    26.0   .   0 2 10.00 12.00   .    0.84  1.79  3  3    </code></pre>
+<p>
+Missing data is defined by <code>.</code> and the delimiter is the space character. <code>read.me</code> is a README file. Finally, <code>survey1.nj</code> and <code>survey2.nj</code> are the surveys that were administered to the fast food restaurants’ managers; one in February (before the raise) and the second one in November (after the minimum wage raise).
+</p>
+<p>
+The next lines import the codebook:
+</p>
+<pre class="r"><code>codebook &lt;- read_lines(file = paste0(tempdir_path, "/codebook"))
+
+variable_names &lt;- codebook %&gt;%
+    `[`(8:59) %&gt;%
+    `[`(-c(5, 6, 13, 14, 32, 33)) %&gt;%
+    str_sub(1, 13) %&gt;%
+    str_squish() %&gt;%
+    str_to_lower()</code></pre>
+<p>
+Once I import the codebook, I select lines 8 to 59 using the <code><code>[</code>()</code> function. If you’re not familiar with this notation, try the following in a console:
+</p>
+<pre class="r"><code>seq(1, 100)[1:10]</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>
+and compare:
+</p>
+<pre class="r"><code>seq(1, 100) %&gt;% 
+  `[`(., 1:10)</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>
+both are equivalent, as you can see. You can also try the following:
+</p>
+<pre class="r"><code>1 + 10</code></pre>
+<pre><code>## [1] 11</code></pre>
+<pre class="r"><code>1 %&gt;% 
+  `+`(., 10)</code></pre>
+<pre><code>## [1] 11</code></pre>
+<p>
+Using the same trick, I remove lines that I do not need, and then using <code>stringr::str_sub(1, 13)</code> I only keep the first 13 characters (which are the variable names, plus some white space characters) and then, to remove all the unneeded white space characters I use <code>stringr::squish()</code>, and then change the column names to lowercase.
+</p>
+<p>
+I then load the data, and add the column names that I extracted before:
+</p>
+<pre class="r"><code>dataset &lt;- read_table2(paste0(tempdir_path, "/public.dat"),
+                      col_names = FALSE)
+
+dataset &lt;- dataset %&gt;%
+    select(-X47) %&gt;%
+    `colnames&lt;-`(., variable_names) %&gt;%
+    mutate_all(as.numeric) %&gt;%
+    mutate(sheet = as.character(sheet))</code></pre>
+<p>
+I use the same trick as before. I rename the 47th column, which is empty, I name the columns with <code><code>colnames&amp;lt;-</code>()</code>.
+</p>
+<p>
+After this, I perform some data cleaning. It’s mostly renaming categories of categorical variables, and creating a “true” panel format. Several variables were measured at several points in time. Variables that were measured a second time have a “2” at the end of their name. I remove these variables, and add an observation data variable. So my data as twice as many rows as the original data, but that format makes it way easier to work with. Below you can read the full code:
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>dataset &lt;- dataset %&gt;%
+    mutate(chain = case_when(chain == 1 ~ "bk",
+                             chain == 2 ~ "kfc",
+                             chain == 3 ~ "roys",
+                             chain == 4 ~ "wendys")) %&gt;%
+    mutate(state = case_when(state == 1 ~ "New Jersey",
+                             state == 0 ~ "Pennsylvania")) %&gt;%
+    mutate(region = case_when(southj == 1 ~ "southj",
+              centralj == 1 ~ "centralj",
+              northj == 1 ~ "northj",
+              shore == 1 ~ "shorej",
+              pa1 == 1 ~ "pa1",
+              pa2 == 1 ~ "pa2")) %&gt;%
+    mutate(meals = case_when(meals == 0 ~ "None",
+                             meals == 1 ~ "Free meals",
+                             meals == 2 ~ "Reduced price meals",
+                             meals == 3 ~ "Both free and reduced price meals")) %&gt;%
+    mutate(meals2 = case_when(meals2 == 0 ~ "None",
+                             meals2 == 1 ~ "Free meals",
+                             meals2 == 2 ~ "Reduced price meals",
+                             meals2 == 3 ~ "Both free and reduced price meals")) %&gt;%
+    mutate(status2 = case_when(status2 == 0 ~ "Refused 2nd interview",
+                               status2 == 1 ~ "Answered 2nd interview",
+                               status2 == 2 ~ "Closed for renovations",
+                               status2 == 3 ~ "Closed permanently",
+                               status2 == 4 ~ "Closed for highway construction",
+                               status2 == 5 ~ "Closed due to Mall fire")) %&gt;%
+    mutate(co_owned = if_else(co_owned == 1, "Yes", "No")) %&gt;%
+    mutate(bonus = if_else(bonus == 1, "Yes", "No")) %&gt;%
+    mutate(special2 = if_else(special2 == 1, "Yes", "No")) %&gt;%
+    mutate(type2 = if_else(type2 == 1, "Phone", "Personal")) %&gt;%
+    select(sheet, chain, co_owned, state, region, everything()) %&gt;%
+    select(-southj, -centralj, -northj, -shore, -pa1, -pa2) %&gt;%
+    mutate(date2 = lubridate::mdy(date2)) %&gt;%
+    rename(open2 = open2r) %&gt;%
+    rename(firstinc2 = firstin2)
+
+dataset1 &lt;- dataset %&gt;%
+    select(-ends_with("2"), -sheet, -chain, -co_owned, -state, -region, -bonus) %&gt;%
+    mutate(type = NA_character_,
+           status = NA_character_,
+           date = NA)
+
+dataset2 &lt;- dataset %&gt;%
+    select(ends_with("2")) %&gt;%
+    #mutate(bonus = NA_character_) %&gt;%
+    rename_all(~str_remove(., "2"))
+
+other_cols &lt;- dataset %&gt;%
+    select(sheet, chain, co_owned, state, region, bonus)
+
+other_cols_1 &lt;- other_cols %&gt;%
+    mutate(observation = "February 1992")
+
+other_cols_2 &lt;- other_cols %&gt;%
+    mutate(observation = "November 1992")
+
+dataset1 &lt;- bind_cols(other_cols_1, dataset1)
+dataset2 &lt;- bind_cols(other_cols_2, dataset2)
+
+njmin &lt;- bind_rows(dataset1, dataset2) %&gt;%
+    select(sheet, chain, state, region, observation, everything())</code></pre>
+</details>
+<p>
+The line I would like to comment is the following:
+</p>
+<pre class="r"><code>dataset %&gt;%
+    select(-ends_with("2"), -sheet, -chain, -co_owned, -state, -region, -bonus)</code></pre>
+<p>
+This select removes every column that ends with the character “2” (among others). I split the data in two, to then bind the rows together and thus create my long dataset. I then save the data into the <code>data/</code> folder:
+</p>
+<pre class="r"><code>usethis::use_data(njmin, overwrite = TRUE)</code></pre>
+<p>
+This saves the data as an <code>.rda</code> file. To enable users to read the data by typing <code>data(“njmin”)</code>, you need to create a <code>data.R</code> script in the <code>R/</code> folder. You can read my <code>data.R</code> script below:
+</p>
+<details>
+<p>
+</p><summary>
+Click if you want to see the code
+</summary>
+<p></p>
+<pre class="r"><code>#' Data from the Card and Krueger 1994 paper *Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania*
+#'
+#' This dataset was downloaded and distributed with the permission of David Card. The original
+#' data contains 410 observations and 46 variables. The data distributed in this package is
+#' exactly the same, but was changed from a wide to a long dataset, which is better suited for
+#' manipulation with *tidyverse* functions.
+#'
+#' @format A data frame with 820 rows and 28 variables:
+#' \describe{
+#'   \item{\code{sheet}}{Sheet number (unique store id).}
+#'   \item{\code{chain}}{The fastfood chain: bk is Burger King, kfc is Kentucky Fried Chicken, wendys is Wendy's, roys is Roy Rogers.}
+#'   \item{\code{state}}{State where the restaurant is located.}
+#'   \item{\code{region}}{pa1 is northeast suburbs of Phila, pa2 is Easton etc, centralj is central NJ, northj is northern NJ, southj is south NJ.}
+#'   \item{\code{observation}}{Date of first (February 1992) and second (November 1992) observation.}
+#'   \item{\code{co_owned}}{"Yes" if company owned.}
+#'   \item{\code{ncalls}}{Number of call-backs. Is 0 if contacted on first call.}
+#'   \item{\code{empft}}{Number full-time employees.}
+#'   \item{\code{emppt}}{Number part-time employees.}
+#'   \item{\code{nmgrs}}{Number of managers/assistant managers.}
+#'   \item{\code{wage_st}}{Starting wage ($/hr).}
+#'   \item{\code{inctime}}{Months to usual first raise.}
+#'   \item{\code{firstinc}}{Usual amount of first raise (\$/hr).}
+#'   \item{\code{bonus}}{"Yes" if cash bounty for new workers.}
+#'   \item{\code{pctaff}}{\% of employees affected by new minimum.}
+#'   \item{\code{meals}}{Free/reduced priced code.}
+#'   \item{\code{open}}{Hour of opening.}
+#'   \item{\code{hrsopen}}{Number of hours open per day.}
+#'   \item{\code{psode}}{Price of medium soda, including tax.}
+#'   \item{\code{pfry}}{Price of small fries, including tax.}
+#'   \item{\code{pentree}}{Price of entree, including tax.}
+#'   \item{\code{nregs}}{Number of cash registers in store.}
+#'   \item{\code{nregs11}}{Number of registers open at 11:00 pm.}
+#'   \item{\code{type}}{Type of 2nd interview.}
+#'   \item{\code{status}}{Status of 2nd interview.}
+#'   \item{\code{date}}{Date of 2nd interview.}
+#'   \item{\code{nregs11}}{"Yes" if special program for new workers.}
+#' }
+#' @source \url{http://davidcard.berkeley.edu/data_sets.html}
+"njmin"</code></pre>
+</details>
+<p>
+I have documented the data, and using <code>roxygen2::royxgenise()</code> to create the dataset’s documentation.
+</p>
+<p>
+The data can now be used to create some nifty plots:
+</p>
+<pre class="r"><code>ggplot(njmin, aes(wage_st)) + geom_density(aes(fill = state), alpha = 0.3) +
+    facet_wrap(vars(observation)) + theme_blog() +
+    theme(legend.title = element_blank(), plot.caption = element_text(colour = "white")) +
+    labs(title = "Distribution of starting wage rates in fast food restaurants",
+         caption = "On April 1st, 1992, New Jersey's minimum wage rose from $4.25 to $5.05. Source: Card and Krueger (1994)")</code></pre>
+<pre><code>## Warning: Removed 41 rows containing non-finite values (stat_density).</code></pre>
+<p>
+<img src="../assets/img/diffindiff_part2-6-1.png" width="672">
+</p>
+<p>
+In the next blog post, I am going to write a first function to perform diff and diff, and we will learn how to make it available to users, document and test it!
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -460,7 +395,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

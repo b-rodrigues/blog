@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2019-04-28">
 
-<title>Econometrics and Free Software</title>
+<title>Fast food, causality and R packages, part 1 – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,40 +66,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-execute','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-execute","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
       <a href="../index.html">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
@@ -112,37 +81,8 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,303 +92,195 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Fast food, causality and R packages, part 1</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 28, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2019
-</h2>
-<ul>
-<li>
-<a href="./posts/2019-05-19-spacemacs.html">The never-ending editor war (?)</a>
-</li>
-<li>
-<a href="./posts/2019-05-18-xml2.html">For posterity: install {xml2} on GNU/Linux distros</a>
-</li>
-<li>
-<a href="./posts/2019-05-04-diffindiff_part2.html">Fast food, causality and R packages, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-04-28-diffindiff_part1.html">Fast food, causality and R packages, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-04-07-historical_newspaper_scraping_tesseract.html">Historical newspaper scraping with {tesseract} and R</a>
-</li>
-<li>
-<a href="./posts/2019-03-31-tesseract.html">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</a>
-</li>
-<li>
-<a href="./posts/2019-03-20-pivot.html">Pivoting data frames just got easier thanks to <code>pivot_wide()</code> and <code>pivot_long()</code></a>
-</li>
-<li>
-<a href="./posts/2019-03-05-historical_vowpal_part2.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-03-03-historical_vowpal.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-02-10-stringr_package.html">Manipulating strings with the {stringr} package</a>
-</li>
-<li>
-<a href="./posts/2019-02-04-newspapers_shiny_app_tutorial.html">Building a shiny app to explore historical newspapers: a step-by-step guide</a>
-</li>
-<li>
-<a href="./posts/2019-01-31-newspapers_shiny_app.html">Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</a>
-</li>
-<li>
-<a href="./posts/2019-01-13-newspapers_mets_alto.html">Making sense of the METS and ALTO XML standards</a>
-</li>
-<li>
-<a href="./posts/2019-01-04-newspapers.html">Looking into 19th century ads from a Luxembourguish newspaper with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-12-30-reticulate.html">R or Python? Why not both? Using Anaconda Python within R with {reticulate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-27-fun_gganimate.html">Some fun with {gganimate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-24-modern_objects.html">Objects types and some useful R functions for beginners</a>
-</li>
-<li>
-<a href="./posts/2018-12-21-tidyverse_pi.html">Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</a>
-</li>
-<li>
-<a href="./posts/2018-12-15-lubridate_africa.html">Manipulate dates easily with {lubridate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-02-hyper-parameters.html">What hyper-parameters are, and what to do with them; an illustration with ridge regression</a>
-</li>
-<li>
-<a href="./posts/2018-11-25-tidy_cv.html">A tutorial on tidy cross-validation with R</a>
-</li>
-<li>
-<a href="./posts/2018-11-21-lux_castle.html">The best way to visit Luxembourguish castles is doing data science + combinatorial optimization</a>
-</li>
-<li>
-<a href="./posts/2018-11-16-rgenoud_arima.html">Using a genetic algorithm for the hyperparameter optimization of a SARIMA model</a>
-</li>
-<li>
-<a href="./posts/2018-11-15-tidy_gridsearch.html">Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach</a>
-</li>
-<li>
-<a href="./posts/2018-11-14-luxairport.html">Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport</a>
-</li>
-<li>
-<a href="./posts/2018-11-10-nethack_analysis_part2.html">Analyzing NetHack data, part 2: What players kill the most</a>
-</li>
-<li>
-<a href="./posts/2018-11-03-nethack_analysis.html">Analyzing NetHack data, part 1: What kills the players</a>
-</li>
-<li>
-<a href="./posts/2018-11-01-nethack.html">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</a>
-</li>
-<li>
-<a href="./posts/2018-10-27-lux_elections_analysis.html">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</a>
-</li>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Joke"> <img src="../assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+I am currently working on a package for the R programming language; its initial goal was to simply distribute the data used in the Card and Krueger 1994 paper that you can read <a href="http://davidcard.berkeley.edu/papers/njmin-aer.pdf">here</a> (PDF warning).
+</p>
+<p>
+The gist of the paper is to try to answer the following question: <em>Do increases in minimum wages reduce employment?</em> According to Card and Krueger’s paper from 1994, no. The authors studied a change in legislation in New Jersey which increased the minimum wage from $4.25 an hour to $5.05 an hour. The neighbourghing state of Pennsylvania did not introduce such an increase. The authors thus used the State of Pennsylvania as a control for the State of New Jersey and studied how the increase in minimum wage impacted the employment in fast food restaurants and found, against what economic theory predicted, an increase and not a decrease in employment. The authors used a method called difference-in-differences to asses the impact of the minimum wage increase.
+</p>
+<p>
+This result was and still is controversial, with subsequent studies finding subtler results. For instance, showing that there is a reduction in employment following an increase in minimum wage, but only for large restaurants (see Ropponen and Olli, 2011).
+</p>
+<p>
+Anyways, this blog post will discuss how to create a package using to distribute the data. In a future blog post, I will discuss preparing the data to make it available as a demo dataset inside the package, and then writing and documenting functions.
+</p>
+<p>
+The first step to create a package, is to create a new project:
+</p>
+<p>
+<img src="../assets/img/package_01.png"><!-- -->
+</p>
+<p>
+Select “New Directory”:
+</p>
+<p>
+<img src="../assets/img/package_02.png"><!-- -->
+</p>
+<p>
+Then “R package”:
+</p>
+<p>
+<img src="../assets/img/package_03.png"><!-- -->
+</p>
+<p>
+and on the window that appears, you can choose the name of the package, as well as already some starting source files:
+</p>
+<p>
+<img src="../assets/img/package_04.png"><!-- -->
+</p>
+<p>
+Also, I’d highly recommend you click on the “Create a git repository” box and use git within your project for reproducibility and sharing your code more easily. If you do not know git, there’s a lot of online resources to get you started. It’s not super difficult, but it does require making some new habits, which can take some time.
+</p>
+<p>
+I called my package <code>{diffindiff}</code>, and clicked on “Create Project”. This opens up a new project with a <code>hello.R</code> script, which gives you some pointers:
+</p>
+<pre><code># Hello, world!
+#
+# This is an example function named 'hello' 
+# which prints 'Hello, world!'.
+#
+# You can learn more about package authoring with RStudio at:
+#
+#   http://r-pkgs.had.co.nz/
+#
+# Some useful keyboard shortcuts for package authoring:
+#
+#   Install Package:           'Ctrl + Shift + B'
+#   Check Package:             'Ctrl + Shift + E'
+#   Test Package:              'Ctrl + Shift + T'
+
+hello &lt;- function() {
+  print("Hello, world!")
+}</code></pre>
+<p>
+Now, to simplify the creation of your package, I highly recommend you use the <code>{usethis}</code> package. <code>{usethis}</code> removes a lot of the pain involved in creating packages.
+</p>
+<p>
+For instance, want to start by adding a README file? Simply run:
+</p>
+<pre class="r"><code>usethis::use_readme_md()</code></pre>
+<pre class="r"><code>✔ Setting active project to '/path/to/your/package/diffindiff'
+✔ Writing 'README.md'
+● Modify 'README.md'</code></pre>
+<p>
+This creates a <code>README.md</code> file in the root directory of your package. Simply change that file, and that’s it.
+</p>
+<p>
+The next step could be setting up your package to work with <code>{roxygen2}</code>, which is very useful for writing documentation:
+</p>
+<pre class="r"><code>usethis::use_roxygen_md()</code></pre>
+<pre class="r"><code>✔ Setting Roxygen field in DESCRIPTION to 'list(markdown = TRUE)'
+✔ Setting RoxygenNote field in DESCRIPTION to '6.1.1'
+● Run `devtools::document()`</code></pre>
+<p>
+See how the output tells you to run <code>devtools::document()</code>? This function will document your package, transforming the comments you write to describe your functions to documentation and managing the NAMESPACE file. Let’s run this function too:
+</p>
+<pre class="r"><code>devtools::document()</code></pre>
+<pre class="r"><code>Updating diffindiff documentation
+First time using roxygen2. Upgrading automatically...
+Loading diffindiff
+Warning: The existing 'NAMESPACE' file was not generated by roxygen2, and will not be overwritten.</code></pre>
+<p>
+You might have a similar message than me, telling you that the NAMESPACE file was not generated by <code>{roxygen2}</code>, and will thus not be overwritten. Simply remove the file and run <code>devtools::document()</code> again:
+</p>
+<pre class="r"><code>devtools::document()</code></pre>
+<pre class="r"><code>Updating diffindiff documentation
+First time using roxygen2. Upgrading automatically...
+Writing NAMESPACE
+Loading diffindiff</code></pre>
+<p>
+But what is actually the NAMESPACE file? This file is quite important, as it details where your package’s functions have to look for in order to use other functions. This means that if your package needs function <code>foo()</code> from package <code>{bar}</code>, it will consistently look for <code>foo()</code> inside <code>{bar}</code> and not confuse it with, say, the <code>foo()</code> function from the <code>{barley}</code> package, even if you load <code>{barley}</code> after <code>{bar}</code> in your interactive session. This can seem confusing now, but in the next blog posts I will detail this, and you will see that it’s not that difficult. Just know that it is an important file, and that you do not have to edit it by hand.
+</p>
+<p>
+Next, I like to run the following:
+</p>
+<pre class="r"><code>usethis::use_pipe()</code></pre>
+<pre class="r"><code>✔ Adding 'magrittr' to Imports field in DESCRIPTION
+✔ Writing 'R/utils-pipe.R'
+● Run `devtools::document()`</code></pre>
+<p>
+This makes the now famous <code>%&gt;%</code> function available internally to your package (so you can use it to write the functions that will be included in your package) but also available to the users that will load the package.
+</p>
+<p>
+Your package is still missing a license. If you plan on writing a package for your own personal use, for instance, a collection of functions, there is no need to think about licenses. But if you’re making your package available through CRAN, then you definitely need to think about it. For this package, I’ll be using the MIT license, because the package will distribute data which I do not own (I’ve got permission from Card to re-distribute it) and thus I think it would be better to use a permissive license (I don’t know if the GPL, another license, which is stricter in terms of redistribution, could be used in this case).
+</p>
+<pre class="r"><code>usethis::use_mit_license()</code></pre>
+<pre class="r"><code>✔ Setting License field in DESCRIPTION to 'MIT + file LICENSE'
+✔ Writing 'LICENSE.md'
+✔ Adding '^LICENSE\\.md$' to '.Rbuildignore'
+✔ Writing 'LICENSE'</code></pre>
+<p>
+We’re almost done setting up the structure of the package. If we forget something though, it’s not an issue, we’ll just have to run the right <code>use_*</code> function later on. Let’s finish by preparing the folder that will contains the script to prepare the data:
+</p>
+<pre class="r"><code>usethis::use_data_raw()</code></pre>
+<pre class="r"><code>✔ Creating 'data-raw/'
+✔ Adding '^data-raw$' to '.Rbuildignore'
+✔ Writing 'data-raw/DATASET.R'
+● Modify 'data-raw/DATASET.R'
+● Finish the data preparation script in 'data-raw/DATASET.R'
+● Use `usethis::use_data()` to add prepared data to package</code></pre>
+<p>
+This creates the <code>data-raw</code> folder with the <code>DATASET.R</code> script inside. This is the script that will contain the code to download and prepare datasets that you want to include in your package. This will be the subject of the next blog post.
+</p>
+<p>
+Let’s now finish by documenting the package, and pushing everything to Github:
+</p>
+<pre class="r"><code>devtools::document()</code></pre>
+<p>
+The following lines will only work if you set up the Github repo:
+</p>
+<pre><code>git add .
+git commit -am "first commit"
+git push origin master</code></pre>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -460,7 +292,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
