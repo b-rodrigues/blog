@@ -10,7 +10,984 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Sun, 19 May 2019 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 17 Aug 2019 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Modern R with the tidyverse is available on Leanpub</title>
+  <link>https://b-rodrigues.github.io/posts/2019-08-17-modern_R.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://leanpub.com/modern_tidyverse"> <img src="https://b-rodrigues.github.io/assets/img/cover_modern.png" title="Click here to go to Leanpub" width="500" height="647"></a>
+</p>
+</div>
+<p>
+Yesterday I released an ebook on <a href="https://leanpub.com/modern_tidyverse">Leanpub</a>, called <em>Modern R with the tidyverse</em>, which you can also read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>.
+</p>
+<p>
+In this blog post, I want to give some context.
+</p>
+<p>
+<em>Modern R with the tidyverse</em> is the second ebook I release on Leanpub. I released the first one, called <a href="https://leanpub.com/fput">Functional programming and unit testing for data munging with R</a> around Christmas 2016 (I’ve retired it on Leanpub, but you can still read it for free <a href="https://b-rodrigues.github.io/fput/">here</a>) . I just had moved back to my home country of Luxembourg and started a new job as a research assistant at the statistical national institute. Since then, lots of things happened; I’ve changed jobs and joined PwC Luxembourg as a data scientist, was promoted to manager, finished my PhD, and most importantly of all, I became a father.
+</p>
+<p>
+Through all this, I continued blogging and working on a new ebook, called <em>Modern R with the tidyverse</em>. At first, this was supposed to be a separate book from the first one, but as I continued writing, I realized that updating and finishing the first one, would take a lot of effort, and also, that it wouldn’t make much sense in keeping both separated. So I decided to merge the content from the first ebook with the second, and update everything in one go.
+</p>
+<p>
+My very first notes were around 50 pages if memory serves, and I used them to teach R at the University of Strasbourg while I employed there as a research and teaching assistant and working on my PhD. These notes were the basis of <em>Functional programming and unit testing for data munging with R</em> and now <em>Modern R</em>. Chapter 2 of <em>Modern R</em> is almost a simple copy and paste from these notes (with more sections added). These notes were first written around 2012-2013ish.
+</p>
+<p>
+<em>Modern R</em> is the kind of text I would like to have had when I first started playing around with R, sometime around 2009-2010. It starts from the beginning, but also goes quite into details in the later chapters. For instance, the section on <a href="https://b-rodrigues.github.io/modern_R/functional-programming.html#modeling-with-functional-programming">modeling with functional programming</a> is quite advanced, but I believe that readers that read through all the book and reached that part would be armed with all the needed knowledge to follow. At least, this is my hope.
+</p>
+<p>
+Now, the book is still not finished. Two chapters are missing, but it should not take me long to finish them as I already have drafts lying around. However, exercises might still be in wrong places, and more are required. Also, generally, more polishing is needed.
+</p>
+<p>
+As written in the first paragraph of this section, the book is available on <a href="https://leanpub.com/modern_tidyverse">Leanpub</a>. Unlike my previous ebook, this one costs money; a minimum price of 4.99$ and a recommended price of 14.99$, but as mentioned you can read it for free <a href="https://b-rodrigues.github.io/modern_R/">online</a>. I’ve hesitated to give it a minimum price of 0$, but I figured that since the book can be read for free online, and that Leanpub has a 45 days return policy where readers can get 100% reimbursed, no questions asked (and keep the downloaded ebook), readers were not taking a lot of risks by buying it for 5 bucks. I sure hope however that readers will find that this ebook is worth at least 5 bucks!
+</p>
+<p>
+Now why should you read it? There’s already a lot of books on learning how to use R. Well, I don’t really want to convince you to read it. But some people do seem to like my style of writing and my blog posts, so I guess these same people, or similar people, might like the ebook. Also, I think that this ebook covers a lot of different topics, enough of them to make you an efficient R user. But as I’ve written in the introduction of <em>Modern R</em>:
+</p>
+<p>
+<em>So what you can expect from this book is that this book is not the only one you should read.</em>
+</p>
+<p>
+Anyways, hope you’ll enjoy <em>Modern R</em>, suggestions, criticisms and reviews welcome!
+</p>
+<p>
+By the way, the cover of the book is a painting by John William Waterhouse, depicting Diogenes of Sinope, an ancient Greek philosopher, an absolute mad lad. Read his Wikipedia page, it’s worth it.
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-08-17-modern_R.html</guid>
+  <pubDate>Sat, 17 Aug 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Using linear models with binary dependent variables, a simulation study</title>
+  <link>https://b-rodrigues.github.io/posts/2019-08-14-lpm.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://psyarxiv.com/4gmbv"> <img src="https://b-rodrigues.github.io/assets/img/illegal.png" title="Even psychologists are not safe" width="800" height="612"></a>
+</p>
+</div>
+<p>
+This blog post is an excerpt of my ebook Modern R with the tidyverse that you can read for free <a href="https://b-rodrigues.github.io/modern_R/functional-programming.html#modeling-with-functional-programming">here</a>. This is taken from Chapter 8, in which I discuss advanced functional programming methods for modeling.
+</p>
+<p>
+As written just above (note: as written above <em>in the book</em>), <code>map()</code> simply applies a function to a list of inputs, and in the previous section we mapped <code>ggplot()</code> to generate many plots at once. This approach can also be used to map any modeling functions, for instance <code>lm()</code> to a list of datasets.
+</p>
+<p>
+For instance, suppose that you wish to perform a Monte Carlo simulation. Suppose that you are dealing with a binary choice problem; usually, you would use a logistic regression for this.
+</p>
+<p>
+However, in certain disciplines, especially in the social sciences, the so-called Linear Probability Model is often used as well. The LPM is a simple linear regression, but unlike the standard setting of a linear regression, the dependent variable, or target, is a binary variable, and not a continuous variable. Before you yell “Wait, that’s illegal”, you should know that in practice LPMs do a good job of estimating marginal effects, which is what social scientists and econometricians are often interested in. Marginal effects are another way of interpreting models, giving how the outcome (or the target) changes given a change in a independent variable (or a feature). For instance, a marginal effect of 0.10 for age would mean that probability of success would increase by 10% for each added year of age.
+</p>
+<p>
+There has been a lot of discussion on logistic regression vs LPMs, and there are pros and cons of using LPMs. Micro-econometricians are still fond of LPMs, even though the pros of LPMs are not really convincing. However, quoting Angrist and Pischke:
+</p>
+<p>
+“While a nonlinear model may fit the CEF (population conditional expectation function) for LDVs (limited dependent variables) more closely than a linear model, when it comes to marginal effects, this probably matters little” (source: <em>Mostly Harmless Econometrics</em>)
+</p>
+<p>
+so LPMs are still used for estimating marginal effects.
+</p>
+<p>
+Let us check this assessment with one example. First, we simulate some data, then run a logistic regression and compute the marginal effects, and then compare with a LPM:
+</p>
+<pre class="r"><code>set.seed(1234)
+x1 &lt;- rnorm(100)
+x2 &lt;- rnorm(100)
+  
+z &lt;- .5 + 2*x1 + 4*x2
+
+p &lt;- 1/(1 + exp(-z))
+
+y &lt;- rbinom(100, 1, p)
+
+df &lt;- tibble(y = y, x1 = x1, x2 = x2)</code></pre>
+<p>
+This data generating process generates data from a binary choice model. Fitting the model using a logistic regression allows us to recover the structural parameters:
+</p>
+<pre class="r"><code>logistic_regression &lt;- glm(y ~ ., data = df, family = binomial(link = "logit"))</code></pre>
+<p>
+Let’s see a summary of the model fit:
+</p>
+<pre class="r"><code>summary(logistic_regression)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ ., family = binomial(link = "logit"), data = df)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -2.91941  -0.44872   0.00038   0.42843   2.55426  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.0960     0.3293   0.292 0.770630    
+## x1            1.6625     0.4628   3.592 0.000328 ***
+## x2            3.6582     0.8059   4.539 5.64e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 138.629  on 99  degrees of freedom
+## Residual deviance:  60.576  on 97  degrees of freedom
+## AIC: 66.576
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<p>
+We do recover the parameters that generated the data, but what about the marginal effects? We can get the marginal effects easily using the <code>{margins}</code> package:
+</p>
+<pre class="r"><code>library(margins)
+
+margins(logistic_regression)</code></pre>
+<pre><code>## Average marginal effects</code></pre>
+<pre><code>## glm(formula = y ~ ., family = binomial(link = "logit"), data = df)</code></pre>
+<pre><code>##      x1     x2
+##  0.1598 0.3516</code></pre>
+<p>
+Or, even better, we can compute the <em>true</em> marginal effects, since we know the data generating process:
+</p>
+<pre class="r"><code>meffects &lt;- function(dataset, coefs){
+  X &lt;- dataset %&gt;% 
+  select(-y) %&gt;% 
+  as.matrix()
+  
+  dydx_x1 &lt;- mean(dlogis(X%*%c(coefs[2], coefs[3]))*coefs[2])
+  dydx_x2 &lt;- mean(dlogis(X%*%c(coefs[2], coefs[3]))*coefs[3])
+  
+  tribble(~term, ~true_effect,
+          "x1", dydx_x1,
+          "x2", dydx_x2)
+}
+
+(true_meffects &lt;- meffects(df, c(0.5, 2, 4)))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   term  true_effect
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 x1          0.175
+## 2 x2          0.350</code></pre>
+<p>
+Ok, so now what about using this infamous Linear Probability Model to estimate the marginal effects?
+</p>
+<pre class="r"><code>lpm &lt;- lm(y ~ ., data = df)
+
+summary(lpm)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ ., data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.83953 -0.31588 -0.02885  0.28774  0.77407 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.51340    0.03587  14.314  &lt; 2e-16 ***
+## x1           0.16771    0.03545   4.732 7.58e-06 ***
+## x2           0.31250    0.03449   9.060 1.43e-14 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.3541 on 97 degrees of freedom
+## Multiple R-squared:  0.5135, Adjusted R-squared:  0.5034 
+## F-statistic: 51.18 on 2 and 97 DF,  p-value: 6.693e-16</code></pre>
+<p>
+It’s not too bad, but maybe it could have been better in other circumstances. Perhaps if we had more observations, or perhaps for a different set of structural parameters the results of the LPM would have been closer. The LPM estimates the marginal effect of <code>x1</code> to be 0.1677134 vs 0.1597956 for the logistic regression and for <code>x2</code>, the LPM estimation is 0.3124966 vs 0.351607. The <em>true</em> marginal effects are 0.1750963 and 0.3501926 for <code>x1</code> and <code>x2</code> respectively.
+</p>
+<p>
+Just as to assess the accuracy of a model data scientists perform cross-validation, a Monte Carlo study can be performed to asses how close the estimation of the marginal effects using a LPM is to the marginal effects derived from a logistic regression. It will allow us to test with datasets of different sizes, and generated using different structural parameters.
+</p>
+<p>
+First, let’s write a function that generates data. The function below generates 10 datasets of size 100 (the code is inspired by this <a href="https://stats.stackexchange.com/a/46525">StackExchange answer</a>):
+</p>
+<pre class="r"><code>generate_datasets &lt;- function(coefs = c(.5, 2, 4), sample_size = 100, repeats = 10){
+
+  generate_one_dataset &lt;- function(coefs, sample_size){
+  x1 &lt;- rnorm(sample_size)
+  x2 &lt;- rnorm(sample_size)
+  
+  z &lt;- coefs[1] + coefs[2]*x1 + coefs[3]*x2
+
+  p &lt;- 1/(1 + exp(-z))
+
+  y &lt;- rbinom(sample_size, 1, p)
+
+  df &lt;- tibble(y = y, x1 = x1, x2 = x2)
+  }
+
+  simulations &lt;- rerun(.n = repeats, generate_one_dataset(coefs, sample_size))
+ 
+  tibble("coefs" = list(coefs), "sample_size" = sample_size, "repeats" = repeats, "simulations" = list(simulations))
+}</code></pre>
+<p>
+Let’s first generate one dataset:
+</p>
+<pre class="r"><code>one_dataset &lt;- generate_datasets(repeats = 1)</code></pre>
+<p>
+Let’s take a look at <code>one_dataset</code>:
+</p>
+<pre class="r"><code>one_dataset</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   coefs     sample_size repeats simulations
+##   &lt;list&gt;          &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;     
+## 1 &lt;dbl [3]&gt;         100       1 &lt;list [1]&gt;</code></pre>
+<p>
+As you can see, the tibble with the simulated data is inside a list-column called <code>simulations</code>. Let’s take a closer look:
+</p>
+<pre class="r"><code>str(one_dataset$simulations)</code></pre>
+<pre><code>## List of 1
+##  $ :List of 1
+##   ..$ :Classes 'tbl_df', 'tbl' and 'data.frame': 100 obs. of  3 variables:
+##   .. ..$ y : int [1:100] 0 1 1 1 0 1 1 0 0 1 ...
+##   .. ..$ x1: num [1:100] 0.437 1.06 0.452 0.663 -1.136 ...
+##   .. ..$ x2: num [1:100] -2.316 0.562 -0.784 -0.226 -1.587 ...</code></pre>
+<p>
+The structure is quite complex, and it’s important to understand this, because it will have an impact on the next lines of code; it is a list, containing a list, containing a dataset! No worries though, we can still map over the datasets directly, by using <code>modify_depth()</code> instead of <code>map()</code>.
+</p>
+<p>
+Now, let’s fit a LPM and compare the estimation of the marginal effects with the <em>true</em> marginal effects. In order to have some confidence in our results, we will not simply run a linear regression on that single dataset, but will instead simulate hundreds, then thousands and ten of thousands of data sets, get the marginal effects and compare them to the true ones (but here I won’t simulate more than 500 datasets).
+</p>
+<p>
+Let’s first generate 10 datasets:
+</p>
+<pre class="r"><code>many_datasets &lt;- generate_datasets()</code></pre>
+<p>
+Now comes the tricky part. I have this object, <code>many_datasets</code> looking like this:
+</p>
+<pre class="r"><code>many_datasets</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   coefs     sample_size repeats simulations
+##   &lt;list&gt;          &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;     
+## 1 &lt;dbl [3]&gt;         100      10 &lt;list [10]&gt;</code></pre>
+<p>
+I would like to fit LPMs to the 10 datasets. For this, I will need to use all the power of functional programming and the <code>{tidyverse}</code>. I will be adding columns to this data frame using <code>mutate()</code> and mapping over the <code>simulations</code> list-column using <code>modify_depth()</code>. The list of data frames is at the second level (remember, it’s a list containing a list containing data frames).
+</p>
+<p>
+I’ll start by fitting the LPMs, then using <code>broom::tidy()</code> I will get a nice data frame of the estimated parameters. I will then only select what I need, and then bind the rows of all the data frames. I will do the same for the <em>true</em> marginal effects.
+</p>
+<p>
+I highly suggest that you run the following lines, one after another. It is complicated to understand what’s going on if you are not used to such workflows. However, I hope to convince you that once it will click, it’ll be much more intuitive than doing all this inside a loop. Here’s the code:
+</p>
+<pre class="r"><code>results &lt;- many_datasets %&gt;% 
+  mutate(lpm = modify_depth(simulations, 2, ~lm(y ~ ., data = .x))) %&gt;% 
+  mutate(lpm = modify_depth(lpm, 2, broom::tidy)) %&gt;% 
+  mutate(lpm = modify_depth(lpm, 2, ~select(., term, estimate))) %&gt;% 
+  mutate(lpm = modify_depth(lpm, 2, ~filter(., term != "(Intercept)"))) %&gt;% 
+  mutate(lpm = map(lpm, bind_rows)) %&gt;% 
+  mutate(true_effect = modify_depth(simulations, 2, ~meffects(., coefs = coefs[[1]]))) %&gt;% 
+  mutate(true_effect = map(true_effect, bind_rows))</code></pre>
+<p>
+This is how results looks like:
+</p>
+<pre class="r"><code>results</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   coefs     sample_size repeats simulations lpm             true_effect    
+##   &lt;list&gt;          &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;      &lt;list&gt;          &lt;list&gt;         
+## 1 &lt;dbl [3]&gt;         100      10 &lt;list [10]&gt; &lt;tibble [20 × … &lt;tibble [20 × …</code></pre>
+<p>
+Let’s take a closer look to the <code>lpm</code> and <code>true_effect</code> columns:
+</p>
+<pre class="r"><code>results$lpm</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 20 x 2
+##    term  estimate
+##    &lt;chr&gt;    &lt;dbl&gt;
+##  1 x1       0.228
+##  2 x2       0.353
+##  3 x1       0.180
+##  4 x2       0.361
+##  5 x1       0.165
+##  6 x2       0.374
+##  7 x1       0.182
+##  8 x2       0.358
+##  9 x1       0.125
+## 10 x2       0.345
+## 11 x1       0.171
+## 12 x2       0.331
+## 13 x1       0.122
+## 14 x2       0.309
+## 15 x1       0.129
+## 16 x2       0.332
+## 17 x1       0.102
+## 18 x2       0.374
+## 19 x1       0.176
+## 20 x2       0.410</code></pre>
+<pre class="r"><code>results$true_effect</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 20 x 2
+##    term  true_effect
+##    &lt;chr&gt;       &lt;dbl&gt;
+##  1 x1          0.183
+##  2 x2          0.366
+##  3 x1          0.166
+##  4 x2          0.331
+##  5 x1          0.174
+##  6 x2          0.348
+##  7 x1          0.169
+##  8 x2          0.339
+##  9 x1          0.167
+## 10 x2          0.335
+## 11 x1          0.173
+## 12 x2          0.345
+## 13 x1          0.157
+## 14 x2          0.314
+## 15 x1          0.170
+## 16 x2          0.340
+## 17 x1          0.182
+## 18 x2          0.365
+## 19 x1          0.161
+## 20 x2          0.321</code></pre>
+<p>
+Let’s bind the columns, and compute the difference between the <em>true</em> and estimated marginal effects:
+</p>
+<pre class="r"><code>simulation_results &lt;- results %&gt;% 
+  mutate(difference = map2(.x = lpm, .y = true_effect, bind_cols)) %&gt;% 
+  mutate(difference = map(difference, ~mutate(., difference = true_effect - estimate))) %&gt;% 
+  mutate(difference = map(difference, ~select(., term, difference))) %&gt;% 
+  pull(difference) %&gt;% 
+  .[[1]]</code></pre>
+<p>
+Let’s take a look at the simulation results:
+</p>
+<pre class="r"><code>simulation_results %&gt;% 
+  group_by(term) %&gt;% 
+  summarise(mean = mean(difference), 
+            sd = sd(difference))</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term     mean     sd
+##   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1     0.0122 0.0370
+## 2 x2    -0.0141 0.0306</code></pre>
+<p>
+Already with only 10 simulated datasets, the difference in means is not significant. Let’s rerun the analysis, but for difference sizes. In order to make things easier, we can put all the code into a nifty function:
+</p>
+<pre class="r"><code>monte_carlo &lt;- function(coefs, sample_size, repeats){
+  many_datasets &lt;- generate_datasets(coefs, sample_size, repeats)
+  
+  results &lt;- many_datasets %&gt;% 
+    mutate(lpm = modify_depth(simulations, 2, ~lm(y ~ ., data = .x))) %&gt;% 
+    mutate(lpm = modify_depth(lpm, 2, broom::tidy)) %&gt;% 
+    mutate(lpm = modify_depth(lpm, 2, ~select(., term, estimate))) %&gt;% 
+    mutate(lpm = modify_depth(lpm, 2, ~filter(., term != "(Intercept)"))) %&gt;% 
+    mutate(lpm = map(lpm, bind_rows)) %&gt;% 
+    mutate(true_effect = modify_depth(simulations, 2, ~meffects(., coefs = coefs[[1]]))) %&gt;% 
+    mutate(true_effect = map(true_effect, bind_rows))
+
+  simulation_results &lt;- results %&gt;% 
+    mutate(difference = map2(.x = lpm, .y = true_effect, bind_cols)) %&gt;% 
+    mutate(difference = map(difference, ~mutate(., difference = true_effect - estimate))) %&gt;% 
+    mutate(difference = map(difference, ~select(., term, difference))) %&gt;% 
+    pull(difference) %&gt;% 
+    .[[1]]
+
+  simulation_results %&gt;% 
+    group_by(term) %&gt;% 
+    summarise(mean = mean(difference), 
+              sd = sd(difference))
+}</code></pre>
+<p>
+And now, let’s run the simulation for different parameters and sizes:
+</p>
+<pre class="r"><code>monte_carlo(c(.5, 2, 4), 100, 10)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term      mean     sd
+##   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    -0.00826 0.0291
+## 2 x2    -0.00732 0.0412</code></pre>
+<pre class="r"><code>monte_carlo(c(.5, 2, 4), 100, 100)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term     mean     sd
+##   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    0.00360 0.0392
+## 2 x2    0.00517 0.0446</code></pre>
+<pre class="r"><code>monte_carlo(c(.5, 2, 4), 100, 500)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term       mean     sd
+##   &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    -0.00152  0.0371
+## 2 x2    -0.000701 0.0423</code></pre>
+<pre class="r"><code>monte_carlo(c(pi, 6, 9), 100, 10)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term      mean     sd
+##   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    -0.00829 0.0546
+## 2 x2     0.00178 0.0370</code></pre>
+<pre class="r"><code>monte_carlo(c(pi, 6, 9), 100, 100)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term     mean     sd
+##   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    0.0107  0.0608
+## 2 x2    0.00831 0.0804</code></pre>
+<pre class="r"><code>monte_carlo(c(pi, 6, 9), 100, 500)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   term     mean     sd
+##   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 x1    0.00879 0.0522
+## 2 x2    0.0113  0.0668</code></pre>
+<p>
+We see that, at least for this set of parameters, the LPM does a good job of estimating marginal effects.
+</p>
+<p>
+Now, this study might in itself not be very interesting to you, but I believe the general approach is quite useful and flexible enough to be adapted to all kinds of use-cases.
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-08-14-lpm.html</guid>
+  <pubDate>Wed, 14 Aug 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Statistical matching, or when one single data source is not enough</title>
+  <link>https://b-rodrigues.github.io/posts/2019-07-19-statmatch.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/columns.jpg" title="Not that kind of columns" width="1119" height="720"></a>
+</p>
+</div>
+<p>
+I was recently asked how to go about matching several datasets where different samples of individuals were interviewed. This sounds like a big problem; say that you have dataset A and B, and that A contain one sample of individuals, and B another sample of individuals, then how could you possibly match the datasets? Matching datasets requires a common identifier, for instance, suppose that A contains socio-demographic information on a sample of individuals I, while B, contains information on wages and hours worked on the same sample of individuals I, then yes, it will be possible to match/merge/join both datasets.
+</p>
+<p>
+But that was not what I was asked about; I was asked about a situation where the same population gets sampled twice, and each sample answers to a different survey. For example the first survey is about labour market information and survey B is about family structure. Would it be possible to combine the information from both datasets?
+</p>
+<p>
+To me, this sounded a bit like missing data imputation problem, but where all the information about the variables of interest was missing! I started digging a bit, and found that not only there was already quite some literature on it, there is even a package for this, called <code>{StatMatch}</code> with a very detailed <a href="https://cran.r-project.org/web/packages/StatMatch/vignettes/Statistical_Matching_with_StatMatch.pdf">vignette</a>. The vignette is so detailed, that I will not write any code, I just wanted to share this package!
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-07-19-statmatch.html</guid>
+  <pubDate>Fri, 19 Jul 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Curly-Curly, the successor of Bang-Bang</title>
+  <link>https://b-rodrigues.github.io/posts/2019-06-20-tidy_eval_saga.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/curly.jpg" title="Not that kind of columns" width="1119" height="720"></a>
+</p>
+</div>
+<p>
+Writing functions that take data frame columns as arguments is a problem that most R users have been confronted with at some point. There are different ways to tackle this issue, and this blog post will focus on the solution provided by the latest release of the <code>{rlang}</code> package. You can read the announcement <a href="https://www.tidyverse.org/articles/2019/06/rlang-0-4-0/">here</a>, which explains really well what was wrong with the old syntax, and how the new syntax works now.
+</p>
+<p>
+I have written about the problem of writing functions that use data frame columns as arguments <a href="../posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">three years ago</a> and <a href="../posts/2017-08-27-why_tidyeval.html">two year ago</a> too. <a href="../posts/2018-01-19-mapping_functions_with_any_cols.html">Last year</a>, I wrote a blog post that showed how to map a list of functions to a list of datasets with a list of columns as arguments that used the <code>!!quo(column_name)</code> syntax (the <code>!!</code> is pronounced <em>bang-bang</em>). Now, there is a new sheriff in town, <code>{{}}</code>, introduced in <code>{rlang}</code> version 0.4.0 that makes things even easier. The suggested pronunciation of <code>{{}}</code> is <em>curly-curly</em>, but there is no <a href="https://twitter.com/JonTheGeek/status/1144815369766547456">consensus yet</a>.
+</p>
+<p>
+First, let’s load the <code>{tidyverse}</code>:
+</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>
+Let’s suppose that I need to write a function that takes a data frame, as well as a column from this data frame as arguments:
+</p>
+<pre class="r"><code>how_many_na &lt;- function(dataframe, column_name){
+  dataframe %&gt;%
+    filter(is.na(column_name)) %&gt;%
+    count()
+}</code></pre>
+<p>
+Let’s try this function out on the <code>starwars</code> data:
+</p>
+<pre class="r"><code>data(starwars)
+
+head(starwars)</code></pre>
+<pre><code>## # A tibble: 6 x 13
+##   name  height  mass hair_color skin_color eye_color birth_year gender
+##   &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; 
+## 1 Luke…    172    77 blond      fair       blue            19   male  
+## 2 C-3PO    167    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;  
+## 3 R2-D2     96    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;  
+## 4 Dart…    202   136 none       white      yellow          41.9 male  
+## 5 Leia…    150    49 brown      light      brown           19   female
+## 6 Owen…    178   120 brown, gr… light      blue            52   male  
+## # … with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p>
+As you can see, there are missing values in the <code>hair_color</code> column. Let’s try to count how many missing values are in this column:
+</p>
+<pre class="r"><code>how_many_na(starwars, hair_color)</code></pre>
+<pre><code>Error: object 'hair_color' not found</code></pre>
+<p>
+R cannot find the <code>hair_color</code> column, and yet it is in the data! Well, this is actually exactly the issue. The issue is that the column is inside the dataframe, but when calling the function with <code>hair_color</code> as the second argument, R is looking for a variable called <code>hair_color</code> that does not exist. What about trying with <code>"hair_color"</code>?
+</p>
+<pre class="r"><code>how_many_na(starwars, "hair_color")</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1     0</code></pre>
+<p>
+Now we get something, but something wrong!
+</p>
+<p>
+One way to solve this issue, is to not use the <code>filter()</code> function, and instead rely on base R:
+</p>
+<pre class="r"><code>how_many_na_base &lt;- function(dataframe, column_name){
+  na_index &lt;- is.na(dataframe[, column_name])
+  nrow(dataframe[na_index, column_name])
+}
+
+how_many_na_base(starwars, "hair_color")</code></pre>
+<pre><code>## [1] 5</code></pre>
+<p>
+This works, but not using the <code>{tidyverse}</code> at all is not an option, at least for me. For instance, the next function, which uses a grouping variable, would be difficult to implement without the <code>{tidyverse}</code>:
+</p>
+<pre class="r"><code>summarise_groups &lt;- function(dataframe, grouping_var, column_name){
+  dataframe %&gt;%
+    group_by(grouping_var) %&gt;%  
+    summarise(mean(column_name, na.rm = TRUE))
+}</code></pre>
+<p>
+Calling this function results in the following error message:
+</p>
+<pre><code>Error: Column `grouping_var` is unknown</code></pre>
+<p>
+Before the release of <code>{rlang}</code> 0.4.0 this is was the solution:
+</p>
+<pre class="r"><code>summarise_groups &lt;- function(dataframe, grouping_var, column_name){
+
+  grouping_var &lt;- enquo(grouping_var)
+  column_name &lt;- enquo(column_name)
+  mean_name &lt;- paste0("mean_", quo_name(column_name))
+
+  dataframe %&gt;%
+    group_by(!!grouping_var) %&gt;%  
+    summarise(!!(mean_name) := mean(!!column_name, na.rm = TRUE))
+}</code></pre>
+<p>
+The core of the function remained very similar to the version from before, but now one has to use the <code>enquo()</code>-<code>!!</code> syntax. While not overly difficult to use, it is cumbersome.
+</p>
+<p>
+Now this can be simplified using the new <code>{{}}</code> syntax:
+</p>
+<pre class="r"><code>summarise_groups &lt;- function(dataframe, grouping_var, column_name){
+
+  dataframe %&gt;%
+    group_by({{grouping_var}}) %&gt;%  
+    summarise({{column_name}} := mean({{column_name}}, na.rm = TRUE))
+}</code></pre>
+<p>
+Much easier and cleaner! You still have to use the <code>:=</code> operator instead of <code>=</code> for the column name however. Also, from my understanding, if you want to modify the column names, for instance in this case return <code>"mean_height"</code> instead of <code>height</code> you have to keep using the <code>enquo()</code>-<code>!!</code> syntax.
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-06-20-tidy_eval_saga.html</guid>
+  <pubDate>Sat, 29 Jun 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Intermittent demand, Croston and Die Hard</title>
+  <link>https://b-rodrigues.github.io/posts/2019-06-12-intermittent.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="https://b-rodrigues.github.io/assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="600" height="400"></a>
+</p>
+</div>
+<p>
+I have recently been confronted to a kind of data set and problem that I was not even aware existed: intermittent demand data. Intermittent demand arises when the demand for a certain good arrives sporadically. Let’s take a look at an example, by analyzing the number of downloads for the <code>{RDieHarder}</code> package:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(tsintermittent)
+library(nnfor)
+library(cranlogs)
+library(brotools)</code></pre>
+<pre class="r"><code>rdieharder &lt;- cran_downloads("RDieHarder", from = "2017-01-01")
+
+ggplot(rdieharder) +
+  geom_line(aes(y = count, x = date), colour = "#82518c") +
+  theme_blog()</code></pre>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-3-1.png" width="672">
+</p>
+<p>
+Let’s take a look at just one month of data, because the above plot is not very clear, because of the outlier just before 2019… I wonder now, was that on Christmas day?
+</p>
+<pre class="r"><code>rdieharder %&gt;%
+  filter(count == max(count))</code></pre>
+<pre><code>##         date count    package
+## 1 2018-12-21   373 RDieHarder</code></pre>
+<p>
+Not exactly on Christmas day, but almost! Anyways, let’s look at one month of data:
+</p>
+<pre class="r"><code>january_2018 &lt;- rdieharder %&gt;%
+  filter(between(date, as.Date("2018-01-01"), as.Date("2018-02-01")))
+
+ggplot(january_2018) +
+  geom_line(aes(y = count, x = date), colour = "#82518c") +
+  theme_blog()</code></pre>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-5-1.png" width="672">
+</p>
+<p>
+Now, it is clear that this will be tricky to forecast. There is no discernible pattern, no trend, no seasonality… nothing that would make it “easy” for a model to learn how to forecast such data.
+</p>
+<p>
+This is typical intermittent demand data. Specific methods have been developed to forecast such data, the most well-known being Croston, as detailed in <a href="https://www.jstor.org/stable/3007885?seq=1#page_scan_tab_contents">this paper</a>. A function to estimate such models is available in the <code>{tsintermittent}</code> package, written by <a href="https://kourentzes.com/forecasting/2014/06/23/intermittent-demand-forecasting-package-for-r/">Nikolaos Kourentzes</a> who also wrote another package, <code>{nnfor}</code>, which uses Neural Networks to forecast time series data. I am going to use both to try to forecast the intermittent demand for the <code>{RDieHarder}</code> package for the year 2019.
+</p>
+<p>
+Let’s first load these packages:
+</p>
+<pre class="r"><code>library(tsintermittent)
+library(nnfor)</code></pre>
+<p>
+And as usual, split the data into training and testing sets:
+</p>
+<pre class="r"><code>train_data &lt;- rdieharder %&gt;%
+  filter(date &lt; as.Date("2019-01-01")) %&gt;%
+  pull(count) %&gt;%
+  ts()
+
+test_data &lt;- rdieharder %&gt;%
+  filter(date &gt;= as.Date("2019-01-01"))</code></pre>
+<p>
+Let’s consider three models; a naive one, which simply uses the mean of the training set as the forecast for all future periods, Croston’s method, and finally a Neural Network from the <code>{nnfor}</code> package:
+</p>
+<pre class="r"><code>naive_model &lt;- mean(train_data)
+
+croston_model &lt;- crost(train_data, h = 163)
+
+nn_model &lt;- mlp(train_data, reps = 1, hd.auto.type = "cv")</code></pre>
+<pre><code>## Warning in preprocess(y, m, lags, keep, difforder, sel.lag,
+## allow.det.season, : No inputs left in the network after pre-selection,
+## forcing AR(1).</code></pre>
+<pre class="r"><code>nn_model_forecast &lt;- forecast(nn_model, h = 163)</code></pre>
+<p>
+The <code>crost()</code> function estimates Croston’s model, and the <code>h</code> argument produces the forecast for the next 163 days. <code>mlp()</code> trains a multilayer perceptron, and the <code>hd.auto.type = "cv"</code> argument means that 5-fold cross-validation will be used to find the best number of hidden nodes. I then obtain the forecast using the <code>forecast()</code> function. As you can read from the Warning message above, the Neural Network was replaced by an auto-regressive model, AR(1), because no inputs were left after pre-selection… I am not exactly sure what that means, but if I remove the big outlier from before, this warning message disappears, and a Neural Network is successfully trained.
+</p>
+<p>
+In order to rank the models, I follow <a href="https://www.sciencedirect.com/science/article/pii/S0169207006000239">this paper</a> from Rob J. Hyndman, who wrote a very useful book titled <a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice</a>, and use the Mean Absolute Scaled Error, or MASE. You can also read <a href="https://robjhyndman.com/papers/foresight.pdf">this shorter pdf</a> which also details how to use MASE to measure the accuracy for intermittent demand. Here is the function:
+</p>
+<pre class="r"><code>mase &lt;- function(train_ts, test_ts, outsample_forecast){
+
+  naive_insample_forecast &lt;- stats::lag(train_ts)
+
+  insample_mae &lt;- mean(abs(train_ts - naive_insample_forecast), na.rm = TRUE)
+  error_outsample &lt;- test_ts - outsample_forecast
+
+  ase &lt;- error_outsample / insample_mae
+  mean(abs(ase), na.rm = TRUE)
+}</code></pre>
+<p>
+It is now easy to compute the models’ accuracies:
+</p>
+<pre class="r"><code>mase(train_data, test_data$count, naive_model)</code></pre>
+<pre><code>## [1] 1.764385</code></pre>
+<pre class="r"><code>mase(train_data, test_data$count, croston_model$component$c.out[1])</code></pre>
+<pre><code>## [1] 1.397611</code></pre>
+<pre class="r"><code>mase(train_data, test_data$count, nn_model_forecast$mean)</code></pre>
+<pre><code>## [1] 1.767357</code></pre>
+<p>
+Croston’s method is the one that performs best from the three. Maybe surprisingly, the naive method performs just as well as the Neural Network! (or rather, the AR(1) model) Let’s also plot the predictions with the true values from the test set:
+</p>
+<pre class="r"><code>test_data &lt;- test_data %&gt;%
+  mutate(naive_model_forecast = naive_model,
+         croston_model_forecast = croston_model$component$c.out[1],
+         nn_model_forecast = nn_model_forecast$mean) %&gt;%
+  select(-package) %&gt;%
+  rename(actual_value = count)
+
+
+test_data_longer &lt;- test_data %&gt;%
+  gather(models, value,
+         actual_value, naive_model_forecast, croston_model_forecast, nn_model_forecast)</code></pre>
+<pre><code>## Warning: attributes are not identical across measure variables;
+## they will be dropped</code></pre>
+<pre class="r"><code>ggplot(test_data_longer) +
+  geom_line(aes(y = value, x = date, colour = models)) +
+  theme_blog()</code></pre>
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-13-1.png" width="672">
+</p>
+<p>
+Just to make sure I didn’t make a mistake when writing the <code>mase()</code> function, let’s use the <code>accuracy()</code> function from the <code>{forecast}</code> package and compare the result for the Neural Network:
+</p>
+<pre class="r"><code>library(forecast)
+accuracy(nn_model_forecast, x = test_data$actual_value)</code></pre>
+<pre><code>##                       ME     RMSE      MAE  MPE MAPE      MASE       ACF1
+## Training set 0.001929409 14.81196 4.109577  NaN  Inf 0.8437033 0.05425074
+## Test set     8.211758227 12.40199 8.635563 -Inf  Inf 1.7673570         NA</code></pre>
+<p>
+The result is the same, so it does seem like the naive method is not that bad, actually! Now, in general, intermittent demand series have a lot of 0 values, which is not really the case here. I still think that the methodology fits to this particular data set.
+</p>
+<p>
+How else would you have forecast this data? Let me know via twitter!
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-06-12-intermittent.html</guid>
+  <pubDate>Wed, 12 Jun 2019 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius</title>
+  <link>https://b-rodrigues.github.io/posts/2019-06-04-cosine_sim.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Seneca_the_Younger"> <img src="https://b-rodrigues.github.io/assets/img/seneca.png" title="Seneca the Younger" width="400" height="600"></a>
+</p>
+</div>
+<p>
+Lately I’ve been interested in trying to cluster documents, and to find similar documents based on their contents. In this blog post, I will use <a href="https://en.wikisource.org/wiki/Moral_letters_to_Lucilius">Seneca’s <em>Moral letters to Lucilius</em></a> and compute the pairwise <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> of his 124 letters. Computing the cosine similarity between two vectors returns how similar these vectors are. A cosine similarity of 1 means that the angle between the two vectors is 0, and thus both vectors have the same direction. Seneca’s Moral letters to Lucilius deal mostly with philosophical topics, as Seneca was, among many other things, a philosopher of the stoic school. The stoic school of philosophy is quite interesting, but it has been unfortunately misunderstood, especially in modern times. There is now a renewed interest for this school, see <a href="https://en.wikipedia.org/wiki/Modern_Stoicism">Modern Stoicism</a>.
+</p>
+<p>
+The first step is to scrape the letters. The code below scrapes the letters, and saves them into a list. I first start by writing a function that gets the raw text. Note the <code>xpath</code> argument of the <code>html_nodes()</code> function. I obtained this complex expression by using the <a href="https://selectorgadget.com/">SelectorGadget</a> extension for Google Chrome, and then selecting the right element of the web page. See this <a href="https://i.imgur.com/2cntugt.png">screenshot</a> if my description was not very clear.
+</p>
+<p>
+Then, the <code>extract_text()</code> function extracts the text from the letter. The only line that might be a bit complex is <code>discard(~<code>==</code>(., ""))</code> which removes every empty line.
+</p>
+<p>
+Finally, there’s the <code>get_letter()</code> function that actually gets the letter by calling the first two functions. In the last line, I get all the letters into a list by mapping the list of urls to the <code>get_letter()</code> function.
+</p>
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+
+base_url &lt;- "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_"
+
+letter_numbers &lt;- seq(1, 124)
+
+letter_urls &lt;- paste0(base_url, letter_numbers)
+
+get_raw_text &lt;- function(base_url, letter_number){
+  paste0(base_url, letter_number) %&gt;%
+    read_html() %&gt;%
+    html_nodes(xpath ='//*[contains(concat( " ", @class, " " ), concat( " ", "mw-parser-output", " " ))]') %&gt;%  
+    html_text()
+}
+
+
+extract_text &lt;- function(raw_text, letter_number){
+  raw_text &lt;- raw_text %&gt;%
+    str_split("\n") %&gt;%  
+    flatten_chr() %&gt;%  
+    discard(~`==`(., ""))
+
+  start &lt;- 5
+
+  end &lt;- str_which(raw_text, "Footnotes*")
+
+  raw_text[start:(end-1)] %&gt;%
+    str_remove_all("\\[\\d{1,}\\]") %&gt;%
+    str_remove_all("\\[edit\\]")
+}
+
+get_letter &lt;- function(base_url, letter_number){
+
+  raw_text &lt;- get_raw_text(base_url, letter_number)
+
+  extract_text(raw_text, letter_number)
+}
+
+letters_to_lucilius &lt;- map2(base_url, letter_numbers, get_letter)</code></pre>
+<p>
+Now that we have the letters saved in a list, we need to process the text a little bit. In order to compute the cosine similarity between the letters, I need to somehow represent them as vectors. There are several ways of doing this, and I am going to compute the tf-idf of each letter. The tf-idf will give me a vector for each letter, with zero and non-zero values. Zero values represent words that are common to all letters, and thus do not have any <em>predictive power</em>. Non-zero values are words that are not present in all letters, but maybe only a few. I expect that letters that discuss death for example, will have the word death in them, and letters that do not discuss death will not have this word. The word death thus has what I call <em>predictive power</em>, in that it helps us distinguish the letters discussing death from the other letters that do not discuss it. The same reasoning can be applied for any topic.
+</p>
+<p>
+So, to get the tf-idf of each letter, I first need to put them in a tidy dataset. I will use the <code>{tidytext}</code> package for this. First, I load the required packages, convert each letter to a dataframe of one column that contains the text, and save the letter’s titles into another list:
+</p>
+<pre class="r"><code>library(tidytext)
+library(SnowballC)
+library(stopwords)
+library(text2vec)
+
+letters_to_lucilius_df &lt;- map(letters_to_lucilius, ~tibble("text" = .))
+
+letter_titles &lt;- letters_to_lucilius_df %&gt;%
+  map(~slice(., 1)) %&gt;%
+  map(pull)</code></pre>
+<p>
+Now, I add this title to each dataframe as a new column, called title:
+</p>
+<pre class="r"><code>letters_to_lucilius_df &lt;-  map2(.x = letters_to_lucilius_df, .y = letter_titles,
+                                ~mutate(.x, title = .y)) %&gt;%
+  map(~slice(., -1))</code></pre>
+<p>
+I can now use <code>unnest_tokens()</code> to transform the datasets. Before, I had the whole text of the letter in one column. After using <code>unnest_tokens()</code> I now have a dataset with one row per word. This will make it easy to compute frequencies by letters, or what I am interested in, the tf-idf of each letter:
+</p>
+<pre class="r"><code>tokenized_letters &lt;- letters_to_lucilius_df %&gt;%
+  bind_rows() %&gt;%
+  group_by(title) %&gt;%
+  unnest_tokens(word, text)</code></pre>
+<p>
+I can now remove stopwords, using the data containing in the <code>{stopwords}</code> package:
+</p>
+<pre class="r"><code>stopwords_en &lt;- tibble("word" = stopwords("en", source  = "smart"))
+
+tokenized_letters &lt;- tokenized_letters %&gt;%
+  anti_join(stopwords_en) %&gt;%
+  filter(!str_detect(word, "\\d{1,}"))</code></pre>
+<pre><code>## Joining, by = "word"</code></pre>
+<p>
+Next step, wordstemming, meaning, going from “dogs” to “dog”, or from “was” to “be”. If you do not do wordstemming, “dogs” and “dog” will be considered different words, even though they are not. <code>wordStem()</code> is a function from <code>{SnowballC}</code>.
+</p>
+<pre class="r"><code>tokenized_letters &lt;- tokenized_letters %&gt;%
+  mutate(word = wordStem(word, language = "en"))</code></pre>
+<p>
+Finally, I can compute the tf-idf of each letter and cast the data as a sparse matrix:
+</p>
+<pre class="r"><code>tfidf_letters &lt;- tokenized_letters %&gt;%
+  count(title, word, sort  = TRUE) %&gt;%
+  bind_tf_idf(word, title, n)
+
+sparse_matrix &lt;- tfidf_letters %&gt;%
+  cast_sparse(title, word, tf)</code></pre>
+<p>
+Let’s take a look at the sparse matrix:
+</p>
+<pre class="r"><code>sparse_matrix[1:10, 1:4]</code></pre>
+<pre><code>## 10 x 4 sparse Matrix of class "dgCMatrix"
+##                                                                   thing
+## CXIII. On the Vitality of the Soul and Its Attributes       0.084835631
+## LXVI. On Various Aspects of Virtue                          0.017079890
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.014534884
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.025919732
+## LXXVI. On Learning Wisdom in Old Age                        0.021588946
+## CII. On the Intimations of Our Immortality                  0.014662757
+## CXXIV. On the True Good as Attained by Reason               0.010139417
+## XCIV. On the Value of Advice                                0.009266409
+## LXXXI. On Benefits                                          0.007705479
+## LXXXV. On Some Vain Syllogisms                              0.013254786
+##                                                                     live
+## CXIII. On the Vitality of the Soul and Its Attributes       0.0837751856
+## LXVI. On Various Aspects of Virtue                          .           
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.0007267442
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.0050167224
+## LXXVI. On Learning Wisdom in Old Age                        0.0025906736
+## CII. On the Intimations of Our Immortality                  0.0019550342
+## CXXIV. On the True Good as Attained by Reason               .           
+## XCIV. On the Value of Advice                                0.0023166023
+## LXXXI. On Benefits                                          0.0008561644
+## LXXXV. On Some Vain Syllogisms                              0.0022091311
+##                                                                   good
+## CXIII. On the Vitality of the Soul and Its Attributes       0.01166490
+## LXVI. On Various Aspects of Virtue                          0.04132231
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.04578488
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.04849498
+## LXXVI. On Learning Wisdom in Old Age                        0.04663212
+## CII. On the Intimations of Our Immortality                  0.05180841
+## CXXIV. On the True Good as Attained by Reason               0.06717364
+## XCIV. On the Value of Advice                                0.01081081
+## LXXXI. On Benefits                                          0.01626712
+## LXXXV. On Some Vain Syllogisms                              0.01472754
+##                                                                 precept
+## CXIII. On the Vitality of the Soul and Its Attributes       .          
+## LXVI. On Various Aspects of Virtue                          .          
+## LXXXVII. Some Arguments in Favour of the Simple Life        .          
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties .          
+## LXXVI. On Learning Wisdom in Old Age                        .          
+## CII. On the Intimations of Our Immortality                  .          
+## CXXIV. On the True Good as Attained by Reason               0.001267427
+## XCIV. On the Value of Advice                                0.020463320
+## LXXXI. On Benefits                                          .          
+## LXXXV. On Some Vain Syllogisms                              .</code></pre>
+<p>
+We can consider each row of this matrix as the vector representing a letter, and thus compute the cosine similarity between letters. For this, I am using the <code>sim2()</code> function from the <code>{text2vec}</code> package. I then create the <code>get_similar_letters()</code> function that returns similar letters for a given reference letter:
+</p>
+<pre class="r"><code>similarities &lt;- sim2(sparse_matrix, method = "cosine", norm = "l2") 
+
+get_similar_letters &lt;- function(similarities, reference_letter, n_recommendations = 3){
+  sort(similarities[reference_letter, ], decreasing = TRUE)[1:(2 + n_recommendations)]
+}</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 19)</code></pre>
+<pre><code>##          XXX. On Conquering the Conqueror 
+##                                 1.0000000 
+##                  XXIV. On Despising Death 
+##                                 0.6781600 
+##      LXXXII. On the Natural Fear of Death 
+##                                 0.6639736 
+## LXX. On the Proper Time to Slip the Cable 
+##                                 0.5981706 
+## LXXVIII. On the Healing Power of the Mind 
+##                                 0.4709679</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 99)</code></pre>
+<pre><code>##                              LXI. On Meeting Death Cheerfully 
+##                                                     1.0000000 
+##                     LXX. On the Proper Time to Slip the Cable 
+##                                                     0.5005015 
+## XCIII. On the Quality, as Contrasted with the Length, of Life 
+##                                                     0.4631796 
+##                         CI. On the Futility of Planning Ahead 
+##                                                     0.4503093 
+##                              LXXVII. On Taking One's Own Life 
+##                                                     0.4147019</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 32)</code></pre>
+<pre><code>##                                    LIX. On Pleasure and Joy 
+##                                                   1.0000000 
+##          XXIII. On the True Joy which Comes from Philosophy 
+##                                                   0.4743672 
+##                          CIX. On the Fellowship of Wise Men 
+##                                                   0.4526835 
+## XC. On the Part Played by Philosophy in the Progress of Man 
+##                                                   0.4498278 
+##         CXXIII. On the Conflict between Pleasure and Virtue 
+##                                                   0.4469312</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 101)</code></pre>
+<pre><code>##                    X. On Living to Oneself 
+##                                  1.0000000 
+##          LXXIII. On Philosophers and Kings 
+##                                  0.3842292 
+##                  XLI. On the God within Us 
+##                                  0.3465457 
+##                       XXXI. On Siren Songs 
+##                                  0.3451388 
+## XCV. On the Usefulness of Basic Principles 
+##                                  0.3302794</code></pre>
+<p>
+As we can see from these examples, this seems to be working quite well: the first title is the title of the reference letter, will the next 3 are the suggested letters. The problem is that my matrix is not in the right order, and thus reference letter 19 does not correspond to letter 19 of Seneca… I have to correct that, but not today.
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>data-science</category>
+  <guid>https://b-rodrigues.github.io/posts/2019-06-04-cosine_sim.html</guid>
+  <pubDate>Tue, 04 Jun 2019 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>The never-ending editor war (?)</title>
   <link>https://b-rodrigues.github.io/posts/2019-05-19-spacemacs.html</link>
@@ -4170,1496 +5147,6 @@ In any case, this was quite an interesting project. I learned a lot about topic 
   <category>data-science</category>
   <guid>https://b-rodrigues.github.io/posts/2019-01-04-newspapers.html</guid>
   <pubDate>Fri, 04 Jan 2019 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>R or Python? Why not both? Using Anaconda Python within R with {reticulate}</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-30-reticulate.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://youtu.be/I8vaCrVIR-Q?t=1h2m26s"> <img src="https://b-rodrigues.github.io/assets/img/why not both.png" title="This literally starts playing when you run both R and Python in the same session"></a>
-</p>
-</div>
-<p>
-This short blog post illustrates how easy it is to use R and Python in the same R Notebook thanks to the <code>{reticulate}</code> package. For this to work, you might need to upgrade RStudio to the <a href="https://www.rstudio.com/products/rstudio/download/preview/">current preview version</a>. Let’s start by importing <code>{reticulate}</code>:
-</p>
-<pre class="r"><code>library(reticulate)</code></pre>
-<p>
-<code>{reticulate}</code> is an RStudio package that provides “<em>a comprehensive set of tools for interoperability between Python and R</em>”. With it, it is possible to call Python and use Python libraries within an R session, or define Python chunks in R markdown. I think that using R Notebooks is the best way to work with Python and R; when you want to use Python, you simply use a Python chunk:
-</p>
-<pre><code>```{python}
-your python code here
-```</code></pre>
-<p>
-There’s even autocompletion for Python object methods:
-</p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/autocompletion.png"><!-- -->
-</p>
-<p>
-Fantastic!
-</p>
-<p>
-However, if you wish to use Python interactively within your R session, you must start the Python REPL with the <code>repl_python()</code> function, which starts a Python REPL. You can then do whatever you want, even access objects from your R session, and then when you exit the REPL, any object you created in Python remains accessible in R. I think that using Python this way is a bit more involved and would advise using R Notebooks if you need to use both languages.
-</p>
-<p>
-I installed the Anaconda Python distribution to have Python on my system. To use it with <code>{reticulate}</code> I must first use the <code>use_python()</code> function that allows me to set which version of Python I want to use:
-</p>
-<pre class="r"><code># This is an R chunk
-use_python("~/miniconda3/bin/python")</code></pre>
-<p>
-I can now load a dataset, still using R:
-</p>
-<pre class="r"><code># This is an R chunk
-data(mtcars)
-head(mtcars)</code></pre>
-<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
-## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
-<p>
-and now, to access the <code>mtcars</code> data frame, I simply use the <code>r</code> object:
-</p>
-<pre class="python"><code># This is a Python chunk
-print(r.mtcars.describe())</code></pre>
-<pre><code>##              mpg        cyl        disp   ...            am       gear     carb
-## count  32.000000  32.000000   32.000000   ...     32.000000  32.000000  32.0000
-## mean   20.090625   6.187500  230.721875   ...      0.406250   3.687500   2.8125
-## std     6.026948   1.785922  123.938694   ...      0.498991   0.737804   1.6152
-## min    10.400000   4.000000   71.100000   ...      0.000000   3.000000   1.0000
-## 25%    15.425000   4.000000  120.825000   ...      0.000000   3.000000   2.0000
-## 50%    19.200000   6.000000  196.300000   ...      0.000000   4.000000   2.0000
-## 75%    22.800000   8.000000  326.000000   ...      1.000000   4.000000   4.0000
-## max    33.900000   8.000000  472.000000   ...      1.000000   5.000000   8.0000
-## 
-## [8 rows x 11 columns]</code></pre>
-<p>
-<code>.describe()</code> is a Python Pandas DataFrame method to get summary statistics of our data. This means that <code>mtcars</code> was automatically converted from a <code>tibble</code> object to a Pandas DataFrame! Let’s check its type:
-</p>
-<pre class="python"><code># This is a Python chunk
-print(type(r.mtcars))</code></pre>
-<pre><code>## &lt;class 'pandas.core.frame.DataFrame'&gt;</code></pre>
-<p>
-Let’s save the summary statistics in a variable:
-</p>
-<pre class="python"><code># This is a Python chunk
-summary_mtcars = r.mtcars.describe()</code></pre>
-<p>
-Let’s access this from R, by using the <code>py</code> object:
-</p>
-<pre class="r"><code># This is an R chunk
-class(py$summary_mtcars)</code></pre>
-<pre><code>## [1] "data.frame"</code></pre>
-<p>
-Let’s try something more complex. Let’s first fit a linear model in Python, and see how R sees it:
-</p>
-<pre class="python"><code># This is a Python chunk
-import numpy as np
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-model = smf.ols('mpg ~ hp', data = r.mtcars).fit()
-print(model.summary())</code></pre>
-<pre><code>##                             OLS Regression Results                            
-## ==============================================================================
-## Dep. Variable:                    mpg   R-squared:                       0.602
-## Model:                            OLS   Adj. R-squared:                  0.589
-## Method:                 Least Squares   F-statistic:                     45.46
-## Date:                Sun, 10 Feb 2019   Prob (F-statistic):           1.79e-07
-## Time:                        00:25:51   Log-Likelihood:                -87.619
-## No. Observations:                  32   AIC:                             179.2
-## Df Residuals:                      30   BIC:                             182.2
-## Df Model:                           1                                         
-## Covariance Type:            nonrobust                                         
-## ==============================================================================
-##                  coef    std err          t      P&gt;|t|      [0.025      0.975]
-## ------------------------------------------------------------------------------
-## Intercept     30.0989      1.634     18.421      0.000      26.762      33.436
-## hp            -0.0682      0.010     -6.742      0.000      -0.089      -0.048
-## ==============================================================================
-## Omnibus:                        3.692   Durbin-Watson:                   1.134
-## Prob(Omnibus):                  0.158   Jarque-Bera (JB):                2.984
-## Skew:                           0.747   Prob(JB):                        0.225
-## Kurtosis:                       2.935   Cond. No.                         386.
-## ==============================================================================
-## 
-## Warnings:
-## [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
-<p>
-Just for fun, I ran the linear regression with the Scikit-learn library too:
-</p>
-<pre class="python"><code># This is a Python chunk
-import numpy as np
-from sklearn.linear_model import LinearRegression  
-regressor = LinearRegression()  
-x = r.mtcars[["hp"]]
-y = r.mtcars[["mpg"]]
-model_scikit = regressor.fit(x, y)
-print(model_scikit.intercept_)</code></pre>
-<pre><code>## [30.09886054]</code></pre>
-<pre class="python"><code>print(model_scikit.coef_)</code></pre>
-<pre><code>## [[-0.06822828]]</code></pre>
-<p>
-Let’s access the <code>model</code> variable in R and see what type of object it is in R:
-</p>
-<pre class="r"><code># This is an R chunk
-model_r &lt;- py$model
-class(model_r)</code></pre>
-<pre><code>## [1] "statsmodels.regression.linear_model.RegressionResultsWrapper"
-## [2] "statsmodels.base.wrapper.ResultsWrapper"                     
-## [3] "python.builtin.object"</code></pre>
-<p>
-So because this is a custom Python object, it does not get converted into the equivalent R object. This is described <a href="https://rstudio.github.io/reticulate/index.html">here</a>. However, you can still use Python methods from within an R chunk!
-</p>
-<pre class="r"><code># This is an R chunk
-model_r$aic</code></pre>
-<pre><code>## [1] 179.2386</code></pre>
-<pre class="r"><code>model_r$params</code></pre>
-<pre><code>##   Intercept          hp 
-## 30.09886054 -0.06822828</code></pre>
-<p>
-I must say that I am very impressed with the <code>{reticulate}</code> package. I think that even if you are primarily a Python user, this is still very interesting to know in case you need a specific function from an R package. Just write all your script inside a Python Markdown chunk and then use the R function you need from an R chunk! Of course there is also a way to use R from Python, a Python library called <code>rpy2</code> but I am not very familiar with it. From what I read, it seems to be also quite simple to use.
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-30-reticulate.html</guid>
-  <pubDate>Sun, 30 Dec 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Some fun with {gganimate}</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-27-fun_gganimate.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<video width="864" height="480" controls="">
-<source src="../assets/img/wiid_gganimate.webm" type="video/webm">
-Your browser does not support the video tag. </video>
-</div>
-<p>
-In this short blog post I show you how you can use the <code>{gganimate}</code> package to create animations from <code>{ggplot2}</code> graphs with data from UNU-WIDER.
-</p>
-<section id="wiid-data" class="level2">
-<h2 class="anchored" data-anchor-id="wiid-data">
-WIID data
-</h2>
-<p>
-Just before Christmas, UNU-WIDER released a new edition of their World Income Inequality Database:
-</p>
-<blockquote class="twitter-tweet blockquote">
-<p lang="en" dir="ltr">
-<em>NEW <a href="https://twitter.com/hashtag/DATA?src=hash&amp;ref_src=twsrc%5Etfw">#DATA</a></em><br>We’ve just released a new version of the World Income Inequality Database.<br>WIID4 includes <a href="https://twitter.com/hashtag/data?src=hash&amp;ref_src=twsrc%5Etfw">#data</a> from 7 new countries, now totalling 189, and reaches the year 2017. All data is freely available for download on our website: <a href="https://t.co/XFxuLvyKTC">https://t.co/XFxuLvyKTC</a> <a href="https://t.co/rCf9eXN8D5">pic.twitter.com/rCf9eXN8D5</a>
-</p>
-— UNU-WIDER (<span class="citation" data-cites="UNUWIDER">@UNUWIDER</span>) <a href="https://twitter.com/UNUWIDER/status/1076001879556005888?ref_src=twsrc%5Etfw">December 21, 2018</a>
-</blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-The data is available in Excel and STATA formats, and I thought it was a great opportunity to release it as an R package. You can install it with:
-</p>
-<pre class="r"><code>devtools::install_github("b-rodrigues/wiid4")</code></pre>
-<p>
-Here a short description of the data, taken from UNU-WIDER’s website:
-</p>
-<p>
-<em>“The World Income Inequality Database (WIID) presents information on income inequality for developed, developing, and transition countries. It provides the most comprehensive set of income inequality statistics available and can be downloaded for free.</em>
-</p>
-<p>
-<em>WIID4, released in December 2018, covers 189 countries (including historical entities), with over 11,000 data points in total. With the current version, the latest observations now reach the year 2017.”</em>
-</p>
-<p>
-It was also a good opportunity to play around with the <code>{gganimate}</code> package. This package makes it possible to create animations and is an extension to <code>{ggplot2}</code>. Read more about it <a href="https://github.com/thomasp85/gganimate">here</a>.
-</p>
-</section>
-<section id="preparing-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="preparing-the-data">
-Preparing the data
-</h2>
-<p>
-To create a smooth animation, I need to have a cylindrical panel data set; meaning that for each country in the data set, there are no missing years. I also chose to focus on certain variables only; net income, all the population of the country (instead of just focusing on the economically active for instance) as well as all the country itself (and not just the rural areas). On <a href="https://www.wider.unu.edu/sites/default/files/WIID/PDF/WIID4%20User%20Guide.pdf">this link</a> you can find a codebook (pdf warning), so you can understand the filters I defined below better.
-</p>
-<p>
-Let’s first load the packages, data and perform the necessary transformations:
-</p>
-<pre class="r"><code>library(wiid4)
-library(tidyverse)
-library(ggrepel)
-library(gganimate)
-library(brotools)
-
-small_wiid4 &lt;- wiid4 %&gt;%
-    mutate(eu = as.character(eu)) %&gt;%
-    mutate(eu = case_when(eu == "1" ~ "EU member state",
-                          eu == "0" ~ "Non-EU member state")) %&gt;%
-    filter(resource == 1, popcovr == 1, areacovr == 1, scale == 2) %&gt;%
-    group_by(country) %&gt;%
-    group_by(country, year) %&gt;%
-    filter(quality_score == max(quality_score)) %&gt;%
-    filter(source == min(source)) %&gt;%
-    filter(!is.na(bottom5)) %&gt;%
-    group_by(country) %&gt;%
-    mutate(flag = ifelse(all(seq(2004, 2016) %in% year), 1, 0)) %&gt;%
-    filter(flag == 1, year &gt; 2003) %&gt;%
-    mutate(year = lubridate::ymd(paste0(year, "-01-01")))</code></pre>
-<p>
-For some country and some years, there are several sources of data with varying quality. I only keep the highest quality sources with:
-</p>
-<pre class="r"><code>    group_by(country, year) %&gt;%
-    filter(quality_score == max(quality_score)) %&gt;%</code></pre>
-<p>
-If there are different sources of equal quality, I give priority to the sources that are the most comparable across country (Luxembourg Income Study, LIS data) to less comparable sources with (at least that’s my understanding of the <code>source</code> variable):
-</p>
-<pre class="r"><code>    filter(source == min(source)) %&gt;%</code></pre>
-<p>
-I then remove missing data with:
-</p>
-<pre class="r"><code>    filter(!is.na(bottom5)) %&gt;%</code></pre>
-<p>
-<code>bottom5</code> and <code>top5</code> give the share of income that is controlled by the bottom 5% and top 5% respectively. These are the variables that I want to plot.
-</p>
-<p>
-Finally I keep the years 2004 to 2016, without any interruption with the following line:
-</p>
-<pre class="r"><code>    mutate(flag = ifelse(all(seq(2004, 2016) %in% year), 1, 0)) %&gt;%
-    filter(flag == 1, year &gt; 2003) %&gt;%</code></pre>
-<p>
-<code>ifelse(all(seq(2004, 2016) %in% year), 1, 0))</code> creates a flag that equals <code>1</code> only if the years 2004 to 2016 are present in the data without any interruption. Then I only keep the data from 2004 on and only where the flag variable equals 1.
-</p>
-<p>
-In the end, I ended up only with European countries. It would have been interesting to have countries from other continents, but apparently only European countries provide data in an annual basis.
-</p>
-</section>
-<section id="creating-the-animation" class="level2">
-<h2 class="anchored" data-anchor-id="creating-the-animation">
-Creating the animation
-</h2>
-<p>
-To create the animation I first started by creating a static ggplot showing what I wanted; a scatter plot of the income by bottom and top 5%. The size of the bubbles should be proportional to the GDP of the country (another variable provided in the data). Once the plot looked how I wanted I added the lines that are specific to <code>{gganimate}</code>:
-</p>
-<pre class="r"><code>    labs(title = 'Year: {frame_time}', x = 'Top 5', y = 'Bottom 5') +
-    transition_time(year) +
-    ease_aes('linear')</code></pre>
-<p>
-I took this from <code>{gganimate}</code>’s README.
-</p>
-<pre class="r"><code>animation &lt;- ggplot(small_wiid4) +
-    geom_point(aes(y = bottom5, x = top5, colour = eu, size = log(gdp_ppp_pc_usd2011))) +
-    xlim(c(10, 20)) +
-    geom_label_repel(aes(y = bottom5, x = top5, label = country), hjust = 1, nudge_x = 20) +
-    theme(legend.position = "bottom") +
-    theme_blog() +
-    scale_color_blog() +
-    labs(title = 'Year: {frame_time}', x = 'Top 5', y = 'Bottom 5') +
-    transition_time(year) +
-    ease_aes('linear')</code></pre>
-<p>
-I use <code>geom_label_repel</code> to place the countries’ labels on the right of the plot. If I don’t do this, the labels of the countries would be floating around and the animation would be unreadable.
-</p>
-<p>
-I then spent some time trying to render a nice webm instead of a gif. It took some trial and error and I am still not entirely satisfied with the result, but here is the code to render the animation:
-</p>
-<pre class="r"><code>animate(animation, renderer = ffmpeg_renderer(options = list(s = "864x480", 
-                                                             vcodec = "libvpx-vp9",
-                                                             crf = "15",
-                                                             b = "1600k", 
-                                                             vf = "setpts=5*PTS")))</code></pre>
-<p>
-The option <code>vf = “setpts=5*PTS”</code> is important because it slows the video down, so we can actually see something. <code>crf = “15”</code> is the quality of the video (lower is better), <code>b = “1600k”</code> is the bitrate, and <code>vcodec = “libvpx-vp9”</code> is the codec I use. The video you saw at the top of this post is the result. You can also find the video <a href="https://raw.githubusercontent.com/rbind/b-rodrigues.github.com/master/static/img/wiid_gganimate.webm">here</a>, and here’s a gif if all else fails:
-</p>
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=3zXx0ReqOOI"> <img src="https://b-rodrigues.github.io/assets/img/wiid_gganimate_gif.gif" title="Click to listen to OST of this gif"></a>
-</p>
-</div>
-<p>
-I would have preferred if the video was smoother, which should be possible by creating more frames. I did not find such an option in <code>{gganimate}</code>, and perhaps there is none, at least for now.
-</p>
-<p>
-In any case <code>{gganimate}</code> is pretty nice to play with, and I’ll definitely use it more!
-</p>
-</section>
-<section id="update" class="level3">
-<h3 class="anchored" data-anchor-id="update">
-Update
-</h3>
-<p>
-Silly me! It turns out thate the <code>animate()</code> function has arguments that can control the number of frames and the duration, without needing to pass options to the renderer. I was looking at options for the renderer only, without having read the documentation of the <code>animate()</code> function. It turns out that you can pass several arguments to the <code>animate()</code> function; for example, here is how you can make a GIF that lasts for 20 seconds running and 20 frames per second, pausing for 5 frames at the end and then restarting:
-</p>
-<pre class="r"><code>animate(animation, nframes = 400, duration = 20, fps = 20, end_pause = 5, rewind = TRUE)</code></pre>
-<p>
-I guess that you should only pass options to the renderer if you really need fine-grained control.
-</p>
-<p>
-This took around 2 minutes to finish. You can use the same options with the ffmpeg renderer too. Here is what the gif looks like:
-</p>
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=3zXx0ReqOOI"> <img src="https://b-rodrigues.github.io/assets/img/wiid_gganimate_gif_smooth.gif" title="Click to listen to OST of this gif"></a>
-</p>
-</div>
-<p>
-Much, much smoother!
-</p>
-</section>
-
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-27-fun_gganimate.html</guid>
-  <pubDate>Thu, 27 Dec 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Objects types and some useful R functions for beginners</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-24-modern_objects.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=M-1nTwiHxic"> <img width="400" src="https://b-rodrigues.github.io/assets/img/santa_sanders.jpg" title="The frydiest time of the year"></a>
-</p>
-</div>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-<p>
-This blog post is an excerpt of my ebook <em>Modern R with the tidyverse</em> that you can read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 2, which explains the different R objects you can manipulate as well as some functions to get you started.
-</p>
-<section id="objects-types-and-useful-r-functions-to-get-started" class="level2">
-<h2 class="anchored" data-anchor-id="objects-types-and-useful-r-functions-to-get-started">
-Objects, types and useful R functions to get started
-</h2>
-<p>
-All objects in R have a given <em>type</em>. You already know most of them, as these types are also used in mathematics. Integers, floating point numbers, or floats, matrices, etc, are all objects you are already familiar with. But R has other, maybe lesser known data types (that you can find in a lot of other programming languages) that you need to become familiar with. But first, we need to learn how to assign a value to a variable. This can be done in two ways:
-</p>
-<pre class="r"><code>a &lt;- 3</code></pre>
-<p>
-or
-</p>
-<pre class="r"><code>a = 3</code></pre>
-<p>
-in very practical terms, there is no difference between the two. I prefer using <code>&lt;-</code> for assigning values to variables and reserve <code>=</code> for passing arguments to functions, for example:
-</p>
-<pre class="r"><code>spam &lt;- mean(x = c(1,2,3))</code></pre>
-<p>
-I think this is less confusing than:
-</p>
-<pre class="r"><code>spam = mean(x = c(1,2,3))</code></pre>
-<p>
-but as I explained above you can use whatever you feel most comfortable with.
-</p>
-<section id="the-numeric-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-numeric-class">
-The <code>numeric</code> class
-</h3>
-<p>
-To define single numbers, you can do the following:
-</p>
-<pre class="r"><code>a &lt;- 3</code></pre>
-<p>
-The <code>class()</code> function allows you to check the class of an object:
-</p>
-<pre class="r"><code>class(a)</code></pre>
-<pre><code>## [1] "numeric"</code></pre>
-<p>
-Decimals are defined with the character <code>.</code>:
-</p>
-<pre class="r"><code>a &lt;- 3.14</code></pre>
-<p>
-R also supports integers. If you find yourself in a situation where you explicitly need an integer and not a floating point number, you can use the following:
-</p>
-<pre class="r"><code>a  &lt;- as.integer(3)
-class(a)</code></pre>
-<pre><code>## [1] "integer"</code></pre>
-<p>
-The <code>as.integer()</code> function is very useful, because it converts its argument into an integer. There is a whole family of <code>as.*()</code> functions. To convert <code>a</code> into a floating point number again:
-</p>
-<pre class="r"><code>class(as.numeric(a))</code></pre>
-<pre><code>## [1] "numeric"</code></pre>
-<p>
-There is also <code>is.numeric()</code> which tests whether a number is of the <code>numeric</code> class:
-</p>
-<pre class="r"><code>is.numeric(a)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<p>
-These functions are very useful, there is one for any of the supported types in R. Later, we are going to learn about the <code>{purrr}</code> package, which is a very powerful package for functional programming. This package includes further such functions.
-</p>
-</section>
-<section id="the-character-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-character-class">
-The <code>character</code> class
-</h3>
-<p>
-Use <code>” “</code> to define characters (called strings in other programming languages):
-</p>
-<pre class="r"><code>a &lt;- "this is a string"</code></pre>
-<pre class="r"><code>class(a)</code></pre>
-<pre><code>## [1] "character"</code></pre>
-<p>
-To convert something to a character you can use the <code>as.character()</code> function:
-</p>
-<pre class="r"><code>a &lt;- 4.392
-
-class(a)</code></pre>
-<pre><code>## [1] "numeric"</code></pre>
-<pre class="r"><code>class(as.character(a))</code></pre>
-<pre><code>## [1] "character"</code></pre>
-<p>
-It is also possible to convert a character to a numeric:
-</p>
-<pre class="r"><code>a &lt;- "4.392"
-
-class(a)</code></pre>
-<pre><code>## [1] "character"</code></pre>
-<pre class="r"><code>class(as.numeric(a))</code></pre>
-<pre><code>## [1] "numeric"</code></pre>
-<p>
-But this only works if it makes sense:
-</p>
-<pre class="r"><code>a &lt;- "this won't work, chief"
-
-class(a)</code></pre>
-<pre><code>## [1] "character"</code></pre>
-<pre class="r"><code>as.numeric(a)</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
-<pre><code>## [1] NA</code></pre>
-<p>
-A very nice package to work with characters is <code>{stringr}</code>, which is also part of the <code>{tidyverse}</code>.
-</p>
-</section>
-<section id="the-factor-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-factor-class">
-The <code>factor</code> class
-</h3>
-<p>
-Factors look like characters, but are very different. They are the representation of categorical variables. A <code>{tidyverse}</code> package to work with factors is <code>{forcats}</code>. You would rarely use factor variables outside of datasets, so for now, it is enough to know that this class exists. We are going to learn more about factor variables in Chapter 4, by using the <code>{forcats}</code> package.
-</p>
-</section>
-<section id="the-date-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-date-class">
-The <code>Date</code> class
-</h3>
-<p>
-Dates also look like characters, but are very different too:
-</p>
-<pre class="r"><code>as.Date("2019/03/19")</code></pre>
-<pre><code>## [1] "2019-03-19"</code></pre>
-<pre class="r"><code>class(as.Date("2019/03/19"))</code></pre>
-<pre><code>## [1] "Date"</code></pre>
-<p>
-Manipulating dates and time can be tricky, but thankfully there’s a <code>{tidyverse}</code> package for that, called <code>{lubridate}</code>. We are going to go over this package in Chapter 4.
-</p>
-</section>
-<section id="the-logical-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-logical-class">
-The <code>logical</code> class
-</h3>
-<p>
-This class is the result of logical comparisons, for example, if you type:
-</p>
-<pre class="r"><code>4 &gt; 3</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<p>
-R returns <code>TRUE</code>, which is an object of class <code>logical</code>:
-</p>
-<pre class="r"><code>k &lt;- 4 &gt; 3
-class(k)</code></pre>
-<pre><code>## [1] "logical"</code></pre>
-<p>
-In other programming languages, <code>logical</code>s are often called <code>bool</code>s. A <code>logical</code> variable can only have two values, either <code>TRUE</code> or <code>FALSE</code>. You can test the truthiness of a variable with <code>isTRUE()</code>:
-</p>
-<pre class="r"><code>k &lt;- 4 &gt; 3
-isTRUE(k)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<p>
-How can you test if a variable is false? There is not a <code>isFALSE()</code> function (at least not without having to load a package containing this function), but there is way to do it:
-</p>
-<pre class="r"><code>k &lt;- 4 &gt; 3
-!isTRUE(k)</code></pre>
-<pre><code>## [1] FALSE</code></pre>
-<p>
-The <code>!</code> operator indicates negation, so the above expression could be translated as <em>is k not TRUE?</em>. There are other such operators, namely <code>&amp;, &amp;&amp;, |, ||</code>. <code>&amp;</code> means <em>and</em> and <code>|</code> stands for <em>or</em>. You might be wondering what the difference between <code>&amp;</code> and <code>&amp;&amp;</code> is? Or between <code>|</code> and <code>||</code>? <code>&amp;</code> and <code>|</code> work on vectors, doing pairwise comparisons:
-</p>
-<pre class="r"><code>one &lt;- c(TRUE, FALSE, TRUE, FALSE)
-two &lt;- c(FALSE, TRUE, TRUE, TRUE)
-one &amp; two</code></pre>
-<pre><code>## [1] FALSE FALSE  TRUE FALSE</code></pre>
-<p>
-Compare this to the <code>&amp;&amp;</code> operator:
-</p>
-<pre class="r"><code>one &lt;- c(TRUE, FALSE, TRUE, FALSE)
-two &lt;- c(FALSE, TRUE, TRUE, TRUE)
-one &amp;&amp; two</code></pre>
-<pre><code>## [1] FALSE</code></pre>
-<p>
-The <code>&amp;&amp;</code> and <code>||</code> operators only compare the first element of the vectors and stop as soon as a the return value can be safely determined. This is called short-circuiting. Consider the following:
-</p>
-<pre class="r"><code>one &lt;- c(TRUE, FALSE, TRUE, FALSE)
-two &lt;- c(FALSE, TRUE, TRUE, TRUE)
-three &lt;- c(TRUE, TRUE, FALSE, FALSE)
-one &amp;&amp; two &amp;&amp; three</code></pre>
-<pre><code>## [1] FALSE</code></pre>
-<pre class="r"><code>one || two || three</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<p>
-The <code>||</code> operator stops as soon it evaluates to <code>TRUE</code> whereas the <code>&amp;&amp;</code> stops as soon as it evaluates to <code>FALSE</code>. Personally, I rarely use <code>||</code> or <code>&amp;&amp;</code> because I get confused. I find using <code>|</code> or <code>&amp;</code> in combination with the <code>all()</code> or <code>any()</code> functions much more useful:
-</p>
-<pre class="r"><code>one &lt;- c(TRUE, FALSE, TRUE, FALSE)
-two &lt;- c(FALSE, TRUE, TRUE, TRUE)
-any(one &amp; two)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>all(one &amp; two)</code></pre>
-<pre><code>## [1] FALSE</code></pre>
-<p>
-<code>any()</code> checks whether any of the vector’s elements are <code>TRUE</code> and <code>all()</code> checks if all elements of the vector are <code>TRUE</code>.
-</p>
-<p>
-As a final note, you should know that is possible to use <code>T</code> for <code>TRUE</code> and <code>F</code> for <code>FALSE</code> but I would advise against doing this, because it is not very explicit.
-</p>
-</section>
-<section id="vectors-and-matrices" class="level3">
-<h3 class="anchored" data-anchor-id="vectors-and-matrices">
-Vectors and matrices
-</h3>
-<p>
-You can create a vector in different ways. But first of all, it is important to understand that a vector in most programming languages is nothing more than a list of things. These things can be numbers (either integers or floats), strings, or even other vectors. A vector in R can only contain elements of one single type. This is not the case for a list, which is much more flexible. We will talk about lists shortly, but let’s first focus on vectors and matrices.
-</p>
-<section id="the-c-function" class="level4">
-<h4 class="anchored" data-anchor-id="the-c-function">
-The <code>c()</code> function
-</h4>
-<p>
-A very important function that allows you to build a vector is <code>c()</code>:
-</p>
-<pre class="r"><code>a &lt;- c(1,2,3,4,5)</code></pre>
-<p>
-This creates a vector with elements 1, 2, 3, 4, 5. If you check its class:
-</p>
-<pre class="r"><code>class(a)</code></pre>
-<pre><code>## [1] "numeric"</code></pre>
-<p>
-This can be confusing: you where probably expecting a to be of class <em>vector</em> or something similar. This is not the case if you use <code>c()</code> to create the vector, because <code>c()</code> doesn’t build a vector in the mathematical sense, but a so-called atomic vector. Checking its dimension:
-</p>
-<pre class="r"><code>dim(a)</code></pre>
-<pre><code>## NULL</code></pre>
-<p>
-returns <code>NULL</code> because an atomic vector doesn’t have a dimension. If you want to create a true vector, you need to use <code>cbind()</code> or <code>rbind()</code>.
-</p>
-<p>
-But before continuing, be aware that atomic vectors can only contain elements of the same type:
-</p>
-<pre class="r"><code>c(1, 2, "3")</code></pre>
-<pre><code>## [1] "1" "2" "3"</code></pre>
-<p>
-because “3” is a character, all the other values get implicitly converted to characters. You have to be very careful about this, and if you use atomic vectors in your programming, you have to make absolutely sure that no characters or logicals or whatever else are going to convert your atomic vector to something you were not expecting.
-</p>
-</section>
-<section id="cbind-and-rbind" class="level4">
-<h4 class="anchored" data-anchor-id="cbind-and-rbind">
-<code>cbind()</code> and <code>rbind()</code>
-</h4>
-<p>
-You can create a <em>true</em> vector with <code>cbind()</code>:
-</p>
-<pre class="r"><code>a &lt;- cbind(1, 2, 3, 4, 5)</code></pre>
-<p>
-Check its class now:
-</p>
-<pre class="r"><code>class(a)</code></pre>
-<pre><code>## [1] "matrix"</code></pre>
-<p>
-This is exactly what we expected. Let’s check its dimension:
-</p>
-<pre class="r"><code>dim(a)</code></pre>
-<pre><code>## [1] 1 5</code></pre>
-<p>
-This returns the dimension of <code>a</code> using the LICO notation (number of LInes first, the number of COlumns).
-</p>
-<p>
-It is also possible to bind vectors together to create a matrix.
-</p>
-<pre class="r"><code>b &lt;- cbind(6,7,8,9,10)</code></pre>
-<p>
-Now let’s put vector <code>a</code> and <code>b</code> into a matrix called <code>matrix_c</code> using <code>rbind()</code>. <code>rbind()</code> functions the same way as <code>cbind()</code> but glues the vectors together by rows and not by columns.
-</p>
-<pre class="r"><code>matrix_c &lt;- rbind(a,b)
-print(matrix_c)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    2    3    4    5
-## [2,]    6    7    8    9   10</code></pre>
-</section>
-<section id="the-matrix-class" class="level4">
-<h4 class="anchored" data-anchor-id="the-matrix-class">
-The <code>matrix</code> class
-</h4>
-<p>
-R also has support for matrices. For example, you can create a matrix of dimension (5,5) filled with 0’s with the <code>matrix()</code> function:
-</p>
-<pre class="r"><code>matrix_a &lt;- matrix(0, nrow = 5, ncol = 5)</code></pre>
-<p>
-If you want to create the following matrix:
-</p>
-<p>
-<img src="https://latex.codecogs.com/png.latex?%5B%20B%20=%20(%0A%5C%5B%5Cbegin%7Barray%7D%7Bccc%7D%0A2%20&amp;amp;%204%20&amp;amp;%203%20%5C%5C%0A1%20&amp;amp;%205%20&amp;amp;%207%0A%5Cend%7Barray%7D%5C%5D%0A)%20%5D">
-</p>
-<p>
-you would do it like this:
-</p>
-<pre class="r"><code>B &lt;- matrix(c(2, 4, 3, 1, 5, 7), nrow = 2, byrow = TRUE)</code></pre>
-<p>
-The option <code>byrow = TRUE</code> means that the rows of the matrix will be filled first.
-</p>
-<p>
-You can access individual elements of <code>matrix_a</code> like so:
-</p>
-<pre class="r"><code>matrix_a[2, 3]</code></pre>
-<pre><code>## [1] 0</code></pre>
-<p>
-and R returns its value, 0. We can assign a new value to this element if we want. Try:
-</p>
-<pre class="r"><code>matrix_a[2, 3] &lt;- 7</code></pre>
-<p>
-and now take a look at <code>matrix_a</code> again.
-</p>
-<pre class="r"><code>print(matrix_a)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    0    0    0    0    0
-## [2,]    0    0    7    0    0
-## [3,]    0    0    0    0    0
-## [4,]    0    0    0    0    0
-## [5,]    0    0    0    0    0</code></pre>
-<p>
-Recall our vector <code>b</code>:
-</p>
-<pre class="r"><code>b &lt;- cbind(6,7,8,9,10)</code></pre>
-<p>
-To access its third element, you can simply write:
-</p>
-<pre class="r"><code>b[3]</code></pre>
-<pre><code>## [1] 8</code></pre>
-<p>
-I have heard many people praising R for being a matrix based language. Matrices are indeed useful, and statisticians are used to working with them. However, I very rarely use matrices in my day to day work, and prefer an approach based on data frames (which will be discussed below). This is because working with data frames makes it easier to use R’s advanced functional programming language capabilities, and this is where R really shines in my opinion. Working with matrices almost automatically implies using loops and all the iterative programming techniques, <em>à la Fortran</em>, which I personally believe are ill-suited for interactive statistical programming (as discussed in the introduction).
-</p>
-</section>
-</section>
-<section id="the-list-class" class="level3">
-<h3 class="anchored" data-anchor-id="the-list-class">
-The <code>list</code> class
-</h3>
-<p>
-The <code>list</code> class is a very flexible class, and thus, very useful. You can put anything inside a list, such as numbers:
-</p>
-<pre class="r"><code>list1 &lt;- list(3, 2)</code></pre>
-<p>
-or other lists constructed with <code>c()</code>:
-</p>
-<pre class="r"><code>list2 &lt;- list(c(1, 2), c(3, 4))</code></pre>
-<p>
-you can also put objects of different classes in the same list:
-</p>
-<pre class="r"><code>list3 &lt;- list(3, c(1, 2), "lists are amazing!")</code></pre>
-<p>
-and of course create list of lists:
-</p>
-<pre class="r"><code>my_lists &lt;- list(list1, list2, list3)</code></pre>
-<p>
-To check the contents of a list, you can use the structure function <code>str()</code>:
-</p>
-<pre class="r"><code>str(my_lists)</code></pre>
-<pre><code>## List of 3
-##  $ :List of 2
-##   ..$ : num 3
-##   ..$ : num 2
-##  $ :List of 2
-##   ..$ : num [1:2] 1 2
-##   ..$ : num [1:2] 3 4
-##  $ :List of 3
-##   ..$ : num 3
-##   ..$ : num [1:2] 1 2
-##   ..$ : chr "lists are amazing!"</code></pre>
-<p>
-or you can use RStudio’s <em>Environment</em> pane:
-</p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/rstudio_environment_list.gif"><!-- -->
-</p>
-<p>
-You can also create named lists:
-</p>
-<pre class="r"><code>list4 &lt;- list("a" = 2, "b" = 8, "c" = "this is a named list")</code></pre>
-<p>
-and you can access the elements in two ways:
-</p>
-<pre class="r"><code>list4[[1]]</code></pre>
-<pre><code>## [1] 2</code></pre>
-<p>
-or, for named lists:
-</p>
-<pre class="r"><code>list4$c</code></pre>
-<pre><code>## [1] "this is a named list"</code></pre>
-<p>
-Lists are used extensively because they are so flexible. You can build lists of datasets and apply functions to all the datasets at once, build lists of models, lists of plots, etc… In the later chapters we are going to learn all about them. Lists are central objects in a functional programming workflow for interactive statistical analysis.
-</p>
-</section>
-<section id="the-data.frame-and-tibble-classes" class="level3">
-<h3 class="anchored" data-anchor-id="the-data.frame-and-tibble-classes">
-The <code>data.frame</code> and <code>tibble</code> classes
-</h3>
-<p>
-In the next chapter we are going to learn how to import datasets into R. Once you import data, the resulting object is either a <code>data.frame</code> or a <code>tibble</code> depending on which package you used to import the data. <code>tibble</code>s extend <code>data.frame</code>s so if you know about <code>data.frame</code> objects already, working with <code>tibble</code>s will be very easy. <code>tibble</code>s have a better <code>print()</code> method, and some other niceties.
-</p>
-<p>
-However, I want to stress that these objects are central to R and are thus very important; they are actually special cases of lists, discussed above. There are different ways to print a <code>data.frame</code> or a <code>tibble</code> if you wish to inspect it. You can use <code>View(my_data)</code> to show the <code>my_data</code> <code>data.frame</code> in the <em>View</em> pane of RStudio:
-</p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/rstudio_view_data.gif"><!-- -->
-</p>
-<p>
-You can also use the <code>str()</code> function:
-</p>
-<pre class="r"><code>str(my_data)</code></pre>
-<p>
-And if you need to access an individual column, you can use the <code>$</code> sign, same as for a list:
-</p>
-<pre class="r"><code>my_data$col1</code></pre>
-</section>
-<section id="formulas" class="level3">
-<h3 class="anchored" data-anchor-id="formulas">
-Formulas
-</h3>
-<p>
-We will learn more about formulas later, but because it is an important object, it is useful if you already know about them early on. A formula is defined in the following way:
-</p>
-<pre class="r"><code>my_formula &lt;- ~x
-
-class(my_formula)</code></pre>
-<pre><code>## [1] "formula"</code></pre>
-<p>
-Formula objects are defined using the <code>~</code> symbol. Formulas are useful to define statistical models, for example for a linear regression:
-</p>
-<pre class="r"><code>lm(y ~ x)</code></pre>
-<p>
-or also to define anonymous functions, but more on this later.
-</p>
-</section>
-</section>
-<section id="models" class="level2">
-<h2 class="anchored" data-anchor-id="models">
-Models
-</h2>
-<p>
-A statistical model is an object like any other in R:
-</p>
-<pre class="r"><code>data(mtcars)
-
-my_model &lt;- lm(mpg ~ hp, mtcars)
-
-class(my_model)</code></pre>
-<pre><code>## [1] "lm"</code></pre>
-<p>
-<code>my_model</code> is an object of class <code>lm</code>. You can apply different functions to a model object:
-</p>
-<pre class="r"><code>summary(my_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = mpg ~ hp, data = mtcars)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -5.7121 -2.1122 -0.8854  1.5819  8.2360 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 30.09886    1.63392  18.421  &lt; 2e-16 ***
-## hp          -0.06823    0.01012  -6.742 1.79e-07 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 3.863 on 30 degrees of freedom
-## Multiple R-squared:  0.6024, Adjusted R-squared:  0.5892 
-## F-statistic: 45.46 on 1 and 30 DF,  p-value: 1.788e-07</code></pre>
-<p>
-This class will be explored in later chapters.
-</p>
-<section id="null-na-and-nan" class="level3">
-<h3 class="anchored" data-anchor-id="null-na-and-nan">
-NULL, NA and NaN
-</h3>
-<p>
-The <code>NULL</code>, <code>NA</code> and <code>NaN</code> classes are pretty special. <code>NULL</code> is returned when the result of function is undetermined. For example, consider <code>list4</code>:
-</p>
-<pre class="r"><code>list4</code></pre>
-<pre><code>## $a
-## [1] 2
-## 
-## $b
-## [1] 8
-## 
-## $c
-## [1] "this is a named list"</code></pre>
-<p>
-if you try to access an element that does not exist, such as <code>d</code>, you will get <code>NULL</code> back:
-</p>
-<pre class="r"><code>list4$d</code></pre>
-<pre><code>## NULL</code></pre>
-<p>
-<code>NaN</code> means “Not a Number” and is returned when a function return something that is not a number:
-</p>
-<pre class="r"><code>sqrt(-1)</code></pre>
-<pre><code>## Warning in sqrt(-1): NaNs produced</code></pre>
-<pre><code>## [1] NaN</code></pre>
-<p>
-or:
-</p>
-<pre class="r"><code>0/0</code></pre>
-<pre><code>## [1] NaN</code></pre>
-<p>
-Basically, numbers that cannot be represented as floating point numbers are <code>NaN</code>.
-</p>
-<p>
-Finally, there’s <code>NA</code> which is closely related to <code>NaN</code> but is used for missing values. <code>NA</code> stands for <code>Not Available</code>. There are several types of <code>NA</code>s:
-</p>
-<ul>
-<li>
-<code>NA_integer_</code>
-</li>
-<li>
-<code>NA_real_</code>
-</li>
-<li>
-<code>NA_complex_</code>
-</li>
-<li>
-<code>NA_character_</code>
-</li>
-</ul>
-<p>
-but these are in principle only used when you need to program your own functions and need to explicitly test for the missingness of, say, a character value.
-</p>
-<p>
-To test whether a value is <code>NA</code>, use the <code>is.na()</code> function.
-</p>
-</section>
-<section id="useful-functions-to-get-you-started" class="level3">
-<h3 class="anchored" data-anchor-id="useful-functions-to-get-you-started">
-Useful functions to get you started
-</h3>
-<p>
-This section will list several basic R functions that are very useful and should be part of your toolbox.
-</p>
-<section id="sequences" class="level4">
-<h4 class="anchored" data-anchor-id="sequences">
-Sequences
-</h4>
-<p>
-There are several functions that create sequences, <code>seq()</code>, <code>seq_along()</code> and <code>rep()</code>. <code>rep()</code> is easy enough:
-</p>
-<pre class="r"><code>rep(1, 10)</code></pre>
-<pre><code>##  [1] 1 1 1 1 1 1 1 1 1 1</code></pre>
-<p>
-This simply repeats <code>1</code> 10 times. You can repeat other objects too:
-</p>
-<pre class="r"><code>rep("HAHA", 10)</code></pre>
-<pre><code>##  [1] "HAHA" "HAHA" "HAHA" "HAHA" "HAHA" "HAHA" "HAHA" "HAHA" "HAHA" "HAHA"</code></pre>
-<p>
-To create a sequence, things are not as straightforward. There is <code>seq()</code>:
-</p>
-<pre class="r"><code>seq(1, 10)</code></pre>
-<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
-<pre class="r"><code>seq(70, 80)</code></pre>
-<pre><code>##  [1] 70 71 72 73 74 75 76 77 78 79 80</code></pre>
-<p>
-It is also possible to provide a <code>by</code> argument:
-</p>
-<pre class="r"><code>seq(1, 10, by = 2)</code></pre>
-<pre><code>## [1] 1 3 5 7 9</code></pre>
-<p>
-<code>seq_along()</code> behaves similarly, but returns the length of the object passed to it. So if you pass <code>list4</code> to <code>seq_along()</code>, it will return a sequence from 1 to 3:
-</p>
-<pre class="r"><code>seq_along(list4)</code></pre>
-<pre><code>## [1] 1 2 3</code></pre>
-<p>
-which is also true for <code>seq()</code> actually:
-</p>
-<pre class="r"><code>seq(list4)</code></pre>
-<pre><code>## [1] 1 2 3</code></pre>
-<p>
-but these two functions behave differently for arguments of length equal to 1:
-</p>
-<pre class="r"><code>seq(10)</code></pre>
-<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
-<pre class="r"><code>seq_along(10)</code></pre>
-<pre><code>## [1] 1</code></pre>
-<p>
-So be quite careful about that. I would advise you do not use <code>seq()</code>, but only <code>seq_along()</code> and <code>seq_len()</code>. <code>seq_len()</code> only takes arguments of length 1:
-</p>
-<pre class="r"><code>seq_len(10)</code></pre>
-<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
-<pre class="r"><code>seq_along(10)</code></pre>
-<pre><code>## [1] 1</code></pre>
-<p>
-The problem with <code>seq()</code> is that it is unpredictable; depending on its input, the output will either be an integer or a sequence. When programming, it is better to have function that are stricter and fail when confronted to special cases, instead of returning some result. This is a bit of a recurrent issue with R, and the functions from the <code>{tidyverse}</code> mitigate this issue by being stricter than their base R counterparts. For example, consider the <code>ifelse()</code> function from base R:
-</p>
-<pre class="r"><code>ifelse(3 &gt; 5, 1, "this is false")</code></pre>
-<pre><code>## [1] "this is false"</code></pre>
-<p>
-and compare it to <code>{dplyr}</code>’s implementation, <code>if_else()</code>:
-</p>
-<pre class="r"><code>if_else(3 &gt; 5, 1, "this is false")
-Error: `false` must be type double, not character
-Call `rlang::last_error()` to see a backtrace</code></pre>
-<p>
-<code>if_else()</code> fails because the return value when <code>FALSE</code> is not a double (a real number) but a character. This might seem unnecessarily strict, but at least it is predictable. This makes debugging easier when used inside functions. In Chapter 8 we are going to learn how to write our own functions, and being strict makes programming easier.
-</p>
-</section>
-<section id="basic-string-manipulation" class="level4">
-<h4 class="anchored" data-anchor-id="basic-string-manipulation">
-Basic string manipulation
-</h4>
-<p>
-For now, we have not closely studied <code>character</code> objects, we only learned how to define them. Later, in Chapter 5 we will learn about the <code>{stringr}</code> package which provides useful function to work with strings. However, there are several base R functions that are very useful that you might want to know nonetheless, such as <code>paste()</code> and <code>paste0()</code>:
-</p>
-<pre class="r"><code>paste("Hello", "amigo")</code></pre>
-<pre><code>## [1] "Hello amigo"</code></pre>
-<p>
-but you can also change the separator if needed:
-</p>
-<pre class="r"><code>paste("Hello", "amigo", sep = "--")</code></pre>
-<pre><code>## [1] "Hello--amigo"</code></pre>
-<p>
-<code>paste0()</code> is the same as <code>paste()</code> but does not have any <code>sep</code> argument:
-</p>
-<pre class="r"><code>paste0("Hello", "amigo")</code></pre>
-<pre><code>## [1] "Helloamigo"</code></pre>
-<p>
-If you provide a vector of characters, you can also use the <code>collapse</code> argument, which places whatever you provide for <code>collapse</code> between the characters of the vector:
-</p>
-<pre class="r"><code>paste0(c("Joseph", "Mary", "Jesus"), collapse = ", and ")</code></pre>
-<pre><code>## [1] "Joseph, and Mary, and Jesus"</code></pre>
-<p>
-To change the case of characters, you can use <code>toupper()</code> and <code>tolower()</code>:
-</p>
-<pre class="r"><code>tolower("HAHAHAHAH")</code></pre>
-<pre><code>## [1] "hahahahah"</code></pre>
-<pre class="r"><code>toupper("hueuehuehuheuhe")</code></pre>
-<pre><code>## [1] "HUEUEHUEHUHEUHE"</code></pre>
-</section>
-<section id="mathematical-functions" class="level4">
-<h4 class="anchored" data-anchor-id="mathematical-functions">
-Mathematical functions
-</h4>
-<p>
-Finally, there are the classical mathematical functions that you know and love:
-</p>
-<ul>
-<li>
-<code>sqrt()</code>
-</li>
-<li>
-<code>exp()</code>
-</li>
-<li>
-<code>log()</code>
-</li>
-<li>
-<code>abs()</code>
-</li>
-<li>
-<code>sin()</code>, <code>cos()</code>, <code>tan()</code>, and others
-</li>
-<li>
-<code>sum()</code>, <code>cumsum()</code>, <code>prod()</code>, <code>cumprod()</code>
-</li>
-<li>
-<code>max()</code>, <code>min()</code>
-</li>
-</ul>
-<p>
-and many others…
-</p>
-</section>
-</section>
-</section>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-24-modern_objects.html</guid>
-  <pubDate>Mon, 24 Dec 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-21-tidyverse_pi.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=kZJY15dyMig"> <img width="400" src="https://b-rodrigues.github.io/assets/img/casino.jpg" title="Audentes Fortuna Iuvat"></a>
-</p>
-</div>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-<p>
-This blog post is an excerpt of my ebook <em>Modern R with the tidyverse</em> that you can read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 5, which presents the <code>{tidyverse}</code> packages and how to use them to compute descriptive statistics and manipulate data. In the text below, I show how you can use the <code>{tidyverse}</code> functions and principles for the estimation of <img src="https://latex.codecogs.com/png.latex?()"> using Monte Carlo simulation.
-</p>
-<section id="going-beyond-descriptive-statistics-and-data-manipulation" class="level2">
-<h2 class="anchored" data-anchor-id="going-beyond-descriptive-statistics-and-data-manipulation">
-Going beyond descriptive statistics and data manipulation
-</h2>
-<p>
-The <code>{tidyverse}</code> collection of packages can do much more than simply data manipulation and descriptive statisics. You can use the principles we have covered and the functions you now know to do much more. For instance, you can use a few <code>{tidyverse}</code> functions to do Monte Carlo simulations, for example to estimate <img src="https://latex.codecogs.com/png.latex?()">.
-</p>
-<p>
-Draw the unit circle inside the unit square, the ratio of the area of the circle to the area of the square will be <img src="https://latex.codecogs.com/png.latex?(/4)">. Then shot K arrows at the square; roughly <img src="https://latex.codecogs.com/png.latex?(K*/4)"> should have fallen inside the circle. So if now you shoot N arrows at the square, and M fall inside the circle, you have the following relationship <img src="https://latex.codecogs.com/png.latex?(M%20=%20N/4)"><em>. You can thus compute <img src="https://latex.codecogs.com/png.latex?()"> like so: <img src="https://latex.codecogs.com/png.latex?(=%204"></em>M/N).
-</p>
-<p>
-The more arrows N you throw at the square, the better approximation of <img src="https://latex.codecogs.com/png.latex?()"> you’ll have. Let’s try to do this with a tidy Monte Carlo simulation. First, let’s randomly pick some points inside the unit square:
-</p>
-<pre class="r"><code>library(tidyverse)
-library(brotools)</code></pre>
-<pre class="r"><code>n &lt;- 5000
-
-set.seed(2019)
-points &lt;- tibble("x" = runif(n), "y" = runif(n))</code></pre>
-<p>
-Now, to know if a point is inside the unit circle, we need to check wether <img src="https://latex.codecogs.com/png.latex?(x%5E2%20+%20y%5E2%20%3C%201)">. Let’s add a new column to the <code>points</code> tibble, called <code>inside</code> equal to 1 if the point is inside the unit circle and 0 if not:
-</p>
-<pre class="r"><code>points &lt;- points %&gt;% 
-    mutate(inside = map2_dbl(.x = x, .y = y, ~ifelse(.x**2 + .y**2 &lt; 1, 1, 0))) %&gt;% 
-    rowid_to_column("N")</code></pre>
-<p>
-Let’s take a look at <code>points</code>:
-</p>
-<pre class="r"><code>points</code></pre>
-<pre><code>## # A tibble: 5,000 x 4
-##        N       x      y inside
-##    &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-##  1     1 0.770   0.984       0
-##  2     2 0.713   0.0107      1
-##  3     3 0.303   0.133       1
-##  4     4 0.618   0.0378      1
-##  5     5 0.0505  0.677       1
-##  6     6 0.0432  0.0846      1
-##  7     7 0.820   0.727       0
-##  8     8 0.00961 0.0758      1
-##  9     9 0.102   0.373       1
-## 10    10 0.609   0.676       1
-## # … with 4,990 more rows</code></pre>
-<p>
-The <code>rowid_to_column()</code> function, from the <code>{tibble}</code> package, adds a new column to the data frame with an id, going from 1 to the number of rows in the data frame. Now, I can compute the estimation of <img src="https://latex.codecogs.com/png.latex?()"> at each row, by computing the cumulative sum of the 1’s in the <code>inside</code> column and dividing that by the current value of <code>N</code> column:
-</p>
-<pre class="r"><code>points &lt;- points %&gt;% 
-    mutate(estimate = 4*cumsum(inside)/N)</code></pre>
-<p>
-<code>cumsum(inside)</code> is the <code>M</code> from the formula. Now, we can finish by plotting the result:
-</p>
-<pre class="r"><code>ggplot(points) + 
-    geom_line(aes(y = estimate, x = N), colour = "#82518c") + 
-    geom_hline(yintercept = pi) +
-    theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/tidyverse_pi-7-1.png" width="672">
-</p>
-<p>
-In Chapter 6, we are going to learn all about <code>{ggplot2}</code>.
-</p>
-<p>
-As the number of tries grows, the estimation of <img src="https://latex.codecogs.com/png.latex?()"> gets better.
-</p>
-<p>
-Using a data frame as a structure to hold our simulated points and the results makes it very easy to avoid loops, and thus write code that is more concise and easier to follow. If you studied a quantitative field in u8niversity, you might have done a similar exercise at the time, very likely by defining a matrix to hold your points, and an empty vector to hold whether a particular point was inside the unit circle. Then you wrote a loop to compute whether a point was inside the unit circle, save this result in the before-defined empty vector and then compute the estimation of <img src="https://latex.codecogs.com/png.latex?()">. Again, I take this opportunity here to stress that there is nothing wrong with this approach per se, but R, with the <code>{tidyverse}</code> is better suited for a workflow where lists or data frames are the central objects and where the analyst operates over them with functional programming techniques.
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-21-tidyverse_pi.html</guid>
-  <pubDate>Fri, 21 Dec 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Manipulate dates easily with {lubridate}</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-15-lubridate_africa.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=FTQbiNvZqaY"> <img width="400" src="https://b-rodrigues.github.io/assets/img/africa.jpg" title="One of my favourite songs"></a>
-</p>
-</div>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-<p>
-This blog post is an excerpt of my ebook <em>Modern R with the tidyverse</em> that you can read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 5, which presents the <code>{tidyverse}</code> packages and how to use them to compute descriptive statistics and manipulate data. In the text below, I scrape a table from Wikipedia, which shows when African countries gained independence from other countries. Then, using <code>{lubridate}</code> functions I show you how you can answers questions such as <em>Which countries gained independence before 1960?</em>.
-</p>
-<section id="set-up-scraping-some-data-from-wikipedia" class="level2">
-<h2 class="anchored" data-anchor-id="set-up-scraping-some-data-from-wikipedia">
-Set-up: scraping some data from Wikipedia
-</h2>
-<p>
-<code>{lubridate}</code> is yet another tidyverse package, that makes dealing with dates or duration data (and intervals) as painless as possible. I do not use every function contained in the package daily, and as such will only focus on some of the functions. However, if you have to deal with dates often, you might want to explore the package thoroughly.
-</p>
-<p>
-Let’s get some data from a Wikipedia table:
-</p>
-<pre class="r"><code>library(tidyverse)
-library(rvest)</code></pre>
-<pre class="r"><code>page &lt;- read_html("https://en.wikipedia.org/wiki/Decolonisation_of_Africa")
-
-independence &lt;- page %&gt;%
-    html_node(".wikitable") %&gt;%
-    html_table(fill = TRUE)
-
-independence &lt;- independence %&gt;%
-    select(-Rank) %&gt;%
-    map_df(~str_remove_all(., "\\[.*\\]")) %&gt;%
-    rename(country = `Country[a]`,
-           colonial_name = `Colonial name`,
-           colonial_power = `Colonial power[b]`,
-           independence_date = `Independence date[c]`,
-           first_head_of_state = `First head of state[d]`,
-           independence_won_through = `Independence won through`)</code></pre>
-<p>
-This dataset was scraped from the following Wikipedia <a href="https://en.wikipedia.org/wiki/Decolonisation_of_Africa#Timeline">table</a>. It shows when African countries gained independence from which colonial powers. In Chapter 11, I will show you how to scrape Wikipedia pages using R. For now, let’s take a look at the contents of the dataset:
-</p>
-<pre class="r"><code>independence</code></pre>
-<pre><code>## # A tibble: 54 x 6
-##    country colonial_name colonial_power independence_da… first_head_of_s…
-##    &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;           
-##  1 Liberia Liberia       United States  26 July 1847     Joseph Jenkins …
-##  2 South … Cape Colony … United Kingdom 31 May 1910      Louis Botha     
-##  3 Egypt   Sultanate of… United Kingdom 28 February 1922 Fuad I          
-##  4 Eritrea Italian Erit… Italy          10 February 1947 Haile Selassie  
-##  5 Libya   British Mili… United Kingdo… 24 December 1951 Idris           
-##  6 Sudan   Anglo-Egypti… United Kingdo… 1 January 1956   Ismail al-Azhari
-##  7 Tunisia French Prote… France         20 March 1956    Muhammad VIII a…
-##  8 Morocco French Prote… France&nbsp;Spain   2 March 19567 A… Mohammed V      
-##  9 Ghana   Gold Coast    United Kingdom 6 March 1957     Kwame Nkrumah   
-## 10 Guinea  French West … France         2 October 1958   Ahmed Sékou Tou…
-## # … with 44 more rows, and 1 more variable: independence_won_through &lt;chr&gt;</code></pre>
-<p>
-as you can see, the date of independence is in a format that might make it difficult to answer questions such as <em>Which African countries gained independence before 1960 ?</em> for two reasons. First of all, the date uses the name of the month instead of the number of the month (well, this is not such a big deal, but still), and second of all the type of the independence day column is <em>character</em> and not “date”. So our first task is to correctly define the column as being of type date, while making sure that R understands that <em>January</em> is supposed to be “01”, and so on.
-</p>
-</section>
-<section id="using-lubridate" class="level2">
-<h2 class="anchored" data-anchor-id="using-lubridate">
-Using <code>{lubridate}</code>
-</h2>
-<p>
-There are several helpful functions included in <code>{lubridate}</code> to convert columns to dates. For instance if the column you want to convert is of the form “2012-11-21”, then you would use the function <code>ymd()</code>, for “year-month-day”. If, however the column is “2012-21-11”, then you would use <code>ydm()</code>. There’s a few of these helper functions, and they can handle a lot of different formats for dates. In our case, having the name of the month instead of the number might seem quite problematic, but it turns out that this is a case that <code>{lubridate}</code> handles painfully:
-</p>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: 'lubridate'</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     date</code></pre>
-<pre class="r"><code>independence &lt;- independence %&gt;%
-  mutate(independence_date = dmy(independence_date))</code></pre>
-<pre><code>## Warning: 5 failed to parse.</code></pre>
-<p>
-Some dates failed to parse, for instance for Morocco. This is because these countries have several independence dates; this means that the string to convert looks like:
-</p>
-<pre><code>"2 March 1956
-7 April 1956
-10 April 1958
-4 January 1969"</code></pre>
-<p>
-which obviously cannot be converted by <code>{lubridate}</code> without further manipulation. I ignore these cases for simplicity’s sake.
-</p>
-<p>
-Let’s take a look at the data now:
-</p>
-<pre class="r"><code>independence</code></pre>
-<pre><code>## # A tibble: 54 x 6
-##    country colonial_name colonial_power independence_da… first_head_of_s…
-##    &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;          &lt;date&gt;           &lt;chr&gt;           
-##  1 Liberia Liberia       United States  1847-07-26       Joseph Jenkins …
-##  2 South … Cape Colony … United Kingdom 1910-05-31       Louis Botha     
-##  3 Egypt   Sultanate of… United Kingdom 1922-02-28       Fuad I          
-##  4 Eritrea Italian Erit… Italy          1947-02-10       Haile Selassie  
-##  5 Libya   British Mili… United Kingdo… 1951-12-24       Idris           
-##  6 Sudan   Anglo-Egypti… United Kingdo… 1956-01-01       Ismail al-Azhari
-##  7 Tunisia French Prote… France         1956-03-20       Muhammad VIII a…
-##  8 Morocco French Prote… France&nbsp;Spain   NA               Mohammed V      
-##  9 Ghana   Gold Coast    United Kingdom 1957-03-06       Kwame Nkrumah   
-## 10 Guinea  French West … France         1958-10-02       Ahmed Sékou Tou…
-## # … with 44 more rows, and 1 more variable: independence_won_through &lt;chr&gt;</code></pre>
-<p>
-As you can see, we now have a date column in the right format. We can now answer questions such as <em>Which countries gained independence before 1960?</em> quite easily, by using the functions <code>year()</code>, <code>month()</code> and <code>day()</code>. Let’s see which countries gained independence before 1960:
-</p>
-<pre class="r"><code>independence %&gt;%
-  filter(year(independence_date) &lt;= 1960) %&gt;%
-  pull(country)</code></pre>
-<pre><code>##  [1] "Liberia"                          "South Africa"                    
-##  [3] "Egypt"                            "Eritrea"                         
-##  [5] "Libya"                            "Sudan"                           
-##  [7] "Tunisia"                          "Ghana"                           
-##  [9] "Guinea"                           "Cameroon"                        
-## [11] "Togo"                             "Mali"                            
-## [13] "Madagascar"                       "Democratic Republic of the Congo"
-## [15] "Benin"                            "Niger"                           
-## [17] "Burkina Faso"                     "Ivory Coast"                     
-## [19] "Chad"                             "Central African Republic"        
-## [21] "Republic of the Congo"            "Gabon"                           
-## [23] "Mauritania"</code></pre>
-<p>
-You guessed it, <code>year()</code> extracts the year of the date column and converts it as a <em>numeric</em> so that we can work on it. This is the same for <code>month()</code> or <code>day()</code>. Let’s try to see if countries gained their independence on Christmas Eve:
-</p>
-<pre class="r"><code>independence %&gt;%
-  filter(month(independence_date) == 12,
-         day(independence_date) == 24) %&gt;%
-  pull(country)</code></pre>
-<pre><code>## [1] "Libya"</code></pre>
-<p>
-Seems like Libya was the only one! You can also operate on dates. For instance, let’s compute the difference between two dates, using the <code>interval()</code> column:
-</p>
-<pre class="r"><code>independence %&gt;%
-  mutate(today = lubridate::today()) %&gt;%
-  mutate(independent_since = interval(independence_date, today)) %&gt;%
-  select(country, independent_since)</code></pre>
-<pre><code>## # A tibble: 54 x 2
-##    country      independent_since             
-##    &lt;chr&gt;        &lt;S4: Interval&gt;                
-##  1 Liberia      1847-07-26 UTC--2019-02-10 UTC
-##  2 South Africa 1910-05-31 UTC--2019-02-10 UTC
-##  3 Egypt        1922-02-28 UTC--2019-02-10 UTC
-##  4 Eritrea      1947-02-10 UTC--2019-02-10 UTC
-##  5 Libya        1951-12-24 UTC--2019-02-10 UTC
-##  6 Sudan        1956-01-01 UTC--2019-02-10 UTC
-##  7 Tunisia      1956-03-20 UTC--2019-02-10 UTC
-##  8 Morocco      NA--NA                        
-##  9 Ghana        1957-03-06 UTC--2019-02-10 UTC
-## 10 Guinea       1958-10-02 UTC--2019-02-10 UTC
-## # … with 44 more rows</code></pre>
-<p>
-The <code>independent_since</code> column now contains an <em>interval</em> object that we can convert to years:
-</p>
-<pre class="r"><code>independence %&gt;%
-  mutate(today = lubridate::today()) %&gt;%
-  mutate(independent_since = interval(independence_date, today)) %&gt;%
-  select(country, independent_since) %&gt;%
-  mutate(years_independent = as.numeric(independent_since, "years"))</code></pre>
-<pre><code>## # A tibble: 54 x 3
-##    country      independent_since              years_independent
-##    &lt;chr&gt;        &lt;S4: Interval&gt;                             &lt;dbl&gt;
-##  1 Liberia      1847-07-26 UTC--2019-02-10 UTC             172. 
-##  2 South Africa 1910-05-31 UTC--2019-02-10 UTC             109. 
-##  3 Egypt        1922-02-28 UTC--2019-02-10 UTC              97.0
-##  4 Eritrea      1947-02-10 UTC--2019-02-10 UTC              72  
-##  5 Libya        1951-12-24 UTC--2019-02-10 UTC              67.1
-##  6 Sudan        1956-01-01 UTC--2019-02-10 UTC              63.1
-##  7 Tunisia      1956-03-20 UTC--2019-02-10 UTC              62.9
-##  8 Morocco      NA--NA                                      NA  
-##  9 Ghana        1957-03-06 UTC--2019-02-10 UTC              61.9
-## 10 Guinea       1958-10-02 UTC--2019-02-10 UTC              60.4
-## # … with 44 more rows</code></pre>
-<p>
-We can now see for how long the last country to gain independence has been independent. Because the data is not tidy (in some cases, an African country was colonized by two powers, see Libya), I will only focus on 4 European colonial powers: Belgium, France, Portugal and the United Kingdom:
-</p>
-<pre class="r"><code>independence %&gt;%
-  filter(colonial_power %in% c("Belgium", "France", "Portugal", "United Kingdom")) %&gt;%
-  mutate(today = lubridate::today()) %&gt;%
-  mutate(independent_since = interval(independence_date, today)) %&gt;%
-  mutate(years_independent = as.numeric(independent_since, "years")) %&gt;%
-  group_by(colonial_power) %&gt;%
-  summarise(last_colony_independent_for = min(years_independent, na.rm = TRUE))</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   colonial_power last_colony_independent_for
-##   &lt;chr&gt;                                &lt;dbl&gt;
-## 1 Belgium                               56.6
-## 2 France                                41.6
-## 3 Portugal                              43.2
-## 4 United Kingdom                        42.6</code></pre>
-<p>
-<code>{lubridate}</code> contains many more functions. If you often work with dates, duration or interval data, <code>{lubridate}</code> is a package that you have to master.
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-15-lubridate_africa.html</guid>
-  <pubDate>Sat, 15 Dec 2018 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>What hyper-parameters are, and what to do with them; an illustration with ridge regression</title>
-  <link>https://b-rodrigues.github.io/posts/2018-12-02-hyper-parameters.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=13Gd5kpLzsw"> <img width="400" src="https://b-rodrigues.github.io/assets/img/ridge.jpg" title="Gameboy ridge"></a>
-</p>
-</div>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-<p>
-This blog post is an excerpt of my ebook <em>Modern R with the tidyverse</em> that you can read for free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 7, which deals with statistical models. In the text below, I explain what hyper-parameters are, and as an example I run a ridge regression using the <code>{glmnet}</code> package. The book is still being written, so comments are more than welcome!
-</p>
-<section id="hyper-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="hyper-parameters">
-Hyper-parameters
-</h2>
-<p>
-Hyper-parameters are parameters of the model that cannot be directly learned from the data. A linear regression does not have any hyper-parameters, but a random forest for instance has several. You might have heard of ridge regression, lasso and elasticnet. These are extensions to linear models that avoid over-fitting by penalizing <em>large</em> models. These extensions of the linear regression have hyper-parameters that the practitioner has to tune. There are several ways one can tune these parameters, for example, by doing a grid-search, or a random search over the grid or using more elaborate methods. To introduce hyper-parameters, let’s get to know ridge regression, also called Tikhonov regularization.
-</p>
-<section id="ridge-regression" class="level3">
-<h3 class="anchored" data-anchor-id="ridge-regression">
-Ridge regression
-</h3>
-<p>
-Ridge regression is used when the data you are working with has a lot of explanatory variables, or when there is a risk that a simple linear regression might overfit to the training data, because, for example, your explanatory variables are collinear. If you are training a linear model and then you notice that it generalizes very badly to new, unseen data, it is very likely that the linear model you trained overfits the data. In this case, ridge regression might prove useful. The way ridge regression works might seem counter-intuititive; it boils down to fitting a <em>worse</em> model to the training data, but in return, this worse model will generalize better to new data.
-</p>
-<p>
-The closed form solution of the ordinary least squares estimator is defined as:
-</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cwidehat%7B%5Cbeta%7D%20=%20(X'X)%5E%7B-1%7DX'Y"></p>
-<p>
-where <img src="https://latex.codecogs.com/png.latex?X"> is the design matrix (the matrix made up of the explanatory variables) and <img src="https://latex.codecogs.com/png.latex?Y"> is the dependent variable. For ridge regression, this closed form solution changes a little bit:
-</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cwidehat%7B%5Cbeta%7D%20=%20(X'X%20+%20%5Clambda%20I_p)%5E%7B-1%7DX'Y"></p>
-<p>
-where <img src="https://latex.codecogs.com/png.latex?lambda%20%5Cin%20%5Cmathbb%7BR%7D"> is an hyper-parameter and <img src="https://latex.codecogs.com/png.latex?I_p"> is the identity matrix of dimension <img src="https://latex.codecogs.com/png.latex?p"> (<img src="https://latex.codecogs.com/png.latex?p"> is the number of explanatory variables). This formula above is the closed form solution to the following optimisation program:
-</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Csum_%7Bi=1%7D%5En%20%5Cleft(y_i%20-%20%5Csum_%7Bj=1%7D%5Epx_%7Bij%7D%5Cbeta_j%5Cright)%5E2%20"></p>
-<p>
-such that:
-</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Csum_%7Bj=1%7D%5Ep(%5Cbeta_j)%5E2%20%3C%20c"></p>
-<p>
-for any strictly positive <img src="https://latex.codecogs.com/png.latex?(c)">.
-</p>
-<p>
-The <code>glmnet()</code> function from the <code>{glmnet}</code> package can be used for ridge regression, by setting the <code>alpha</code> argument to 0 (setting it to 1 would do LASSO, and setting it to a number between 0 and 1 would do elasticnet). But in order to compare linear regression and ridge regression, let me first divide the data into a training set and a testing set. I will be using the <code>Housing</code> data from the <code>{Ecdat}</code> package:
-</p>
-<pre class="r"><code>library(tidyverse)
-library(Ecdat)
-library(glmnet)</code></pre>
-<pre class="r"><code>index &lt;- 1:nrow(Housing)
-
-set.seed(12345)
-train_index &lt;- sample(index, round(0.90*nrow(Housing)), replace = FALSE)
-
-test_index &lt;- setdiff(index, train_index)
-
-train_x &lt;- Housing[train_index, ] %&gt;% 
-    select(-price)
-
-train_y &lt;- Housing[train_index, ] %&gt;% 
-    pull(price)
-
-test_x &lt;- Housing[test_index, ] %&gt;% 
-    select(-price)
-
-test_y &lt;- Housing[test_index, ] %&gt;% 
-    pull(price)</code></pre>
-<p>
-I do the train/test split this way, because <code>glmnet()</code> requires a design matrix as input, and not a formula. Design matrices can be created using the <code>model.matrix()</code> function:
-</p>
-<pre class="r"><code>train_matrix &lt;- model.matrix(train_y ~ ., data = train_x)
-
-test_matrix &lt;- model.matrix(test_y ~ ., data = test_x)</code></pre>
-<p>
-To run an unpenalized linear regression, we can set the penalty to 0:
-</p>
-<pre class="r"><code>model_lm_ridge &lt;- glmnet(y = train_y, x = train_matrix, alpha = 0, lambda = 0)</code></pre>
-<p>
-The model above provides the same result as a linear regression. Let’s compare the coefficients between the two:
-</p>
-<pre class="r"><code>coef(model_lm_ridge)</code></pre>
-<pre><code>## 13 x 1 sparse Matrix of class "dgCMatrix"
-##                       s0
-## (Intercept) -3247.030393
-## (Intercept)     .       
-## lotsize         3.520283
-## bedrooms     1745.211187
-## bathrms     14337.551325
-## stories      6736.679470
-## drivewayyes  5687.132236
-## recroomyes   5701.831289
-## fullbaseyes  5708.978557
-## gashwyes    12508.524241
-## aircoyes    12592.435621
-## garagepl     4438.918373
-## prefareayes  9085.172469</code></pre>
-<p>
-and now the coefficients of the linear regression (because I provide a design matrix, I have to use <code>lm.fit()</code> instead of <code>lm()</code> which requires a formula, not a matrix.)
-</p>
-<pre class="r"><code>coef(lm.fit(x = train_matrix, y = train_y))</code></pre>
-<pre><code>##  (Intercept)      lotsize     bedrooms      bathrms      stories 
-## -3245.146665     3.520357  1744.983863 14336.336858  6737.000410 
-##  drivewayyes   recroomyes  fullbaseyes     gashwyes     aircoyes 
-##  5686.394123  5700.210775  5709.493884 12509.005265 12592.367268 
-##     garagepl  prefareayes 
-##  4439.029607  9085.409155</code></pre>
-<p>
-as you can see, the coefficients are the same. Let’s compute the RMSE for the unpenalized linear regression:
-</p>
-<pre class="r"><code>preds_lm &lt;- predict(model_lm_ridge, test_matrix)
-
-rmse_lm &lt;- sqrt(mean((preds_lm - test_y)^2))</code></pre>
-<p>
-The RMSE for the linear unpenalized regression is equal to 14463.08.
-</p>
-<p>
-Let’s now run a ridge regression, with <code>lambda</code> equal to 100, and see if the RMSE is smaller:
-</p>
-<pre class="r"><code>model_ridge &lt;- glmnet(y = train_y, x = train_matrix, alpha = 0, lambda = 100)</code></pre>
-<p>
-and let’s compute the RMSE again:
-</p>
-<pre class="r"><code>preds &lt;- predict(model_ridge, test_matrix)
-
-rmse &lt;- sqrt(mean((preds - test_y)^2))</code></pre>
-<p>
-The RMSE for the linear penalized regression is equal to 14460.71, which is smaller than before. But which value of <code>lambda</code> gives smallest RMSE? To find out, one must run model over a grid of <code>lambda</code> values and pick the model with lowest RMSE. This procedure is available in the <code>cv.glmnet()</code> function, which picks the best value for <code>lambda</code>:
-</p>
-<pre class="r"><code>best_model &lt;- cv.glmnet(train_matrix, train_y)
-# lambda that minimises the MSE
-best_model$lambda.min</code></pre>
-<pre><code>## [1] 66.07936</code></pre>
-<p>
-According to <code>cv.glmnet()</code> the best value for <code>lambda</code> is 66.0793576. In the next section, we will implement cross validation ourselves, in order to find the hyper-parameters of a random forest.
-</p>
-
-
-</section>
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>data-science</category>
-  <guid>https://b-rodrigues.github.io/posts/2018-12-02-hyper-parameters.html</guid>
-  <pubDate>Sun, 02 Dec 2018 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

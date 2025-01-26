@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2019-06-04">
 
-<title>Econometrics and Free Software</title>
+<title>Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,40 +66,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-execute','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-execute","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
       <a href="../index.html">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
@@ -112,37 +81,8 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,321 +92,263 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 4, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2019
-</h2>
-<ul>
-<li>
-<a href="./posts/2019-08-17-modern_R.html">Modern R with the tidyverse is available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2019-08-14-lpm.html">Using linear models with binary dependent variables, a simulation study</a>
-</li>
-<li>
-<a href="./posts/2019-07-19-statmatch.html">Statistical matching, or when one single data source is not enough</a>
-</li>
-<li>
-<a href="./posts/2019-06-20-tidy_eval_saga.html">Curly-Curly, the successor of Bang-Bang</a>
-</li>
-<li>
-<a href="./posts/2019-06-12-intermittent.html">Intermittent demand, Croston and Die Hard</a>
-</li>
-<li>
-<a href="./posts/2019-06-04-cosine_sim.html">Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius</a>
-</li>
-<li>
-<a href="./posts/2019-05-19-spacemacs.html">The never-ending editor war (?)</a>
-</li>
-<li>
-<a href="./posts/2019-05-18-xml2.html">For posterity: install {xml2} on GNU/Linux distros</a>
-</li>
-<li>
-<a href="./posts/2019-05-04-diffindiff_part2.html">Fast food, causality and R packages, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-04-28-diffindiff_part1.html">Fast food, causality and R packages, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-04-07-historical_newspaper_scraping_tesseract.html">Historical newspaper scraping with {tesseract} and R</a>
-</li>
-<li>
-<a href="./posts/2019-03-31-tesseract.html">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</a>
-</li>
-<li>
-<a href="./posts/2019-03-20-pivot.html">Pivoting data frames just got easier thanks to <code>pivot_wide()</code> and <code>pivot_long()</code></a>
-</li>
-<li>
-<a href="./posts/2019-03-05-historical_vowpal_part2.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-03-03-historical_vowpal.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-02-10-stringr_package.html">Manipulating strings with the {stringr} package</a>
-</li>
-<li>
-<a href="./posts/2019-02-04-newspapers_shiny_app_tutorial.html">Building a shiny app to explore historical newspapers: a step-by-step guide</a>
-</li>
-<li>
-<a href="./posts/2019-01-31-newspapers_shiny_app.html">Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</a>
-</li>
-<li>
-<a href="./posts/2019-01-13-newspapers_mets_alto.html">Making sense of the METS and ALTO XML standards</a>
-</li>
-<li>
-<a href="./posts/2019-01-04-newspapers.html">Looking into 19th century ads from a Luxembourguish newspaper with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-12-30-reticulate.html">R or Python? Why not both? Using Anaconda Python within R with {reticulate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-27-fun_gganimate.html">Some fun with {gganimate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-24-modern_objects.html">Objects types and some useful R functions for beginners</a>
-</li>
-<li>
-<a href="./posts/2018-12-21-tidyverse_pi.html">Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</a>
-</li>
-<li>
-<a href="./posts/2018-12-15-lubridate_africa.html">Manipulate dates easily with {lubridate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-02-hyper-parameters.html">What hyper-parameters are, and what to do with them; an illustration with ridge regression</a>
-</li>
-<li>
-<a href="./posts/2018-11-25-tidy_cv.html">A tutorial on tidy cross-validation with R</a>
-</li>
-<li>
-<a href="./posts/2018-11-21-lux_castle.html">The best way to visit Luxembourguish castles is doing data science + combinatorial optimization</a>
-</li>
-<li>
-<a href="./posts/2018-11-16-rgenoud_arima.html">Using a genetic algorithm for the hyperparameter optimization of a SARIMA model</a>
-</li>
-<li>
-<a href="./posts/2018-11-15-tidy_gridsearch.html">Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach</a>
-</li>
-<li>
-<a href="./posts/2018-11-14-luxairport.html">Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport</a>
-</li>
-<li>
-<a href="./posts/2018-11-10-nethack_analysis_part2.html">Analyzing NetHack data, part 2: What players kill the most</a>
-</li>
-<li>
-<a href="./posts/2018-11-03-nethack_analysis.html">Analyzing NetHack data, part 1: What kills the players</a>
-</li>
-<li>
-<a href="./posts/2018-11-01-nethack.html">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</a>
-</li>
-<li>
-<a href="./posts/2018-10-27-lux_elections_analysis.html">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</a>
-</li>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Seneca_the_Younger"> <img src="../assets/img/seneca.png" title="Seneca the Younger" width="400" height="600"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+Lately I’ve been interested in trying to cluster documents, and to find similar documents based on their contents. In this blog post, I will use <a href="https://en.wikisource.org/wiki/Moral_letters_to_Lucilius">Seneca’s <em>Moral letters to Lucilius</em></a> and compute the pairwise <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> of his 124 letters. Computing the cosine similarity between two vectors returns how similar these vectors are. A cosine similarity of 1 means that the angle between the two vectors is 0, and thus both vectors have the same direction. Seneca’s Moral letters to Lucilius deal mostly with philosophical topics, as Seneca was, among many other things, a philosopher of the stoic school. The stoic school of philosophy is quite interesting, but it has been unfortunately misunderstood, especially in modern times. There is now a renewed interest for this school, see <a href="https://en.wikipedia.org/wiki/Modern_Stoicism">Modern Stoicism</a>.
+</p>
+<p>
+The first step is to scrape the letters. The code below scrapes the letters, and saves them into a list. I first start by writing a function that gets the raw text. Note the <code>xpath</code> argument of the <code>html_nodes()</code> function. I obtained this complex expression by using the <a href="https://selectorgadget.com/">SelectorGadget</a> extension for Google Chrome, and then selecting the right element of the web page. See this <a href="https://i.imgur.com/2cntugt.png">screenshot</a> if my description was not very clear.
+</p>
+<p>
+Then, the <code>extract_text()</code> function extracts the text from the letter. The only line that might be a bit complex is <code>discard(~<code>==</code>(., ""))</code> which removes every empty line.
+</p>
+<p>
+Finally, there’s the <code>get_letter()</code> function that actually gets the letter by calling the first two functions. In the last line, I get all the letters into a list by mapping the list of urls to the <code>get_letter()</code> function.
+</p>
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+
+base_url &lt;- "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_"
+
+letter_numbers &lt;- seq(1, 124)
+
+letter_urls &lt;- paste0(base_url, letter_numbers)
+
+get_raw_text &lt;- function(base_url, letter_number){
+  paste0(base_url, letter_number) %&gt;%
+    read_html() %&gt;%
+    html_nodes(xpath ='//*[contains(concat( " ", @class, " " ), concat( " ", "mw-parser-output", " " ))]') %&gt;%  
+    html_text()
+}
+
+
+extract_text &lt;- function(raw_text, letter_number){
+  raw_text &lt;- raw_text %&gt;%
+    str_split("\n") %&gt;%  
+    flatten_chr() %&gt;%  
+    discard(~`==`(., ""))
+
+  start &lt;- 5
+
+  end &lt;- str_which(raw_text, "Footnotes*")
+
+  raw_text[start:(end-1)] %&gt;%
+    str_remove_all("\\[\\d{1,}\\]") %&gt;%
+    str_remove_all("\\[edit\\]")
+}
+
+get_letter &lt;- function(base_url, letter_number){
+
+  raw_text &lt;- get_raw_text(base_url, letter_number)
+
+  extract_text(raw_text, letter_number)
+}
+
+letters_to_lucilius &lt;- map2(base_url, letter_numbers, get_letter)</code></pre>
+<p>
+Now that we have the letters saved in a list, we need to process the text a little bit. In order to compute the cosine similarity between the letters, I need to somehow represent them as vectors. There are several ways of doing this, and I am going to compute the tf-idf of each letter. The tf-idf will give me a vector for each letter, with zero and non-zero values. Zero values represent words that are common to all letters, and thus do not have any <em>predictive power</em>. Non-zero values are words that are not present in all letters, but maybe only a few. I expect that letters that discuss death for example, will have the word death in them, and letters that do not discuss death will not have this word. The word death thus has what I call <em>predictive power</em>, in that it helps us distinguish the letters discussing death from the other letters that do not discuss it. The same reasoning can be applied for any topic.
+</p>
+<p>
+So, to get the tf-idf of each letter, I first need to put them in a tidy dataset. I will use the <code>{tidytext}</code> package for this. First, I load the required packages, convert each letter to a dataframe of one column that contains the text, and save the letter’s titles into another list:
+</p>
+<pre class="r"><code>library(tidytext)
+library(SnowballC)
+library(stopwords)
+library(text2vec)
+
+letters_to_lucilius_df &lt;- map(letters_to_lucilius, ~tibble("text" = .))
+
+letter_titles &lt;- letters_to_lucilius_df %&gt;%
+  map(~slice(., 1)) %&gt;%
+  map(pull)</code></pre>
+<p>
+Now, I add this title to each dataframe as a new column, called title:
+</p>
+<pre class="r"><code>letters_to_lucilius_df &lt;-  map2(.x = letters_to_lucilius_df, .y = letter_titles,
+                                ~mutate(.x, title = .y)) %&gt;%
+  map(~slice(., -1))</code></pre>
+<p>
+I can now use <code>unnest_tokens()</code> to transform the datasets. Before, I had the whole text of the letter in one column. After using <code>unnest_tokens()</code> I now have a dataset with one row per word. This will make it easy to compute frequencies by letters, or what I am interested in, the tf-idf of each letter:
+</p>
+<pre class="r"><code>tokenized_letters &lt;- letters_to_lucilius_df %&gt;%
+  bind_rows() %&gt;%
+  group_by(title) %&gt;%
+  unnest_tokens(word, text)</code></pre>
+<p>
+I can now remove stopwords, using the data containing in the <code>{stopwords}</code> package:
+</p>
+<pre class="r"><code>stopwords_en &lt;- tibble("word" = stopwords("en", source  = "smart"))
+
+tokenized_letters &lt;- tokenized_letters %&gt;%
+  anti_join(stopwords_en) %&gt;%
+  filter(!str_detect(word, "\\d{1,}"))</code></pre>
+<pre><code>## Joining, by = "word"</code></pre>
+<p>
+Next step, wordstemming, meaning, going from “dogs” to “dog”, or from “was” to “be”. If you do not do wordstemming, “dogs” and “dog” will be considered different words, even though they are not. <code>wordStem()</code> is a function from <code>{SnowballC}</code>.
+</p>
+<pre class="r"><code>tokenized_letters &lt;- tokenized_letters %&gt;%
+  mutate(word = wordStem(word, language = "en"))</code></pre>
+<p>
+Finally, I can compute the tf-idf of each letter and cast the data as a sparse matrix:
+</p>
+<pre class="r"><code>tfidf_letters &lt;- tokenized_letters %&gt;%
+  count(title, word, sort  = TRUE) %&gt;%
+  bind_tf_idf(word, title, n)
+
+sparse_matrix &lt;- tfidf_letters %&gt;%
+  cast_sparse(title, word, tf)</code></pre>
+<p>
+Let’s take a look at the sparse matrix:
+</p>
+<pre class="r"><code>sparse_matrix[1:10, 1:4]</code></pre>
+<pre><code>## 10 x 4 sparse Matrix of class "dgCMatrix"
+##                                                                   thing
+## CXIII. On the Vitality of the Soul and Its Attributes       0.084835631
+## LXVI. On Various Aspects of Virtue                          0.017079890
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.014534884
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.025919732
+## LXXVI. On Learning Wisdom in Old Age                        0.021588946
+## CII. On the Intimations of Our Immortality                  0.014662757
+## CXXIV. On the True Good as Attained by Reason               0.010139417
+## XCIV. On the Value of Advice                                0.009266409
+## LXXXI. On Benefits                                          0.007705479
+## LXXXV. On Some Vain Syllogisms                              0.013254786
+##                                                                     live
+## CXIII. On the Vitality of the Soul and Its Attributes       0.0837751856
+## LXVI. On Various Aspects of Virtue                          .           
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.0007267442
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.0050167224
+## LXXVI. On Learning Wisdom in Old Age                        0.0025906736
+## CII. On the Intimations of Our Immortality                  0.0019550342
+## CXXIV. On the True Good as Attained by Reason               .           
+## XCIV. On the Value of Advice                                0.0023166023
+## LXXXI. On Benefits                                          0.0008561644
+## LXXXV. On Some Vain Syllogisms                              0.0022091311
+##                                                                   good
+## CXIII. On the Vitality of the Soul and Its Attributes       0.01166490
+## LXVI. On Various Aspects of Virtue                          0.04132231
+## LXXXVII. Some Arguments in Favour of the Simple Life        0.04578488
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties 0.04849498
+## LXXVI. On Learning Wisdom in Old Age                        0.04663212
+## CII. On the Intimations of Our Immortality                  0.05180841
+## CXXIV. On the True Good as Attained by Reason               0.06717364
+## XCIV. On the Value of Advice                                0.01081081
+## LXXXI. On Benefits                                          0.01626712
+## LXXXV. On Some Vain Syllogisms                              0.01472754
+##                                                                 precept
+## CXIII. On the Vitality of the Soul and Its Attributes       .          
+## LXVI. On Various Aspects of Virtue                          .          
+## LXXXVII. Some Arguments in Favour of the Simple Life        .          
+## CXVII. On Real Ethics as Superior to Syllogistic Subtleties .          
+## LXXVI. On Learning Wisdom in Old Age                        .          
+## CII. On the Intimations of Our Immortality                  .          
+## CXXIV. On the True Good as Attained by Reason               0.001267427
+## XCIV. On the Value of Advice                                0.020463320
+## LXXXI. On Benefits                                          .          
+## LXXXV. On Some Vain Syllogisms                              .</code></pre>
+<p>
+We can consider each row of this matrix as the vector representing a letter, and thus compute the cosine similarity between letters. For this, I am using the <code>sim2()</code> function from the <code>{text2vec}</code> package. I then create the <code>get_similar_letters()</code> function that returns similar letters for a given reference letter:
+</p>
+<pre class="r"><code>similarities &lt;- sim2(sparse_matrix, method = "cosine", norm = "l2") 
+
+get_similar_letters &lt;- function(similarities, reference_letter, n_recommendations = 3){
+  sort(similarities[reference_letter, ], decreasing = TRUE)[1:(2 + n_recommendations)]
+}</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 19)</code></pre>
+<pre><code>##          XXX. On Conquering the Conqueror 
+##                                 1.0000000 
+##                  XXIV. On Despising Death 
+##                                 0.6781600 
+##      LXXXII. On the Natural Fear of Death 
+##                                 0.6639736 
+## LXX. On the Proper Time to Slip the Cable 
+##                                 0.5981706 
+## LXXVIII. On the Healing Power of the Mind 
+##                                 0.4709679</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 99)</code></pre>
+<pre><code>##                              LXI. On Meeting Death Cheerfully 
+##                                                     1.0000000 
+##                     LXX. On the Proper Time to Slip the Cable 
+##                                                     0.5005015 
+## XCIII. On the Quality, as Contrasted with the Length, of Life 
+##                                                     0.4631796 
+##                         CI. On the Futility of Planning Ahead 
+##                                                     0.4503093 
+##                              LXXVII. On Taking One's Own Life 
+##                                                     0.4147019</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 32)</code></pre>
+<pre><code>##                                    LIX. On Pleasure and Joy 
+##                                                   1.0000000 
+##          XXIII. On the True Joy which Comes from Philosophy 
+##                                                   0.4743672 
+##                          CIX. On the Fellowship of Wise Men 
+##                                                   0.4526835 
+## XC. On the Part Played by Philosophy in the Progress of Man 
+##                                                   0.4498278 
+##         CXXIII. On the Conflict between Pleasure and Virtue 
+##                                                   0.4469312</code></pre>
+<pre class="r"><code>get_similar_letters(similarities, 101)</code></pre>
+<pre><code>##                    X. On Living to Oneself 
+##                                  1.0000000 
+##          LXXIII. On Philosophers and Kings 
+##                                  0.3842292 
+##                  XLI. On the God within Us 
+##                                  0.3465457 
+##                       XXXI. On Siren Songs 
+##                                  0.3451388 
+## XCV. On the Usefulness of Basic Principles 
+##                                  0.3302794</code></pre>
+<p>
+As we can see from these examples, this seems to be working quite well: the first title is the title of the reference letter, will the next 3 are the suggested letters. The problem is that my matrix is not in the right order, and thus reference letter 19 does not correspond to letter 19 of Seneca… I have to correct that, but not today.
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -478,7 +360,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

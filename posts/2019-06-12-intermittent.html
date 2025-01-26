@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2019-06-12">
 
-<title>Econometrics and Free Software</title>
+<title>Intermittent demand, Croston and Die Hard – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -67,40 +66,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-project','listing-website','listing-format','listing-language','listing-date','listing-title','listing-categories','listing-toc','listing-execute','listing-path','listing-outputHref','listing-date-modified','listing-author','listing-description','listing-filename','listing-file-modified','listing-reading-time','listing-word-count',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
-      page: 25,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-project","listing-website","listing-format","listing-language","listing-date","listing-title","listing-categories","listing-toc","listing-execute","listing-path","listing-outputHref","listing-date-modified","listing-author","listing-description","listing-filename","listing-file-modified","listing-reading-time","listing-word-count"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>
 @import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 </style>
-<link rel="alternate" type="application/rss+xml" title="Econometrics and Free Software" href="index.xml" data-external="1"></head><body class="fullcontent"><table width="100%" height="100%" style="text-align: center;">
+</head><body><table width="100%" height="100%" style="text-align: center;">
     <tbody><tr><td>
       <a href="../index.html">Website</a> - 
       <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
@@ -112,37 +81,8 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -152,321 +92,184 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Intermittent demand, Croston and Die Hard</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my <a href="./books.html">books</a> or want to follow me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">Twitter</a> or <a href="https://bsky.app/profile/brodriguesco.bsky.social">Bluesky</a>. If you are 40+, <a href="index.xml">click here</a> instead. I also make videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 12, 2019</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
-<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
-<h2 class="anchored">
-2019
-</h2>
-<ul>
-<li>
-<a href="./posts/2019-08-17-modern_R.html">Modern R with the tidyverse is available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2019-08-14-lpm.html">Using linear models with binary dependent variables, a simulation study</a>
-</li>
-<li>
-<a href="./posts/2019-07-19-statmatch.html">Statistical matching, or when one single data source is not enough</a>
-</li>
-<li>
-<a href="./posts/2019-06-20-tidy_eval_saga.html">Curly-Curly, the successor of Bang-Bang</a>
-</li>
-<li>
-<a href="./posts/2019-06-12-intermittent.html">Intermittent demand, Croston and Die Hard</a>
-</li>
-<li>
-<a href="./posts/2019-06-04-cosine_sim.html">Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius</a>
-</li>
-<li>
-<a href="./posts/2019-05-19-spacemacs.html">The never-ending editor war (?)</a>
-</li>
-<li>
-<a href="./posts/2019-05-18-xml2.html">For posterity: install {xml2} on GNU/Linux distros</a>
-</li>
-<li>
-<a href="./posts/2019-05-04-diffindiff_part2.html">Fast food, causality and R packages, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-04-28-diffindiff_part1.html">Fast food, causality and R packages, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-04-07-historical_newspaper_scraping_tesseract.html">Historical newspaper scraping with {tesseract} and R</a>
-</li>
-<li>
-<a href="./posts/2019-03-31-tesseract.html">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</a>
-</li>
-<li>
-<a href="./posts/2019-03-20-pivot.html">Pivoting data frames just got easier thanks to <code>pivot_wide()</code> and <code>pivot_long()</code></a>
-</li>
-<li>
-<a href="./posts/2019-03-05-historical_vowpal_part2.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2</a>
-</li>
-<li>
-<a href="./posts/2019-03-03-historical_vowpal.html">Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1</a>
-</li>
-<li>
-<a href="./posts/2019-02-10-stringr_package.html">Manipulating strings with the {stringr} package</a>
-</li>
-<li>
-<a href="./posts/2019-02-04-newspapers_shiny_app_tutorial.html">Building a shiny app to explore historical newspapers: a step-by-step guide</a>
-</li>
-<li>
-<a href="./posts/2019-01-31-newspapers_shiny_app.html">Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century</a>
-</li>
-<li>
-<a href="./posts/2019-01-13-newspapers_mets_alto.html">Making sense of the METS and ALTO XML standards</a>
-</li>
-<li>
-<a href="./posts/2019-01-04-newspapers.html">Looking into 19th century ads from a Luxembourguish newspaper with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2018
-</h2>
-<ul>
-<li>
-<a href="./posts/2018-12-30-reticulate.html">R or Python? Why not both? Using Anaconda Python within R with {reticulate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-27-fun_gganimate.html">Some fun with {gganimate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-24-modern_objects.html">Objects types and some useful R functions for beginners</a>
-</li>
-<li>
-<a href="./posts/2018-12-21-tidyverse_pi.html">Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods</a>
-</li>
-<li>
-<a href="./posts/2018-12-15-lubridate_africa.html">Manipulate dates easily with {lubridate}</a>
-</li>
-<li>
-<a href="./posts/2018-12-02-hyper-parameters.html">What hyper-parameters are, and what to do with them; an illustration with ridge regression</a>
-</li>
-<li>
-<a href="./posts/2018-11-25-tidy_cv.html">A tutorial on tidy cross-validation with R</a>
-</li>
-<li>
-<a href="./posts/2018-11-21-lux_castle.html">The best way to visit Luxembourguish castles is doing data science + combinatorial optimization</a>
-</li>
-<li>
-<a href="./posts/2018-11-16-rgenoud_arima.html">Using a genetic algorithm for the hyperparameter optimization of a SARIMA model</a>
-</li>
-<li>
-<a href="./posts/2018-11-15-tidy_gridsearch.html">Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach</a>
-</li>
-<li>
-<a href="./posts/2018-11-14-luxairport.html">Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport</a>
-</li>
-<li>
-<a href="./posts/2018-11-10-nethack_analysis_part2.html">Analyzing NetHack data, part 2: What players kill the most</a>
-</li>
-<li>
-<a href="./posts/2018-11-03-nethack_analysis.html">Analyzing NetHack data, part 1: What kills the players</a>
-</li>
-<li>
-<a href="./posts/2018-11-01-nethack.html">From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack</a>
-</li>
-<li>
-<a href="./posts/2018-10-27-lux_elections_analysis.html">Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data</a>
-</li>
-<li>
-<a href="./posts/2018-10-21-lux_elections.html">Getting the data from the Luxembourguish elections out of Excel</a>
-</li>
-<li>
-<a href="./posts/2018-10-05-ggplot2_purrr_officer.html">Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer</a>
-</li>
-<li>
-<a href="./posts/2018-09-15-time_use.html">How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data</a>
-</li>
-<li>
-<a href="./posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>
-</li>
-<li>
-<a href="./posts/2018-09-08-steam_linux.html">The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse</a>
-</li>
-<li>
-<a href="./posts/2018-07-08-rob_stderr.html">Dealing with heteroskedasticity; regression with robust standard errors using R</a>
-</li>
-<li>
-<a href="./posts/2018-07-01-tidy_ive.html">Missing data imputation and instrumental variables regression: the tidy approach</a>
-</li>
-<li>
-<a href="./posts/2018-06-24-fun_ts.html">Forecasting my weight with R</a>
-</li>
-<li>
-<a href="./posts/2018-06-10-scraping_pdfs.html">Getting data from pdfs using the pdftools package</a>
-</li>
-<li>
-<a href="./posts/2018-04-15-announcing_pmice.html">{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-14-playing_with_furrr.html">Imputing missing values in parallel using {furrr}</a>
-</li>
-<li>
-<a href="./posts/2018-04-10-brotools_describe.html">Get basic summary statistics for all the variables in a data frame</a>
-</li>
-<li>
-<a href="./posts/2018-03-12-keep_trying.html">Keep trying that api call with purrr::possibly()</a>
-</li>
-<li>
-<a href="./posts/2018-03-03-sparklyr_h2o_rsparkling.html">Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash</a>
-</li>
-<li>
-<a href="./posts/2018-02-16-importing_30gb_of_data.html">Importing 30GB of data into R with sparklyr</a>
-</li>
-<li>
-<a href="./posts/2018-02-11-census-random_forest.html">Predicting job search by training a random forest on an unbalanced dataset</a>
-</li>
-<li>
-<a href="./posts/2018-01-19-mapping_functions_with_any_cols.html">Mapping a list of functions to a list of datasets with a list of columns as arguments</a>
-</li>
-<li>
-<a href="./posts/2018-01-05-lists_all_the_way2.html">It’s lists all the way down, part 2: We need to go deeper</a>
-</li>
-<li>
-<a href="./posts/2018-01-03-lists_all_the_way.html">It’s lists all the way down</a>
-</li>
-</ul>
-<h2 class="anchored">
-2017
-</h2>
-<ul>
-<li>
-<a href="./posts/2017-12-27-build_formulae.html">Building formulae</a>
-</li>
-<li>
-<a href="./posts/2017-12-17-teaching_tidyverse.html">Teaching the tidyverse to beginners</a>
-</li>
-<li>
-<a href="./posts/2017-11-14-peace_r.html">Peace of mind with purrr</a>
-</li>
-<li>
-<a href="./posts/2017-10-26-margins_r.html">Easy peasy STATA-like marginal effects with R</a>
-</li>
-<li>
-<a href="./posts/2017-08-27-why_tidyeval.html">Why I find tidyeval useful</a>
-</li>
-<li>
-<a href="./posts/2017-07-27-spread_rename_at.html">tidyr::spread() and dplyr::rename_at() in action</a>
-</li>
-<li>
-<a href="./posts/2017-07-02-dplyr-0-70-tutorial.html">Lesser known dplyr 0.7* tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>
-</li>
-<li>
-<a href="./posts/2017-03-27-introducing_brotools.html">Introducing brotools</a>
-</li>
-<li>
-<a href="./posts/2017-03-24-lesser_known_purrr.html">Lesser known purrr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-03-08-lesser_known_tricks.html">Lesser known dplyr tricks</a>
-</li>
-<li>
-<a href="./posts/2017-02-17-how_to_use_jailbreakr.html">How to use jailbreakr</a>
-</li>
-<li>
-<a href="./posts/2017-01-07-my-free-book-has-a-cover.html">My free book has a cover!</a>
-</li>
-</ul>
-<h2 class="anchored">
-2016
-</h2>
-<ul>
-<li>
-<a href="./posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.html">Functional programming and unit testing for data munging with R available on Leanpub</a>
-</li>
-<li>
-<a href="./posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.html">Work on lists of datasets instead of individual datasets by using functional programming</a>
-</li>
-<li>
-<a href="./posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.html">I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-30-merge-a-list-of-datasets-together.html">Merge a list of datasets together</a>
-</li>
-<li>
-<a href="./posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.html">Read a lot of datasets at once with R</a>
-</li>
-<li>
-<a href="./posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">Data frame columns as arguments to dplyr functions</a>
-</li>
-<li>
-<a href="./posts/2016-06-21-careful-with-trycatch.html">Careful with tryCatch</a>
-</li>
-<li>
-<a href="./posts/2016-03-31-unit-testing-with-r.html">Unit testing with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2015
-</h2>
-<ul>
-<li>
-<a href="./posts/2015-11-11-bootstrapping-did-with-r.html">Bootstrapping standard errors for difference-in-differences estimation with R</a>
-</li>
-<li>
-<a href="./posts/2015-05-03-update-introduction-r-programming.html">Update to Introduction to programming econometrics with R</a>
-</li>
-<li>
-<a href="./posts/2015-02-22-export-r-output-to-file.html">Export R output to a file</a>
-</li>
-<li>
-<a href="./posts/2015-01-12-introduction-to-programming-econometrics-with-r.html">Introduction to programming econometrics with R</a>
-</li>
-</ul>
-<h2 class="anchored">
-2014
-</h2>
-<ul>
-<li>
-<a href="./posts/2014-11-11-benchmarks-r-blas-atlas-rro.html">R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?</a>
-</li>
-<li>
-<a href="./posts/2014-04-23-r-s4-rootfinding.html">Object Oriented Programming with R: An example with a Cournot duopoly</a>
-</li>
-</ul>
-<h2 class="anchored">
-2013
-</h2>
-<ul>
-<li>
-<a href="./posts/2013-12-31-r-cas.html">Using R as a Computer Algebra System with Ryacas</a>
-</li>
-<li>
-<a href="./posts/2013-11-07-gmm-with-rmd.html">Nonlinear Gmm with R - Example with a logistic regression</a>
-</li>
-<li>
-<a href="./posts/2013-01-29-method-of-simulated-moments-with-r.html">Method of Simulated Moments with R</a>
-</li>
-<li>
-<a href="./posts/2013-01-16-simulated-maximum-likelihood-with-r.html">Simulated Maximum Likelihood with R</a>
-</li>
-</ul>
-<div class="listing-no-matching d-none">
-No matching items
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="../assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="600" height="400"></a>
+</p>
 </div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div></main> <!-- /main -->
+<p>
+I have recently been confronted to a kind of data set and problem that I was not even aware existed: intermittent demand data. Intermittent demand arises when the demand for a certain good arrives sporadically. Let’s take a look at an example, by analyzing the number of downloads for the <code>{RDieHarder}</code> package:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(tsintermittent)
+library(nnfor)
+library(cranlogs)
+library(brotools)</code></pre>
+<pre class="r"><code>rdieharder &lt;- cran_downloads("RDieHarder", from = "2017-01-01")
+
+ggplot(rdieharder) +
+  geom_line(aes(y = count, x = date), colour = "#82518c") +
+  theme_blog()</code></pre>
+<p>
+<img src="../assets/img/intermittent-3-1.png" width="672">
+</p>
+<p>
+Let’s take a look at just one month of data, because the above plot is not very clear, because of the outlier just before 2019… I wonder now, was that on Christmas day?
+</p>
+<pre class="r"><code>rdieharder %&gt;%
+  filter(count == max(count))</code></pre>
+<pre><code>##         date count    package
+## 1 2018-12-21   373 RDieHarder</code></pre>
+<p>
+Not exactly on Christmas day, but almost! Anyways, let’s look at one month of data:
+</p>
+<pre class="r"><code>january_2018 &lt;- rdieharder %&gt;%
+  filter(between(date, as.Date("2018-01-01"), as.Date("2018-02-01")))
+
+ggplot(january_2018) +
+  geom_line(aes(y = count, x = date), colour = "#82518c") +
+  theme_blog()</code></pre>
+<p>
+<img src="../assets/img/intermittent-5-1.png" width="672">
+</p>
+<p>
+Now, it is clear that this will be tricky to forecast. There is no discernible pattern, no trend, no seasonality… nothing that would make it “easy” for a model to learn how to forecast such data.
+</p>
+<p>
+This is typical intermittent demand data. Specific methods have been developed to forecast such data, the most well-known being Croston, as detailed in <a href="https://www.jstor.org/stable/3007885?seq=1#page_scan_tab_contents">this paper</a>. A function to estimate such models is available in the <code>{tsintermittent}</code> package, written by <a href="https://kourentzes.com/forecasting/2014/06/23/intermittent-demand-forecasting-package-for-r/">Nikolaos Kourentzes</a> who also wrote another package, <code>{nnfor}</code>, which uses Neural Networks to forecast time series data. I am going to use both to try to forecast the intermittent demand for the <code>{RDieHarder}</code> package for the year 2019.
+</p>
+<p>
+Let’s first load these packages:
+</p>
+<pre class="r"><code>library(tsintermittent)
+library(nnfor)</code></pre>
+<p>
+And as usual, split the data into training and testing sets:
+</p>
+<pre class="r"><code>train_data &lt;- rdieharder %&gt;%
+  filter(date &lt; as.Date("2019-01-01")) %&gt;%
+  pull(count) %&gt;%
+  ts()
+
+test_data &lt;- rdieharder %&gt;%
+  filter(date &gt;= as.Date("2019-01-01"))</code></pre>
+<p>
+Let’s consider three models; a naive one, which simply uses the mean of the training set as the forecast for all future periods, Croston’s method, and finally a Neural Network from the <code>{nnfor}</code> package:
+</p>
+<pre class="r"><code>naive_model &lt;- mean(train_data)
+
+croston_model &lt;- crost(train_data, h = 163)
+
+nn_model &lt;- mlp(train_data, reps = 1, hd.auto.type = "cv")</code></pre>
+<pre><code>## Warning in preprocess(y, m, lags, keep, difforder, sel.lag,
+## allow.det.season, : No inputs left in the network after pre-selection,
+## forcing AR(1).</code></pre>
+<pre class="r"><code>nn_model_forecast &lt;- forecast(nn_model, h = 163)</code></pre>
+<p>
+The <code>crost()</code> function estimates Croston’s model, and the <code>h</code> argument produces the forecast for the next 163 days. <code>mlp()</code> trains a multilayer perceptron, and the <code>hd.auto.type = "cv"</code> argument means that 5-fold cross-validation will be used to find the best number of hidden nodes. I then obtain the forecast using the <code>forecast()</code> function. As you can read from the Warning message above, the Neural Network was replaced by an auto-regressive model, AR(1), because no inputs were left after pre-selection… I am not exactly sure what that means, but if I remove the big outlier from before, this warning message disappears, and a Neural Network is successfully trained.
+</p>
+<p>
+In order to rank the models, I follow <a href="https://www.sciencedirect.com/science/article/pii/S0169207006000239">this paper</a> from Rob J. Hyndman, who wrote a very useful book titled <a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice</a>, and use the Mean Absolute Scaled Error, or MASE. You can also read <a href="https://robjhyndman.com/papers/foresight.pdf">this shorter pdf</a> which also details how to use MASE to measure the accuracy for intermittent demand. Here is the function:
+</p>
+<pre class="r"><code>mase &lt;- function(train_ts, test_ts, outsample_forecast){
+
+  naive_insample_forecast &lt;- stats::lag(train_ts)
+
+  insample_mae &lt;- mean(abs(train_ts - naive_insample_forecast), na.rm = TRUE)
+  error_outsample &lt;- test_ts - outsample_forecast
+
+  ase &lt;- error_outsample / insample_mae
+  mean(abs(ase), na.rm = TRUE)
+}</code></pre>
+<p>
+It is now easy to compute the models’ accuracies:
+</p>
+<pre class="r"><code>mase(train_data, test_data$count, naive_model)</code></pre>
+<pre><code>## [1] 1.764385</code></pre>
+<pre class="r"><code>mase(train_data, test_data$count, croston_model$component$c.out[1])</code></pre>
+<pre><code>## [1] 1.397611</code></pre>
+<pre class="r"><code>mase(train_data, test_data$count, nn_model_forecast$mean)</code></pre>
+<pre><code>## [1] 1.767357</code></pre>
+<p>
+Croston’s method is the one that performs best from the three. Maybe surprisingly, the naive method performs just as well as the Neural Network! (or rather, the AR(1) model) Let’s also plot the predictions with the true values from the test set:
+</p>
+<pre class="r"><code>test_data &lt;- test_data %&gt;%
+  mutate(naive_model_forecast = naive_model,
+         croston_model_forecast = croston_model$component$c.out[1],
+         nn_model_forecast = nn_model_forecast$mean) %&gt;%
+  select(-package) %&gt;%
+  rename(actual_value = count)
+
+
+test_data_longer &lt;- test_data %&gt;%
+  gather(models, value,
+         actual_value, naive_model_forecast, croston_model_forecast, nn_model_forecast)</code></pre>
+<pre><code>## Warning: attributes are not identical across measure variables;
+## they will be dropped</code></pre>
+<pre class="r"><code>ggplot(test_data_longer) +
+  geom_line(aes(y = value, x = date, colour = models)) +
+  theme_blog()</code></pre>
+<p>
+<img src="../assets/img/intermittent-13-1.png" width="672">
+</p>
+<p>
+Just to make sure I didn’t make a mistake when writing the <code>mase()</code> function, let’s use the <code>accuracy()</code> function from the <code>{forecast}</code> package and compare the result for the Neural Network:
+</p>
+<pre class="r"><code>library(forecast)
+accuracy(nn_model_forecast, x = test_data$actual_value)</code></pre>
+<pre><code>##                       ME     RMSE      MAE  MPE MAPE      MASE       ACF1
+## Training set 0.001929409 14.81196 4.109577  NaN  Inf 0.8437033 0.05425074
+## Test set     8.211758227 12.40199 8.635563 -Inf  Inf 1.7673570         NA</code></pre>
+<p>
+The result is the same, so it does seem like the naive method is not that bad, actually! Now, in general, intermittent demand series have a lot of 0 values, which is not really the case here. I still think that the methodology fits to this particular data set.
+</p>
+<p>
+How else would you have forecast this data? Let me know via twitter!
+</p>
+
+
+
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="./books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -478,7 +281,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="./index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>
