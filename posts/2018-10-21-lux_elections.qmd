@@ -46,7 +46,7 @@ is one for the whole country, named “Le Grand-Duché de Luxembourg”, one for
 administrative division). However, the tables are all very similarly shaped, and roughly at the
 same position.</p>
 
-<p><img src="../assets/img/elections_data.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/elections_data.png"  width="80%" height="auto"></div>
 
 <p>This is good, because we can write a function to extracts the data and then map it over
 all the sheets. First, let’s load some packages and the data for the country:</p>
@@ -91,7 +91,7 @@ understanding the next function easier:</p>
 data I loaded with <code>xlsx_cells</code> from the <code>{tidyxl}</code> package. I think the following picture illustrates
 easily what the function does:</p>
 
-<p><img src="../assets/img/elections_logic.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/elections_logic.png"  width="80%" height="auto"></div>
 
 <p>So the function first filters only the rows we are interested in, then the cols. I then select
 the columns I want which are called <code>character</code> and <code>numeric</code> (if the Excel cell contains characters then

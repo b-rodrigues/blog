@@ -283,7 +283,7 @@ such as numbers:</p>
 ##   ..$ : num [1:2] 1 2
 ##   ..$ : chr &quot;lists are amazing!&quot;</code></pre>
 <p>or you can use RStudio’s <em>Environment</em> pane:</p>
-<p><img src="../assets/img/rstudio_environment_list.gif" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/rstudio_environment_list.gif"  width="80%" height="auto"></div>
 <p>You can also create named lists:</p>
 <pre class="r"><code>list4 &lt;- list(&quot;a&quot; = 2, &quot;b&quot; = 8, &quot;c&quot; = &quot;this is a named list&quot;)</code></pre>
 <p>and you can access the elements in two ways:</p>
@@ -308,7 +308,7 @@ niceties.</p>
 actually special cases of lists, discussed above. There are different ways to print a <code>data.frame</code> or
 a <code>tibble</code> if you wish to inspect it. You can use <code>View(my_data)</code> to show the <code>my_data</code> <code>data.frame</code>
 in the <em>View</em> pane of RStudio:</p>
-<p><img src="../assets/img/rstudio_view_data.gif" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/rstudio_view_data.gif"  width="80%" height="auto"></div>
 <p>You can also use the <code>str()</code> function:</p>
 <pre class="r"><code>str(my_data)</code></pre>
 <p>And if you need to access an individual column, you can use the `$` sign, same as for a list:</p>

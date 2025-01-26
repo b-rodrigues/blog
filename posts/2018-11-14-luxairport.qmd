@@ -124,7 +124,7 @@ is not necessary for the rest of the analysis, but might as well do it. The data
 <p>The next steps are simple renamings. I have copy-pasted the information from the Eurostat page
 where you can <a href="http://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=avia_par_lu&amp;lang=en">view the data online</a>.
 If you click here:</p>
-<p><img src="../assets/img/eurostat_click_here.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/eurostat_click_here.png"  width="80%" height="auto"></div>
 <p>you will be able to select the variables you want displayed in the table, as well as the dictionary
 of the variables. I simply copy pasted it and recoded the variables. You can take a look at the
 whole cleaning workflow by clicking “Click to expand” below:</p>

@@ -26,7 +26,7 @@ to work with Python and R; when you want to use Python, you simply use a Python 
 your python code here
 ```</code></pre>
 <p>There’s even autocompletion for Python object methods:</p>
-<p><img src="../assets/img/autocompletion.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/autocompletion.png"  width="80%" height="auto"></div>
 <p>Fantastic!</p>
 <p>However, if you wish to use Python interactively within your R session, you must start the Python
 REPL with the <code>repl_python()</code> function, which starts a Python REPL. You can then do whatever you

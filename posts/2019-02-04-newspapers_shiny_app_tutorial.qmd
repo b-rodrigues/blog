@@ -289,11 +289,11 @@ plan(multiprocess, workers = 8)
 future_map(pathdirs, tidy_papers)</code></pre>
 </details>
 <p>This is how one of these files looks like, after passing through this function:</p>
-<p><img src="../assets/img/articles_rds.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/articles_rds.png"  width="80%" height="auto"></div>
 <p>One line is one article. The first column is the id of the article, the second column contains
 a data frame, the text of the article and finally the title of the article.
 Let’s take a look at the content of the first element of the <em>data</em> column:</p>
-<p><img src="../assets/img/merged_alto_mets.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/merged_alto_mets.png"  width="80%" height="auto"></div>
 <p>This is the result of the merger of the METS and ALTO csv files. The first column is the id of the
 article, the second column contains each individual word of the article, the <em>label</em> column the
 label, or title of the article.</p>
@@ -335,7 +335,7 @@ toc &lt;- Sys.time()
 toc - tic</code></pre>
 </details>
 <p>And here is the result:</p>
-<p><img src="../assets/img/pos_article.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/pos_article.png"  width="80%" height="auto"></div>
 <p>The <em>upos</em> column contains the tags. Now I know which words are nouns, verbs, adjectives, stopwords…
 Meaning that I can easily focus on the type of words that interest me. Plus, as an added benefit, I
 can focus on the lemma of the words. For example, the word <em>viennent</em>, is the
@@ -457,7 +457,7 @@ future_map(path_annotatedrds, prepare_textrank)</code></pre>
 <p>You can download the annotated data sets from the following
 <a href="https://github.com/b-rodrigues/newspapers_shinyapp/tree/master/textrank_data">link</a>. This is how
 the data looks like:</p>
-<p><img src="../assets/img/textrank_df.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/textrank_df.png"  width="80%" height="auto"></div>
 <p>Using the <code>summary()</code> function on an element of the <em>summary</em> column returns the 5 most relevant
 sentences as extracted by <code>{textrank}</code>.</p>
 </div>

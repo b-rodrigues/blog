@@ -45,7 +45,7 @@ to attack or even what ennemies are going to attack. Ennemies are not the only t
 to be careful about; you can die from a lot of different events, as you will see in this post.
 Objects that you find, such as a silver ring, might be helpful in a run, but be cursed in the next run.</p>
 <p>The latest version of the game, 3.6.1, was released on April 27th 2018, and this is how it looks like:</p>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Nethack.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Nethack.png"  width="80%" height="auto"></div>
 <p>The graphics are… bare-bones to say the least. The game runs inside a terminal emulator and is
 available for any platform. The goal of NetHack is to explore a dungeon and go down every
 level until you find the Amulet of Yendor. Once you find this Amulet, you have to go all the way
@@ -56,7 +56,7 @@ NetHack is very difficult and players can go years without ever finishing the ga
 You have to choose a race (human, elf, orc, etc), a role (tourist, samurai, mage, etc) and an
 alignment (neutral, law, chaos) and these choices impact your base stats.</p>
 <p>If you can’t get past the ASCII graphics, you can play NetHack with tileset:</p>
-<p><img src="https://vignette.wikia.nocookie.net/nethack/images/8/80/Vultures_eye.png/revision/latest?cb=20070313215112" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="https://vignette.wikia.nocookie.net/nethack/images/8/80/Vultures_eye.png/revision/latest?cb=20070313215112"  width="80%" height="auto"></div>
 <p>You can install NetHack on your computer or you can play online on a public server, such as
 this <a href="https://alt.org/nethack/">one</a>. There are several advantages when playing on a pubic server;
 the player does not have to install anyhing, and we data enthusiasts have access to a mine of
@@ -182,14 +182,14 @@ dumplogs &lt;- page %&gt;%
     html_attr(&quot;href&quot;) %&gt;%
     keep(str_detect(., &quot;dumplog&quot;))</code></pre>
 <p>You might be wondering what are dumplogs. Take a look at this screenshot:</p>
-<p><img src="../assets/img/dumplogs.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/dumplogs.png"  width="80%" height="auto"></div>
 <p>When you click on those <code>d</code>‘s, you land on a page like this <a href="http://archive.is/wljb3">one</a> (I
 archived it to be sure that this link will not die). These logs contain a lot of info that I want
 to keep. To find the right `xpath` to scrape the links, `//*[(@id = "perday")]//td`, I used
 the </em>SelectorGadget* extension for Chrome. First I chose the table:</p>
-<p><img src="../assets/img/selectorgadget1.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/selectorgadget1.png"  width="80%" height="auto"></div>
 <p>and then the links I am interested in:</p>
-<p><img src="../assets/img/selectorgadget2.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/selectorgadget2.png"  width="80%" height="auto"></div>
 <p>Putting them together, I get the right “xpath”. But just as with the time of the run, dumplogs are
 only available after a certain date. So in case the <code>dumplogs</code> column is empty, I relpace it with <code>NA</code>.</p>
 <pre class="r"><code>if(is_empty(dumplogs)){
@@ -286,11 +286,11 @@ beginning of the post).</p>
 <p>Making a data package is a great way to learn how to make packages, because it is relatively easy
 to do (for example, you do not need to write unit tests). First, let’s start a new project
 in RStudio:</p>
-<p><img src="../assets/img/r_package1.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/r_package1.png"  width="80%" height="auto"></div>
 <p>Then select “R package”:</p>
-<p><img src="../assets/img/r_package2.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/r_package2.png"  width="80%" height="auto"></div>
 <p>Then name your package, create a git repository and then click on “Create Project”:</p>
-<p><img src="../assets/img/r_package3.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/r_package3.png"  width="80%" height="auto"></div>
 <p>RStudio wil open the <code>hello.R</code> script which you can now modify. You got to learn from the best, so
 I suggest that you modify <code>hello.R</code> by taking inspiration from the <code>babynames</code> package made by Hadley
 Wickham which you can find <a href="https://github.com/hadley/babynames/blob/master/R/data.R">here</a>.
@@ -354,7 +354,7 @@ option to make the data smaller. You can now create the documentation by running
 <p>Pay attention to the log messages: you might need to remove files (for example the documentation
 <code>hello.R</code>, under the folder <code>man/</code>).</p>
 <p>Now you can finaly run <code>R CMD Check</code> by clicking the <code>Check</code> button on the “Build” pane:</p>
-<p><img src="../assets/img/r_package_check.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/r_package_check.png"  width="80%" height="auto"></div>
 <p>This will extensively check the package for <code>ERRORS</code>, <code>WARNINGS</code> and <code>NOTES</code>. You need to make sure
 that the check passes without any <code>ERRORS</code> or <code>WARNINGS</code> and try as much as possible to remove all
 <code>NOTES</code> too. If you cannot remove a <code>NOTE</code>, for example in my case the following:</p>

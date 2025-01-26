@@ -44,20 +44,20 @@ the <em>L’indépendence Luxembourgeoise</em>… A Luxembourguish newspaper? Wr
 interesting.</p>
 <p>And oh boy. Interesting it was.</p>
 <p>19th century newspapers articles were something else. There’s this article for instance:</p>
-<p><img src="../assets/img/pray%20for%20senators.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/pray%20for%20senators.png"  width="80%" height="auto"></div>
 <p>For those of you that do not read French, this article relates that in France, the ministry of
 justice required priests to include prayers on the Sunday that follows the start of the new season
 of parliamentary discussions, in order for God to provide senators his help.</p>
 <p>There this gem too:</p>
-<p><img src="../assets/img/tallest_soldier.jpg" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/tallest_soldier.jpg"  width="80%" height="auto"></div>
 <p>This article presents the tallest soldier of the German army, called Emhke, and nominated by the
 German Emperor himself to accompany him during his visit to Palestine. Emhke was 2.08 meters tall
 and weighted 236 pounds (apparently at the time Luxembourg was not fully sold on the metric system).</p>
 <p>Anyway, I decided to take a look at ads. The last paper of this 4 page newspaper always contained
 ads and other announcements. For example, there’s this ad for a pharmacy:</p>
-<p><img src="../assets/img/pharmacy.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/pharmacy.png"  width="80%" height="auto"></div>
 <p>that sells tea, and mineral water. Yes, tea and mineral water. In a pharmacy. Or this one:</p>
-<p><img src="../assets/img/upside_down.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/upside_down.png"  width="80%" height="auto"></div>
 <p>which is literally upside down in the newspaper (the one from the 10th of April 1877). I don’t
 know if it’s a mistake or if it’s a marketing ploy, but it did catch my attention, 140 years later,
 so <em>bravo</em>. This is an announcement made by a shop owner that wants to sell all his merchandise
@@ -92,7 +92,7 @@ ad_pages &lt;- str_match(list.files(path = &quot;./&quot;, all.files = TRUE, rec
     discard(is.na)</code></pre>
 <p>I save the path of all the pages at once into the <code>ad_pages</code> variables. To understand how and why
 this works, you must take a look at the hierarchy of the folder:</p>
-<p><img src="../assets/img/layout.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/layout.png"  width="80%" height="auto"></div>
 <p>Inside each of these folder, there is a <code>text</code> folder, and inside this folder there are the <code>.xml</code>
 files. Because this structure is bit complex, I use the <code>list.files()</code> function with the
 <code>all.files</code> and <code>recursive</code> argument set to <code>TRUE</code> which allow me to dig deep into the folder

@@ -32,14 +32,14 @@ but only for large restaurants (see Ropponen and Olli, 2011).</p>
 blog post, I will discuss preparing the data to make it available as a demo dataset inside the
 package, and then writing and documenting functions.</p>
 <p>The first step to create a package, is to create a new project:</p>
-<p><img src="../assets/img/package_01.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/package_01.png"  width="80%" height="auto"></div>
 <p>Select “New Directory”:</p>
-<p><img src="../assets/img/package_02.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/package_02.png"  width="80%" height="auto"></div>
 <p>Then “R package”:</p>
-<p><img src="../assets/img/package_03.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/package_03.png"  width="80%" height="auto"></div>
 <p>and on the window that appears, you can choose the name of the package, as well as already some
 starting source files:</p>
-<p><img src="../assets/img/package_04.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/package_04.png"  width="80%" height="auto"></div>
 <p>Also, I’d highly recommend you click on the “Create a git repository” box and use git within your
 project for reproducibility and sharing your code more easily. If you do not know git, there’s a lot of
 online resources to get you started. It’s not super difficult, but it does require making some new

@@ -22,11 +22,11 @@ It’s a poem titled, <em>D’Léierchen (Dem Léiweckerche säi Lidd)</em>,
 written by Michel Rodange, arguably Luxembourg’s most well known writer and poet. Michel Rodange is
 mostly known for his fable, <em>Renert oder De Fuuß am Frack an a Ma’nsgrëßt</em>, starring a central European
 <a href="https://en.wikipedia.org/wiki/Reynard_the_Fox">trickster anthropomorphic red fox</a>.</p>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Reynard-the-fox.jpg" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Reynard-the-fox.jpg"  width="80%" height="auto"></div>
 <p>Anyway, back to the point of this blog post. How can we get data from a pdf where no text recognition
 was performed (or, how can we get text from an image)? The pdf we need the text from looks like
 this:</p>
-<p><img src="../assets/img/dleierchen_03.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/dleierchen_03.png"  width="80%" height="auto"></div>
 <p>To get the text from the pdf, we can use the <code>{tesseract}</code> package, which provides bindings to the <code>tesseract</code> program.
 <code>tesseract</code> is an open source OCR engine developed by Google. This means that first you will need
 to install the <code>tesseract</code> program on your system. You can follow the intructions from <code>tesseract</code>’s
@@ -57,7 +57,7 @@ second_half &lt;- map(images, ~image_crop(., geometry = &quot;2307x6462+2307+0&q
 “2307x6462” (I decrease the height a bit to get rid of the page number), and the second half by
 applying the same logic, but starting the cropping at the “2307+0” position. The result looks like
 this:</p>
-<p><img src="../assets/img/dleierchen_cropped.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/dleierchen_cropped.png"  width="80%" height="auto"></div>
 <p>Much better! Now I need to join these two lists together. I cannot simply join them. Consider
 the following example:</p>
 <pre class="r"><code>one &lt;- list(1, 3, 5)
@@ -147,7 +147,7 @@ recognize characters such as <code>é</code>, but no, it worked quite well.</p>
 ...</code></pre>
 <p>Perfect! Some more cleaning would be needed though. For example, I need to remove the little
 annotations that are included:</p>
-<p><img src="../assets/img/dleierchen_anot.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/dleierchen_anot.png"  width="80%" height="auto"></div>
 <p>I don’t know yet how I’m going to do that.I also need to remove the line numbers at the beginning
 of every fourth line, but this is easily done with a simple regular expression:</p>
 <pre class="r"><code>str_remove_all(c(&quot;12 bla&quot;, &quot;blb&quot;, &quot;123 blc&quot;), &quot;^\\d{1,}\\s+&quot;)</code></pre>

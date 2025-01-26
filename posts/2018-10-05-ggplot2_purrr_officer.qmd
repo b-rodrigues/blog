@@ -163,7 +163,7 @@ to create my pptx I simple need to map over the <code>plots</code> column and pr
 ## [1] &quot;/home/cbrunos/Documents/b-rodrigues.github.com/content/blog/test.pptx&quot;</code></pre>
 <p>Here is the end result:</p>
 
-<p><img src="../assets/img/editable_plots.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/editable_plots.png"  width="80%" height="auto"></div>
 
 <p>Inside Powerpoint (or in this case Libreoffice), the plots are geometric shapes that can now
 be edited!</p>

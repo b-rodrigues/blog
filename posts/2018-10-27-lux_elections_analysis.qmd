@@ -144,7 +144,7 @@ should be good enough:</p>
 <p>Not too bad, but we can’t really read anything from the pie charts. I will now make their size
 proportional to the number of voters in each commune. For this, I need to go back to the Excel
 sheets, and look for the right cell:</p>
-<p><img src="../assets/img/electeurs_inscrits.png" / width="80%" height="auto"><!-- --></p>
+<div style="text-align: center;"><img src="../assets/img/electeurs_inscrits.png"  width="80%" height="auto"></div>
 <p>It will be easy to extract this info. It located in cell “E5”:</p>
 <pre class="r"><code>elections_raw_2018 &lt;- xlsx_cells(&quot;leg-2018-10-14-22-58-09-737.xlsx&quot;)
 
