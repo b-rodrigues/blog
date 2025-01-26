@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=dpM2o4dRLto"> <img src="../assets/img/deepfried_loss.png" title="Click here to listen to epic music while reading"></a>
+<a href="https://www.youtube.com/watch?v=dpM2o4dRLto"> <img src="../assets/img/deepfried_loss.png" title="Click here to listen to epic music while reading" width="80%" height="auto"></a>
 </p>
 </div>
 <section id="abstract" class="level2">
@@ -558,9 +558,9 @@ ggplot(runs_per_day, aes(y = n, x = date)) +
   geom_smooth(colour = "#82518c") + 
   theme_blog()</code></pre>
 <pre><code>## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-12-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-12-1.png" width="80%" height="auto">
+</div>
 <p>
 The number of games seems to be stable since 2015, around 50. But what is also interesting is not only the number of games played, but also how many of these games resulted in a win.
 </p>
@@ -583,9 +583,9 @@ ggplot(ascensions_per_day) +
   labs(y = "Number of runs", x = "Date") +
   scale_fill_blog() +
   theme(legend.title = element_blank())</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-14-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-14-1.png" width="80%" height="auto">
+</div>
 <p>
 Yeah, just as expected. Because there is so much data, it’s difficult to see clearly, though. Depending on the size of the screen you’re reading this, it might seem that in some days there are a lot of ascensions. This is only an impression due to the resolution of the picture. Let’s see the share of ascensions per year (and how many times the quests fail miserably), and this will become more apparent:
 </p>
@@ -602,9 +602,9 @@ Yeah, just as expected. Because there is so much data, it’s difficult to see c
   theme_blog() + 
   scale_fill_blog() + 
   theme(legend.title = element_blank())</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-15-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-15-1.png" width="80%" height="auto">
+</div>
 <p>
 I will now convert the “time” column to seconds. I am not yet sure that this column is really useful, because NetHack is a turn based game. This means that when the player does not move, neither do the monsters. So the seconds spent playing might not be a good proxy for actual time spent playing. But it makes for a good exercise:
 </p>
@@ -656,9 +656,9 @@ Let’s take a look at the density but cut it at 90th percentile:
   ggplot() + 
   geom_density(aes(x = time_in_seconds), colour = "#82518c") + 
   theme_blog()</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-20-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-20-1.png" width="80%" height="auto">
+</div>
 <p>
 As expected, the distribution is right skewed. However, as explained above NetHack is a turn based game, meaning that if the player does not move, the monsters won’t move either. Perhaps it makes more sense to look at the <code>turns</code> column:
 </p>
@@ -679,9 +679,9 @@ The maximum is quite large too. Just like before, let’s focus by cutting the v
   ggplot() + 
   geom_density(aes(x = turns), colour = "#82518c") + 
   theme_blog()</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-22-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-22-1.png" width="80%" height="auto">
+</div>
 <p>
 I think that using <code>turns</code> makes more sense. In the a future blog post, I will estimate a survival model and see how long players survive, and will use <code>turns</code> instead of <code>time_in_seconds</code>.
 </p>
@@ -767,9 +767,9 @@ Now, it is quite easy to know what monsters are the meanest buttholes; let’s f
     ylab("Number of deaths caused") +
     xlab("Monster")</code></pre>
 <pre><code>## Selecting by n</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-25-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-25-1.png" width="80%" height="auto">
+</div>
 <p>
 Seems like soldier ants are the baddest, followed by jackals and dwarfs. As expected, these are mostly early game monsters. Thus, it would be interesting to look at this distribution, but at different stages in the game. Let’s create a categorical variable that discretizes <code>turns</code>, and then create one plot per category:
 </p>
@@ -812,32 +812,32 @@ Click to expand
     pull(plots)</code></pre>
 <pre><code>## Selecting by n</code></pre>
 <pre><code>## [[1]]</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-26-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-26-1.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## [[2]]</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-26-2.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-26-2.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## [[3]]</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-26-3.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-26-3.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## [[4]]</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-26-4.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-26-4.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## [[5]]</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-26-5.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-26-5.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## [[6]]</code></pre>
-<img src="../assets/img/nethack_analysis-26-6.png" width="672">
+<img src="../assets/img/nethack_analysis-26-6.png" width="80%" height="auto">
 </details>
 <p>
 Finally, for this section, I&nbsp;want to know if there are levels, or floors, where players die more often than others. For this, we can take a look at the <code>lev_max</code> column. Observations in this column are of the form “8/10”. This means that the player died on level 8, but the lowest level that was explored was the 10th. Let’s do this for the year 2017 first. Before anything, I have to explain the layout of the levels of the game. You can see a diagram <a href="https://nethackwiki.com/wiki/Mazes_of_Menace#Map">here</a>. The player starts on floor 1, and goes down to level 53. Then, the player can ascend, by going on levels -1 to -5. But there are more levels than these ones. -6 and -9 are the sky, and the player can teleport there (but will fall to his death). If the player teleports to level -10, he’ll enter heaven (and die too). Because these levels are special, I do not consider them here. I do not consider level 0 either, which is “Nowhere”. Let’s get the number of players who died on each floor, but also compute the cumulative death count:
@@ -917,9 +917,9 @@ Now we can compute the share of players who died on each level:
     theme(axis.text.x = element_text(angle = 90),
           legend.position = "none") + 
     scale_y_continuous(labels = scales::percent)</code></pre>
-<p>
-<img src="../assets/img/nethack_analysis-33-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/nethack_analysis-33-1.png" width="80%" height="auto">
+</div>
 <p>
 Looks like level 7 is consistently the most dangerous! The death rate there is more than 35%!
 </p>

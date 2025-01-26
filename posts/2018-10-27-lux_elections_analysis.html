@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=Bw8g_1VEEL8"> <img src="../assets/img/europe_map_lux.png"></a>
+<a href="https://www.youtube.com/watch?v=Bw8g_1VEEL8"> <img src="../assets/img/europe_map_lux.png" width="80%" height="auto"></a>
 </p>
 </div>
 <section id="abstract" class="level2">
@@ -284,15 +284,15 @@ I have all the ingredients to finally plot the data:
                                  "KPL" = "#ff0000",
                                  "LSAP" = "#ad3648",
                                  "PIRATEN" = "#ad5ea9"))</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-17-1.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-17-1.png" width="80%" height="auto">
+</div>
 <p>
 Not too bad, but we can’t really read anything from the pie charts. I will now make their size proportional to the number of voters in each commune. For this, I need to go back to the Excel sheets, and look for the right cell:
 </p>
-<p>
-<img src="../assets/img/electeurs_inscrits.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/electeurs_inscrits.png" width="80%" height="auto">
+</div>
 <p>
 It will be easy to extract this info. It located in cell “E5”:
 </p>
@@ -337,9 +337,9 @@ Now I can add the <code>r</code> argument inside the <code>aes()</code> function
                                  "LSAP" = "#ad3648",
                                  "PIRATEN" = "#ad5ea9"))</code></pre>
 <pre><code>## Warning: Removed 32 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-21-1.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-21-1.png" width="80%" height="auto">
+</div>
 <p>
 Ok, that was not a good idea! Perhaps the best option would be to have one map per circonscription. For this, I need the list of communes by circonscription. This is available on Wikipedia. Here are the lists:
 </p>
@@ -405,24 +405,24 @@ By using <code>pmap()</code>, I can reuse the code to generate the plot to each 
      }
 )</code></pre>
 <pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-1.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-24-1.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-2.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-24-2.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $nord</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-3.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-24-3.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-24-4.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-24-4.png" width="80%" height="auto">
+</div>
 <p>
 I created an anonymous function of three argument, <code>x</code>, <code>y</code> and <code>z</code>. If you are unfamiliar with <code>pmap()</code>, study the above code closely. If you have questions, do not hesitate to reach out!
 </p>
@@ -456,25 +456,25 @@ The pie charts are still quite small, but if I try to change the size of the pie
      }
 )</code></pre>
 <pre><code>## $centre</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-1.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-25-1.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $est</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-2.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-25-2.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $nord</code></pre>
 <pre><code>## Warning: Removed 16 rows containing non-finite values (stat_pie).</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-3.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-25-3.png" width="80%" height="auto">
+</div>
 <pre><code>## 
 ## $sud</code></pre>
-<p>
-<img src="../assets/img/lux_elections_analysis-25-4.png" width="768">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/lux_elections_analysis-25-4.png" width="80%" height="auto">
+</div>
 <p>
 This looks better now!
 </p>

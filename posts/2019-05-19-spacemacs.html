@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="../assets/img/typical_emacs_user.gif" title="typical emacs user working"></a>
+<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="../assets/img/typical_emacs_user.gif" title="typical emacs user working" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -145,9 +145,9 @@ As you can notice from the tweet above, I suggested the use of <a href="http://s
 <p>
 Spacemacs is a strange beast; if vi and Emacs had a baby, it would certainly look like Spacemacs. So first of all, to understand what is Spacemacs, one has to know a bit about vi and Emacs.
 </p>
-<p>
-<img src="../assets/img/vim.png" width="100%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/vim.png" width="100%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 vi is a text editor with 43 years of history now. You might have heard of Vim (Vi IMproved) which is a modern clone of vi, from 1991. More recently, another clone has been getting popular, Neovim, started in 2014. Whatever version of vi however, its basic way of functioning remains the same. vi is a modal editor, meaning that the user has to switch between different modes to work on a text file. When vi is first started, the program will be in <em>Normal</em> mode. In this mode, trying to type a word will likely result in nothing, or unexpected behaviour; unexpected, if you’re not familiar with vi. For instance, in <em>Normal</em> mode, typing <strong>j</strong> will not show the character <strong>j</strong> on your screen. Instead, this will move the cursor down one line. Typing <strong>p</strong> will paste, <strong>u</strong> will undo the last action, <strong>y</strong> will yank (copy) etc…
 </p>
@@ -166,38 +166,38 @@ vi keybindings have inspired a lot of other programs. For instance, you can get 
 <p>
 I will show some common vi operations below, but before that let’s discuss Emacs.
 </p>
-<p>
-<img src="../assets/img/emacs.png" width="80%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/emacs.png" width="80%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 I am not really familiar with Emacs; I know that Emacs users only swear by it (just like vi users only swear by vi), and that Emacs is not a modal editor. However, it contains a lot of functions that you can use by pressing <strong>ESC</strong>, <strong>CTRL</strong>, <strong>ALT</strong> or <strong>META</strong> (<strong>META</strong> is the Windows key on a regular PC keyboard) followed by regular keys. So the approach is different, but it is widely accepted that productivity of proficient Emacs users is very high too. Emacs was started in 1985, and the most popular clone is GNU Emacs. Emacs also features modes, but not in the same sense as vi. There are major and minor modes. For instance, if you’re editing a Python script, Emacs will be in Python mode, or if editing a Markdown file Emacs will be in Markdown mode. This will change the available functions to the user, as well as provide other niceties, such as auto-completion. Emacs is also easily extensible, which is another reason why it is so popular. Users can install packages for Emacs, just like R users would do for R, to extend Emacs’ capabilities. For instance, a very important package if you plan to use Emacs for statistics or data science is <code>ESS</code>, <code>E</code>macs <code>S</code>peaks <code>S</code>tatistics. Emacs contains other very high quality packages, and it seems to me (but don’t quote me on that) that Emacs’ packages are more mature and feature-rich than vi’s plugins. However, vi keybindings are really awesome. This is, I believe, what <a href="https://twitter.com/syl20bnr">Sylvain Benner</a> was thinking when he developed Spacemacs.
 </p>
-<p>
-<img src="../assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 Spacemacs’ motto is that <em>The best editor is neither Emacs nor Vim, it’s Emacs and Vim!</em>. Spacemacs is a version, or distribution of Emacs, that has a very specific way of doing things. However, since it’s built on top of Emacs, all of Emacs’ packages are available to the user, notably <em>Evil</em>, which is a package that makes Emacs mimick vi’s modal mode and keybindings (the name of this package tells you everything you need to know about what Emacs users think of vi users 😀)
 </p>
 <p>
 Not only does Spacemacs support Emacs packages, but Spacemacs also features so-called <em>layers</em>, which are configuration files that integrate one, or several packages, seamlessly into Spacemacs particular workflow. This particular workflow is what gave Spacemacs its name. Instead of relying on <strong>ESC</strong>, <strong>CTRL</strong>, <strong>ALT</strong> or <strong>META</strong> like Emacs, users can launch functions by typing <strong>Space</strong> in <em>Normal</em> mode and then a sequence of letters. For instance, <strong>Spaceqr</strong> restarts Spacemacs. And what’s more, you don’t actually need to learn these new key sequences. When you type <strong>Space</strong>, the minibuffer, a little popup window at the bottom of Spacemacs, appears and shows you all the options that you can type. For instance, typing <strong>b</strong> after <strong>Space</strong> opens up the buffer menu. Buffers are what could be called tabs in Rstudio. Here you can chose to <em>delete</em> a buffer, with <strong>d</strong>, create a new buffer with <strong>N</strong>, and many more options.
 </p>
-<p>
-<img src="../assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 Enough text, let’s get into the videos. But keep in mind the following: the videos below show the keystrokes I am typing to perform the actions. However, because I use the BÉPO keyboard layout, which is the french equivalent of the DVORAK layout, the keystrokes will be different than those in a regular vi guide, which are mainly written for the QWERTY layout. Also, to use Spacemacs for R, you need to enable the <strong>ESS</strong> layer, which I show how to do at the end. Enabling this layer will turn on auto-completion, as well as provide documentation in real time for your function in the minibuffer:
 </p>
-<p>
-<img src="../assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;">
-</p>
-<p>
-<img src="../assets/img/spacemacs_doc.png" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;" width="80%" height="auto">
+</div>
+<div style="text-align: center;">
+<img src="../assets/img/spacemacs_doc.png" style="display: block; margin: auto;" width="80%" height="auto">
+</div>
 <p>
 The first video shows Spacemacs divided into two windows. On the left, I am navigating around code using the <strong>T</strong> (move down) and <strong>S</strong> (move up) keys. To execute a region that I select, I type <strong>Spacemrr</strong> (this stands for <strong>M</strong>ajor mode <strong>R</strong>un <strong>R</strong>egion). Then around second 5, I key <strong>O</strong> which switches to <em>Insert</em> mode one line below the line I was, type <code>head(mtcars)</code> and then <strong>ESC</strong> to switch back to <em>Normal</em> mode and run the line with <strong>Spacemrl</strong> (<strong>M</strong>ajor mode <strong>R</strong>un <strong>L</strong>ine).
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_01_running_lines.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -205,7 +205,7 @@ Your browser does not support the video tag. </video>
 In this video, I show you how to switch between windows. Type <strong>SpaceN</strong> to switch to window N. At the end, I key <strong>dd</strong> which deletes a whole line.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_02_switching_windows.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -213,7 +213,7 @@ Your browser does not support the video tag. </video>
 In the video below, I show how to use the pipe operator with <strong>Spacemm</strong>. This is a keyboard shortcut that I have defined myself. You can also spot the auto-completion at work in this video. To run the code, I first select it with <strong>V</strong>, which selects the whole line the cursor is currently at and enters <em>Visual</em> mode. I then select the lines below with <strong>T</strong> and run the region with <strong>Spacemrr</strong>.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_03_pipe.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -221,7 +221,7 @@ Your browser does not support the video tag. </video>
 Here I show how plotting behaves. When a plot is created, a new window is opened with the plot. This is a major shortcoming of using Spacemacs for R programming; there is not a dedicated buffer for plots, and it only shows the very last one created, so there is no way to keep all the plots created in the current session in a neat, dedicated buffer. It seems to be possible using <a href="https://github.com/erikriverson/org-mode-R-tutorial/blob/master/org-mode-R-tutorial.org">Org-mode</a>, which is an Emacs mode for writing notes, todos, and authoring documents. But I haven’t explored this option yet, mainly because in my case, only looking at one plot at a time is ok.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_04_ggplot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -229,7 +229,7 @@ Your browser does not support the video tag. </video>
 Here I show how to quickly add text to the top of the document when at the cursor is at the bottom: I try to use the <code>tabyl()</code> function found in the <code>{janitor}</code> package, which I forgot to load. I quickly go all the way up with <strong>gg</strong>, then key <strong>yy</strong> to copy the first line, then <strong>P</strong> to paste it on the line below (<strong>p</strong> would paste it on the same line), type <strong>fv</strong>, to <strong>f</strong>ind the letter v from the word “tidyverse”, then type <strong>liw</strong> (which is the BÉPO equivalent of <strong>ciw</strong> for <strong>C</strong>hange <strong>I</strong>n <strong>W</strong>ord) and finally change “tidyverse” to “janitor”. This seems overly complex, but once you get used to this way of working, you will wonder why you hadn’t tried vi sooner.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_05_janitor.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -237,7 +237,7 @@ Your browser does not support the video tag. </video>
 Here I show how to do block comment. <strong>8gg</strong> jumps to the 8th line, <strong>CTRLv</strong> starts block visual mode, which allows me to select a block of text. I select the first column of the text, <strong>G</strong> to jump all the way down, then <strong>A</strong> to enter insert mode at the end of the selection (actually, it would have been more logical to use <strong>I</strong>, which enters insert mode at the beginning of the selection) of the line and then add “#” to comment.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_06_block_comment.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -245,7 +245,7 @@ Your browser does not support the video tag. </video>
 Here I show how to delete a block of text:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_07_block_delete.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -253,7 +253,7 @@ Your browser does not support the video tag. </video>
 Search and replace, by entering <em>command-line</em> mode (look at the very bottom of the window):
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_08_search_replace_undo.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -261,7 +261,7 @@ Your browser does not support the video tag. </video>
 I forgot to add “,” characters on a bunch of lines. I add the first “,” to the first line, go down and press <strong>ESC</strong> to exit <em>Insert</em> mode. Now in <strong>Normal</strong> mode, I type <strong>.</strong> to execute the last command, which is <em>inserting a “,” character and going down a line</em>. This <em>dot command</em> is a feature of vi, and it will always redo the last performed change.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_09_dot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -269,7 +269,7 @@ Your browser does not support the video tag. </video>
 But instead of typing <strong>.</strong> six times, just type <strong>6.</strong> and be done with it:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_09b_repeated_dot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -277,7 +277,7 @@ Your browser does not support the video tag. </video>
 What if you want to do something more complex, involving several commands? Here the <em>dot command</em> won’t be enough, since it only replicates the last command, not more. For this you can define macros with **<span class="citation"><span class="citation" data-cites="*">@*</span></span>*. I look for the “,” character, twice, and put the rest of the characters in the next line with enter. I then repeat this operation by executing the macro using <strong>@‌‌a</strong> repeatedly (<strong>@‌‌a</strong> because I saved the actions in <strong>a</strong>, but it could have been any other letter). I then undo my changes and execute the macro 5 times with <strong>5@‌‌a</strong>.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_10_macros.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -285,7 +285,7 @@ Your browser does not support the video tag. </video>
 Here I show the undo tree (by typing <strong>Spaceua</strong>), which is a feature Spacemacs inherited from Emacs: it makes undoing changes and going back to a previous version of your script very easily:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_11_undo_tree.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -300,7 +300,7 @@ Finally, I show my Spacemacs configuration file. I show where one needs to speci
 which makes working with RMarkdown possible. <code>polymode</code> enables simultaneous Major modes, which is needed for RMarkdown (because RMarkdown files mix Markdown and R).
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_12_config.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>

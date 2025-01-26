@@ -232,7 +232,7 @@ If we want to find the optimal quantities (q_1) and (q_2) we need to program the
 This new class has two <em>slots</em>, which here are functions (in general <em>slots</em> are properties of your class); we need the model to return the optimality condition and the jacobian of the optimality condition.
 </p>
 <p>
-Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta"> of the model:
+Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta" width="80%" height="auto"> of the model:
 </p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_mod <span class="ot">&lt;-</span> <span class="cf">function</span>(eta, c) {</span>
@@ -283,7 +283,7 @@ Now, we can use the <code>rootSolve</code> package to get the optimal values (q_
 ## [1] 6.074e-09
 </code></pre>
 <p>
-After 4 iterations, we get that <img src="http://latex.codecogs.com/png.latex?\inline q_1" alt="\inline q_1"> and <img src="http://latex.codecogs.com/png.latex?\inline q_2" alt="\inline q_2"> are equal to 0.84 and 0.69 respectively, which are the same values as in the book!
+After 4 iterations, we get that <img src="http://latex.codecogs.com/png.latex?\inline q_1" alt="\inline q_1" width="80%" height="auto"> and <img src="http://latex.codecogs.com/png.latex?\inline q_2" alt="\inline q_2" width="80%" height="auto"> are equal to 0.84 and 0.69 respectively, which are the same values as in the book!
 </p>
 <h3 class="anchored">
 Suggestion by Reddit user, TheDrownedKraken

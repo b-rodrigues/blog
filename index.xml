@@ -21,7 +21,7 @@
 
 <div style="text-align:center;">
 <p>
-<a href="https://leanpub.com/modern_tidyverse"> <img src="https://b-rodrigues.github.io/assets/img/cover_modern.png" title="Click here to go to Leanpub" width="500" height="647"></a>
+<a href="https://leanpub.com/modern_tidyverse"> <img src="https://b-rodrigues.github.io/assets/img/cover_modern.png" title="Click here to go to Leanpub" with="90%" height="auto" width="80%"></a>
 </p>
 </div>
 <p>
@@ -79,7 +79,7 @@ By the way, the cover of the book is a painting by John William Waterhouse, depi
 
 <div style="text-align:center;">
 <p>
-<a href="https://psyarxiv.com/4gmbv"> <img src="https://b-rodrigues.github.io/assets/img/illegal.png" title="Even psychologists are not safe" width="800" height="612"></a>
+<a href="https://psyarxiv.com/4gmbv"> <img src="https://b-rodrigues.github.io/assets/img/illegal.png" title="Even psychologists are not safe" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -463,7 +463,7 @@ Now, this study might in itself not be very interesting to you, but I believe th
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/columns.jpg" title="Not that kind of columns" width="1119" height="720"></a>
+<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/columns.jpg" title="Not that kind of columns" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -494,7 +494,7 @@ To me, this sounded a bit like missing data imputation problem, but where all th
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/curly.jpg" title="Not that kind of columns" width="1119" height="720"></a>
+<a href="https://en.wikipedia.org/wiki/Row_and_column_vectors"> <img src="https://b-rodrigues.github.io/assets/img/curly.jpg" title="Not that kind of columns" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -617,7 +617,7 @@ Much easier and cleaner! You still have to use the <code>:=</code> operator inst
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="https://b-rodrigues.github.io/assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="600" height="400"></a>
+<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="https://b-rodrigues.github.io/assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -633,9 +633,9 @@ library(brotools)</code></pre>
 ggplot(rdieharder) +
   geom_line(aes(y = count, x = date), colour = "#82518c") +
   theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/intermittent-3-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-3-1.png" width="80%" height="auto">
+</div>
 <p>
 Let’s take a look at just one month of data, because the above plot is not very clear, because of the outlier just before 2019… I wonder now, was that on Christmas day?
 </p>
@@ -652,9 +652,9 @@ Not exactly on Christmas day, but almost! Anyways, let’s look at one month of 
 ggplot(january_2018) +
   geom_line(aes(y = count, x = date), colour = "#82518c") +
   theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/intermittent-5-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-5-1.png" width="80%" height="auto">
+</div>
 <p>
 Now, it is clear that this will be tricky to forecast. There is no discernible pattern, no trend, no seasonality… nothing that would make it “easy” for a model to learn how to forecast such data.
 </p>
@@ -732,9 +732,9 @@ test_data_longer &lt;- test_data %&gt;%
 <pre class="r"><code>ggplot(test_data_longer) +
   geom_line(aes(y = value, x = date, colour = models)) +
   theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/intermittent-13-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/intermittent-13-1.png" width="80%" height="auto">
+</div>
 <p>
 Just to make sure I didn’t make a mistake when writing the <code>mase()</code> function, let’s use the <code>accuracy()</code> function from the <code>{forecast}</code> package and compare the result for the Neural Network:
 </p>
@@ -768,7 +768,7 @@ How else would you have forecast this data? Let me know via twitter!
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Seneca_the_Younger"> <img src="https://b-rodrigues.github.io/assets/img/seneca.png" title="Seneca the Younger" width="400" height="600"></a>
+<a href="https://en.wikipedia.org/wiki/Seneca_the_Younger"> <img src="https://b-rodrigues.github.io/assets/img/seneca.png" title="Seneca the Younger" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -998,7 +998,7 @@ As we can see from these examples, this seems to be working quite well: the firs
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="https://b-rodrigues.github.io/assets/img/typical_emacs_user.gif" title="typical emacs user working"></a>
+<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="https://b-rodrigues.github.io/assets/img/typical_emacs_user.gif" title="typical emacs user working" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -1014,9 +1014,9 @@ As you can notice from the tweet above, I suggested the use of <a href="http://s
 <p>
 Spacemacs is a strange beast; if vi and Emacs had a baby, it would certainly look like Spacemacs. So first of all, to understand what is Spacemacs, one has to know a bit about vi and Emacs.
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/vim.png" width="100%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/vim.png" width="100%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 vi is a text editor with 43 years of history now. You might have heard of Vim (Vi IMproved) which is a modern clone of vi, from 1991. More recently, another clone has been getting popular, Neovim, started in 2014. Whatever version of vi however, its basic way of functioning remains the same. vi is a modal editor, meaning that the user has to switch between different modes to work on a text file. When vi is first started, the program will be in <em>Normal</em> mode. In this mode, trying to type a word will likely result in nothing, or unexpected behaviour; unexpected, if you’re not familiar with vi. For instance, in <em>Normal</em> mode, typing <strong>j</strong> will not show the character <strong>j</strong> on your screen. Instead, this will move the cursor down one line. Typing <strong>p</strong> will paste, <strong>u</strong> will undo the last action, <strong>y</strong> will yank (copy) etc…
 </p>
@@ -1035,38 +1035,38 @@ vi keybindings have inspired a lot of other programs. For instance, you can get 
 <p>
 I will show some common vi operations below, but before that let’s discuss Emacs.
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/emacs.png" width="80%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/emacs.png" width="80%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 I am not really familiar with Emacs; I know that Emacs users only swear by it (just like vi users only swear by vi), and that Emacs is not a modal editor. However, it contains a lot of functions that you can use by pressing <strong>ESC</strong>, <strong>CTRL</strong>, <strong>ALT</strong> or <strong>META</strong> (<strong>META</strong> is the Windows key on a regular PC keyboard) followed by regular keys. So the approach is different, but it is widely accepted that productivity of proficient Emacs users is very high too. Emacs was started in 1985, and the most popular clone is GNU Emacs. Emacs also features modes, but not in the same sense as vi. There are major and minor modes. For instance, if you’re editing a Python script, Emacs will be in Python mode, or if editing a Markdown file Emacs will be in Markdown mode. This will change the available functions to the user, as well as provide other niceties, such as auto-completion. Emacs is also easily extensible, which is another reason why it is so popular. Users can install packages for Emacs, just like R users would do for R, to extend Emacs’ capabilities. For instance, a very important package if you plan to use Emacs for statistics or data science is <code>ESS</code>, <code>E</code>macs <code>S</code>peaks <code>S</code>tatistics. Emacs contains other very high quality packages, and it seems to me (but don’t quote me on that) that Emacs’ packages are more mature and feature-rich than vi’s plugins. However, vi keybindings are really awesome. This is, I believe, what <a href="https://twitter.com/syl20bnr">Sylvain Benner</a> was thinking when he developed Spacemacs.
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 Spacemacs’ motto is that <em>The best editor is neither Emacs nor Vim, it’s Emacs and Vim!</em>. Spacemacs is a version, or distribution of Emacs, that has a very specific way of doing things. However, since it’s built on top of Emacs, all of Emacs’ packages are available to the user, notably <em>Evil</em>, which is a package that makes Emacs mimick vi’s modal mode and keybindings (the name of this package tells you everything you need to know about what Emacs users think of vi users 😀)
 </p>
 <p>
 Not only does Spacemacs support Emacs packages, but Spacemacs also features so-called <em>layers</em>, which are configuration files that integrate one, or several packages, seamlessly into Spacemacs particular workflow. This particular workflow is what gave Spacemacs its name. Instead of relying on <strong>ESC</strong>, <strong>CTRL</strong>, <strong>ALT</strong> or <strong>META</strong> like Emacs, users can launch functions by typing <strong>Space</strong> in <em>Normal</em> mode and then a sequence of letters. For instance, <strong>Spaceqr</strong> restarts Spacemacs. And what’s more, you don’t actually need to learn these new key sequences. When you type <strong>Space</strong>, the minibuffer, a little popup window at the bottom of Spacemacs, appears and shows you all the options that you can type. For instance, typing <strong>b</strong> after <strong>Space</strong> opens up the buffer menu. Buffers are what could be called tabs in Rstudio. Here you can chose to <em>delete</em> a buffer, with <strong>d</strong>, create a new buffer with <strong>N</strong>, and many more options.
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;" height="auto">
+</div>
 <p>
 Enough text, let’s get into the videos. But keep in mind the following: the videos below show the keystrokes I am typing to perform the actions. However, because I use the BÉPO keyboard layout, which is the french equivalent of the DVORAK layout, the keystrokes will be different than those in a regular vi guide, which are mainly written for the QWERTY layout. Also, to use Spacemacs for R, you need to enable the <strong>ESS</strong> layer, which I show how to do at the end. Enabling this layer will turn on auto-completion, as well as provide documentation in real time for your function in the minibuffer:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;">
-</p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/spacemacs_doc.png" style="display: block; margin: auto;">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;" width="80%" height="auto">
+</div>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/spacemacs_doc.png" style="display: block; margin: auto;" width="80%" height="auto">
+</div>
 <p>
 The first video shows Spacemacs divided into two windows. On the left, I am navigating around code using the <strong>T</strong> (move down) and <strong>S</strong> (move up) keys. To execute a region that I select, I type <strong>Spacemrr</strong> (this stands for <strong>M</strong>ajor mode <strong>R</strong>un <strong>R</strong>egion). Then around second 5, I key <strong>O</strong> which switches to <em>Insert</em> mode one line below the line I was, type <code>head(mtcars)</code> and then <strong>ESC</strong> to switch back to <em>Normal</em> mode and run the line with <strong>Spacemrl</strong> (<strong>M</strong>ajor mode <strong>R</strong>un <strong>L</strong>ine).
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_01_running_lines.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1074,7 +1074,7 @@ Your browser does not support the video tag. </video>
 In this video, I show you how to switch between windows. Type <strong>SpaceN</strong> to switch to window N. At the end, I key <strong>dd</strong> which deletes a whole line.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_02_switching_windows.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1082,7 +1082,7 @@ Your browser does not support the video tag. </video>
 In the video below, I show how to use the pipe operator with <strong>Spacemm</strong>. This is a keyboard shortcut that I have defined myself. You can also spot the auto-completion at work in this video. To run the code, I first select it with <strong>V</strong>, which selects the whole line the cursor is currently at and enters <em>Visual</em> mode. I then select the lines below with <strong>T</strong> and run the region with <strong>Spacemrr</strong>.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_03_pipe.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1090,7 +1090,7 @@ Your browser does not support the video tag. </video>
 Here I show how plotting behaves. When a plot is created, a new window is opened with the plot. This is a major shortcoming of using Spacemacs for R programming; there is not a dedicated buffer for plots, and it only shows the very last one created, so there is no way to keep all the plots created in the current session in a neat, dedicated buffer. It seems to be possible using <a href="https://github.com/erikriverson/org-mode-R-tutorial/blob/master/org-mode-R-tutorial.org">Org-mode</a>, which is an Emacs mode for writing notes, todos, and authoring documents. But I haven’t explored this option yet, mainly because in my case, only looking at one plot at a time is ok.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_04_ggplot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1098,7 +1098,7 @@ Your browser does not support the video tag. </video>
 Here I show how to quickly add text to the top of the document when at the cursor is at the bottom: I try to use the <code>tabyl()</code> function found in the <code>{janitor}</code> package, which I forgot to load. I quickly go all the way up with <strong>gg</strong>, then key <strong>yy</strong> to copy the first line, then <strong>P</strong> to paste it on the line below (<strong>p</strong> would paste it on the same line), type <strong>fv</strong>, to <strong>f</strong>ind the letter v from the word “tidyverse”, then type <strong>liw</strong> (which is the BÉPO equivalent of <strong>ciw</strong> for <strong>C</strong>hange <strong>I</strong>n <strong>W</strong>ord) and finally change “tidyverse” to “janitor”. This seems overly complex, but once you get used to this way of working, you will wonder why you hadn’t tried vi sooner.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_05_janitor.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1106,7 +1106,7 @@ Your browser does not support the video tag. </video>
 Here I show how to do block comment. <strong>8gg</strong> jumps to the 8th line, <strong>CTRLv</strong> starts block visual mode, which allows me to select a block of text. I select the first column of the text, <strong>G</strong> to jump all the way down, then <strong>A</strong> to enter insert mode at the end of the selection (actually, it would have been more logical to use <strong>I</strong>, which enters insert mode at the beginning of the selection) of the line and then add “#” to comment.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_06_block_comment.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1114,7 +1114,7 @@ Your browser does not support the video tag. </video>
 Here I show how to delete a block of text:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_07_block_delete.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1122,7 +1122,7 @@ Your browser does not support the video tag. </video>
 Search and replace, by entering <em>command-line</em> mode (look at the very bottom of the window):
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_08_search_replace_undo.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1130,7 +1130,7 @@ Your browser does not support the video tag. </video>
 I forgot to add “,” characters on a bunch of lines. I add the first “,” to the first line, go down and press <strong>ESC</strong> to exit <em>Insert</em> mode. Now in <strong>Normal</strong> mode, I type <strong>.</strong> to execute the last command, which is <em>inserting a “,” character and going down a line</em>. This <em>dot command</em> is a feature of vi, and it will always redo the last performed change.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_09_dot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1138,7 +1138,7 @@ Your browser does not support the video tag. </video>
 But instead of typing <strong>.</strong> six times, just type <strong>6.</strong> and be done with it:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_09b_repeated_dot.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1146,7 +1146,7 @@ Your browser does not support the video tag. </video>
 What if you want to do something more complex, involving several commands? Here the <em>dot command</em> won’t be enough, since it only replicates the last command, not more. For this you can define macros with **<span class="citation"><span class="citation" data-cites="*">@*</span></span>*. I look for the “,” character, twice, and put the rest of the characters in the next line with enter. I then repeat this operation by executing the macro using <strong>@‌‌a</strong> repeatedly (<strong>@‌‌a</strong> because I saved the actions in <strong>a</strong>, but it could have been any other letter). I then undo my changes and execute the macro 5 times with <strong>5@‌‌a</strong>.
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_10_macros.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1154,7 +1154,7 @@ Your browser does not support the video tag. </video>
 Here I show the undo tree (by typing <strong>Spaceua</strong>), which is a feature Spacemacs inherited from Emacs: it makes undoing changes and going back to a previous version of your script very easily:
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_11_undo_tree.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1169,7 +1169,7 @@ Finally, I show my Spacemacs configuration file. I show where one needs to speci
 which makes working with RMarkdown possible. <code>polymode</code> enables simultaneous Major modes, which is needed for RMarkdown (because RMarkdown files mix Markdown and R).
 </p>
 <div style="text-align:center;">
-<video width="864" height="480" controls="">
+<video width="80%" height="auto" controls="">
 <source src="../assets/img/spacemacs_12_config.mp4" type="video/mp4">
 Your browser does not support the video tag. </video>
 </div>
@@ -1267,7 +1267,7 @@ before packages are loaded."
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="https://b-rodrigues.github.io/assets/img/napoleon_death_mask.jpg" title="I will probably be the only reader of this blog post"></a>
+<a href="https://en.wikipedia.org/wiki/Death_mask"> <img src="https://b-rodrigues.github.io/assets/img/napoleon_death_mask.jpg" title="I will probably be the only reader of this blog post" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -1335,7 +1335,7 @@ The solution, which can found <a href="https://github.com/r-lib/remotes/issues/3
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Joke"> <img src="https://b-rodrigues.github.io/assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes"></a>
+<a href="https://en.wikipedia.org/wiki/Joke"> <img src="https://b-rodrigues.github.io/assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -1575,9 +1575,9 @@ The data can now be used to create some nifty plots:
     labs(title = "Distribution of starting wage rates in fast food restaurants",
          caption = "On April 1st, 1992, New Jersey's minimum wage rose from $4.25 to $5.05. Source: Card and Krueger (1994)")</code></pre>
 <pre><code>## Warning: Removed 41 rows containing non-finite values (stat_density).</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/diffindiff_part2-6-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/diffindiff_part2-6-1.png" width="80%" height="auto">
+</div>
 <p>
 In the next blog post, I am going to write a first function to perform diff and diff, and we will learn how to make it available to users, document and test it!
 </p>
@@ -1600,7 +1600,7 @@ In the next blog post, I am going to write a first function to perform diff and 
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Joke"> <img src="https://b-rodrigues.github.io/assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes"></a>
+<a href="https://en.wikipedia.org/wiki/Joke"> <img src="https://b-rodrigues.github.io/assets/img/distracted_economist.jpg" title="Soon, humanity will only communicate in memes" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -1618,27 +1618,27 @@ Anyways, this blog post will discuss how to create a package using to distribute
 <p>
 The first step to create a package, is to create a new project:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/package_01.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/package_01.png" width="80%" height="auto">
+</div>
 <p>
 Select “New Directory”:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/package_02.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/package_02.png" width="80%" height="auto">
+</div>
 <p>
 Then “R package”:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/package_03.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/package_03.png" width="80%" height="auto">
+</div>
 <p>
 and on the window that appears, you can choose the name of the package, as well as already some starting source files:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/package_04.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/package_04.png" width="80%" height="auto">
+</div>
 <p>
 Also, I’d highly recommend you click on the “Create a git repository” box and use git within your project for reproducibility and sharing your code more easily. If you do not know git, there’s a lot of online resources to get you started. It’s not super difficult, but it does require making some new habits, which can take some time.
 </p>
@@ -1762,15 +1762,15 @@ git push origin master</code></pre>
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Cliometrics"> <img src="https://b-rodrigues.github.io/assets/img/clio.jpg" title="Historical newspapers as a source to practice cliometrics?"></a>
+<a href="https://en.wikipedia.org/wiki/Cliometrics"> <img src="https://b-rodrigues.github.io/assets/img/clio.jpg" title="Historical newspapers as a source to practice cliometrics?" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
 I have been playing around with historical newspapers data for some months now. The “obvious” type of analysis to do is NLP, but there is also a lot of numerical data inside historical newspapers. For instance, you can find these tables that show the market prices of the day in the <em>L’Indépendance Luxembourgeoise</em>:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/market_price_table.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/market_price_table.png" width="80%" height="auto">
+</div>
 <p>
 I wanted to see how easy it was to extract these tables from the newspapers and then make it available. It was a bit more complicated than anticipated.
 </p>
@@ -1852,9 +1852,9 @@ image_paths %&gt;%
 <p>
 The picture below shows the result:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/table_and_edit.jpg"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/table_and_edit.jpg" width="80%" height="auto">
+</div>
 <p>
 Now comes the complicated part, which is going from the image above, to the dataset below:
 </p>
@@ -2088,9 +2088,9 @@ library(brotools)</code></pre>
     theme_blog() + 
     labs(title = "Prices of smoked pig meat at the Luxembourg-City market in the 19th century")</code></pre>
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_path).</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-9-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-9-1.png" width="80%" height="auto">
+</div>
 <p>
 As you can see, there is a huge spike somewhere in 1874. Maybe there was a very severe smoked pig meat shortage that caused the prices to increase dramatically, but the more likely explanation is that there was some sort of mistake, either in the OCR step, or when I extracted the prices, and somehow that particular price of smoked pig meat is actually the price of another, more expensive good.
 </p>
@@ -2104,9 +2104,9 @@ So let’s only consider prices that are below, say, 20 franks, which is already
     geom_line(aes(group = 1), colour = "#82518c") + 
     theme_blog() + 
     labs(title = "Prices of smoked pig meat at the Luxembourg-City market in the 1870s")</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-10-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-10-1.png" width="80%" height="auto">
+</div>
 <p>
 Now, some prices are very high. Let’s check if it’s a mistake:
 </p>
@@ -2125,9 +2125,9 @@ If you go to the first url, you will land on the first page of the newspaper. To
 <p>
 You will then find the following:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/price_smoked_pig.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/price_smoked_pig.png" width="80%" height="auto">
+</div>
 <p>
 As you can see, the price was 2.5, but the OCR returned 7.5. This is a problem that is unavoidable with OCR; there is no way of knowing a priori if characters were not well recognized. It is actually quite interesting how the price for smoked pig meat stayed constant through all these years. A density plot shows that most prices were around 2.5:
 </p>
@@ -2137,9 +2137,9 @@ As you can see, the price was 2.5, but the OCR returned 7.5. This is a problem t
     ggplot() + 
     geom_density(aes(price), colour = "#82518c") + 
     theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-13-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-13-1.png" width="80%" height="auto">
+</div>
 <p>
 What about another good, say, barley?
 </p>
@@ -2149,9 +2149,9 @@ What about another good, say, barley?
     geom_line(aes(group = 1), colour = "#82518c") + 
     theme_blog() + 
     labs(title = "Prices of barley at the Luxembourg-City market in the 1870s")</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-14-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-14-1.png" width="80%" height="auto">
+</div>
 <p>
 Here again, we see some very high spikes, most likely due to errors. Let’s try to limit the prices to likely values:
 </p>
@@ -2162,18 +2162,18 @@ Here again, we see some very high spikes, most likely due to errors. Let’s try
     geom_line(aes(group = 1), colour = "#82518c") + 
     theme_blog() + 
     labs(title = "Prices of barley at the Luxembourg-City market in the 1870s")</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-15-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-15-1.png" width="80%" height="auto">
+</div>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == "Barley") %&gt;% 
     ggplot() + 
     geom_density(aes(price), colour = "#82518c") + 
     theme_blog()</code></pre>
 <pre><code>## Warning: Removed 39 rows containing non-finite values (stat_density).</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-16-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-16-1.png" width="80%" height="auto">
+</div>
 <p>
 Let’s finish this with one of my favourite legume, lentils:
 </p>
@@ -2183,18 +2183,18 @@ Let’s finish this with one of my favourite legume, lentils:
     geom_line(aes(group = 1), colour = "#82518c") + 
     theme_blog() + 
     labs(title = "Prices of lentils at the Luxembourg-City market in the 1870s")</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-17-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-17-1.png" width="80%" height="auto">
+</div>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == "Lentils") %&gt;% 
     ggplot() + 
     geom_density(aes(price), colour = "#82518c") + 
     theme_blog()</code></pre>
 <pre><code>## Warning: Removed 79 rows containing non-finite values (stat_density).</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-18-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-18-1.png" width="80%" height="auto">
+</div>
 <p>
 All these 0’s might be surprising, but in most cases, they are actually true zeros! For example, you can check this <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fwsvhwh%2Fpages%2F3/pct:74,0,100,100/full/0/default.jpg">issue</a>. This very likely means that no lentils were available that day at the market. Let’s get rid of the 0s and other extreme values:
 </p>
@@ -2205,9 +2205,9 @@ All these 0’s might be surprising, but in most cases, they are actually true z
     geom_line(aes(group = 1), colour = "#82518c") + 
     theme_blog() + 
     labs(title = "Prices of lentils at the Luxembourg-City market in the 1870s")</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-19-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/historical_newspaper_scraping_tesseract-19-1.png" width="80%" height="auto">
+</div>
 <p>
 I would like to see if the spikes above 30 are errors or not:
 </p>
@@ -2256,7 +2256,7 @@ I’m going to finish here; it was an interesting project, and I can’t wait fo
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/Michel_Rodange"> <img src="https://b-rodrigues.github.io/assets/img/michelrodange.jpg" title="The high school I attended was named after this gentleman"></a>
+<a href="https://en.wikipedia.org/wiki/Michel_Rodange"> <img src="https://b-rodrigues.github.io/assets/img/michelrodange.jpg" title="The high school I attended was named after this gentleman" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -2265,15 +2265,15 @@ In this blog post I’m going to show you how you can extract text from scanned 
 <p>
 The pdf I’m going to use can be downloaded from <a href="http://www.luxemburgensia.bnl.lu/cgi/getPdf1_2.pl?mode=item&amp;id=7110">here</a>. It’s a poem titled, <em>D’Léierchen (Dem Léiweckerche säi Lidd)</em>, written by Michel Rodange, arguably Luxembourg’s most well known writer and poet. Michel Rodange is mostly known for his fable, <em>Renert oder De Fuuß am Frack an a Ma’nsgrëßt</em>, starring a central European <a href="https://en.wikipedia.org/wiki/Reynard_the_Fox">trickster anthropomorphic red fox</a>.
 </p>
-<p>
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Reynard-the-fox.jpg"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Reynard-the-fox.jpg" width="80%" height="auto">
+</div>
 <p>
 Anyway, back to the point of this blog post. How can we get data from a pdf where no text recognition was performed (or, how can we get text from an image)? The pdf we need the text from looks like this:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/dleierchen_03.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/dleierchen_03.png" width="80%" height="auto">
+</div>
 <p>
 To get the text from the pdf, we can use the <code>{tesseract}</code> package, which provides bindings to the <code>tesseract</code> program. <code>tesseract</code> is an open source OCR engine developed by Google. This means that first you will need to install the <code>tesseract</code> program on your system. You can follow the intructions from <code>tesseract</code>’s github <a href="https://github.com/tesseract-ocr/tesseract">page</a>. <code>tesseract</code> is currently at version 4.
 </p>
@@ -2303,9 +2303,9 @@ second_half &lt;- map(images, ~image_crop(., geometry = "2307x6462+2307+0"))</co
 <p>
 Because the pngs are 4614 by 6962 pixels, I can get the first half of the png by cropping at “2307x6462” (I decrease the height a bit to get rid of the page number), and the second half by applying the same logic, but starting the cropping at the “2307+0” position. The result looks like this:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/dleierchen_cropped.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/dleierchen_cropped.png" width="80%" height="auto">
+</div>
 <p>
 Much better! Now I need to join these two lists together. I cannot simply join them. Consider the following example:
 </p>
@@ -2410,9 +2410,9 @@ The end result:
 <p>
 Perfect! Some more cleaning would be needed though. For example, I need to remove the little annotations that are included:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/dleierchen_anot.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/dleierchen_anot.png" width="80%" height="auto">
+</div>
 <p>
 I don’t know yet how I’m going to do that.I also need to remove the line numbers at the beginning of every fourth line, but this is easily done with a simple regular expression:
 </p>
@@ -2440,7 +2440,7 @@ But this will be left for a future blog post!
 
 <div style="text-align:center;">
 <p>
-<a href="https://youtu.be/R2u0sN9stbA?t=69"> <img src="https://b-rodrigues.github.io/assets/img/pivot.jpg" title="You know where this leads"></a>
+<a href="https://youtu.be/R2u0sN9stbA?t=69"> <img src="https://b-rodrigues.github.io/assets/img/pivot.jpg" title="You know where this leads" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -2790,7 +2790,7 @@ Stay tuned to Hadley Wickham’s <a href="https://twitter.com/hadleywickham">twi
 
 <div style="text-align:center;">
 <p>
-<a href="https://youtu.be/BilPXIt0R2w?t=41"> <img src="https://b-rodrigues.github.io/assets/img/wabbit_reading.jpg" title="Vowpal Wabbit is fast as heck"></a>
+<a href="https://youtu.be/BilPXIt0R2w?t=41"> <img src="https://b-rodrigues.github.io/assets/img/wabbit_reading.jpg" title="Vowpal Wabbit is fast as heck" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -3070,14 +3070,14 @@ Better accuracy can certainly be achieved with hyper-parameter tuning… maybe t
 
 <div style="text-align:center;">
 <p>
-<a href="https://youtu.be/BilPXIt0R2w?t=41"> <img src="https://b-rodrigues.github.io/assets/img/wabbit_reading.jpg" title="Vowpal Wabbit is fast as heck"></a>
+<a href="https://youtu.be/BilPXIt0R2w?t=41"> <img src="https://b-rodrigues.github.io/assets/img/wabbit_reading.jpg" title="Vowpal Wabbit is fast as heck" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
 Can I get enough of historical newspapers data? Seems like I don’t. I already wrote four (<a href="../posts/2019-01-04-newspapers.html">1</a>, <a href="../posts/2019-01-13-newspapers_mets_alto.html">2</a>, <a href="../posts/2019-01-31-newspapers_shiny_app.html">3</a> and <a href="../posts/2019-02-04-newspapers_shiny_app_tutorial.html">4</a>) blog posts, but there’s still a lot to explore. This blog post uses a new batch of data announced on twitter:
 </p>
 <div style="text-align:center" ;="">
-<p><img src="https://b-rodrigues.github.io/assets/img/ralph_marschall_tweet.png" style="width:80%;"></p>
+<div style="text-align: center;"><img src="https://b-rodrigues.github.io/assets/img/ralph_marschall_tweet.png" style="width:80%;" width="80%" height="auto"></div>
 </div>
 <p>
 and this data could not have arrived at a better moment, since something else got announced via Twitter recently:
@@ -3370,7 +3370,7 @@ In any case, that’s it for now! In the next blog post, we’ll see how to get 
 
 <div style="text-align:center;">
 <p>
-<a href="https://b-rodrigues.github.io/modern_R/descriptive-statistics-and-data-manipulation.html#manipulate-strings-with-stringr"> <img src="https://b-rodrigues.github.io/assets/img/string.jpg" title="Click here to go the ebook"></a>
+<a href="https://b-rodrigues.github.io/modern_R/descriptive-statistics-and-data-manipulation.html#manipulate-strings-with-stringr"> <img src="https://b-rodrigues.github.io/assets/img/string.jpg" title="Click here to go the ebook" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -3988,7 +3988,7 @@ That’s it for this section! You now know how to work with strings, but in Chap
 
 <div style="text-align:center;">
 <p>
-<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="https://b-rodrigues.github.io/assets/img/tf_idf.png" title="Click here to go the app"></a>
+<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="https://b-rodrigues.github.io/assets/img/tf_idf.png" title="Click here to go the app" width="80%" height="auto"></a>
 </p>
 </div>
 <section id="introduction" class="level2">
@@ -4275,15 +4275,15 @@ future_map(pathdirs, tidy_papers)</code></pre>
 <p>
 This is how one of these files looks like, after passing through this function:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/articles_rds.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/articles_rds.png" width="80%" height="auto">
+</div>
 <p>
 One line is one article. The first column is the id of the article, the second column contains a data frame, the text of the article and finally the title of the article. Let’s take a look at the content of the first element of the <em>data</em> column:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/merged_alto_mets.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/merged_alto_mets.png" width="80%" height="auto">
+</div>
 <p>
 This is the result of the merger of the METS and ALTO csv files. The first column is the id of the article, the second column contains each individual word of the article, the <em>label</em> column the label, or title of the article.
 </p>
@@ -4332,9 +4332,9 @@ toc - tic</code></pre>
 <p>
 And here is the result:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/pos_article.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/pos_article.png" width="80%" height="auto">
+</div>
 <p>
 The <em>upos</em> column contains the tags. Now I know which words are nouns, verbs, adjectives, stopwords… Meaning that I can easily focus on the type of words that interest me. Plus, as an added benefit, I can focus on the lemma of the words. For example, the word <em>viennent</em>, is the <a href="https://en.wikipedia.org/wiki/French_conjugation">conjugated</a> form of the verb <em>venir</em>. <em>venir</em> is thus the lemma of <em>viennent</em>. This means that I can focus my analysis on lemmata. This is useful, because if I compute the frequency of words, <em>viennent</em> would be different from <em>venir</em>, which is not really what we want.
 </p>
@@ -4459,9 +4459,9 @@ future_map(path_annotatedrds, prepare_textrank)</code></pre>
 <p>
 You can download the annotated data sets from the following <a href="https://github.com/b-rodrigues/newspapers_shinyapp/tree/master/textrank_data">link</a>. This is how the data looks like:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/textrank_df.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/textrank_df.png" width="80%" height="auto">
+</div>
 <p>
 Using the <code>summary()</code> function on an element of the <em>summary</em> column returns the 5 most relevant sentences as extracted by <code>{textrank}</code>.
 </p>
@@ -4633,7 +4633,7 @@ That was quite long, I’m not sure that anyone will read this blog post complet
 
 <div style="text-align:center;">
 <p>
-<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="https://b-rodrigues.github.io/assets/img/tf_idf.png" title="Click here to go the app"></a>
+<a href="https://brodriguesco.shinyapps.io/newspapers_app/"> <img src="https://b-rodrigues.github.io/assets/img/tf_idf.png" title="Click here to go the app" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -4670,7 +4670,7 @@ Let me know if you find about historical events using my app!
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="https://b-rodrigues.github.io/assets/img/union.png" title="The 19th century was a tough place"></a>
+<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="https://b-rodrigues.github.io/assets/img/union.png" title="The 19th century was a tough place" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -4680,13 +4680,13 @@ Last week I wrote a <a href="https://www.brodrigues.co/blog/2019-01-04-newspaper
 This is how a ALTO file looks like:
 </p>
 <p>
-<img src="https://b-rodrigues.github.io/assets/img/alto.png"><!-- -->
+<img src="https://b-rodrigues.github.io/assets/img/alto.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 Each page of the newspaper of a given day has one ALTO file. This is how a METS file looks like:
 </p>
 <p>
-<img src="https://b-rodrigues.github.io/assets/img/mets.png"><!-- -->
+<img src="https://b-rodrigues.github.io/assets/img/mets.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 For each daily issue of the newspaper, there is a METS file. So 1 METS file for 4 ALTO files.
@@ -4695,13 +4695,13 @@ For each daily issue of the newspaper, there is a METS file. So 1 METS file for 
 In my last blog post, I only extracted the words from the ALTO file (red rectangles of the first screenshot) and did not touch the METS file. The problem of doing this is that I get all the words for each page, without knowing which come from the same article. If I want to know which words come from the same article, I need to use the info from the METS file. From the METS file I have the ID of the article, and some other metadata, such as the title of the article and the type of the article (which can be <em>article</em>, <em>advertisement</em>, etc). The information highlighted with the green rectangles in the METS file can be linked to the green rectangles from the ALTO files. My goal is to get the following data frame from the METS file:
 </p>
 <p>
-<img src="https://b-rodrigues.github.io/assets/img/mets_df.png"><!-- -->
+<img src="https://b-rodrigues.github.io/assets/img/mets_df.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 and this data frame from the ALTO files:
 </p>
 <p>
-<img src="https://b-rodrigues.github.io/assets/img/alto_df.png"><!-- -->
+<img src="https://b-rodrigues.github.io/assets/img/alto_df.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 As you can see, by combining both data frames I can know which words come from the same article, which will be helpful for further analysis. <a href="https://en.wikipedia.org/wiki/1860s">A lot of things happened in the 1860s.</a> I am really curious to see if and how these events where reported in a Luxembourguish newspaper. I am particularly curious about how long it took to report certain news from far away, such as the assassination of Abraham Lincoln. But before that I need to extract the data!
@@ -4935,7 +4935,7 @@ toc - tic
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=0xzN6FM5x_E"> <img src="https://b-rodrigues.github.io/assets/img/Wales.jpg" title="Sometimes ads are better than this. Especially if it's Flex Tape ® ads."></a>
+<a href="https://www.youtube.com/watch?v=0xzN6FM5x_E"> <img src="https://b-rodrigues.github.io/assets/img/Wales.jpg" title="Sometimes ads are better than this. Especially if it's Flex Tape ® ads." width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -4958,33 +4958,33 @@ And oh boy. Interesting it was.
 <p>
 19th century newspapers articles were something else. There’s this article for instance:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/pray for senators.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/pray for senators.png" width="80%" height="auto">
+</div>
 <p>
 For those of you that do not read French, this article relates that in France, the ministry of justice required priests to include prayers on the Sunday that follows the start of the new season of parliamentary discussions, in order for God to provide senators his help.
 </p>
 <p>
 There this gem too:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/tallest_soldier.jpg"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/tallest_soldier.jpg" width="80%" height="auto">
+</div>
 <p>
 This article presents the tallest soldier of the German army, called Emhke, and nominated by the German Emperor himself to accompany him during his visit to Palestine. Emhke was 2.08 meters tall and weighted 236 pounds (apparently at the time Luxembourg was not fully sold on the metric system).
 </p>
 <p>
 Anyway, I decided to take a look at ads. The last paper of this 4 page newspaper always contained ads and other announcements. For example, there’s this ad for a pharmacy:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/pharmacy.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/pharmacy.png" width="80%" height="auto">
+</div>
 <p>
 that sells tea, and mineral water. Yes, tea and mineral water. In a pharmacy. Or this one:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/upside_down.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/upside_down.png" width="80%" height="auto">
+</div>
 <p>
 which is literally upside down in the newspaper (the one from the 10th of April 1877). I don’t know if it’s a mistake or if it’s a marketing ploy, but it did catch my attention, 140 years later, so <em>bravo</em>. This is an announcement made by a shop owner that wants to sell all his merchandise for cheap, perhaps to make space for new stuff coming in?
 </p>
@@ -5022,9 +5022,9 @@ ad_pages &lt;- str_match(list.files(path = "./", all.files = TRUE, recursive = T
 <p>
 I save the path of all the pages at once into the <code>ad_pages</code> variables. To understand how and why this works, you must take a look at the hierarchy of the folder:
 </p>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/layout.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/layout.png" width="80%" height="auto">
+</div>
 <p>
 Inside each of these folder, there is a <code>text</code> folder, and inside this folder there are the <code>.xml</code> files. Because this structure is bit complex, I use the <code>list.files()</code> function with the <code>all.files</code> and <code>recursive</code> argument set to <code>TRUE</code> which allow me to dig deep into the folder structure and list every single file. I am only interested into the 4th page though, so that’s why I use <code>str_match()</code> to only keep the 4th page using the <code>“.*4-alto.xml”</code> regular expression. This is the right regular expression, because the files are named like so:
 </p>
@@ -5130,9 +5130,9 @@ result %&gt;%
     facet_wrap(~ topic, scales = "free") +
     coord_flip() +
     theme_blog()</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/newspapers-13-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="https://b-rodrigues.github.io/assets/img/newspapers-13-1.png" width="80%" height="auto">
+</div>
 <p>
 So some topics seem clear to me, other not at all. For example topic 4 seems to be about shoes made out of leather. The word <code>semelle</code>, sole, also appears. Then there’s a lot of topics that reference either music, bals, or instruments. I guess these are ads for local music festivals, or similar events. There’s also an ad for what seems to be bundles of sticks, topic 3: <code>chêne</code> is oak, <code>copeaux</code> is shavings and you know what <code>fagots</code> is. The first word <code>stère</code> which I did not know is a unit of volume equal to one cubic meter (see <a href="https://en.wikipedia.org/wiki/Stere">Wikipedia</a>). So they were likely selling bundle of oak sticks by the cubic meter. For the other topics, I either lack context or perhaps I just need to adjust <code>k</code>, the number of topics to model, and <code>alpha</code> to get better results. In the meantime, topic 1 is about shoes (<code>chaussures</code>), theatre, fuel (<code>combustible</code>) and farts (<code>pet</code>). Really wonder what they were selling in that shop.
 </p>

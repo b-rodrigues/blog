@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="../assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="600" height="400"></a>
+<a href="https://en.wikipedia.org/wiki/List_of_Christmas_films"> <img src="../assets/img/diehard.jpg" title="Die Hard is the best Christmas movie" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -145,9 +145,9 @@ library(brotools)</code></pre>
 ggplot(rdieharder) +
   geom_line(aes(y = count, x = date), colour = "#82518c") +
   theme_blog()</code></pre>
-<p>
-<img src="../assets/img/intermittent-3-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/intermittent-3-1.png" width="80%" height="auto">
+</div>
 <p>
 Let’s take a look at just one month of data, because the above plot is not very clear, because of the outlier just before 2019… I wonder now, was that on Christmas day?
 </p>
@@ -164,9 +164,9 @@ Not exactly on Christmas day, but almost! Anyways, let’s look at one month of 
 ggplot(january_2018) +
   geom_line(aes(y = count, x = date), colour = "#82518c") +
   theme_blog()</code></pre>
-<p>
-<img src="../assets/img/intermittent-5-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/intermittent-5-1.png" width="80%" height="auto">
+</div>
 <p>
 Now, it is clear that this will be tricky to forecast. There is no discernible pattern, no trend, no seasonality… nothing that would make it “easy” for a model to learn how to forecast such data.
 </p>
@@ -244,9 +244,9 @@ test_data_longer &lt;- test_data %&gt;%
 <pre class="r"><code>ggplot(test_data_longer) +
   geom_line(aes(y = value, x = date, colour = models)) +
   theme_blog()</code></pre>
-<p>
-<img src="../assets/img/intermittent-13-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/intermittent-13-1.png" width="80%" height="auto">
+</div>
 <p>
 Just to make sure I didn’t make a mistake when writing the <code>mase()</code> function, let’s use the <code>accuracy()</code> function from the <code>{forecast}</code> package and compare the result for the Neural Network:
 </p>

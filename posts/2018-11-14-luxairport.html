@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=GIQn8pab8Vc"> <img src="../assets/img/lx_aie.jpg" title="Luxembourg's largest aircraft landing"></a>
+<a href="https://www.youtube.com/watch?v=GIQn8pab8Vc"> <img src="../assets/img/lx_aie.jpg" title="Luxembourg's largest aircraft landing" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -253,9 +253,9 @@ This separates the first column into 3 new columns, “unit”, “tra_meas” a
 <p>
 The next steps are simple renamings. I have copy-pasted the information from the Eurostat page where you can <a href="http://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=avia_par_lu&amp;lang=en">view the data online</a>. If you click here:
 </p>
-<p>
-<img src="../assets/img/eurostat_click_here.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/eurostat_click_here.png" width="80%" height="auto">
+</div>
 <p>
 you will be able to select the variables you want displayed in the table, as well as the dictionary of the variables. I simply copy pasted it and recoded the variables. You can take a look at the whole cleaning workflow by clicking “Click to expand” below:
 </p>
@@ -369,9 +369,9 @@ Time for some plots. Let’s start with the raw data:
     geom_line(aes(y = total, x = date), colour = "#82518c") +
     scale_x_date(date_breaks = "1 year", date_labels = "%m-%Y") + 
     theme_blog()</code></pre>
-<p>
-<img src="../assets/img/luxairport-16-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/luxairport-16-1.png" width="80%" height="auto">
+</div>
 <p>
 And now with the logged data (or rather, the data transformed using the inverted hyperbolic sine transformation):
 </p>
@@ -384,9 +384,9 @@ And now with the logged data (or rather, the data transformed using the inverted
     geom_line(aes(y = total_ihs, x = date), colour = "#82518c") +
     scale_x_date(date_breaks = "1 year", date_labels = "%m-%Y") + 
     theme_blog()</code></pre>
-<p>
-<img src="../assets/img/luxairport-17-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/luxairport-17-1.png" width="80%" height="auto">
+</div>
 <p>
 We clearly see a seasonal pattern in the data. There is also an upward trend. We will have to deal with these two problems if we want to do some forecasting. For this, let’s limit ourselves to data from before 2015, and convert the “passengers” column from the data to a time series object, using the <code>ts()</code> function:
 </p>
@@ -478,9 +478,9 @@ We can now plot the data, with the forecast, and with the 95% confidence interva
     geom_ribbon(data = estimated_data, aes(x = date, ymin = lower95, ymax = upper95), fill = "#666018", alpha = 0.2) +
     geom_line(data = estimated_data, aes(x = date, y = point_estimate), linetype = 2, colour = "#8e9d98") +
     theme_blog()</code></pre>
-<p>
-<img src="../assets/img/luxaiport-24-1.png" width="672">
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/luxaiport-24-1.png" width="80%" height="auto">
+</div>
 <p>
 The pseudo-forecast (the dashed line) is not very far from the truth, only overestimating the seasonal peaks, but the true line is within the 95% confidence interval, which is good!
 </p>

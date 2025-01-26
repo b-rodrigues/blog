@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="../assets/img/union.png" title="The 19th century was a tough place"></a>
+<a href="https://www.youtube.com/watch?v=V1qpvpH26fo"> <img src="../assets/img/union.png" title="The 19th century was a tough place" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -139,13 +139,13 @@ Last week I wrote a <a href="https://www.brodrigues.co/blog/2019-01-04-newspaper
 This is how a ALTO file looks like:
 </p>
 <p>
-<img src="../assets/img/alto.png"><!-- -->
+<img src="../assets/img/alto.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 Each page of the newspaper of a given day has one ALTO file. This is how a METS file looks like:
 </p>
 <p>
-<img src="../assets/img/mets.png"><!-- -->
+<img src="../assets/img/mets.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 For each daily issue of the newspaper, there is a METS file. So 1 METS file for 4 ALTO files.
@@ -154,13 +154,13 @@ For each daily issue of the newspaper, there is a METS file. So 1 METS file for 
 In my last blog post, I only extracted the words from the ALTO file (red rectangles of the first screenshot) and did not touch the METS file. The problem of doing this is that I get all the words for each page, without knowing which come from the same article. If I want to know which words come from the same article, I need to use the info from the METS file. From the METS file I have the ID of the article, and some other metadata, such as the title of the article and the type of the article (which can be <em>article</em>, <em>advertisement</em>, etc). The information highlighted with the green rectangles in the METS file can be linked to the green rectangles from the ALTO files. My goal is to get the following data frame from the METS file:
 </p>
 <p>
-<img src="../assets/img/mets_df.png"><!-- -->
+<img src="../assets/img/mets_df.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 and this data frame from the ALTO files:
 </p>
 <p>
-<img src="../assets/img/alto_df.png"><!-- -->
+<img src="../assets/img/alto_df.png" width="80%" height="auto"><!-- -->
 </p>
 <p>
 As you can see, by combining both data frames I can know which words come from the same article, which will be helpful for further analysis. <a href="https://en.wikipedia.org/wiki/1860s">A lot of things happened in the 1860s.</a> I am really curious to see if and how these events where reported in a Luxembourguish newspaper. I am particularly curious about how long it took to report certain news from far away, such as the assassination of Abraham Lincoln. But before that I need to extract the data!

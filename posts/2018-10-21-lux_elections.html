@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div style="text-align:center;">
 <p>
-<a href="https://www.youtube.com/watch?v=yjzUxDhuXig"> <img src="../assets/img/gambia.png"></a>
+<a href="https://www.youtube.com/watch?v=yjzUxDhuXig"> <img src="../assets/img/gambia.png" width="80%" height="auto"></a>
 </p>
 </div>
 <p>
@@ -147,9 +147,9 @@ Now that you have the context, we can go back to some data science. The results 
 <p>
 First of all, if you open the Excel workbook, you will notice that there are a lot of sheets; there is one for the whole country, named “Le Grand-Duché de Luxembourg”, one for the four circonscriptions, “Centre”, “Nord”, “Sud”, “Est” and 102 more for each <strong>commune</strong> of the country (a commune is an administrative division). However, the tables are all very similarly shaped, and roughly at the same position.
 </p>
-<p>
-<img src="../assets/img/elections_data.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/elections_data.png" width="80%" height="auto">
+</div>
 <p>
 This is good, because we can write a function to extracts the data and then map it over all the sheets. First, let’s load some packages and the data for the country:
 </p>
@@ -194,9 +194,9 @@ it contains a function that I will use down below. The function I wrote to extra
 <p>
 This function has three arguments, <code>dataset</code>, <code>starting_col</code> and <code>target_rows</code>. <code>dataset</code> is the data I loaded with <code>xlsx_cells</code> from the <code>{tidyxl}</code> package. I think the following picture illustrates easily what the function does:
 </p>
-<p>
-<img src="../assets/img/elections_logic.png"><!-- -->
-</p>
+<div style="text-align: center;">
+<img src="../assets/img/elections_logic.png" width="80%" height="auto">
+</div>
 <p>
 So the function first filters only the rows we are interested in, then the cols. I then select the columns I want which are called <code>character</code> and <code>numeric</code> (if the Excel cell contains characters then you will find them in the character column, if it contains numbers you will them in the numeric column), then I fill the empty cells with the values from the <code>numeric</code> column and the I remove the NA’s. These two last steps might not be so clear; this is how the data looks like up until the <code>select()</code> function:
 </p>
