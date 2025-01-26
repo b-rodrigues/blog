@@ -50,7 +50,7 @@ setClass(Class = "Model", slots = list(OptimCond = "function", JacobiOptimCond =
 
 <p>This new class has two <em>slots</em>, which here are functions (in general <em>slots</em> are properties of your class); we need the model to return the optimality condition and the jacobian of the optimality condition.</p>
 
-<p>Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and  <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta" /> of the model:</p>
+<p>Now we can create a function which will return these two functions for certain values of the parameters, <em>c</em> and  <img src="http://latex.codecogs.com/png.latex?\inline \eta" alt="\inline \eta" / width="80%" height="auto"> of the model:</p>
 
 ```{r}
 #| eval: false
@@ -103,7 +103,7 @@ multiroot(f = my_mod(eta = 1.6, c = c(0.6, 0.8))@OptimCond,
 ## [1] 6.074e-09
 </code></pre>
 
-<p>After 4 iterations, we get that  <img src="http://latex.codecogs.com/png.latex?\inline q_1" alt="\inline q_1" />  and  <img src="http://latex.codecogs.com/png.latex?\inline q_2" alt="\inline q_2" /> are equal to 0.84 and 0.69 respectively, which are the same values as in the book!</p>
+<p>After 4 iterations, we get that  <img src="http://latex.codecogs.com/png.latex?\inline q_1" alt="\inline q_1" / width="80%" height="auto">  and  <img src="http://latex.codecogs.com/png.latex?\inline q_2" alt="\inline q_2" / width="80%" height="auto"> are equal to 0.84 and 0.69 respectively, which are the same values as in the book!</p>
 
 <h3>Suggestion by Reddit user, TheDrownedKraken</h3>
 

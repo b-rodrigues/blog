@@ -11,7 +11,7 @@ execute:
 
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/wiid_gganimate.webm" type="video/webm">
 Your browser does not support the video tag.
 </video>
@@ -123,7 +123,7 @@ post is the result. You can also find the video <a href="https://raw.githubuserc
 and here’s a gif if all else fails:</p>
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=3zXx0ReqOOI">
-<img src="../assets/img/wiid_gganimate_gif.gif" title = "Click to listen to OST of this gif"></a></p>
+<img src="../assets/img/wiid_gganimate_gif.gif" title = "Click to listen to OST of this gif" width="80%" height="auto"></a></p>
 </div>
 <p>I would have preferred if the video was smoother, which should be possible by creating more frames.
 I did not find such an option in <code>{gganimate}</code>, and perhaps there is none, at least for now.</p>
@@ -143,7 +143,7 @@ frames at the end and then restarting:</p>
 Here is what the gif looks like:</p>
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=3zXx0ReqOOI">
-<img src="../assets/img/wiid_gganimate_gif_smooth.gif" title = "Click to listen to OST of this gif"></a></p>
+<img src="../assets/img/wiid_gganimate_gif_smooth.gif" title = "Click to listen to OST of this gif" width="80%" height="auto"></a></p>
 </div>
 <p>Much, much smoother!</p>
 </div>

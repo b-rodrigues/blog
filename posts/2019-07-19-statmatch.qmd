@@ -11,7 +11,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://en.wikipedia.org/wiki/Row_and_column_vectors">
-<img src="../assets/img/columns.jpg" title = "Not that kind of columns" width="1119" height="720"></a></p>
+<img src="../assets/img/columns.jpg" title = "Not that kind of columns" width="80%" height="auto" width="80%" height="auto"></a></p>
 </div>
 <p>I was recently asked how to go about matching several datasets where different samples of
 individuals were interviewed. This sounds like a big problem; say that you have dataset A and B,

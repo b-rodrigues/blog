@@ -9,7 +9,7 @@ toc: true
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=4QokOwvPxrE">
-<img src="../assets/img/want_to_believe.jpg"/></a></p>
+<img src="../assets/img/want_to_believe.jpg"/ width="80%" height="auto"></a></p>
 </div>
 <p>I’ve been using GNU+Linux distros for about 10 years now, and have settled for openSUSE as my main operating system around 3 years ago, perhaps even more. If you’re a gamer, you might have heard about SteamOS
 and how more and more games are available on GNU+Linux. I don’t really care about

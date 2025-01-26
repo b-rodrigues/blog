@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">
-<img src="../assets/img/seneca.png" title = "Seneca the Younger" width="400" height="600"></a></p>
+<img src="../assets/img/seneca.png" title = "Seneca the Younger" width="80%" height="auto" width="80%" height="auto"></a></p>
 </div>
 <p>Lately I’ve been interested in trying to cluster documents, and to find similar documents based on their contents.
 In this blog post, I will use <a href="https://en.wikisource.org/wiki/Moral_letters_to_Lucilius">Seneca’s <em>Moral letters to Lucilius</em></a>

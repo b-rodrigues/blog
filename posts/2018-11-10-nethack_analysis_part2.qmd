@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=VnW2g6qbbrA">
-<img src="../assets/img/monsters.png" title = "Wizard of Yendor battle music"></a></p>
+<img src="../assets/img/monsters.png" title = "Wizard of Yendor battle music" width="80%" height="auto"></a></p>
 </div>
 <p>Link to <a href="2018-11-01-nethack.qmd">webscraping the data</a></p>
 <p>Link to <a href="2018-11-03-nethack_analysis.qmd">Analysis, part 1</a></p>
@@ -144,16 +144,16 @@ allows me to do just that:</p>
 }</code></pre>
 <p>Now I can easily plot the share of races chosen:</p>
 <pre class="r"><code>create_pie(nethack, race)</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-9-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-9-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>or the share of alignment:</p>
 <pre class="r"><code>create_pie(nethack, align0)</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-10-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-10-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Same for the share of gender:</p>
 <pre class="r"><code>create_pie(nethack, gender0)</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-11-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-11-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>and finally for the share of roles:</p>
 <pre class="r"><code>create_pie(nethack, role, repel = TRUE) </code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-12-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-12-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p><code>create_pie()</code> is possible thanks to <em>tidy evaluation</em> in <a href="https://www.tidyverse.org/articles/2018/07/ggplot2-3-0-0/"><code>{ggplot2}</code></a>,
 which makes it possible to write a function that passes data frame columns down to <code>aes()</code>. Before
 version 3.0 of <code>{ggplot2}</code> this was not possible, and writing such a function would have been a bit
@@ -168,7 +168,7 @@ more complicated. Now, it’s as easy as pie, if I dare say.</p>
     theme(axis.text.y = element_blank(),
           axis.title.y = element_blank())</code></pre>
 <pre><code>## Picking joint bandwidth of 486</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-13-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-13-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>I use the very cool <code>{ggridges}</code> package for that. The distribution seems to mostly be the same
 (of course, one should do a statistical test to be sure), but the one for the role “Valkyrie”
 seems to be quite different from the others. It is known that it is easier to win the game playing
@@ -261,7 +261,7 @@ equal to “NA” means vanquished.</p>
   ylab(&quot;Ranking&quot;) +
   xlab(&quot;Monster&quot;)</code></pre>
 <pre><code>## Selecting by total</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-16-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-16-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>In this type of graph, the most vanquished monster, “gnome” has a value of 1, and the least
 vanquished one, 0. This normalization step is also used in the pre-processing step of machine learning
 algorithms. This helps convergence of the gradient descent algorithm for instance.</p>
@@ -309,10 +309,10 @@ and that I use very often:</p>
 ## Warning in mutate_impl(.data, dots): binding character and factor vector,
 ## coercing into character vector</code></pre>
 <pre><code>## [[1]]</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-17-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-17-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <pre><code>## 
 ## [[2]]</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-17-2.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-17-2.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>That was it for this one, the graphs are not that super sexy, but the amount of work that went
 into making them was quite consequent. The main reason was that parsing xlogfiles was a bit tricky, but
 the main challenge was extracting information from dumplog files. This proved to be a bit more
@@ -386,7 +386,7 @@ also add a year column:</p>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <pre><code>## Warning: Removed 452 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 452 rows containing missing values (geom_point).</code></pre>
-<p><img src="../assets/img/nethack_analysis_part2-22-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/nethack_analysis_part2-22-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>There’s actually a lot more games than 50 per day being played!</p>
 </div>
 </div>

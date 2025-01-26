@@ -11,7 +11,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://youtu.be/BilPXIt0R2w?t=41">
-<img src="../assets/img/wabbit_reading.jpg" title = "Vowpal Wabbit is fast as heck"></a></p>
+<img src="../assets/img/wabbit_reading.jpg" title = "Vowpal Wabbit is fast as heck" width="80%" height="auto"></a></p>
 </div>
 <p>Can I get enough of historical newspapers data? Seems like I don’t. I already wrote four
 (<a href="2019-01-04-newspapers.qmd">1</a>,
@@ -20,7 +20,7 @@ execute:
 <a href="2019-02-04-newspapers_shiny_app_tutorial.qmd">4</a>) blog posts, but
 there’s still a lot to explore. This blog post uses a new batch of data announced on twitter:</p>
 <div style="text-align:center";>
-<p><img src="../assets/img/ralph_marschall_tweet.png" style="width:80%;"></p>
+<div style="text-align: center;"><img src="../assets/img/ralph_marschall_tweet.png" style="width:80%;" width="80%" height="auto"></div>
 </div>
 <p>and this data could not have arrived at a better moment, since something else got announced via Twitter
 recently:</p>

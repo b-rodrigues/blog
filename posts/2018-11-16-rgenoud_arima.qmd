@@ -11,7 +11,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://keiwan.itch.io/evolution">
-<img width = "400" src="../assets/img/tap-walker.gif" title = "Nietzsche's Übermensch"></a></p>
+<img width = "400" src="../assets/img/tap-walker.gif" title = "Nietzsche's Übermensch" width="80%" height="auto"></a></p>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -264,7 +264,7 @@ starting_model_forecast &lt;- to_tibble(starting_model_forecast)</code></pre>
     geom_line(data = starting_model_forecast, aes(x = date, y = point_estimate), 
               linetype = 2, colour = &quot;#a53031&quot;) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/rgenoud_arima-14-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/rgenoud_arima-14-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>The yellowish line and confidence intervals come from minimizing the genetic algorithm, and the
 redish from <code>auto.arima()</code>. Interesting; the point estimate is very precise, but the confidence
 intervals are very wide. Low bias, high variance.</p>
@@ -372,7 +372,7 @@ best_model_bic_forecast &lt;- to_tibble(best_model_bic_forecast)</code></pre>
     geom_line(data = starting_model_forecast, aes(x = date, y = point_estimate), 
               linetype = 2, colour = &quot;#a53031&quot;) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/rgenoud_arima-21-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/rgenoud_arima-21-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>The solutions are very close, both in terms of point estimates and confidence intervals. Bias
 increased, but variance lowered… This gives me an idea! What if I minimize the RMSE, while
 keeping the number of parameters low, as a kind of regularization? This is somewhat what minimising
@@ -490,6 +490,6 @@ best_model_rmse_low_k_forecast &lt;- to_tibble(best_model_rmse_low_k_forecast)</
     geom_line(data = starting_model_forecast, aes(x = date, y = point_estimate), 
               linetype = 2, colour = &quot;#a53031&quot;) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/rgenoud_arima-28-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/rgenoud_arima-28-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Looks like this was not the right strategy. There might be a better cost function than what I have
 tried, but looks like minimizing the BIC is the way to go.</p>

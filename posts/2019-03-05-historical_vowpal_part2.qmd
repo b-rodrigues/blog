@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://youtu.be/BilPXIt0R2w?t=41">
-<img src="../assets/img/wabbit_reading.jpg" title = "Vowpal Wabbit is fast as heck"></a></p>
+<img src="../assets/img/wabbit_reading.jpg" title = "Vowpal Wabbit is fast as heck" width="80%" height="auto"></a></p>
 </div>
 <p>In <a href="2019-03-03-historical_vowpal.qmd">part 1</a> of this series I set
 up Vowpal Wabbit to classify newspapers content. Now, let’s use the model to make predictions and

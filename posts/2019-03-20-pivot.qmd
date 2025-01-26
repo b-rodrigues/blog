@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://youtu.be/R2u0sN9stbA?t=69">
-<img src="../assets/img/pivot.jpg" title = "You know where this leads"></a></p>
+<img src="../assets/img/pivot.jpg" title = "You know where this leads" width="80%" height="auto" width="80%" height="auto"></a></p>
 </div>
 
 

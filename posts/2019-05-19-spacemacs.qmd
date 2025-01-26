@@ -13,7 +13,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://en.wikipedia.org/wiki/Death_mask">
-<img src="../assets/img/typical_emacs_user.gif" title = "typical emacs user working"></a></p>
+<img src="../assets/img/typical_emacs_user.gif" title = "typical emacs user working" width="80%" height="auto"></a></p>
 </div>
 <p>The creation of this blog post was prompted by this tweet, asking an age-old question:</p>
 {{% tweet "1128981852558123008" %}}
@@ -28,7 +28,7 @@ blog have liked the tweet). It is to set this great injustice straight that I
 decided to write this blog post.</p>
 <p>Spacemacs is a strange beast; if vi and Emacs had a baby, it would certainly look like Spacemacs.
 So first of all, to understand what is Spacemacs, one has to know a bit about vi and Emacs.</p>
-<p><img src="../assets/img/vim.png" width="100%" style="display: block; margin: auto;" /></p>
+<div style="text-align: center;"><img src="../assets/img/vim.png" width="100%" style="display: block; margin: auto;" / width="80%" height="auto"></div>
 <p>vi is a text editor with 43 years of history now. You might have heard of Vim (Vi IMproved) which is a
 modern clone of vi, from 1991. More recently, another clone has been getting popular, Neovim, started
 in 2014. Whatever version of vi however, its basic way of functioning remains the same. vi is a modal
@@ -68,7 +68,7 @@ but it is possible. This means that by learning one set of keyboard shortcuts,
 different programs. This blog post only deals with the editor part, but as you can see, if you
 go down the rabbit hole enough, a new exciting world opens up.</p>
 <p>I will show some common vi operations below, but before that let’s discuss Emacs.</p>
-<p><img src="../assets/img/emacs.png" width="80%" style="display: block; margin: auto;" /></p>
+<div style="text-align: center;"><img src="../assets/img/emacs.png" width="80%" style="display: block; margin: auto;" / width="80%" height="auto"></div>
 <p>I am not really familiar with Emacs; I know that Emacs users only swear by it (just like vi users
 only swear by vi), and that Emacs is not a modal editor. However, it contains a lot of functions
 that you can use by pressing <strong>ESC</strong>, <strong>CTRL</strong>, <strong>ALT</strong> or <strong>META</strong> (<strong>META</strong> is the Windows key on a
@@ -86,7 +86,7 @@ For instance, a very important package if you plan to use Emacs for statistics o
 to me (but don’t quote me on that) that Emacs’ packages are more mature and feature-rich than vi’s
 plugins. However, vi keybindings are really awesome. This is, I believe, what
 <a href="https://twitter.com/syl20bnr">Sylvain Benner</a> was thinking when he developed Spacemacs.</p>
-<p><img src="../assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;" /></p>
+<div style="text-align: center;"><img src="../assets/img/spacemacs.png" width="30%" style="display: block; margin: auto;" / width="80%" height="auto"></div>
 <p>Spacemacs’ motto is that <em>The best editor is neither Emacs nor Vim, it’s Emacs and Vim!</em>.
 Spacemacs is a version, or distribution of Emacs, that has a very specific way of doing things. However,
 since it’s built on top of Emacs, all of Emacs’ packages are available to the user, notably <em>Evil</em>,
@@ -102,7 +102,7 @@ the minibuffer, a little popup window at the bottom of Spacemacs, appears and sh
 that you can type. For instance, typing <strong>b</strong> after <strong>Space</strong> opens up the buffer menu. Buffers are
 what could be called tabs in Rstudio. Here you can chose to <em>delete</em> a buffer, with <strong>d</strong>, create
 a new buffer with <strong>N</strong>, and many more options.</p>
-<p><img src="../assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;" /></p>
+<div style="text-align: center;"><img src="../assets/img/minibuffer.png" width="100%" style="display: block; margin: auto;" / width="80%" height="auto"></div>
 <p>Enough text, let’s get into the videos. But keep in mind the following: the videos below show the
 keystrokes I am typing to perform the actions. However, because I use the BÉPO keyboard layout,
 which is the french equivalent of the DVORAK layout, the keystrokes will be different than those
@@ -110,8 +110,8 @@ in a regular vi guide, which are mainly written for the QWERTY layout.
 Also, to use Spacemacs for R, you need to enable the <strong>ESS</strong> layer, which I show how to do at the end.
 Enabling this layer will turn on auto-completion, as well as provide documentation in real time
 for your function in the minibuffer:</p>
-<p><img src="../assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;" /></p>
-<p><img src="../assets/img/spacemacs_doc.png" style="display: block; margin: auto;" /></p>
+<div style="text-align: center;"><img src="../assets/img/spacemacs_autocompletion.png" style="display: block; margin: auto;" / width="80%" height="auto"></div>
+<div style="text-align: center;"><img src="../assets/img/spacemacs_doc.png" style="display: block; margin: auto;" / width="80%" height="auto"></div>
 <p>The first video shows Spacemacs divided into two windows. On the left, I am navigating around code
 using the <strong>T</strong> (move down) and <strong>S</strong> (move up) keys. To execute a region that I select, I type
 <strong>Spacemrr</strong> (this stands for <strong>M</strong>ajor mode <strong>R</strong>un <strong>R</strong>egion). Then around second 5, I key <strong>O</strong>
@@ -120,7 +120,7 @@ which switches to <em>Insert</em> mode one line below the line I was, type <code
 <strong>Spacemrl</strong> (<strong>M</strong>ajor mode <strong>R</strong>un <strong>L</strong>ine).</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_01_running_lines.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -130,7 +130,7 @@ Your browser does not support the video tag.
 the end, I key <strong>dd</strong> which deletes a whole line.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_02_switching_windows.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -142,7 +142,7 @@ the code, I first select it with <strong>V</strong>, which selects the whole lin
 and enters <em>Visual</em> mode. I then select the lines below with <strong>T</strong> and run the region with <strong>Spacemrr</strong>.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_03_pipe.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -157,7 +157,7 @@ which is an Emacs mode for writing notes, todos, and authoring documents. But I 
 this option yet, mainly because in my case, only looking at one plot at a time is ok.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_04_ggplot.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -172,7 +172,7 @@ finally change “tidyverse” to “janitor”. This seems overly complex, but 
 way of working, you will wonder why you hadn’t tried vi sooner.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_05_janitor.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -185,7 +185,7 @@ would have been more logical to use <strong>I</strong>, which enters insert mode
 of the line and then add “#” to comment.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_06_block_comment.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -194,7 +194,7 @@ Your browser does not support the video tag.
 <p>Here I show how to delete a block of text:</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_07_block_delete.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -203,7 +203,7 @@ Your browser does not support the video tag.
 <p>Search and replace, by entering <em>command-line</em> mode (look at the very bottom of the window):</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_08_search_replace_undo.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -215,7 +215,7 @@ command, which is <em>inserting a “,” character and going down a line</em>. 
 of vi, and it will always redo the last performed change.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_09_dot.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -224,7 +224,7 @@ Your browser does not support the video tag.
 <p>But instead of typing <strong>.</strong> six times, just type <strong>6.</strong> and be done with it:</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_09b_repeated_dot.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -238,7 +238,7 @@ repeatedly (<strong>@‌‌a</strong> because I saved the actions in <strong>a</
 I then undo my changes and execute the macro 5 times with <strong>5@‌‌a</strong>.</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_10_macros.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -248,7 +248,7 @@ Your browser does not support the video tag.
 Emacs: it makes undoing changes and going back to a previous version of your script very easily:</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_11_undo_tree.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -266,7 +266,7 @@ These are the packages under <code>dotspacemacs-additional-packages</code>. In m
 needed for RMarkdown (because RMarkdown files mix Markdown and R).</p>
 
 <div style="text-align:center;">
-<video width="864" height="480" controls>
+<video width="80%" height="auto" controls>
 <source src="../assets/img/spacemacs_12_config.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>

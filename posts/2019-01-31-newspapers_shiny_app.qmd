@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://brodriguesco.shinyapps.io/newspapers_app/">
-<img src="../assets/img/tf_idf.png" title = "Click here to go the app"></a></p>
+<img src="../assets/img/tf_idf.png" title = "Click here to go the app" width="80%" height="auto"></a></p>
 </div>
 <p>I have been playing around with historical newspaper data (see
 <a href="2019-01-04-newspapers.qmd">here</a> and

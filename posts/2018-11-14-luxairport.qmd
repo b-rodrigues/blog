@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=GIQn8pab8Vc">
-<img src="../assets/img/lx_aie.jpg" title = "Luxembourg's largest aircraft landing"></a></p>
+<img src="../assets/img/lx_aie.jpg" title = "Luxembourg's largest aircraft landing" width="80%" height="auto"></a></p>
 </div>
 <p>In this blog post, I will show you how you can quickly and easily forecast a univariate time series.
 I am going to use data from the EU Open Data Portal on air passenger transport. You can find the
@@ -124,7 +124,7 @@ is not necessary for the rest of the analysis, but might as well do it. The data
 <p>The next steps are simple renamings. I have copy-pasted the information from the Eurostat page
 where you can <a href="http://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=avia_par_lu&amp;lang=en">view the data online</a>.
 If you click here:</p>
-<p><img src="../assets/img/eurostat_click_here.png" /><!-- --></p>
+<p><img src="../assets/img/eurostat_click_here.png" / width="80%" height="auto"><!-- --></p>
 <p>you will be able to select the variables you want displayed in the table, as well as the dictionary
 of the variables. I simply copy pasted it and recoded the variables. You can take a look at the
 whole cleaning workflow by clicking “Click to expand” below:</p>
@@ -231,7 +231,7 @@ date by using the <code>ymd()</code> function from lubridate. <code>yq()</code> 
     geom_line(aes(y = total, x = date), colour = &quot;#82518c&quot;) +
     scale_x_date(date_breaks = &quot;1 year&quot;, date_labels = &quot;%m-%Y&quot;) + 
     theme_blog()</code></pre>
-<p><img src="../assets/img/luxairport-16-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/luxairport-16-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>And now with the logged data (or rather, the data transformed using the inverted hyperbolic sine
 transformation):</p>
 <pre class="r"><code>avia_clean_monthly %&gt;%
@@ -243,7 +243,7 @@ transformation):</p>
     geom_line(aes(y = total_ihs, x = date), colour = &quot;#82518c&quot;) +
     scale_x_date(date_breaks = &quot;1 year&quot;, date_labels = &quot;%m-%Y&quot;) + 
     theme_blog()</code></pre>
-<p><img src="../assets/img/luxairport-17-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/luxairport-17-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>We clearly see a seasonal pattern in the data. There is also an upward trend. We will have to deal
 with these two problems if we want to do some forecasting. For this, let’s limit ourselves to data
 from before 2015, and convert the “passengers” column from the data to a time series object, using
@@ -328,6 +328,6 @@ package.</p>
     geom_ribbon(data = estimated_data, aes(x = date, ymin = lower95, ymax = upper95), fill = &quot;#666018&quot;, alpha = 0.2) +
     geom_line(data = estimated_data, aes(x = date, y = point_estimate), linetype = 2, colour = &quot;#8e9d98&quot;) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/luxaiport-24-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/luxaiport-24-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>The pseudo-forecast (the dashed line) is not very far from the truth, only overestimating the
 seasonal peaks, but the true line is within the 95% confidence interval, which is good!</p>

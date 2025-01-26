@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://b-rodrigues.github.io/modern_R/descriptive-statistics-and-data-manipulation.html#manipulate-strings-with-stringr">
-<img src="../assets/img/string.jpg" title = "Click here to go the ebook"></a></p>
+<img src="../assets/img/string.jpg" title = "Click here to go the ebook" width="80%" height="auto"></a></p>
 </div>
 <p>This blog post is an excerpt of my ebook Modern R with the tidyverse that you can read for
 free <a href="https://b-rodrigues.github.io/modern_R/">here</a>. This is taken from Chapter 4,

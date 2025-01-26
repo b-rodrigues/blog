@@ -9,7 +9,7 @@ toc: true
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=yjzUxDhuXig">
-<img src="../assets/img/gambia.png"/></a></p>
+<img src="../assets/img/gambia.png"/ width="80%" height="auto"></a></p>
 </div>
 <p>In this blog post, similar to a <a href="https://www.brodrigues.co/blog/2018-09-11-human_to_machine/">previous blog post</a>
 I am going to show you how we can go from an Excel workbook that contains data to flat file. I will
@@ -46,7 +46,7 @@ is one for the whole country, named “Le Grand-Duché de Luxembourg”, one for
 administrative division). However, the tables are all very similarly shaped, and roughly at the
 same position.</p>
 
-<p><img src="../assets/img/elections_data.png" /><!-- --></p>
+<p><img src="../assets/img/elections_data.png" / width="80%" height="auto"><!-- --></p>
 
 <p>This is good, because we can write a function to extracts the data and then map it over
 all the sheets. First, let’s load some packages and the data for the country:</p>
@@ -91,7 +91,7 @@ understanding the next function easier:</p>
 data I loaded with <code>xlsx_cells</code> from the <code>{tidyxl}</code> package. I think the following picture illustrates
 easily what the function does:</p>
 
-<p><img src="../assets/img/elections_logic.png" /><!-- --></p>
+<p><img src="../assets/img/elections_logic.png" / width="80%" height="auto"><!-- --></p>
 
 <p>So the function first filters only the rows we are interested in, then the cols. I then select
 the columns I want which are called <code>character</code> and <code>numeric</code> (if the Excel cell contains characters then

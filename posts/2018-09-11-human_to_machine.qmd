@@ -9,7 +9,7 @@ toc: true
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=m-PE3OkJ8XE">
-<video width="854" height="480" controls autoplay muted loop>
+<video width="80%" height="auto" controls autoplay muted loop>
   <source src="../assets/img/1a9.mp4" type="video/mp4"></a></p>
 </video>
 </div>

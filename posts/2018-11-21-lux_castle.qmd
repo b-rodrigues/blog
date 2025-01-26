@@ -13,7 +13,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=XQDm6I3mbMU">
-<img width = "400" src="../assets/img/harold_kumar.jpg" title = "Only 00's kids will get the reference"></a></p>
+<img width = "400" src="../assets/img/harold_kumar.jpg" title = "Only 00's kids will get the reference" width="80%" height="auto"></a></p>
 </div>
 <p>Inspired by David Schoch’s blog post,
 <a href="http://blog.schochastics.net/post/traveling-beerdrinker-problem/">Traveling Beerdrinker Problem</a>.
@@ -861,7 +861,7 @@ found and <code>geom_point()</code> again to highlight the starting castle:</p>
           legend.text = element_text(colour = &quot;white&quot;),
           plot.background = element_rect(&quot;#272b30&quot;),
           plot.title = element_text(colour = &quot;white&quot;)) </code></pre>
-<p><img src="../assets/img/lux_castle-28-1.png" width="768" /></p>
+<div style="text-align: center;"><img src="../assets/img/lux_castle-28-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>The white point is the starting point of the tour. As a bonus, let’s do the same plot without
 points, but castles emojis instead (using the <code>{ggimage}</code> package):</p>
 <pre class="r"><code>ggplot() +
@@ -876,7 +876,7 @@ points, but castles emojis instead (using the <code>{ggimage}</code> package):</
           plot.background = element_rect(&quot;#272b30&quot;),
           plot.title = element_text(colour = &quot;white&quot;))</code></pre>
 <pre><code>## Warning: Ignoring unknown parameters: image_colour</code></pre>
-<p><img src="../assets/img/lux_castle-29-1.png" width="768" /></p>
+<div style="text-align: center;"><img src="../assets/img/lux_castle-29-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>It’s horrible.</p>
 </div>
 <div id="appendix" class="section level2">

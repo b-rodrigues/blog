@@ -12,12 +12,12 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://en.wikipedia.org/wiki/Cliometrics">
-<img src="../assets/img/clio.jpg" title = "Historical newspapers as a source to practice cliometrics?"></a></p>
+<img src="../assets/img/clio.jpg" title = "Historical newspapers as a source to practice cliometrics?" width="80%" height="auto"></a></p>
 </div>
 <p>I have been playing around with historical newspapers data for some months now. The “obvious” type of analysis
 to do is NLP, but there is also a lot of numerical data inside historical newspapers.
 For instance, you can find these tables that show the market prices of the day in the <em>L’Indépendance Luxembourgeoise</em>:</p>
-<p><img src="../assets/img/market_price_table.png" /><!-- --></p>
+<p><img src="../assets/img/market_price_table.png" / width="80%" height="auto"><!-- --></p>
 <p>I wanted to see how easy it was to extract these tables from the newspapers and then make it available.
 It was a bit more complicated than anticipated.</p>
 <div id="download-data" class="section level2">
@@ -103,7 +103,7 @@ plan(multiprocess, workers = 8)
 image_paths %&gt;%
     future_map(prepare_image)</code></pre>
 <p>The picture below shows the result:</p>
-<p><img src="../assets/img/table_and_edit.jpg" /><!-- --></p>
+<p><img src="../assets/img/table_and_edit.jpg" / width="80%" height="auto"><!-- --></p>
 <p>Now comes the complicated part, which is going from the image above, to the dataset below:</p>
 <pre><code>good_fr,good_en,unit,market_date,price,source_url
 Froment,Wheat,hectolitre,1875-08-28,23,https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2F02grxj%2Fpages%2F1/full/full/0/default.jpg
@@ -344,7 +344,7 @@ library(brotools)</code></pre>
     theme_blog() + 
     labs(title = &quot;Prices of smoked pig meat at the Luxembourg-City market in the 19th century&quot;)</code></pre>
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_path).</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-9-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-9-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>As you can see, there is a huge spike somewhere in 1874. Maybe there was a very severe smoked pig
 meat shortage that caused the prices to increase dramatically, but the more likely explanation is
 that there was some sort of mistake, either in the OCR step, or when I extracted the prices, and somehow
@@ -357,7 +357,7 @@ that particular price of smoked pig meat is actually the price of another, more 
     geom_line(aes(group = 1), colour = &quot;#82518c&quot;) + 
     theme_blog() + 
     labs(title = &quot;Prices of smoked pig meat at the Luxembourg-City market in the 1870s&quot;)</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-10-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-10-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Now, some prices are very high. Let’s check if it’s a mistake:</p>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == &quot;Smoked pig meat&quot;) %&gt;% 
@@ -371,7 +371,7 @@ that particular price of smoked pig meat is actually the price of another, more 
 <p>If you go to the first url, you will land on the first page of the newspaper. To check the table,
 you need to check the third page, by changing this part of the url “pages%2F1” to this “pages%2F3”.</p>
 <p>You will then find the following:</p>
-<p><img src="../assets/img/price_smoked_pig.png" /><!-- --></p>
+<p><img src="../assets/img/price_smoked_pig.png" / width="80%" height="auto"><!-- --></p>
 <p>As you can see, the price was 2.5, but the OCR returned 7.5. This is a problem that is unavoidable
 with OCR; there is no way of knowing a priori if characters were not well recognized. It is actually
 quite interesting how the price for smoked pig meat stayed constant through all these years.
@@ -382,7 +382,7 @@ A density plot shows that most prices were around 2.5:</p>
     ggplot() + 
     geom_density(aes(price), colour = &quot;#82518c&quot;) + 
     theme_blog()</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-13-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-13-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>What about another good, say, barley?</p>
 <pre class="r"><code>market_price %&gt;%
     filter(good_en == &quot;Barley&quot;) %&gt;%
@@ -390,7 +390,7 @@ A density plot shows that most prices were around 2.5:</p>
     geom_line(aes(group = 1), colour = &quot;#82518c&quot;) + 
     theme_blog() + 
     labs(title = &quot;Prices of barley at the Luxembourg-City market in the 1870s&quot;)</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-14-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-14-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Here again, we see some very high spikes, most likely due to errors. Let’s try to limit the prices
 to likely values:</p>
 <pre class="r"><code>market_price %&gt;%
@@ -400,14 +400,14 @@ to likely values:</p>
     geom_line(aes(group = 1), colour = &quot;#82518c&quot;) + 
     theme_blog() + 
     labs(title = &quot;Prices of barley at the Luxembourg-City market in the 1870s&quot;)</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-15-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-15-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == &quot;Barley&quot;) %&gt;% 
     ggplot() + 
     geom_density(aes(price), colour = &quot;#82518c&quot;) + 
     theme_blog()</code></pre>
 <pre><code>## Warning: Removed 39 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-16-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-16-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Let’s finish this with one of my favourite legume, lentils:</p>
 <pre class="r"><code>market_price %&gt;%
     filter(good_en == &quot;Lentils&quot;) %&gt;%
@@ -415,14 +415,14 @@ to likely values:</p>
     geom_line(aes(group = 1), colour = &quot;#82518c&quot;) + 
     theme_blog() + 
     labs(title = &quot;Prices of lentils at the Luxembourg-City market in the 1870s&quot;)</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-17-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-17-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == &quot;Lentils&quot;) %&gt;% 
     ggplot() + 
     geom_density(aes(price), colour = &quot;#82518c&quot;) + 
     theme_blog()</code></pre>
 <pre><code>## Warning: Removed 79 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-18-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-18-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>All these 0’s might be surprising, but in most cases, they are actually true zeros! For example,
 you can check this
 <a href="https://iiif.eluxemburgensia.lu/iiif/2/ark:%2F70795%2Fwsvhwh%2Fpages%2F3/pct:74,0,100,100/full/0/default.jpg">issue</a>.
@@ -435,7 +435,7 @@ Let’s get rid of the 0s and other extreme values:</p>
     geom_line(aes(group = 1), colour = &quot;#82518c&quot;) + 
     theme_blog() + 
     labs(title = &quot;Prices of lentils at the Luxembourg-City market in the 1870s&quot;)</code></pre>
-<p><img src="../assets/img/historical_newspaper_scraping_tesseract-19-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/historical_newspaper_scraping_tesseract-19-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>I would like to see if the spikes above 30 are errors or not:</p>
 <pre class="r"><code>market_price %&gt;% 
     filter(good_en == &quot;Lentils&quot;) %&gt;% 

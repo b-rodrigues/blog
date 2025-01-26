@@ -10,7 +10,7 @@ toc: true
 
 <div style="text-align:center;">
 <p><a href="https://cran.r-project.org/web/packages/sandwich/index.html">
-<img src="../assets/img/bread-breakfast-bun-5678.jpg" width="640" height="360"/></a></p>
+<img src="../assets/img/bread-breakfast-bun-5678.jpg" width="80%" height="auto"/ width="80%" height="auto"></a></p>
 </div>
 <p>First of all, is it heteros<strong>k</strong>edasticity or heteros<strong>c</strong>edasticity? According to
 <a href="https://www.jstor.org/stable/1911250">McCulloch (1985)</a>,

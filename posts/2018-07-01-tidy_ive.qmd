@@ -9,7 +9,7 @@ toc: true
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=o5S7CreWiBY/">
-<img src="../assets/img/trumpet_boy.jpg" width="640" height="360"/></a></p>
+<img src="../assets/img/trumpet_boy.jpg" width="80%" height="auto"/ width="80%" height="auto"></a></p>
 </div>
 <p>In this blog post I will discuss missing data imputation and instrumental variables regression. This
 is based on a short presentation I will give at my job. You can find the data used here on this

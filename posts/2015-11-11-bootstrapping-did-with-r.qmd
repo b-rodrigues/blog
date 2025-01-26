@@ -59,7 +59,7 @@ t1* -11863.9 -553.3393    8580.435</code></pre>
 <pre class="r"><code>plot(density(boot_est$t))</code></pre>
 
 <div style="text-align:center;">
-    <img src="/img/density_did.png" width="670" height="450" /></a>
+    <img src="/img/density_did.png" width="80%" height="auto" / width="80%" height="auto"></a>
 </div>
 
 <p>Just as in the book, we find that the DiD estimate is not significant to the 5% level.</p>

@@ -11,7 +11,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://www.youtube.com/watch?v=kZJY15dyMig">
-<img width = "400" src="../assets/img/casino.jpg" title = "Audentes Fortuna Iuvat"></a></p>
+<img width = "400" src="../assets/img/casino.jpg" title = "Audentes Fortuna Iuvat" width="80%" height="auto"></a></p>
 </div>
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -73,7 +73,7 @@ that by the current value of <code>N</code> column:</p>
     geom_line(aes(y = estimate, x = N), colour = &quot;#82518c&quot;) + 
     geom_hline(yintercept = pi) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/tidyverse_pi-7-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/tidyverse_pi-7-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>In Chapter 6, we are going to learn all about <code>{ggplot2}</code>.</p>
 <p>As the number of tries grows, the estimation of <span class="math inline">\(\pi\)</span> gets better.</p>
 <p>Using a data frame as a structure to hold our simulated points and the results makes it very easy

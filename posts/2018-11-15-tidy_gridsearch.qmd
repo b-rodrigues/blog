@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://youtu.be/3NxM-AL18lU?t=33s">
-<img width = "400" src="../assets/img/dank_memes.jpg" title = "What a time to be alive"></a></p>
+<img width = "400" src="../assets/img/dank_memes.jpg" title = "What a time to be alive" width="80%" height="auto"></a></p>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -382,7 +382,7 @@ from 2015 to 2018. Because I have to add it as a list of size 2304, I do that wi
                 fill = &quot;#666018&quot;, alpha = 0.2) +
     geom_line(data = best_model_forecast, aes(x = date, y = point_estimate), linetype = 2, colour = &quot;#8e9d98&quot;) +
     theme_blog()</code></pre>
-<p><img src="../assets/img/tidy_gridsearch-28-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/tidy_gridsearch-28-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>Compared to the previous <a href="https://www.brodrigues.co/blog/2018-11-14-luxairport/">blog post</a>, the
 dotted line now seems to follow the true line even better! However, this is not suprising, as I
 am using the test set as a validation set, which might lead to overfitting the hyperparameters

@@ -241,7 +241,7 @@ plot_data &lt;- plot_points %&gt;%
     geom_line(colour = &quot;#82518c&quot;) + 
     theme_blog() +
     ggtitle(&quot;RMSE for mtry = 3&quot;)</code></pre>
-<p><img src="../assets/img/tidy_cv-21-1.png" width="672" /></p>
+<div style="text-align: center;"><img src="../assets/img/tidy_cv-21-1.png" width="80%" height="auto" / width="80%" height="auto"></div>
 <p>For <code>mtry = 3</code> the minimum seems to lie around 255. The function to minimize is not smooth at all.</p>
 <p>I now follow the code that can be found in the <a href="https://arxiv.org/abs/1703.03373">arxiv</a> paper to
 run the optimization. I think I got the gist of the paper, but I did not understand everything yet.

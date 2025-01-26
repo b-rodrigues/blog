@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://youtu.be/I8vaCrVIR-Q?t=1h2m26s">
-<img src="../assets/img/why not both.png" title = "This literally starts playing when you run both R and Python in the same session"></a></p>
+<img src="../assets/img/why not both.png" title = "This literally starts playing when you run both R and Python in the same session" width="80%" height="auto"></a></p>
 </div>
 <p>This short blog post illustrates how easy it is to use R and Python in the same R Notebook thanks to the
 <code>{reticulate}</code> package. For this to work, you might need to upgrade RStudio to the <a href="https://www.rstudio.com/products/rstudio/download/preview/">current preview version</a>.
@@ -26,7 +26,7 @@ to work with Python and R; when you want to use Python, you simply use a Python 
 your python code here
 ```</code></pre>
 <p>There’s even autocompletion for Python object methods:</p>
-<p><img src="../assets/img/autocompletion.png" /><!-- --></p>
+<p><img src="../assets/img/autocompletion.png" / width="80%" height="auto"><!-- --></p>
 <p>Fantastic!</p>
 <p>However, if you wish to use Python interactively within your R session, you must start the Python
 REPL with the <code>repl_python()</code> function, which starts a Python REPL. You can then do whatever you

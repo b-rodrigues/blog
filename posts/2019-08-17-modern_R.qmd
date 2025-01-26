@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://leanpub.com/modern_tidyverse">
-<img src="../assets/img/cover_modern.png" title = "Click here to go to Leanpub" width="500" height="647"></a></p>
+<img src="../assets/img/cover_modern.png" title = "Click here to go to Leanpub" with="90%" height="auto" width="80%" height="auto"></a></p>
 </div>
 <p>Yesterday I released an ebook on <a href="https://leanpub.com/modern_tidyverse">Leanpub</a>,
 called <em>Modern R with the tidyverse</em>, which you can also
