@@ -1,0 +1,31 @@
+---
+date: 2019-07-19
+title: "Statistical matching, or when one single data source is not enough"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align:center;">
+<p><a href="https://en.wikipedia.org/wiki/Row_and_column_vectors">
+<img src="../assets/img/columns.jpg" title = "Not that kind of columns" width="1119" height="720"></a></p>
+</div>
+<p>I was recently asked how to go about matching several datasets where different samples of
+individuals were interviewed. This sounds like a big problem; say that you have dataset A and B,
+and that A contain one sample of individuals, and B another sample of individuals, then how could
+you possibly match the datasets? Matching datasets requires a common identifier, for instance,
+suppose that A contains socio-demographic information on a sample of individuals I, while B,
+contains information on wages and hours worked on the same sample of individuals I, then yes,
+it will be possible to match/merge/join both datasets.</p>
+<p>But that was not what I was asked about; I was asked about a situation where the same population
+gets sampled twice, and each sample answers to a different survey. For example the first survey
+is about labour market information and survey B is about family structure. Would it be possible to
+combine the information from both datasets?</p>
+<p>To me, this sounded a bit like missing data imputation problem, but where all the information
+about the variables of interest was missing! I started digging a bit, and found that not only there
+was already quite some literature on it, there is even a package for this, called <code>{StatMatch}</code> with
+a very detailed <a href="https://cran.r-project.org/web/packages/StatMatch/vignettes/Statistical_Matching_with_StatMatch.pdf">vignette</a>.
+The vignette is so detailed, that I will not write any code, I just wanted to share this package!</p>
