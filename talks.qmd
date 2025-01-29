@@ -4,6 +4,9 @@ title: "Talks, presentations, workshops..."
 
 ## Talks
 
+- *What’s up with reproducibility in R?*: talk I gave for the Data and Analytics Learning seminars from the Bank of England 
+  on the 29th of January 2025. [Repository with code](https://github.com/b-rodrigues/repro_boe) and [slides](https://b-rodrigues.github.io/repro_boe/#/title-slide).
+
 - *BUILDING REPRODUCIBLE ANALYTICAL PIPELINES WITH R, DOCKER AND NIX*: online talk for RLadies Rome, on the 29th of June 2024. [Repository](https://github.com/b-rodrigues/rladies_rome_repro_2024/tree/main), [Slides](https://raw.githack.com/b-rodrigues/rladies_rome_repro_2024/targets-runs/rendered_slides/pres.html#/title-slide) and [video](https://www.youtube.com/watch?v=0bPMKYi7XRE).
 
 - *Rix: reproducible environments with Nix*: talk I gave for the online part of the 2024 edition of useR! in Salzburg. [Video](https://www.youtube.com/watch?v=tM4JrCWZpwA)
