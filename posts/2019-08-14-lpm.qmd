@@ -3,7 +3,7 @@ date: 2019-08-14
 title: "Using linear models with binary dependent variables, a simulation study"
 categories:
   - R
-  - data-science
+  - econometrics
 toc: true
 execute:
   freeze: auto
@@ -12,7 +12,7 @@ execute:
 
 <div style="text-align:center;">
 <p><a href="https://psyarxiv.com/4gmbv">
-<img src="../assets/img/illegal.png" title = "Even psychologists are not safe" width="80%" height="auto" width="80%" height="auto"></a></p>
+<img src="../assets/img/illegal.png" title = "Even psychologists are not safe" width="80%" height="auto"></a></p>
 </div>
 <p>This blog post is an excerpt of my ebook Modern R with the tidyverse that you can read for free
 <a href="https://b-rodrigues.github.io/modern_R/functional-programming.html#modeling-with-functional-programming">here</a>.
