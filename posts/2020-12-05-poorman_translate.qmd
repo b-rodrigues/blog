@@ -1,0 +1,90 @@
+---
+date: 2020-12-05
+title: Poorman's automated translation with R and Google Sheets using {googlesheets4}
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div style="text-align:center;">
+<p><a href="https://www.youtube.com/watch?v=2kArCRjT29w">
+<img src="../assets/img/omelette_du_fromage.gif" title = "A classic."  width="80%" height="auto"></a></p>
+</div>
+<p>A little trick I thought about this week; using Google Sheets, which includes a “googletranslate()”
+function to translate a survey that we’re preparing at work, from French to English, and using
+R of course. You’ll need a Google account for this. Also, keep in mind that you’ll be sending
+the text you want to translate to Google, so don’t go sending out anything sensitive.</p>
+<p>First, let’s load the needed packages:</p>
+<pre class="r"><code>library(googlesheets4)
+library(dplyr)
+library(tibble)</code></pre>
+<p>As an example, I’ll be defining a tibble with one column, and two rows. Each cell contains a
+sentence in French from the best show in the entire French speaking world, Kaamelott:</p>
+<pre class="r"><code>my_french_tibble &lt;- tribble(~french,
+                  &quot;J&#39;apprécie les fruits au sirop&quot;,
+                  &quot;C&#39;est pas faux&quot;)</code></pre>
+<p>To this tibble, I’m now adding two more columns, that contain the following string: “=googletranslate(A:A,”fr“,”en“)”.
+This is exactly what you would write in the formula bar in Sheets. Then, we need to convert that to
+an actual Google Sheets formula using <code>gs4_formula()</code>:</p>
+<pre class="r"><code>(
+my_french_tibble &lt;- my_french_tibble %&gt;%
+  mutate(english = &#39;=googletranslate(A:A, &quot;fr&quot;, &quot;en&quot;)&#39;) %&gt;%
+  mutate(portuguese = &#39;=googletranslate(A:A, &quot;fr&quot;, &quot;pt&quot;)&#39;) %&gt;%
+  mutate(english = gs4_formula(english),
+         portuguese = gs4_formula(portuguese))
+)</code></pre>
+<pre><code>## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   french     english                           portuguese                       
+##   &lt;chr&gt;      &lt;fmla&gt;                            &lt;fmla&gt;                           
+## 1 J&#39;appréci… =googletranslate(A:A, &quot;fr&quot;, &quot;en&quot;) =googletranslate(A:A, &quot;fr&quot;, &quot;pt&quot;)
+## 2 C&#39;est pas… =googletranslate(A:A, &quot;fr&quot;, &quot;en&quot;) =googletranslate(A:A, &quot;fr&quot;, &quot;pt&quot;)</code></pre>
+<p>We’re ready to send this to Google Sheets. As soon as the sheet gets uploaded, the formulas will be
+evaluated, yielding translations in both English and Portuguese.</p>
+<p>To upload the tibble to sheets, run the following:</p>
+<pre class="r"><code>french_sheet &lt;- gs4_create(&quot;repliques_kaamelott&quot;,
+                           sheets = list(perceval = my_french_tibble))</code></pre>
+<p>You’ll be asked if you want to cache your credentials so that you don’t need to re-authenticate
+between R sessions:</p>
+<p><img src="../assets/img/gs4_oauth.png"  width="80%" height="auto"/></p>
+<p>Your browser will the open a tab asking you to login to Google:</p>
+<p><img src="../assets/img/gs4_login.png"  width="80%" height="auto"/></p>
+<p>At this point, you might get a notification on your phone, alerting you that there was a login to your account:</p>
+<p><img src="../assets/img/gs4_android_notification.png"  width="80%" height="auto"/></p>
+<p>If you go on your Google Sheets account, this is what you’ll see:</p>
+<p><img src="../assets/img/gs4_repliques_kaamelott.png"  width="80%" height="auto"/></p>
+<p>And if you open the sheet:</p>
+<p><img src="../assets/img/gs4_repliques_kaamelott_result.png"  width="80%" height="auto"/></p>
+<p>Pretty nice, no? You can of course download the workbook, or better yet, never leave your R session at all
+and simply get back the workbook using either the <code>{googledrive}</code> package, which simply needs the name
+of the workbook (<code>{googledrive}</code> also needs authentication):</p>
+<pre class="r"><code>(
+translations &lt;- googledrive::drive_get(&quot;repliques_kaamelott&quot;) %&gt;%
+  read_sheet
+)</code></pre>
+<p>You’ll get a new data frame with the translation:</p>
+<pre><code>Reading from &quot;repliques_kaamelott&quot;
+Range &quot;perceval&quot;
+# A tibble: 2 x 3
+  french                    english                     portuguese              
+  &lt;chr&gt;                     &lt;chr&gt;                       &lt;chr&gt;                   
+1 J&#39;apprécie les fruits au… I appreciate the fruits in… I apreciar os frutos em…
+2 C&#39;est pas faux            It is not false             Não é falsa             </code></pre>
+<p>Or you can use the link to the sheet (which does not require to re-authenticate at this point):</p>
+<pre class="r"><code>translations &lt;- read_sheet(&quot;the_link_goes_here&quot;, &quot;perceval&quot;)</code></pre>
+<p>You could of course encapsulate all these steps into a function and have any text translated
+very easily! Just be careful not to send out any confidential information out…</p>
