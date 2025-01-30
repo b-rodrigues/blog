@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-09-05">
+
+<title>Gotta go fast with “{tidytable}” – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Gotta go fast with “{tidytable}”</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 5, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<script src="../rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=SXrbYw_AqQA"> <img src="../assets/img/kaamelott.jpg" title="If there's one good reason to learn French, it's Kaamelott" width="80%" height="auto"></a>
+</p>
+</div>
+<p>
+I’m back in business! After almost 5 months of hiatus, during which I was very busy with my new job, and new house, I’m in a position where I can write again. To celebrate my comeback, I’ll introduce to you the <code>{tidytable}</code> package, which I learned about this week on Twitter.
+</p>
+<p>
+<code>{tidytable}</code> is a package that allows you to manipulate <code>data.table</code> objects with the speed of <code>{data.table}</code> and the convenience of the <code>{tidyverse}</code> syntax. My first reaction when I heard about <code>{tidytable}</code> was <em>how is that different from <code>{dtplyr}</code></em>? Well, <code>{dtplyr}</code> focuses on providing a <code>{data.table}</code> backend for <code>{dplyr}</code>, while <code>{tidytable}</code> also allows you to use other <code>{tidyverse}</code> verbs on <code>data.table</code> objects, for instance some <code>{tidyr}</code> and <code>{purrr}</code> verbs.
+</p>
+<p>
+Another very interesting feature of <code>{tidytable}</code> is that it supports <code>{rlang}</code>, which means that you can program with <code>{tidytable}</code>, which, as far as I know, is not possible with <code>{dtplyr}</code> (but fact-check me on that please).
+</p>
+<p>
+So to summarise, the speed of <code>{data.table}</code> and the syntax of the <code>{tidyverse}</code>, plus verbs for <code>{tidyr}</code> and <code>{purrr}</code>? Sign me up!
+</p>
+<p>
+To illustrate, I have downloaded a data set and wrote a function in both a <code>{tidyverse}</code> version and a <code>{tidytable}</code> version. Even though it is true that <code>{tidytable}</code>’s syntax is very much, almost the same as the regular <code>{tidyverse}</code> syntax, there are some minor differences. But more on that later. First, let’s get the data, which you can find <a href="https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction">here</a>. Then, let’s load the needed packages:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(data.table)
+library(tidytable)
+library(readr)</code></pre>
+<p>
+and let’s take a look at the data a little bit:
+</p>
+<pre class="r"><code>energy &lt;- read.csv("~/Downloads/energydata_complete.csv")
+
+head(energy)</code></pre>
+<pre><code>##                  date Appliances lights    T1     RH_1   T2     RH_2    T3
+## 1 2016-01-11 17:00:00         60     30 19.89 47.59667 19.2 44.79000 19.79
+## 2 2016-01-11 17:10:00         60     30 19.89 46.69333 19.2 44.72250 19.79
+## 3 2016-01-11 17:20:00         50     30 19.89 46.30000 19.2 44.62667 19.79
+## 4 2016-01-11 17:30:00         50     40 19.89 46.06667 19.2 44.59000 19.79
+## 5 2016-01-11 17:40:00         60     40 19.89 46.33333 19.2 44.53000 19.79
+## 6 2016-01-11 17:50:00         50     40 19.89 46.02667 19.2 44.50000 19.79
+##       RH_3       T4     RH_4       T5  RH_5       T6     RH_6       T7     RH_7
+## 1 44.73000 19.00000 45.56667 17.16667 55.20 7.026667 84.25667 17.20000 41.62667
+## 2 44.79000 19.00000 45.99250 17.16667 55.20 6.833333 84.06333 17.20000 41.56000
+## 3 44.93333 18.92667 45.89000 17.16667 55.09 6.560000 83.15667 17.20000 41.43333
+## 4 45.00000 18.89000 45.72333 17.16667 55.09 6.433333 83.42333 17.13333 41.29000
+## 5 45.00000 18.89000 45.53000 17.20000 55.09 6.366667 84.89333 17.20000 41.23000
+## 6 44.93333 18.89000 45.73000 17.13333 55.03 6.300000 85.76667 17.13333 41.26000
+##     T8     RH_8       T9  RH_9    T_out Press_mm_hg RH_out Windspeed Visibility
+## 1 18.2 48.90000 17.03333 45.53 6.600000       733.5     92  7.000000   63.00000
+## 2 18.2 48.86333 17.06667 45.56 6.483333       733.6     92  6.666667   59.16667
+## 3 18.2 48.73000 17.00000 45.50 6.366667       733.7     92  6.333333   55.33333
+## 4 18.1 48.59000 17.00000 45.40 6.250000       733.8     92  6.000000   51.50000
+## 5 18.1 48.59000 17.00000 45.40 6.133333       733.9     92  5.666667   47.66667
+## 6 18.1 48.59000 17.00000 45.29 6.016667       734.0     92  5.333333   43.83333
+##   Tdewpoint      rv1      rv2
+## 1       5.3 13.27543 13.27543
+## 2       5.2 18.60619 18.60619
+## 3       5.1 28.64267 28.64267
+## 4       5.0 45.41039 45.41039
+## 5       4.9 10.08410 10.08410
+## 6       4.8 44.91948 44.91948</code></pre>
+<p>
+As you can see, this data is wide, and not long. Variables, or features, <code>T1</code> to <code>T9</code> provide the temperature of 9 rooms, and <code>RH_1</code> to <code>RH_9</code> provide the humidity of the same 9 rooms.
+</p>
+<p>
+What if I’d like to make a plot of each room’s temperature throughout the year? In this format, it is not possible. So let’s reshape this a little bit:
+</p>
+<pre class="r"><code>flat_energy &lt;- energy %&gt;% 
+  pivot_longer(cols = matches("T\\d{1}"), names_to = "temperature", values_to = "temp_value") %&gt;% 
+  pivot_longer(cols = matches("RH_\\d{1}"), names_to = "humidity", values_to = "hum_value") %&gt;%
+  mutate(temperature = case_when(temperature == "T1" ~ "kitchen",
+                                 temperature == "T2" ~ "living",
+                                 temperature == "T3" ~ "laundry",
+                                 temperature == "T4" ~ "office",
+                                 temperature == "T5" ~ "bathroom",
+                                 temperature == "T6" ~ "north",
+                                 temperature == "T7" ~ "ironing",
+                                 temperature == "T8" ~ "teenager",
+                                 temperature == "T9" ~ "parents")) %&gt;%  
+  mutate(humidity = case_when(humidity == "RH_1" ~ "kitchen",
+                                 humidity == "RH_2" ~ "living",
+                                 humidity == "RH_3" ~ "laundry",
+                                 humidity == "RH_4" ~ "office",
+                                 humidity == "RH_5" ~ "bathroom",
+                                 humidity == "RH_6" ~ "north",
+                                 humidity == "RH_7" ~ "ironing",
+                                 humidity == "RH_8" ~ "teenager",
+                              humidity == "RH_9" ~ "parents"))</code></pre>
+<p>
+As explained above, there are two variables that need this treatment; the temperature, and the humidity levels. In order to plot the average monthly temperature in each room, I need to use <code>tidyr::pivot_longer()</code> (a little side note, I could have used <code>names_to = “room”</code>, instead of <code>“temperature”</code> and <code>“humidity”</code>, but there’s a reason for that. More on it below).
+</p>
+<p>
+Now let’s plot it:
+</p>
+<pre class="r"><code>flat_energy %&gt;%
+  mutate(month = month(date)) %&gt;%  
+  group_by(month, temperature) %&gt;%
+  summarise(avg_temp = mean(temp_value)) %&gt;%  
+  ggplot() +
+  geom_line(aes(y = avg_temp, x = month, col = temperature)) +
+  brotools::theme_blog()</code></pre>
+<pre><code>## `summarise()` regrouping output by 'month' (override with `.groups` argument)</code></pre>
+<p>
+<img src="../assets/img/tidytable-5-1.png" width="80%" height="auto"> Ok great. But what if I had such a dataset per house for a whole city? How many datasets would that be? And how long would these operations take? The first step I would take if I were in this situation, would be to write a function. I would make it general enough to work with temperature or humidity. Below is this function:
+</p>
+<pre class="r"><code>prepare_data &lt;- function(energy, variable){
+
+  variable &lt;- enquo(variable)
+
+  variable_label &lt;- as_label(variable)
+
+  regex_selector &lt;- ifelse(variable_label == "temperature",
+                           "T\\d{1}",
+                           "RH_\\d{1}")
+energy %&gt;%
+  pivot_longer(cols = matches(regex_selector),
+               names_to = variable_label,
+               values_to = paste0(variable_label, "_value")) %&gt;%
+    mutate(!!(variable) := case_when(grepl("1$", !!(variable)) ~ "kitchen",
+                                    grepl("2$", !!(variable)) ~ "living",
+                                    grepl("3$", !!(variable)) ~ "laundry",
+                                    grepl("4$", !!(variable)) ~ "office",
+                                    grepl("5$", !!(variable)) ~ "bathroom",
+                                    grepl("6$", !!(variable)) ~ "outside",
+                                    grepl("7$", !!(variable)) ~ "ironing",
+                                    grepl("8$", !!(variable)) ~ "teenager",
+                                    grepl("9$", !!(variable)) ~ "parents")) %&gt;%
+  mutate(month = month(date)) %&gt;%  
+  group_by(month, !!(variable)) %&gt;%
+  summarise(across(.cols = ends_with("_value"),
+                   .fns = mean),
+            .groups = "drop")
+}</code></pre>
+<p>
+This function does exactly the same thing as above:
+</p>
+<pre class="r"><code>prepare_data(energy, temperature) %&gt;%
+  ggplot() +
+  geom_line(aes(y = temperature_value, x = month, col = temperature)) +
+  brotools::theme_blog()</code></pre>
+<p>
+<img src="../assets/img/tidytable-7-1.png" width="80%" height="auto">
+</p>
+<p>
+As you can see, I have the exact same plot. What’s nice with this function, is that it uses many verbs from the <code>{tidyverse}</code> as well as the tidy eval framework for non-standard evaluation ( which is why I did not use <code>names_to = “room”</code>, I wanted to use the variable label defined with <code>as_label()</code> and see if it works with <code>{tidytable}</code> as well). Ok, so now let’s imagine that I’m happy with this function, but I’d like it to run faster, and because I’m lazy, the less I have to modify it, the happier I am. This is where <code>{tidytable}</code> looks very promising. Let’s rewrite the function to make it work with <code>{tidytable}</code>:
+</p>
+<pre class="r"><code>prepare_data_dt &lt;- function(energy, variable){
+
+  variable &lt;- enquo(variable)
+
+  variable_label &lt;- as_label(variable)
+
+  regex_selector &lt;- ifelse(variable_label == "temperature",
+                           "T\\d{1}",
+                           "RH_\\d{1}")
+energy %&gt;%
+  pivot_longer.(cols = matches(regex_selector),
+               names_to = variable_label,
+               values_to = paste0(variable_label, "_value")) %&gt;%
+    mutate.(!!(variable) := case_when(grepl("1$", !!(variable)) ~ "kitchen",
+                                    grepl("2$", !!(variable)) ~ "living",
+                                    grepl("3$", !!(variable)) ~ "laundry",
+                                    grepl("4$", !!(variable)) ~ "office",
+                                    grepl("5$", !!(variable)) ~ "bathroom",
+                                    grepl("6$", !!(variable)) ~ "outside",
+                                    grepl("7$", !!(variable)) ~ "ironing",
+                                    grepl("8$", !!(variable)) ~ "teenager",
+                                    grepl("9$", !!(variable)) ~ "parents")) %&gt;%  
+  mutate.(month = month(date)) %&gt;%  
+  summarise_across.(.cols = ends_with("_value"),
+                    .fns = mean,
+                    .by = c(month, !!(variable))) %&gt;%  
+  ungroup()
+}</code></pre>
+<p>
+As you can see, it’s <em>almost</em> the same thing. <code>{tidytable}</code> verbs end with a <code>‘.’</code> and that’s it. Well almost (again), the biggest difference is how <code>{tidytable}</code> groups by a variable. It’s very similar to how it’s done in <code>{data.table}</code>, by using a <code>.by =</code> argument to verbs that support it, such as <code>summarise_across()</code> (which is also, by the way, another difference with standard <code>{tidyverse}</code> syntax). While I’ll have to remember these, I’d argue that they’re minor differences and if it can make my function run faster, I don’t mind!
+</p>
+<p>
+Now let’s run a little benchmark. But first, let’s define our data as a <code>tidytable</code> object:
+</p>
+<pre class="r"><code>energy_tidytable &lt;- as_tidytable(energy)</code></pre>
+<p>
+Now we’re good to go:
+</p>
+<pre class="r"><code>microbenchmark::microbenchmark(
+                  energy %&gt;%
+                  prepare_data(temperature),
+                  energy_tidytable %&gt;%
+                  prepare_data_dt(temperature),
+                  times = 10
+                )</code></pre>
+<pre><code>## Unit: milliseconds
+##                                               expr      min       lq     mean
+##               energy %&gt;% prepare_data(temperature) 847.9709 849.6671 868.6524
+##  energy_tidytable %&gt;% prepare_data_dt(temperature) 820.2051 838.6647 861.9685
+##    median       uq      max neval
+##  861.0652 880.8200 914.4685    10
+##  858.9454 873.3268 936.0147    10</code></pre>
+<p>
+That is nice! It does indeed run faster, and with only some minor changes to the function! And how about using some more cores to run this function? This can be done using <code>data.table::setDTthreads(n_cores)</code> where <code>n_cores</code> is the number of cores you want to use:
+</p>
+<pre class="r"><code>data.table::setDTthreads(12)
+microbenchmark::microbenchmark(
+                  energy %&gt;%
+                  prepare_data(temperature),
+                  energy_tidytable %&gt;%
+                  prepare_data_dt(temperature),
+                  times = 10
+                )</code></pre>
+<pre><code>## Unit: milliseconds
+##                                               expr      min       lq     mean
+##               energy %&gt;% prepare_data(temperature) 832.9876 840.8000 874.3047
+##  energy_tidytable %&gt;% prepare_data_dt(temperature) 829.7937 831.2868 866.4383
+##    median       uq      max neval
+##  889.2684 898.6861 914.7178    10
+##  836.8712 893.0613 997.8511    10</code></pre>
+<p>
+Maybe surprisingly, it did not run faster. It could very well be that my function does not really lend itself to running in parallel, and the overhead induced by distributing the work to the cpu cores cancels out the gains from running it in parallel. But in any case, this is really looking very interesting. I have not tested the whole package yet, but since the syntax is so similar to the <code>{tidyverse}</code>, you can try really quickly to see if the <code>{tidytable}</code> version of the function runs faster, and if yes, I don’t really see a reason not to use it!
+</p>
+<p>
+Check out the project’s website <a href="https://markfairbanks.github.io/tidytable/index.html">here</a>, and follow the author’s twitter <a href="https://twitter.com/markfairbanks10">here</a>.
+</p>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

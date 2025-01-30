@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-04-12">
+
+<title>How to basic: bar plots – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to basic: bar plots</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 12, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=OisvDHvmKuM"> <img src="../assets/img/chef.jpg" title="Specialty from the chef!" width="80%" height="auto"></a>
+</p>
+</div>
+<p>
+This blog post shows how to make bar plots and area charts. It’s mostly a list of recipes, indented for myself. These are plots I have often to do in reports and would like to have the code handy somewhere. Maybe this will be helpful to some of you as well. Actually, this post is exactly how I started my blog post. I wanted to have a repository of recipes, and with time the blog grew to what it is now (tutorials and me exploring methods and datasets with R).
+</p>
+<section id="bar-charts" class="level2">
+<h2 class="anchored" data-anchor-id="bar-charts">
+Bar charts
+</h2>
+<p>
+Bar charts are quite simple plots, but there are enough variations of them that they deserve one single blog post. However, don’t expect many explanations.
+</p>
+<p>
+Let’s first start by loading some data, and the usually required packages:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(janitor)
+library(colorspace)</code></pre>
+<pre class="r"><code>data(gss_cat)</code></pre>
+<p>
+Very often, what one wants to show are counts:
+</p>
+<pre class="r"><code>gss_cat %&gt;%
+  count(marital, race)</code></pre>
+<pre><code>## # A tibble: 18 x 3
+##    marital       race      n
+##  * &lt;fct&gt;         &lt;fct&gt; &lt;int&gt;
+##  1 No answer     Other     2
+##  2 No answer     Black     2
+##  3 No answer     White    13
+##  4 Never married Other   633
+##  5 Never married Black  1305
+##  6 Never married White  3478
+##  7 Separated     Other   110
+##  8 Separated     Black   196
+##  9 Separated     White   437
+## 10 Divorced      Other   212
+## 11 Divorced      Black   495
+## 12 Divorced      White  2676
+## 13 Widowed       Other    70
+## 14 Widowed       Black   262
+## 15 Widowed       White  1475
+## 16 Married       Other   932
+## 17 Married       Black   869
+## 18 Married       White  8316</code></pre>
+<p>
+Let’s lump marital statuses that appear less than 10% of the time into an “Other” category:
+</p>
+<pre class="r"><code>(
+  counts_marital_race &lt;- gss_cat %&gt;%
+    mutate(marital = fct_lump(marital, prop = 0.1)) %&gt;%
+    count(marital, race)
+)</code></pre>
+<pre><code>## # A tibble: 12 x 3
+##    marital       race      n
+##  * &lt;fct&gt;         &lt;fct&gt; &lt;int&gt;
+##  1 Never married Other   633
+##  2 Never married Black  1305
+##  3 Never married White  3478
+##  4 Divorced      Other   212
+##  5 Divorced      Black   495
+##  6 Divorced      White  2676
+##  7 Married       Other   932
+##  8 Married       Black   869
+##  9 Married       White  8316
+## 10 Other         Other   182
+## 11 Other         Black   460
+## 12 Other         White  1925</code></pre>
+<p>
+The simplest bar plot:
+</p>
+<pre class="r"><code>ggplot(counts_marital_race) +
+  geom_col(aes(x = marital, y = n, fill = race)) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog()</code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-6-1.png" width="80%" height="auto">
+</p>
+<p>
+Now with <code>position = "dodge"</code>:
+</p>
+<pre class="r"><code>ggplot(counts_marital_race) +
+  geom_col(aes(x = marital, y = n, fill = race), position = "dodge") +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog()</code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-7-1.png" width="80%" height="auto">
+</p>
+<p>
+Moving the legend around with <code>theme(legend.position = …)</code>:
+</p>
+<pre class="r"><code>ggplot(counts_marital_race) +
+  geom_col(aes(x = marital, y = n, fill = race), position = "dodge") +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() +
+  theme(legend.position = "left")</code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-8-1.png" width="80%" height="auto">
+</p>
+<p>
+Counting by year as well:
+</p>
+<pre class="r"><code>(
+  counts_marital_race_year &lt;- gss_cat %&gt;%
+    mutate(marital = fct_lump(marital, prop = 0.1)) %&gt;%
+    count(year, marital, race) %&gt;%
+    ungroup()
+)</code></pre>
+<pre><code>## # A tibble: 96 x 4
+##     year marital       race      n
+##  * &lt;int&gt; &lt;fct&gt;         &lt;fct&gt; &lt;int&gt;
+##  1  2000 Never married Other    60
+##  2  2000 Never married Black   157
+##  3  2000 Never married White   495
+##  4  2000 Divorced      Other    20
+##  5  2000 Divorced      Black    60
+##  6  2000 Divorced      White   361
+##  7  2000 Married       Other    78
+##  8  2000 Married       Black   121
+##  9  2000 Married       White  1079
+## 10  2000 Other         Other    17
+## # … with 86 more rows</code></pre>
+<p>
+When you want to show how a variable evolves through time, area chart are handy:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;%
+  group_by(year, marital) %&gt;%
+  summarise(n = sum(n)) %&gt;%
+  ggplot() +
+  geom_area(aes(x = year, y = n, fill = marital)) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-10-1.png" width="80%" height="auto">
+</p>
+<p>
+Now with facets:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;%
+  ggplot() +
+  geom_area(aes(x = year, y = n, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-11-1.png" width="80%" height="auto">
+</p>
+<p>
+But what if I want each plot to have its own y axis?
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;%
+  ggplot() +
+  geom_area(aes(x = year, y = n, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free_y") +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-12-1.png" width="80%" height="auto">
+</p>
+<p>
+Now doing an area chart but with relative frequencies:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;% 
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-13-1.png" width="80%" height="auto">
+</p>
+<p>
+With <code>facet_wrap()</code>:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;% 
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free_y") +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-14-1.png" width="80%" height="auto">
+</p>
+<p>
+Want to replace 2000 with “2000-01-01”? First need to create vector of prettier dates and positions:
+</p>
+<pre class="r"><code>pretty_dates &lt;- counts_marital_race_year %&gt;%
+  mutate(pretty_dates = paste0(year, "-01-01")) %&gt;%
+  pull(pretty_dates) %&gt;%
+  unique()
+
+position_dates &lt;- counts_marital_race_year %&gt;%
+  pull(year) %&gt;%
+  unique() %&gt;%
+  sort() </code></pre>
+<p>
+<code>scale_x_continuous()</code> can now use this. Using <code>guide = guide_axis(n.dodge = 2)</code> to avoid overlapping labels:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;%
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free_y") +
+  scale_x_continuous("Year of survey", labels = pretty_dates,
+                     breaks = position_dates, guide = guide_axis(n.dodge = 2)) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-16-1.png" width="80%" height="auto">
+</p>
+<p>
+Adding labels is not trivial. Here it is not working:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;% 
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free_y") +
+  scale_x_continuous("Year of survey", labels = pretty_dates,
+                     breaks = position_dates, guide = guide_axis(n.dodge = 2)) +
+  geom_label(aes(x = year, y = freq, label = round(100 * freq))) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-17-1.png" width="80%" height="auto">
+</p>
+<p>
+Another failed attempt. I leave it here for posterity. My first idea was first to sort the grouped data set by descending frequency, and then to reorder the factor variable <code>marital</code> by descending position, which is the cumulative percentage. This would work fine, if the same factor levels would have had the same order for each of the race categories. However, this is not the case. For blacks, the most frequent category is “Never Married”. As you can see below, this trick worked well for 2 categories out of 3:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;%
+  group_by(year, race) %&gt;%  
+  arrange(desc(freq)) %&gt;% 
+  mutate(position = cumsum(freq)) %&gt;% 
+  mutate(marital = fct_reorder(marital, desc(position))) %&gt;% 
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free") +
+  scale_x_continuous("Year of survey", labels = pretty_dates,
+                     breaks = position_dates, guide = guide_axis(n.dodge = 2)) +
+  geom_label(aes(x = year, y = position, label = round(100 * freq))) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-18-1.png" width="80%" height="auto">
+</p>
+<p>
+So to remedy this, is not reorder too early; first, we need to reorder the factor variable by frequency. Then, we arrange the data by the now reordered <code>marital</code> variable, and then we can compute the position using the cumulative frequency.
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;%
+  group_by(year, race) %&gt;%  
+  mutate(marital = fct_reorder(marital, freq)) %&gt;% 
+  arrange(desc(marital)) %&gt;% 
+  mutate(position = cumsum(freq)) %&gt;% 
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free") +
+  scale_x_continuous("Year of survey", labels = pretty_dates,
+                     breaks = position_dates, guide = guide_axis(n.dodge = 2)) +
+  geom_label(aes(x = year, y = position, label = round(100 * freq))) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-19-1.png" width="80%" height="auto">
+</p>
+<p>
+We can place the labels a bit better (in the middle of their respective areas), like so:
+</p>
+<pre class="r"><code>counts_marital_race_year %&gt;% 
+  group_by(race, year, marital) %&gt;% 
+  summarise(n = sum(n)) %&gt;%  
+  mutate(freq = n/sum(n)) %&gt;%
+  group_by(year, race) %&gt;%  
+  mutate(marital = fct_reorder(marital, freq)) %&gt;% 
+  arrange(desc(marital)) %&gt;% 
+  mutate(position = cumsum(freq)) %&gt;% mutate(prev_pos = lag(position, default = 0)) %&gt;%
+  mutate(position = (position + prev_pos)/2) %&gt;%  
+  ggplot() +
+  geom_area(aes(x = year, y = freq, fill = marital)) +
+  facet_wrap(facets = vars(race), ncol = 1, scales = "free") +
+  scale_x_continuous("Year of survey", labels = pretty_dates,
+                     breaks = position_dates, guide = guide_axis(n.dodge = 2)) +
+  geom_label(aes(x = year, y = position, label = round(100 * freq))) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-20-1.png" width="80%" height="auto">
+</p>
+<p>
+Now let’s focus on the variable <code>tvhours</code>. We want to show the total watched hours, but also the total across all the categories of <code>race</code> and <code>marital</code> in a faceted bar plot:
+</p>
+<pre class="r"><code>(
+  total_tv &lt;- gss_cat %&gt;%
+    group_by(year, race, marital) %&gt;%
+    summarise(total_tv = sum(tvhours, na.rm = TRUE))
+)</code></pre>
+<pre><code>## # A tibble: 127 x 4
+## # Groups:   year, race [24]
+##     year race  marital       total_tv
+##    &lt;int&gt; &lt;fct&gt; &lt;fct&gt;            &lt;int&gt;
+##  1  2000 Other No answer            2
+##  2  2000 Other Never married      103
+##  3  2000 Other Separated           16
+##  4  2000 Other Divorced            17
+##  5  2000 Other Widowed             24
+##  6  2000 Other Married            122
+##  7  2000 Black Never married      452
+##  8  2000 Black Separated          135
+##  9  2000 Black Divorced           156
+## 10  2000 Black Widowed            183
+## # … with 117 more rows</code></pre>
+<p>
+This tibble has the total watched hours by year, race and marital status variables. How to add the total by year and race categories? For this, by are first going to use the <code>group_split()</code>:
+</p>
+<pre class="r"><code>total_tv_split &lt;- total_tv %&gt;%
+  select(race, year, marital, total_tv) %&gt;%
+  mutate(year = as.character(year)) %&gt;%  
+  group_split(year, race)</code></pre>
+<pre><code>## Warning: ... is ignored in group_split(&lt;grouped_df&gt;), please use
+## group_by(..., .add = TRUE) %&gt;% group_split()</code></pre>
+<p>
+I have to re-order the columns with <code>select()</code>, because when using <code>janitor::adorn_totals()</code>, which I will be using below to add totals, the first column must be a character column (it serves as an identifier column).
+</p>
+<p>
+This creates a list with 3 races times 6 years, so 24 elements. Each element of the list is a tibble with each unique combination of year and race:
+</p>
+<pre class="r"><code>length(total_tv_split)</code></pre>
+<pre><code>## [1] 24</code></pre>
+<pre class="r"><code>total_tv_split[1:2]</code></pre>
+<pre><code>## &lt;list_of&lt;
+##   tbl_df&lt;
+##     race    : factor&lt;f4a07&gt;
+##     year    : character
+##     marital : factor&lt;82ceb&gt;
+##     total_tv: integer
+##   &gt;
+## &gt;[2]&gt;
+## [[1]]
+## # A tibble: 6 x 4
+##   race  year  marital       total_tv
+##   &lt;fct&gt; &lt;chr&gt; &lt;fct&gt;            &lt;int&gt;
+## 1 Other 2000  No answer            2
+## 2 Other 2000  Never married      103
+## 3 Other 2000  Separated           16
+## 4 Other 2000  Divorced            17
+## 5 Other 2000  Widowed             24
+## 6 Other 2000  Married            122
+## 
+## [[2]]
+## # A tibble: 5 x 4
+##   race  year  marital       total_tv
+##   &lt;fct&gt; &lt;chr&gt; &lt;fct&gt;            &lt;int&gt;
+## 1 Black 2000  Never married      452
+## 2 Black 2000  Separated          135
+## 3 Black 2000  Divorced           156
+## 4 Black 2000  Widowed            183
+## 5 Black 2000  Married            320</code></pre>
+<p>
+Why do this? To use <code>janitor::adorn_totals()</code>, which adds row-wise totals to a data frame, or to each data frame if a list of data frames gets passed to it. I need to still transform the data a little bit. After using <code>adorn_totals()</code>, I bind my list of data frames together, and then fill down the year column (when using <code>adorn_totals()</code>, character columns like <code>year</code> are filled with <code>"-"</code>, but I chose to fill it with <code>NA_character_</code>). I then replace the NA value from the marital column with the string <code>"Total"</code> and then reorder the <code>marital</code> column by value of <code>total_tv</code>:
+</p>
+<pre class="r"><code>total_tv_split &lt;- total_tv_split %&gt;%
+  adorn_totals(fill = NA_character_) %&gt;%
+  map(as.data.frame) %&gt;%  
+  bind_rows() %&gt;%
+  fill(year, .direction = "down") %&gt;%
+  mutate(marital = ifelse(is.na(marital), "Total", marital)) %&gt;%
+  mutate(marital = fct_reorder(marital, total_tv))</code></pre>
+<p>
+I can finally create my plot. Because I have added “Total” as a level in the <code>marital</code> column, it now appears seamlessly in the plot:
+</p>
+<pre class="r"><code>ggplot(total_tv_split) +
+  geom_col(aes(x = marital, y = total_tv, fill = race)) +
+  facet_wrap(facets = vars(year), nrow = 2) +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  scale_x_discrete(guide = guide_axis(n.dodge = 3)) +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-25-1.png" width="80%" height="auto">
+</p>
+<p>
+To finish this list of recipes, let’s do a pyramid plot now (inspiration from <a href="https://stackoverflow.com/questions/14680075/simpler-population-pyramid-in-ggplot2">here</a>:
+</p>
+<pre class="r"><code>data_pyramid &lt;- gss_cat %&gt;%
+  filter(year == "2000", marital %in% c("Married", "Never married")) %&gt;%
+  group_by(race, marital, rincome) %&gt;%  
+  summarise(total_tv = sum(tvhours, na.rm = TRUE))
+
+ggplot(data_pyramid, aes(x = rincome, y = total_tv, fill = marital)) +
+  geom_col(data = filter(data_pyramid, marital == "Married")) +
+  geom_col(data = filter(data_pyramid, marital == "Never married"), aes(y = total_tv * (-1))) +
+  facet_wrap(facets = vars(race), nrow = 1, scales = "free_x") +
+  coord_flip() +
+  scale_fill_discrete_qualitative(palette = "Dark 3") +
+  brotools::theme_blog() </code></pre>
+<p>
+<img src="../assets/img/basic_ggplot2-26-1.png" width="80%" height="auto">
+</p>
+<p>
+Happy Easter!
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

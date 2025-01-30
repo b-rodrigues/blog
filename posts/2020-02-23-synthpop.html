@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-02-23">
+
+<title>Synthetic micro-datasets: a promising middle ground between data privacy and data analysis – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Synthetic micro-datasets: a promising middle ground between data privacy and data analysis</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">econometrics</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 23, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://twitter.com/scienceshitpost/status/1218199897654120449"> <img src="../assets/img/fake_car.png" title="A purpoise can be assumed to be a kind of fake car." width="80%" height="auto"></a>
+</p>
+</div>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<section id="intro-the-need-for-microdata-and-the-risk-of-disclosure" class="level2">
+<h2 class="anchored" data-anchor-id="intro-the-need-for-microdata-and-the-risk-of-disclosure">
+Intro: the need for microdata, and the risk of disclosure
+</h2>
+<p>
+Survey and administrative data are essential for scientific research, however accessing such datasets can be very tricky, or even impossible. In my previous job I was responsible for getting access to such “scientific micro-datasets” from institutions like Eurostat. In general, getting access to these micro datasets was only a question of filling out some forms and signing NDAs. But this was true only because my previous employer was an accredited research entity. Companies from the private sector or unaffiliated, individual, researchers cannot get access to the microdata sets. This is because institutions that produce such datasets absolutely do not want any type of personal information to be disclosed.
+</p>
+<p>
+For instance, with the labour force survey, a National Statistical Institute (NSI) collects information about wages, family structure, educational attainment and much more. If, say, a politician would answer to the survey and his answers would leak to the public that would be disastrous for NSIs. So this is why access is restricted to accredited research institutions. You may be asking yourself, “how could the politicians answers leak? The data is anonymized!” Indeed it is, but in some cases that may not be enough to ensure that information does not get disclosed. Suppose that the dataset contains enough information to allow you to know for certain that you found said politician, assume that this politician is a 43 year old man, has two children, a PhD in theology and lives in Strassen, one of Luxembourg-City very nice neighborhoods. It would be quite easy to find him in the dataset and then find out his wage.
+</p>
+<p>
+To avoid this, researchers are required to perform output checking, which means going through the set of outputs (summary tables, graphs, tables with regression coefficients…) and making sure that it is not possible to find out individuals. For instance, in Luxembourg there are two companies in the tobacco industry. Luxembourg’s NSI cannot release the total turnover of the industry, because then company A would subtract its turnover from the total and find out its competitor’s turnover. Now these are all hypothetical examples, and we might argue that the risk of leakage is quite low, especially if NSIs make sure to lower the precision of the variables, by providing age categories instead of the exact age for example. Or capping wages that exceed a certain fixed amount. In any case for now most NSIs don’t release micro data to the public, and this poses some challenges for research. First of all, even for researchers, it would be great if the data was freely accessible. It would allow research to go straight to data analysis and look at the structure of the data before applying for access, with the risk of getting access to useless data. And of course it would be great for the public at large to be able to freely access such data, for educational purposes at the very least. It would also increase competition between research institutions and the private sector when it comes to conducting studies using such data. Free access to the microdata would level the playing field. Now, some NSIs do release micro data to the public, see Eustat, the NSI from the Basque country, an autonomous region of Spain. It is not clear to me if they also have more detailed data that is only accessible to researchers, but the data they offer is already quite interesting.
+</p>
+<p>
+A middle ground between only releasing data to researchers and making it completely freely accessible is to create a synthetic dataset, which does not contain any of the original records, but which still allows to perform meaningful analyses.
+</p>
+<p>
+I’m not yet very familiar with the details of the procedure, but in this blog post I’ll use Eustat’s microdata to generate a synthetic dataset. I’ll then perform the same analysis on both the original dataset and the synthetic dataset. The dataset I’ll be using can be found <a href="https://en.eustat.eus/estadisticas/tema_37/opt_0/tipo_11/temas.html">here</a>, and is called <em>Population with relation to activity (PRA)</em>:
+</p>
+<p>
+<em>The Survey on the Population in Relation to Activity operation is a continuous source of information on the characteristics and dynamics of the labour force of the Basque Country. It records the relation to productive activity of the population resident in family households, as well as the changes produced in labour situations; it produces indicators of conjunctural variations in the evolution of the active population; it also estimates the degree of participation of the population in economically non-productive activities. It offers information on the province and capital level.</em>
+</p>
+<p>
+I’ll then compare the results of the analyses performed on the two datasets which will hopefully be very similar. To create the synthetic dataset, I’ll be using the <code>{synthpop}</code> package. You can read the detailed vignette <a href="https://cran.r-project.org/web/packages/synthpop/vignettes/synthpop.pdf">here - pdf warning -</a>. First, let me perform some cleaning steps. There are four datasets included in the archive. Let’s load them:
+</p>
+<pre class="r"><code>library(tidyverse)
+library(tidymodels)
+library(readxl)
+library(synthpop)
+
+list_data &lt;- Sys.glob("MICRO*.csv")
+
+dataset &lt;- map(list_data, read_csv2) %&gt;%
+  bind_rows()
+
+head(dataset)</code></pre>
+<p>
+The columns are labeled in Spanish so I’m copy pasting the labels into Google translate and paste them back into my script. I saved the English names into the english.rds object for posterity. These steps are detailed in the next lines:
+</p>
+<pre class="r"><code>dictionary &lt;- read_xlsx("Microdatos_PRA_2019/diseño_registro_microdatos_pra.xlsx", sheet="Valores",
+                        col_names = FALSE)</code></pre>
+<pre><code>## New names:
+## * `` -&gt; ...1
+## * `` -&gt; ...2
+## * `` -&gt; ...3</code></pre>
+<pre class="r"><code>col_names &lt;- dictionary %&gt;%
+  filter(!is.na(...1)) %&gt;%
+  dplyr::select(1:2)
+
+# copy to clipboard, paste to google translate
+# couldn't be bothered to use an api and google cloud or whatever
+#clipr::write_clip(col_names$`...2`)
+
+#english &lt;- clipr::read_clip()
+
+english &lt;- readRDS("english_col_names.rds")
+
+col_names$english &lt;- english
+
+colnames(dataset) &lt;- col_names$english
+
+dataset &lt;- janitor::clean_names(dataset)</code></pre>
+<p>
+I now create a function that will perform the cleaning steps:
+</p>
+<pre class="r"><code>basic_cleaning &lt;- function(dataset){
+  dataset %&gt;%
+  dplyr::filter(age %in% c("05", "06", "07", "08", "09", "10", "11")) %&gt;%
+  dplyr::filter(!is.na(job_search)) %&gt;%  
+  dplyr::select(territory, capital, sex, place_of_birth, age, nationality, level_of_studies_completed,
+                job_search, main_occupation, type_of_contract, hours) %&gt;%
+  dplyr::mutate_at(.vars = vars(-hours), .funs=as.factor)
+}</code></pre>
+</section>
+<section id="putting-on-my-econometricians-hat" class="level2">
+<h2 class="anchored" data-anchor-id="putting-on-my-econometricians-hat">
+Putting on my econometricians hat
+</h2>
+<p>
+Let’s now suppose that I’m only interested in running a logistic regression:
+</p>
+<pre class="r"><code>pra &lt;- basic_cleaning(dataset)
+
+head(pra)</code></pre>
+<pre><code>## # A tibble: 6 x 11
+##   territory capital sex   place_of_birth age   nationality level_of_studie…
+##   &lt;fct&gt;     &lt;fct&gt;   &lt;fct&gt; &lt;fct&gt;          &lt;fct&gt; &lt;fct&gt;       &lt;fct&gt;           
+## 1 48        9       6     1              09    1           1               
+## 2 48        9       1     1              09    1           2               
+## 3 48        1       1     1              11    1           3               
+## 4 48        1       6     1              10    1           3               
+## 5 48        9       6     1              07    1           3               
+## 6 48        9       1     1              09    1           1               
+## # … with 4 more variables: job_search &lt;fct&gt;, main_occupation &lt;fct&gt;,
+## #   type_of_contract &lt;fct&gt;, hours &lt;dbl&gt;</code></pre>
+<pre class="r"><code>logit_model &lt;- glm(job_search ~ ., data = pra, family = binomial())
+
+# Create a tidy dataset with the results of the regression
+tidy_logit_model &lt;- tidy(logit_model, conf.int = TRUE) %&gt;%
+  mutate(dataset = "true")</code></pre>
+<p>
+Let’s now take a look at the coefficients, by plotting their value along with their confidence intervals:
+</p>
+<pre class="r"><code>ggplot(tidy_logit_model, aes(x = term, y = estimate)) +
+  geom_point(colour = "#82518c") +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), colour = "#657b83") +
+  brotools::theme_blog() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
+<p>
+<img src="../assets/img/synthpop-8-1.png" width="80%" height="auto">
+</p>
+<p>
+Ok, so now, how would the results change if I run the same analysis on the synthetic dataset? First, I need to generate this synthetic dataset:
+</p>
+<pre class="r"><code>my_seed &lt;- 1234
+
+synthetic_data &lt;- syn(pra, seed = my_seed)</code></pre>
+<pre><code>## Synthesis
+## -----------
+##  territory capital sex place_of_birth age nationality level_of_studies_completed job_search main_occupation type_of_contract
+##  hours</code></pre>
+<p>
+The synthetic data is generated by a single call to the <code>syn()</code> function included in the <code>{synthpop}</code> package. Let’s take a look at the generated object:
+</p>
+<pre class="r"><code>synthetic_data</code></pre>
+<pre><code>## Call:
+## ($call) syn(data = pra, seed = my_seed)
+## 
+## Number of synthesised data sets: 
+## ($m)  1 
+## 
+## First rows of synthesised data set: 
+## ($syn)
+##   territory capital sex place_of_birth age nationality
+## 1        48       9   1              1  06           1
+## 2        01       9   6              3  09           1
+## 3        48       3   1              1  08           1
+## 4        48       9   6              1  11           1
+## 5        20       2   6              1  09           1
+## 6        48       1   6              1  11           1
+##   level_of_studies_completed job_search main_occupation type_of_contract hours
+## 1                          3          N               2                1    40
+## 2                          1          S               9                6    10
+## 3                          1          N               6             &lt;NA&gt;    32
+## 4                          2          N               4                1    32
+## 5                          3          N               5             &lt;NA&gt;    40
+## 6                          1          S               7             &lt;NA&gt;    NA
+## ...
+## 
+## Synthesising methods: 
+## ($method)
+##                  territory                    capital 
+##                   "sample"                     "cart" 
+##                        sex             place_of_birth 
+##                     "cart"                     "cart" 
+##                        age                nationality 
+##                     "cart"                     "cart" 
+## level_of_studies_completed                 job_search 
+##                     "cart"                     "cart" 
+##            main_occupation           type_of_contract 
+##                     "cart"                     "cart" 
+##                      hours 
+##                     "cart" 
+## 
+## Order of synthesis: 
+## ($visit.sequence)
+##                  territory                    capital 
+##                          1                          2 
+##                        sex             place_of_birth 
+##                          3                          4 
+##                        age                nationality 
+##                          5                          6 
+## level_of_studies_completed                 job_search 
+##                          7                          8 
+##            main_occupation           type_of_contract 
+##                          9                         10 
+##                      hours 
+##                         11 
+## 
+## Matrix of predictors: 
+## ($predictor.matrix)
+##                            territory capital sex place_of_birth age nationality
+## territory                          0       0   0              0   0           0
+## capital                            1       0   0              0   0           0
+## sex                                1       1   0              0   0           0
+## place_of_birth                     1       1   1              0   0           0
+## age                                1       1   1              1   0           0
+## nationality                        1       1   1              1   1           0
+## level_of_studies_completed         1       1   1              1   1           1
+## job_search                         1       1   1              1   1           1
+## main_occupation                    1       1   1              1   1           1
+## type_of_contract                   1       1   1              1   1           1
+## hours                              1       1   1              1   1           1
+##                            level_of_studies_completed job_search
+## territory                                           0          0
+## capital                                             0          0
+## sex                                                 0          0
+## place_of_birth                                      0          0
+## age                                                 0          0
+## nationality                                         0          0
+## level_of_studies_completed                          0          0
+## job_search                                          1          0
+## main_occupation                                     1          1
+## type_of_contract                                    1          1
+## hours                                               1          1
+##                            main_occupation type_of_contract hours
+## territory                                0                0     0
+## capital                                  0                0     0
+## sex                                      0                0     0
+## place_of_birth                           0                0     0
+## age                                      0                0     0
+## nationality                              0                0     0
+## level_of_studies_completed               0                0     0
+## job_search                               0                0     0
+## main_occupation                          0                0     0
+## type_of_contract                         1                0     0
+## hours                                    1                1     0</code></pre>
+<p>
+As you can see, <code>synthetic_data</code> is a list with several elements. The data is inside the <code>syn</code> element. Let’s extract it, and perform the same analysis from before:
+</p>
+<pre class="r"><code>syn_pra &lt;- synthetic_data$syn
+
+head(syn_pra)</code></pre>
+<pre><code>##   territory capital sex place_of_birth age nationality
+## 1        48       9   1              1  06           1
+## 2        01       9   6              3  09           1
+## 3        48       3   1              1  08           1
+## 4        48       9   6              1  11           1
+## 5        20       2   6              1  09           1
+## 6        48       1   6              1  11           1
+##   level_of_studies_completed job_search main_occupation type_of_contract hours
+## 1                          3          N               2                1    40
+## 2                          1          S               9                6    10
+## 3                          1          N               6             &lt;NA&gt;    32
+## 4                          2          N               4                1    32
+## 5                          3          N               5             &lt;NA&gt;    40
+## 6                          1          S               7             &lt;NA&gt;    NA</code></pre>
+<pre class="r"><code>syn_pra &lt;- basic_cleaning(syn_pra)
+
+logit_model_syn &lt;- glm(job_search ~ ., data = syn_pra, family = binomial())
+
+tidy_logit_syn &lt;- tidy(logit_model_syn, conf.int = TRUE) %&gt;%
+  mutate(dataset = "syn")
+
+ggplot(tidy_logit_syn, aes(x = term, y = estimate)) +
+  geom_point(colour = "#82518c") +
+  geom_hline(yintercept = 0, colour = "red") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), colour = "#657b83") +
+  brotools::theme_blog() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
+<p>
+<img src="../assets/img/synthpop-12-1.png" width="80%" height="auto">
+</p>
+<p>
+To ease the comparison between the coefficients of the model, let’s create a single graph:
+</p>
+<pre class="r"><code>coeff_models &lt;- bind_rows(list(tidy_logit_model, tidy_logit_syn))
+
+ggplot(coeff_models, aes(x = term, y = estimate, colour = dataset)) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  brotools::theme_blog() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
+<p>
+<img src="../assets/img/synthpop-13-1.png" width="80%" height="auto">
+</p>
+<p>
+This is quite interesting; generally, there is quite some overlap between the synthetic data and the real data! There are some differences though, for instance, <code>main_occupation6</code> is significant with the synthetic data, but is not with the real data. There’s the possibility to generate more than one synthetic dataset, which would very likely reduce the noise.
+</p>
+</section>
+<section id="putting-on-my-data-scientist-hat" class="level2">
+<h2 class="anchored" data-anchor-id="putting-on-my-data-scientist-hat">
+Putting on my data scientist hat
+</h2>
+<p>
+Now let’s suppose that I am only interested into prediction. For this, I am going to split my dataset into a training and testing set, then run a logistic regression and a random forest, assess the models’ performance with 10-fold cross validation. I’ll do this on both the real and the synthetic data. To perform the analysis, I’ll be using the <code>{tidymodels}</code> framework; I’m going to explain the code that follows line by line, because I’ll very likely write a blog post focusing on <code>{tidymodels}</code> soon.
+</p>
+<p>
+So, let’s write a function that does exactly what I explained above:
+</p>
+<pre class="r"><code>training_and_evaluating &lt;- function(dataset){
+
+  pra_split &lt;- initial_split(dataset, prop = 0.8)
+  
+  pra_train &lt;- training(pra_split)
+  pra_test &lt;- testing(pra_split)
+  
+  pra_cv_splits &lt;- vfold_cv(pra_train, v = 10)
+  
+  preprocess &lt;- recipe(job_search ~ ., data = pra) %&gt;%
+    step_knnimpute(all_predictors())
+  
+  logit_pra &lt;- logistic_reg() %&gt;%
+    set_engine("glm")
+  
+  fitted_logit &lt;- fit_resamples(preprocess,
+                                model = logit_pra,
+                                resamples = pra_cv_splits,
+                                control = control_resamples(save_pred = TRUE))
+  
+  metric_logit &lt;- fitted_logit$.metrics %&gt;%
+    bind_rows() %&gt;%
+    group_by(.metric) %&gt;%
+    summarise_at(.vars = vars(.estimate), .funs = lst(mean, sd)) %&gt;%
+    mutate(model = "logit")
+  
+  rf_pra &lt;- rand_forest(mode = "classification") %&gt;%
+    set_engine(engine = "ranger")
+  
+  fitted_forest &lt;- fit_resamples(preprocess,
+                                model = rf_pra,
+                                resamples = pra_cv_splits,
+                                control = control_resamples(save_pred = TRUE))
+  
+  metric_forest &lt;- fitted_forest$.metrics %&gt;%
+    bind_rows() %&gt;%
+    group_by(.metric) %&gt;%
+    summarise_at(.vars = vars(.estimate), .funs = lst(mean, sd)) %&gt;%
+    mutate(model = "forest")
+
+
+  bind_rows(list(metric_logit, metric_forest))
+}</code></pre>
+<p>
+Now I can run this function on both the real and the synthetic data, and look at the performance of the logistic regression and of the random forest:
+</p>
+<pre class="r"><code>true_data_performance &lt;- training_and_evaluating(pra)
+
+syn_data_performance &lt;- training_and_evaluating(syn_pra)</code></pre>
+<pre class="r"><code>true_data_performance</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   .metric   mean      sd model 
+##   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt; 
+## 1 accuracy 0.882 0.00816 logit 
+## 2 roc_auc  0.708 0.0172  logit 
+## 3 accuracy 0.907 0.00619 forest
+## 4 roc_auc  0.879 0.0123  forest</code></pre>
+<pre class="r"><code>syn_data_performance</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   .metric   mean      sd model 
+##   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt; 
+## 1 accuracy 0.882 0.00758 logit 
+## 2 roc_auc  0.691 0.0182  logit 
+## 3 accuracy 0.899 0.00615 forest
+## 4 roc_auc  0.857 0.0124  forest</code></pre>
+<p>
+The performance is pretty much the same!
+</p>
+<p>
+Generating synthetic data is a very promising approach, that I certainly will be using more; I think that such approaches can also be very interesting in the private sector (not only to ease access to microdata for researchers) especially within large companies. For instance, it can happen that the data owners from say, an insurance company, are not very keen on sharing sensitive client information with their data scientists. However, by generating a synthetic dataset and sharing the synthetic data with their data science team, the data owners avoid any chance of disclosure of sensitive information, while at the same time allowing their data scientists to develop interesting analyses or applications on the data!
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
