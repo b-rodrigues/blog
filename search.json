@@ -1386,6 +1386,573 @@
     "text": "Welcome to my blog where I talk about R, Nix, Econometrics and Data Science. If you enjoy reading what I write, you might enjoy my books or want to follow me on Mastodon or Twitter or Bluesky. If you are 40+, click here instead. I also make videos on youtube.\n\n\n\n\n\n\n2024\n\n\n\nReproducible data science with Nix, part 9 – rix is looking for testers!\n\n\nReproducible data science with Nix, part 13 – {rix} is on CRAN!\n\n\nReproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science\n\n\nReproducible data science with Nix, part 11 – build and cache binaries with Github Actions and Cachix\n\n\nReproducible data science with Nix, part 10 – contributing to nixpkgs\n\n\n\n2023\n\n\n\nZSA Voyager review\n\n\nWhy you should consider working on a dockerized development environment\n\n\nWhat I’ve learned making an .epub Ebook with Quarto\n\n\nSoftware engineering techniques that non-programmers who write a lot of code can benefit from — the DRY WIT approach\n\n\nReproducible data science with Nix, part 8 – nixpkgs, a tale of the magic of free and open source software and a call for charity\n\n\nReproducible data science with Nix, part 7 – Building a Quarto book using Nix on Github Actions\n\n\nReproducible data science with Nix, part 6 – CI/CD has never been easier\n\n\nReproducible data science with Nix, part 5 – Reproducible literate programming with Nix and Quarto\n\n\nReproducible data science with Nix, part 4 – So long, {renv} and Docker, and thanks for all the fish\n\n\nReproducible data science with Nix, part 3 – frictionless {plumber} api deployments with Nix\n\n\nReproducible data science with Nix, part 2 – running {targets} pipelines with Nix\n\n\nReproducible data science with Nix, part 1 – what is Nix\n\n\nMRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?\n\n\nI’ve been blogging for 10 years\n\n\nHow to self-publish a technical book on Leanpub and Amazon using Quarto\n\n\nAutomating checks of handcrafted Word tables with {docxtractr}\n\n\nAn overview of what’s out there for reproducibility with R\n\n\n\n2022\n\n\n\nchronicler is now available on CRAN\n\n\nWhy you should(n’t) care about Monads if you’re an R programmer\n\n\nWhy and how to use JS in your Shiny app\n\n\nWhat’s the fastest way to search and replace strings in a data frame?\n\n\nThe {chronicler} package, an implementation of the logger monad in R\n\n\nSome learnings from functional programming you can use to write safer programs\n\n\nSelf-documenting {ggplot}s thanks to the power of monads!\n\n\nReproducibility with Docker and Github Actions for the average R enjoyer\n\n\nR, its license and my take on it\n\n\nR will always be arcane to those who do not make a serious effort to learn it…\n\n\nOpen source is a hard requirement for reproducibility\n\n\nHow to deal with annoying medium sized data inside a Shiny app\n\n\nGet packages that introduce unique syntax adopted less?\n\n\nFunctional programming explains why containerization is needed for reproducibility\n\n\nCode longevity of the R programming language\n\n\nCapture errors, warnings and messages\n\n\nAdd logging to your functions using my newest package {loud}\n\n\nA Linux Live USB as a statistical programming dev environment\n\n\n\n2021\n\n\n\nUsing explainability methods to understand (some part) of the spread of COVID-19 in a landlocked country\n\n\nThe quest for fast(er?) row-oriented workflows\n\n\nThe link between keyboard layouts and typing speed - Data collection phase\n\n\nSpeedrunning row-oriented workflows\n\n\nServer(shiny)-less dashboards with R, {htmlwidgets} and {crosstalk}\n\n\nR makes it too easy to write papers\n\n\nIs it worth the weight?\n\n\nHow to write code that returns (Rmarkdown) code\n\n\nHow to treat as many files as fit on your hard disk without loops (sorta) nor running out of memory all the while being as lazy as possible\n\n\nHow to draw a map of arbitrary contiguous regions, or visualizing the spread of COVID-19 in the Greater Region\n\n\nDealing with non-representative samples with post-stratification\n\n\nBuilding your own knitr compile farm on your Raspberry Pi with {plumber}\n\n\n\n2020\n\n\n\nWhat would a keyboard optimised for Luxembourguish look like?\n\n\nThe Raspberry Pi 4B as a shiny server\n\n\nSynthetic micro-datasets: a promising middle ground between data privacy and data analysis\n\n\nPoorman’s automated translation with R and Google Sheets using {googlesheets4}\n\n\nNo excuse not to be a Bayesian anymore\n\n\nMachine learning with {tidymodels}\n\n\nIt’s time to retire the “data scientist” label\n\n\nHow to basic: bar plots\n\n\nGraphical User Interfaces were a mistake but you can still make things right\n\n\nGotta go fast with “{tidytable}”\n\n\nExploring NACE codes\n\n\nExplainbility of {tidymodels} models with {iml}\n\n\nDynamic discrete choice models, reinforcement learning and Harold, part 2\n\n\nDynamic discrete choice models, reinforcement learning and Harold, part 1\n\n\nBuilding apps with {shinipsum} and {golem}\n\n\nA year in review\n\n\n(Half) Lies, (half) truths and (half) statistics\n\n\n\n2019\n\n\n\n{disk.frame} is epic\n\n\nUsing linear models with binary dependent variables, a simulation study\n\n\nUsing cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius\n\n\nUsing Data Science to read 10 years of Luxembourguish newspapers from the 19th century\n\n\nThe never-ending editor war (?)\n\n\nStatistical matching, or when one single data source is not enough\n\n\nSplit-apply-combine for Maximum Likelihood Estimation of a linear model\n\n\nPivoting data frames just got easier thanks to pivot_wide() and pivot_long()\n\n\nMultiple data imputation and explainability\n\n\nModern R with the tidyverse is available on Leanpub\n\n\nManipulating strings with the {stringr} package\n\n\nMaking sense of the METS and ALTO XML standards\n\n\nLooking into 19th century ads from a Luxembourguish newspaper with R\n\n\nIntrumental variable regression and machine learning\n\n\nIntermittent demand, Croston and Die Hard\n\n\nHistorical newspaper scraping with {tesseract} and R\n\n\nGet text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}\n\n\nFor posterity: install {xml2} on GNU/Linux distros\n\n\nFast food, causality and R packages, part 2\n\n\nFast food, causality and R packages, part 1\n\n\nCurly-Curly, the successor of Bang-Bang\n\n\nCluster multiple time series using K-means\n\n\nClassification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2\n\n\nClassification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1\n\n\nBuilding a shiny app to explore historical newspapers: a step-by-step guide\n\n\n\n2018\n\n\n\n{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}\n\n\nWhat hyper-parameters are, and what to do with them; an illustration with ridge regression\n\n\nUsing the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods\n\n\nUsing a genetic algorithm for the hyperparameter optimization of a SARIMA model\n\n\nThe year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse\n\n\nThe best way to visit Luxembourguish castles is doing data science + combinatorial optimization\n\n\nSome fun with {gganimate}\n\n\nSearching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach\n\n\nR or Python? Why not both? Using Anaconda Python within R with {reticulate}\n\n\nPredicting job search by training a random forest on an unbalanced dataset\n\n\nObjects types and some useful R functions for beginners\n\n\nMissing data imputation and instrumental variables regression: the tidy approach\n\n\nMaps with pie charts on top of each administrative division: an example with Luxembourg’s elections data\n\n\nMapping a list of functions to a list of datasets with a list of columns as arguments\n\n\nManipulate dates easily with {lubridate}\n\n\nKeep trying that api call with purrr::possibly()\n\n\nIt’s lists all the way down, part 2: We need to go deeper\n\n\nIt’s lists all the way down\n\n\nImputing missing values in parallel using {furrr}\n\n\nImporting 30GB of data into R with sparklyr\n\n\nHow Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data\n\n\nGoing from a human readable Excel file to a machine-readable csv with {tidyxl}\n\n\nGetting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash\n\n\nGetting the data from the Luxembourguish elections out of Excel\n\n\nGetting data from pdfs using the pdftools package\n\n\nGet basic summary statistics for all the variables in a data frame\n\n\nFrom webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack\n\n\nForecasting my weight with R\n\n\nExporting editable plots from R to Powerpoint: making ggplot2 purrr with officer\n\n\nEasy time-series prediction with R: a tutorial with air traffic data from Lux Airport\n\n\nDealing with heteroskedasticity; regression with robust standard errors using R\n\n\nAnalyzing NetHack data, part 2: What players kill the most\n\n\nAnalyzing NetHack data, part 1: What kills the players\n\n\nA tutorial on tidy cross-validation with R\n\n\n\n2017\n\n\n\ntidyr::spread() and dplyr::rename_at() in action\n\n\nWhy I find tidyeval useful\n\n\nTeaching the tidyverse to beginners\n\n\nPeace of mind with purrr\n\n\nMy free book has a cover!\n\n\nMake ggplot2 purrr\n\n\nLesser known purrr tricks\n\n\nLesser known dplyr tricks\n\n\nLesser known dplyr 0.7* tricks\n\n\nIntroducing brotools\n\n\nHow to use jailbreakr\n\n\nEasy peasy STATA-like marginal effects with R\n\n\nBuilding formulae\n\n\n\n2016\n\n\n\nWork on lists of datasets instead of individual datasets by using functional programming\n\n\nUnit testing with R\n\n\nRead a lot of datasets at once with R\n\n\nMerge a list of datasets together\n\n\nI’ve started writing a ‘book’: Functional programming and unit testing for data munging with R\n\n\nFunctional programming and unit testing for data munging with R available on Leanpub\n\n\nData frame columns as arguments to dplyr functions\n\n\nCareful with tryCatch\n\n\n\n2015\n\n\n\nUpdate to Introduction to programming econometrics with R\n\n\nIntroduction to programming econometrics with R\n\n\nExport R output to a file\n\n\nBootstrapping standard errors for difference-in-differences estimation with R\n\n\n\n2014\n\n\n\nR, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?\n\n\nObject Oriented Programming with R: An example with a Cournot duopoly\n\n\n\n2013\n\n\n\nUsing R as a Computer Algebra System with Ryacas\n\n\nSimulated Maximum Likelihood with R\n\n\nNonlinear Gmm with R - Example with a logistic regression\n\n\nMethod of Simulated Moments with R\n\n\n\nNo matching items"
   },
   {
+    "objectID": "blog/2022-03-12-purely/index.html",
+    "href": "blog/2022-03-12-purely/index.html",
+    "title": "Capture errors, warnings and messages",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-06-29-book_quarto/index.html",
+    "href": "blog/2023-06-29-book_quarto/index.html",
+    "title": "How to self-publish a technical book on Leanpub and Amazon using Quarto",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-10-26-margins_r/index.html",
+    "href": "blog/2017-10-26-margins_r/index.html",
+    "title": "Easy peasy STATA-like marginal effects with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-09-08-steam_linux/index.html",
+    "href": "blog/2018-09-08-steam_linux/index.html",
+    "title": "The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-10-05-ggplot2_purrr_officer/index.html",
+    "href": "blog/2018-10-05-ggplot2_purrr_officer/index.html",
+    "title": "Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-15-tidy_gridsearch/index.html",
+    "href": "blog/2018-11-15-tidy_gridsearch/index.html",
+    "title": "Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-04-15-announcing_pmice/index.html",
+    "href": "blog/2018-04-15-announcing_pmice/index.html",
+    "title": "{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-03-02-no_shiny_dashboard/index.html",
+    "href": "blog/2021-03-02-no_shiny_dashboard/index.html",
+    "title": "Server(shiny)-less dashboards with R, {htmlwidgets} and {crosstalk}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-03-19-no_loops_tidyeval/index.html",
+    "href": "blog/2021-03-19-no_loops_tidyeval/index.html",
+    "title": "How to treat as many files as fit on your hard disk without loops (sorta) nor running out of memory all the while being as lazy as possible",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-11-21-guis_mistake/index.html",
+    "href": "blog/2020-11-21-guis_mistake/index.html",
+    "title": "Graphical User Interfaces were a mistake but you can still make things right",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-01-19-mapping_functions_with_any_cols/index.html",
+    "href": "blog/2018-01-19-mapping_functions_with_any_cols/index.html",
+    "title": "Mapping a list of functions to a list of datasets with a list of columns as arguments",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-02-06-echarts_map/index.html",
+    "href": "blog/2021-02-06-echarts_map/index.html",
+    "title": "How to draw a map of arbitrary contiguous regions, or visualizing the spread of COVID-19 in the Greater Region",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-10-21-lux_elections/index.html",
+    "href": "blog/2018-10-21-lux_elections/index.html",
+    "title": "Getting the data from the Luxembourguish elections out of Excel",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-01-26-harold/index.html",
+    "href": "blog/2020-01-26-harold/index.html",
+    "title": "Dynamic discrete choice models, reinforcement learning and Harold, part 1",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2015-11-11-bootstrapping-did-with-r/index.html",
+    "href": "blog/2015-11-11-bootstrapping-did-with-r/index.html",
+    "title": "Bootstrapping standard errors for difference-in-differences estimation with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-09-11-human_to_machine/index.html",
+    "href": "blog/2018-09-11-human_to_machine/index.html",
+    "title": "Going from a human readable Excel file to a machine-readable csv with {tidyxl}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-11-06-explainability_econometrics/index.html",
+    "href": "blog/2019-11-06-explainability_econometrics/index.html",
+    "title": "Intrumental variable regression and machine learning",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-27-fun_gganimate/index.html",
+    "href": "blog/2018-12-27-fun_gganimate/index.html",
+    "title": "Some fun with {gganimate}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2024-04-04-nix_for_r_part_11/index.html",
+    "href": "blog/2024-04-04-nix_for_r_part_11/index.html",
+    "title": "Reproducible data science with Nix, part 11 – build and cache binaries with Github Actions and Cachix",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-03-27-introducing_brotools/index.html",
+    "href": "blog/2017-03-27-introducing_brotools/index.html",
+    "title": "Introducing brotools",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-03-08-tidymodels/index.html",
+    "href": "blog/2020-03-08-tidymodels/index.html",
+    "title": "Machine learning with {tidymodels}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-03-20-pivot/index.html",
+    "href": "blog/2019-03-20-pivot/index.html",
+    "title": "Pivoting data frames just got easier thanks to pivot_wide() and pivot_long()",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-02-18-loudly/index.html",
+    "href": "blog/2022-02-18-loudly/index.html",
+    "title": "Add logging to your functions using my newest package {loud}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-21-lux_castle/index.html",
+    "href": "blog/2018-11-21-lux_castle/index.html",
+    "title": "The best way to visit Luxembourguish castles is doing data science + combinatorial optimization",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-03-31-tesseract/index.html",
+    "href": "blog/2019-03-31-tesseract/index.html",
+    "title": "Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-06-20-tidy_eval_saga/index.html",
+    "href": "blog/2019-06-20-tidy_eval_saga/index.html",
+    "title": "Curly-Curly, the successor of Bang-Bang",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-12-05-poorman_translate/index.html",
+    "href": "blog/2020-12-05-poorman_translate/index.html",
+    "title": "Poorman’s automated translation with R and Google Sheets using {googlesheets4}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2014-11-11-benchmarks-r-blas-atlas-rro/index.html",
+    "href": "blog/2014-11-11-benchmarks-r-blas-atlas-rro/index.html",
+    "title": "R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-07-27-spread_rename_at/index.html",
+    "href": "blog/2017-07-27-spread_rename_at/index.html",
+    "title": "tidyr::spread() and dplyr::rename_at() in action",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-21-tidyverse_pi/index.html",
+    "href": "blog/2018-12-21-tidyverse_pi/index.html",
+    "title": "Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-10-27-lux_elections_analysis/index.html",
+    "href": "blog/2018-10-27-lux_elections_analysis/index.html",
+    "title": "Maps with pie charts on top of each administrative division: an example with Luxembourg’s elections data",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-09-20-shiny_raspberry/index.html",
+    "href": "blog/2020-09-20-shiny_raspberry/index.html",
+    "title": "The Raspberry Pi 4B as a shiny server",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-09-05-tidytable/index.html",
+    "href": "blog/2020-09-05-tidytable/index.html",
+    "title": "Gotta go fast with “{tidytable}”",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
+    "href": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
+    "title": "Building a shiny app to explore historical newspapers: a step-by-step guide",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-10-20-nix_for_r_part7/index.html",
+    "href": "blog/2023-10-20-nix_for_r_part7/index.html",
+    "title": "Reproducible data science with Nix, part 7 – Building a Quarto book using Nix on Github Actions",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-03-08-lesser_known_tricks/index.html",
+    "href": "blog/2017-03-08-lesser_known_tricks/index.html",
+    "title": "Lesser known dplyr tricks",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-07-19-nix_for_r_part2/index.html",
+    "href": "blog/2023-07-19-nix_for_r_part2/index.html",
+    "title": "Reproducible data science with Nix, part 2 – running {targets} pipelines with Nix",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-07-13-nix_for_r_part1/index.html",
+    "href": "blog/2023-07-13-nix_for_r_part1/index.html",
+    "title": "Reproducible data science with Nix, part 1 – what is Nix",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-07-23-grepl_vs_stringi/index.html",
+    "href": "blog/2022-07-23-grepl_vs_stringi/index.html",
+    "title": "What’s the fastest way to search and replace strings in a data frame?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2014-04-23-r-s4-rootfinding/index.html",
+    "href": "blog/2014-04-23-r-s4-rootfinding/index.html",
+    "title": "Object Oriented Programming with R: An example with a Cournot duopoly",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-02-23-synthpop/index.html",
+    "href": "blog/2020-02-23-synthpop/index.html",
+    "title": "Synthetic micro-datasets: a promising middle ground between data privacy and data analysis",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-09-29-voyager/index.html",
+    "href": "blog/2023-09-29-voyager/index.html",
+    "title": "ZSA Voyager review",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-07-30-nix_for_r_part3/index.html",
+    "href": "blog/2023-07-30-nix_for_r_part3/index.html",
+    "title": "Reproducible data science with Nix, part 3 – frictionless {plumber} api deployments with Nix",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-04-10-brotools_describe/index.html",
+    "href": "blog/2018-04-10-brotools_describe/index.html",
+    "title": "Get basic summary statistics for all the variables in a data frame",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2024-08-27-nix_for_r_part_12/index.html",
+    "href": "blog/2024-08-27-nix_for_r_part_12/index.html",
+    "title": "Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-06-02-arcane/index.html",
+    "href": "blog/2022-06-02-arcane/index.html",
+    "title": "R will always be arcane to those who do not make a serious effort to learn it…",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-03-29-make-ggplot2-purrr/index.html",
+    "href": "blog/2017-03-29-make-ggplot2-purrr/index.html",
+    "title": "Make ggplot2 purrr",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-06-21-careful-with-trycatch/index.html",
+    "href": "blog/2016-06-21-careful-with-trycatch/index.html",
+    "title": "Careful with tryCatch",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-10-31-optim_shiny/index.html",
+    "href": "blog/2022-10-31-optim_shiny/index.html",
+    "title": "How to deal with annoying medium sized data inside a Shiny app",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-04-11-monads/index.html",
+    "href": "blog/2022-04-11-monads/index.html",
+    "title": "Why you should(n’t) care about Monads if you’re an R programmer",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-03-31-unit-testing-with-r/index.html",
+    "href": "blog/2016-03-31-unit-testing-with-r/index.html",
+    "title": "Unit testing with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-07-30-worth_weight/index.html",
+    "href": "blog/2021-07-30-worth_weight/index.html",
+    "title": "Is it worth the weight?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-04-25-10_years/index.html",
+    "href": "blog/2023-04-25-10_years/index.html",
+    "title": "I’ve been blogging for 10 years",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-01-07-my-free-book-has-a-cover/index.html",
+    "href": "blog/2017-01-07-my-free-book-has-a-cover/index.html",
+    "title": "My free book has a cover!",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
+    "href": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
+    "title": "Read a lot of datasets at once with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-01-03-lists_all_the_way/index.html",
+    "href": "blog/2018-01-03-lists_all_the_way/index.html",
+    "title": "It’s lists all the way down",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
+    "href": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
+    "title": "Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-14-luxairport/index.html",
+    "href": "blog/2018-11-14-luxairport/index.html",
+    "title": "Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-03-10-exp_tidymodels/index.html",
+    "href": "blog/2020-03-10-exp_tidymodels/index.html",
+    "title": "Explainbility of {tidymodels} models with {iml}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-06-24-fun_ts/index.html",
+    "href": "blog/2018-06-24-fun_ts/index.html",
+    "title": "Forecasting my weight with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-03-28-survey/index.html",
+    "href": "blog/2021-03-28-survey/index.html",
+    "title": "The link between keyboard layouts and typing speed - Data collection phase",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-25-tidy_cv/index.html",
+    "href": "blog/2018-11-25-tidy_cv/index.html",
+    "title": "A tutorial on tidy cross-validation with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-03-24-lesser_known_purrr/index.html",
+    "href": "blog/2017-03-24-lesser_known_purrr/index.html",
+    "title": "Lesser known purrr tricks",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
+    "href": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
+    "title": "Merge a list of datasets together",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-10-01-why_js_shiny/index.html",
+    "href": "blog/2022-10-01-why_js_shiny/index.html",
+    "title": "Why and how to use JS in your Shiny app",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-30-reticulate/index.html",
+    "href": "blog/2018-12-30-reticulate/index.html",
+    "title": "R or Python? Why not both? Using Anaconda Python within R with {reticulate}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-24-modern_objects/index.html",
+    "href": "blog/2018-12-24-modern_objects/index.html",
+    "title": "Objects types and some useful R functions for beginners",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-10-05-repro_overview/index.html",
+    "href": "blog/2023-10-05-repro_overview/index.html",
+    "title": "An overview of what’s out there for reproducibility with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-08-12-nix_for_r_part4/index.html",
+    "href": "blog/2023-08-12-nix_for_r_part4/index.html",
+    "title": "Reproducible data science with Nix, part 4 – So long, {renv} and Docker, and thanks for all the fish",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-05-04-diffindiff_part2/index.html",
+    "href": "blog/2019-05-04-diffindiff_part2/index.html",
+    "title": "Fast food, causality and R packages, part 2",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-11-30-pipelines-as/index.html",
+    "href": "blog/2022-11-30-pipelines-as/index.html",
+    "title": "Functional programming explains why containerization is needed for reproducibility",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
+    "href": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
+    "title": "How to use jailbreakr",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-01-04-newspapers/index.html",
+    "href": "blog/2019-01-04-newspapers/index.html",
+    "title": "Looking into 19th century ads from a Luxembourguish newspaper with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-10-23-licenses/index.html",
+    "href": "blog/2022-10-23-licenses/index.html",
+    "title": "R, its license and my take on it",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-10-12-cluster_ts/index.html",
+    "href": "blog/2019-10-12-cluster_ts/index.html",
+    "title": "Cluster multiple time series using K-means",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-03-03-historical_vowpal/index.html",
+    "href": "blog/2019-03-03-historical_vowpal/index.html",
+    "title": "Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2015-02-22-export-r-output-to-file/index.html",
+    "href": "blog/2015-02-22-export-r-output-to-file/index.html",
+    "title": "Export R output to a file",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-05-21-heavy_syntax/index.html",
+    "href": "blog/2022-05-21-heavy_syntax/index.html",
+    "title": "Get packages that introduce unique syntax adopted less?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-12-17-teaching_tidyverse/index.html",
+    "href": "blog/2017-12-17-teaching_tidyverse/index.html",
+    "title": "Teaching the tidyverse to beginners",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-06-04-own_knit_server/index.html",
+    "href": "blog/2021-06-04-own_knit_server/index.html",
+    "title": "Building your own knitr compile farm on your Raspberry Pi with {plumber}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "My name is Bruno Rodrigues and hold a PhD in Economics from the University of Strasbourg.\n\n\n\nI’m currently employed as a statistician for the Ministry of Research and Higher Education in Luxembourg. Before that I was senior data scientist and then manager in the data science team at PwC Luxembourg, and before that I was a research assistant at STATEC Research.\nMy hobbies are boxing, lifting weights, cycling, cooking and reading or listening to audiobooks, which is more compatible with the life of a young father. I started this blog to share my enthusiasm for statistics. My blog posts are reshared on R-bloggers and RWeekly. I also enjoy learning about the R programming language and sharing my knowledge. That’s why I made this blog and write ebooks. I also have a youtube channel, where I show some tips and tricks with R, or rant about stuff."
+  },
+  {
     "objectID": "books.html",
     "href": "books.html",
     "title": "Books",
@@ -1400,11 +1967,557 @@
     "text": "Build reproducible analytical pipelines that will output consistent, high-quality analyses using the R programming language, Git, Github and Docker. Learn about functional and literate programming to keep your code concise, easier to test, easier to share and easily understandable by others.\n\n\n\n\nRead it for free: https://raps-with-r.dev/\n\n\nBuy the DRM free Epub or PDF: https://leanpub.com/raps-with-r/\n\n\nBuy a physical copy on Amazon: https://www.amazon.com/Building-reproducible-analytical-pipelines-R/dp/B0C87H6MGF\n\n\n\n\n\n\nThis book focuses on teaching you how to use R in a modern way. Why modern? Because you will learn about the tidyverse collection of packages, which enable you to write efficient, legible code. You will also learn about functional programming, some statistical methods, writing your own packages… By the end of the book, you will have all the knowledge and tools on hand to use R for your day-to-day data science tasks!\n\n\n\n\nRead it for free: https://modern-rstats.eu/\n\n\n\nBuy the DRM free Epub or PDF (very out of date, update coming Q4-2025): https://leanpub.com/modern_tidyverse/\n\n\nBuy a physical copy (coming one day)"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "blog/2019-05-18-xml2/index.html",
+    "href": "blog/2019-05-18-xml2/index.html",
+    "title": "For posterity: install {xml2} on GNU/Linux distros",
     "section": "",
-    "text": "My name is Bruno Rodrigues and hold a PhD in Economics from the University of Strasbourg.\n\n\n\nI’m currently employed as a statistician for the Ministry of Research and Higher Education in Luxembourg. Before that I was senior data scientist and then manager in the data science team at PwC Luxembourg, and before that I was a research assistant at STATEC Research.\nMy hobbies are boxing, lifting weights, cycling, cooking and reading or listening to audiobooks, which is more compatible with the life of a young father. I started this blog to share my enthusiasm for statistics. My blog posts are reshared on R-bloggers and RWeekly. I also enjoy learning about the R programming language and sharing my knowledge. That’s why I made this blog and write ebooks. I also have a youtube channel, where I show some tips and tricks with R, or rant about stuff."
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-03-05-covid_lu/index.html",
+    "href": "blog/2021-03-05-covid_lu/index.html",
+    "title": "Using explainability methods to understand (some part) of the spread of COVID-19 in a landlocked country",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-01-12-repro_R/index.html",
+    "href": "blog/2023-01-12-repro_R/index.html",
+    "title": "MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-02-10-stringr_package/index.html",
+    "href": "blog/2019-02-10-stringr_package/index.html",
+    "title": "Manipulating strings with the {stringr} package",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-03-03-quarto_books/index.html",
+    "href": "blog/2023-03-03-quarto_books/index.html",
+    "title": "What I’ve learned making an .epub Ebook with Quarto",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-04-14-playing_with_furrr/index.html",
+    "href": "blog/2018-04-14-playing_with_furrr/index.html",
+    "title": "Imputing missing values in parallel using {furrr}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-02-hyper-parameters/index.html",
+    "href": "blog/2018-12-02-hyper-parameters/index.html",
+    "title": "What hyper-parameters are, and what to do with them; an illustration with ridge regression",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-09-15-time_use/index.html",
+    "href": "blog/2018-09-15-time_use/index.html",
+    "title": "How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-03-12-keep_trying/index.html",
+    "href": "blog/2018-03-12-keep_trying/index.html",
+    "title": "Keep trying that api call with purrr::possibly()",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-08-14-lpm/index.html",
+    "href": "blog/2019-08-14-lpm/index.html",
+    "title": "Using linear models with binary dependent variables, a simulation study",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-07-19-statmatch/index.html",
+    "href": "blog/2019-07-19-statmatch/index.html",
+    "title": "Statistical matching, or when one single data source is not enough",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-03-18-docxtractr/index.html",
+    "href": "blog/2023-03-18-docxtractr/index.html",
+    "title": "Automating checks of handcrafted Word tables with {docxtractr}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-11-19-raps/index.html",
+    "href": "blog/2022-11-19-raps/index.html",
+    "title": "Reproducibility with Docker and Github Actions for the average R enjoyer",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-10-nethack_analysis_part2/index.html",
+    "href": "blog/2018-11-10-nethack_analysis_part2/index.html",
+    "title": "Analyzing NetHack data, part 2: What players kill the most",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-03-07-dry_wit/index.html",
+    "href": "blog/2023-03-07-dry_wit/index.html",
+    "title": "Software engineering techniques that non-programmers who write a lot of code can benefit from — the DRY WIT approach",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r/index.html",
+    "href": "blog/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r/index.html",
+    "title": "I’ve started writing a ‘book’: Functional programming and unit testing for data munging with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
+    "href": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
+    "title": "Simulated Maximum Likelihood with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-16-rgenoud_arima/index.html",
+    "href": "blog/2018-11-16-rgenoud_arima/index.html",
+    "title": "Using a genetic algorithm for the hyperparameter optimization of a SARIMA model",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
+    "href": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
+    "title": "Introduction to programming econometrics with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-12-15-lubridate_africa/index.html",
+    "href": "blog/2018-12-15-lubridate_africa/index.html",
+    "title": "Manipulate dates easily with {lubridate}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-12-19-nix_for_r_part_8/index.html",
+    "href": "blog/2023-12-19-nix_for_r_part_8/index.html",
+    "title": "Reproducible data science with Nix, part 8 – nixpkgs, a tale of the magic of free and open source software and a call for charity",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-03-05-historical_vowpal_part2/index.html",
+    "href": "blog/2019-03-05-historical_vowpal_part2/index.html",
+    "title": "Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 2",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2013-12-31-r-cas/index.html",
+    "href": "blog/2013-12-31-r-cas/index.html",
+    "title": "Using R as a Computer Algebra System with Ryacas",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-10-29-mkusb_minp/index.html",
+    "href": "blog/2022-10-29-mkusb_minp/index.html",
+    "title": "A Linux Live USB as a statistical programming dev environment",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-01-nethack/index.html",
+    "href": "blog/2018-11-01-nethack/index.html",
+    "title": "From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2024-09-27-nix_part_13/index.html",
+    "href": "blog/2024-09-27-nix_part_13/index.html",
+    "title": "Reproducible data science with Nix, part 13 – {rix} is on CRAN!",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-05-08-dock_dev_env/index.html",
+    "href": "blog/2023-05-08-dock_dev_env/index.html",
+    "title": "Why you should consider working on a dockerized development environment",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-05-18-cran_0_2_0/index.html",
+    "href": "blog/2022-05-18-cran_0_2_0/index.html",
+    "title": "chronicler is now available on CRAN",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2024-02-02-nix_for_r_part_9/index.html",
+    "href": "blog/2024-02-02-nix_for_r_part_9/index.html",
+    "title": "Reproducible data science with Nix, part 9 – rix is looking for testers!",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-05-26-safer_programs/index.html",
+    "href": "blog/2022-05-26-safer_programs/index.html",
+    "title": "Some learnings from functional programming you can use to write safer programs",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-12-12-ethics_statistics/index.html",
+    "href": "blog/2020-12-12-ethics_statistics/index.html",
+    "title": "(Half) Lies, (half) truths and (half) statistics",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-02-16-importing_30gb_of_data/index.html",
+    "href": "blog/2018-02-16-importing_30gb_of_data/index.html",
+    "title": "Importing 30GB of data into R with sparklyr",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-04-17-post_strat/index.html",
+    "href": "blog/2021-04-17-post_strat/index.html",
+    "title": "Dealing with non-representative samples with post-stratification",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-11-14-peace_r/index.html",
+    "href": "blog/2017-11-14-peace_r/index.html",
+    "title": "Peace of mind with purrr",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-06-12-intermittent/index.html",
+    "href": "blog/2019-06-12-intermittent/index.html",
+    "title": "Intermittent demand, Croston and Die Hard",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-12-27-build_formulae/index.html",
+    "href": "blog/2017-12-27-build_formulae/index.html",
+    "title": "Building formulae",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-09-05-speedrunning_rows/index.html",
+    "href": "blog/2021-09-05-speedrunning_rows/index.html",
+    "title": "Speedrunning row-oriented workflows",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2024-02-29-nix_for_r_part_10/index.html",
+    "href": "blog/2024-02-29-nix_for_r_part_10/index.html",
+    "title": "Reproducible data science with Nix, part 10 – contributing to nixpkgs",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-07-08-rob_stderr/index.html",
+    "href": "blog/2018-07-08-rob_stderr/index.html",
+    "title": "Dealing with heteroskedasticity; regression with robust standard errors using R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-02-11-census-random_forest/index.html",
+    "href": "blog/2018-02-11-census-random_forest/index.html",
+    "title": "Predicting job search by training a random forest on an unbalanced dataset",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-09-27-golemDemo/index.html",
+    "href": "blog/2020-09-27-golemDemo/index.html",
+    "title": "Building apps with {shinipsum} and {golem}",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-09-20-nix_for_r_part6/index.html",
+    "href": "blog/2023-09-20-nix_for_r_part6/index.html",
+    "title": "Reproducible data science with Nix, part 6 – CI/CD has never been easier",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2015-05-03-update-introduction-r-programming/index.html",
+    "href": "blog/2015-05-03-update-introduction-r-programming/index.html",
+    "title": "Update to Introduction to programming econometrics with R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-10-05-parallel_maxlik/index.html",
+    "href": "blog/2019-10-05-parallel_maxlik/index.html",
+    "title": "Split-apply-combine for Maximum Likelihood Estimation of a linear model",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-04-07-historical_newspaper_scraping_tesseract/index.html",
+    "href": "blog/2019-04-07-historical_newspaper_scraping_tesseract/index.html",
+    "title": "Historical newspaper scraping with {tesseract} and R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-12-30-year_review/index.html",
+    "href": "blog/2020-12-30-year_review/index.html",
+    "title": "A year in review",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-04-12-basic_ggplot2/index.html",
+    "href": "blog/2020-04-12-basic_ggplot2/index.html",
+    "title": "How to basic: bar plots",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-11-05-retire_data_science/index.html",
+    "href": "blog/2020-11-05-retire_data_science/index.html",
+    "title": "It’s time to retire the “data scientist” label",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-04-28-diffindiff_part1/index.html",
+    "href": "blog/2019-04-28-diffindiff_part1/index.html",
+    "title": "Fast food, causality and R packages, part 1",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-11-16-open_source_repro/index.html",
+    "href": "blog/2022-11-16-open_source_repro/index.html",
+    "title": "Open source is a hard requirement for reproducibility",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-09-03-disk_frame/index.html",
+    "href": "blog/2019-09-03-disk_frame/index.html",
+    "title": "{disk.frame} is epic",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-04-27-nace_explorer/index.html",
+    "href": "blog/2020-04-27-nace_explorer/index.html",
+    "title": "Exploring NACE codes",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-08-27-why_tidyeval/index.html",
+    "href": "blog/2017-08-27-why_tidyeval/index.html",
+    "title": "Why I find tidyeval useful",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
+    "href": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
+    "title": "Work on lists of datasets instead of individual datasets by using functional programming",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-06-10-scraping_pdfs/index.html",
+    "href": "blog/2018-06-10-scraping_pdfs/index.html",
+    "title": "Getting data from pdfs using the pdftools package",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-01-31-newspapers_shiny_app/index.html",
+    "href": "blog/2019-01-31-newspapers_shiny_app/index.html",
+    "title": "Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-12-17-expand_knitr/index.html",
+    "href": "blog/2021-12-17-expand_knitr/index.html",
+    "title": "How to write code that returns (Rmarkdown) code",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-01-13-newspapers_mets_alto/index.html",
+    "href": "blog/2019-01-13-newspapers_mets_alto/index.html",
+    "title": "Making sense of the METS and ALTO XML standards",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-04-20-no_excuse/index.html",
+    "href": "blog/2020-04-20-no_excuse/index.html",
+    "title": "No excuse not to be a Bayesian anymore",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-02-20-covid_paper/index.html",
+    "href": "blog/2021-02-20-covid_paper/index.html",
+    "title": "R makes it too easy to write papers",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-07-01-tidy_ive/index.html",
+    "href": "blog/2018-07-01-tidy_ive/index.html",
+    "title": "Missing data imputation and instrumental variables regression: the tidy approach",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-11-02-mice_exp/index.html",
+    "href": "blog/2019-11-02-mice_exp/index.html",
+    "title": "Multiple data imputation and explainability",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-08-17-modern_R/index.html",
+    "href": "blog/2019-08-17-modern_R/index.html",
+    "title": "Modern R with the tidyverse is available on Leanpub",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-06-04-cosine_sim/index.html",
+    "href": "blog/2019-06-04-cosine_sim/index.html",
+    "title": "Using cosine similarity to find matching documents: a tutorial using Seneca’s letters to his friend Lucilius",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub/index.html",
+    "href": "blog/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub/index.html",
+    "title": "Functional programming and unit testing for data munging with R available on Leanpub",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2013-11-07-gmm-with-rmd/index.html",
+    "href": "blog/2013-11-07-gmm-with-rmd/index.html",
+    "title": "Nonlinear Gmm with R - Example with a logistic regression",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-05-15-self_doc_ggplot/index.html",
+    "href": "blog/2022-05-15-self_doc_ggplot/index.html",
+    "title": "Self-documenting {ggplot}s thanks to the power of monads!",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2017-07-02-dplyr-0-70-tutorial/index.html",
+    "href": "blog/2017-07-02-dplyr-0-70-tutorial/index.html",
+    "title": "Lesser known dplyr 0.7* tricks",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2021-09-04-quest_fast/index.html",
+    "href": "blog/2021-09-04-quest_fast/index.html",
+    "title": "The quest for fast(er?) row-oriented workflows",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-04-04-chron_post/index.html",
+    "href": "blog/2022-04-04-chron_post/index.html",
+    "title": "The {chronicler} package, an implementation of the logger monad in R",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2022-12-21-longevity/index.html",
+    "href": "blog/2022-12-21-longevity/index.html",
+    "title": "Code longevity of the R programming language",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-01-05-lists_all_the_way2/index.html",
+    "href": "blog/2018-01-05-lists_all_the_way2/index.html",
+    "title": "It’s lists all the way down, part 2: We need to go deeper",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2019-05-19-spacemacs/index.html",
+    "href": "blog/2019-05-19-spacemacs/index.html",
+    "title": "The never-ending editor war (?)",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2023-09-15-nix_for_r_part5/index.html",
+    "href": "blog/2023-09-15-nix_for_r_part5/index.html",
+    "title": "Reproducible data science with Nix, part 5 – Reproducible literate programming with Nix and Quarto",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions/index.html",
+    "href": "blog/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions/index.html",
+    "title": "Data frame columns as arguments to dplyr functions",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2018-11-03-nethack_analysis/index.html",
+    "href": "blog/2018-11-03-nethack_analysis/index.html",
+    "title": "Analyzing NetHack data, part 1: What kills the players",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-02-08-harold_part2/index.html",
+    "href": "blog/2020-02-08-harold_part2/index.html",
+    "title": "Dynamic discrete choice models, reinforcement learning and Harold, part 2",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2020-03-26-bepo_lu/index.html",
+    "href": "blog/2020-03-26-bepo_lu/index.html",
+    "title": "What would a keyboard optimised for Luxembourguish look like?",
+    "section": "",
+    "text": "Permanently moved."
+  },
+  {
+    "objectID": "blog/2013-01-29-method-of-simulated-moments-with-r/index.html",
+    "href": "blog/2013-01-29-method-of-simulated-moments-with-r/index.html",
+    "title": "Method of Simulated Moments with R",
+    "section": "",
+    "text": "Permanently moved."
   },
   {
     "objectID": "talks.html",
