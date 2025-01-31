@@ -1,6 +1,6 @@
 ---
 title: "Simulated Maximum Likelihood with R"
-date: "2013-12-11"
+date: "2013-01-16"
 categories:
   - R
   - econometrics
