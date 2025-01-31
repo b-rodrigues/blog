@@ -1,5 +1,5 @@
 ---
-date: 2024-08-28
+date: 2024-09-27
 title: Reproducible data science with Nix, part 13 -- {rix} is on CRAN!
 categories:
   - R

@@ -1,0 +1,59 @@
+---
+date: 2025-01-31
+title: New year, new blog
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a href="https://www.youtube.com/watch?v=n__GJuqLb00">
+      <img src="../assets/img/shadow.png" style="width: 40%; height: auto;">
+    </a>
+  </p>
+</div>
+
+
+Happy new year! The blog has a new look! Well it's not that different on the
+surface. But under the hood, it is quite different indeed!
+
+My previous setup was: GitHub to host the code, on each push the build process
+would get started on Netlify and then it would be hosted there. The engine was
+Hugo.
+
+This blog now still uses GitHub to host the code, but now also uses GitHub pages
+for hosting and the engine is
+[Quarto](https://quarto.org/docs/websites/website-blog.html).
+The blog also gets built on GitHub Actions inside of a Nix environment: so I just
+need to push and everything gets built!
+[Here's the workflow that achieves this](https://github.com/b-rodrigues/blog/blob/master/.github/workflows/build_publish.yaml).
+
+What's really amazing with Nix, is that I can preview my blog locally using
+*exactly* the same environment as the one that will be used for building it on
+GitHub actions. So if it *works on my machine* it's going to *work anywhere*.
+
+You'll notice that the last step uses the
+`rstats-on-nix/quarto-nix-actions/publish@main` action that is a fork of the
+[quarto-dev/quarto-actions](https://github.com/quarto-dev/quarto-actions)
+actions that just make them work inside of a Nix shell! This fork is hosted on the
+`rstats-on-nix` organizations: I have a lot to say about this organizations, but
+that's for a future blog post!
+
+Migrating the pages was a rather long process, as I needed to make sure
+everything was rendering correctly: because the folder structure of Quarto blogs
+is different than the structure of Hugo blogs, I had to update many paths. This
+was quite tedious and I didn't want to use a script for this as I also wanted to
+take this opportunity to make some adjustments, such as centering images
+properly and correcting some typos if I saw some. It was also quite interesting
+to re-read some of my old blog posts.
+
+One neat thing about Quarto is the possibility to use pre- and post-render scripts
+that can be written in R. I'm using one to correctly sort the blog posts in the main
+page, as for some reason they weren't being sorted properly.
+[Here's the post-render script in question.](https://github.com/b-rodrigues/blog/blob/master/order_posts.R)
+
+Now I can go back to working on [rix](https://docs.ropensci.org/rix/).
