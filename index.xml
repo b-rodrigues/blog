@@ -10,283 +10,36 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Wed, 28 Aug 2024 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 31 Jan 2025 00:00:00 GMT</lastBuildDate>
 <item>
-  <title>Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science</title>
-  <link>https://b-rodrigues.github.io/posts/2024-08-27-nix_for_r_part_12.html</link>
+  <title>New year, new blog</title>
+  <link>https://b-rodrigues.github.io/posts/2025-01-31-new_blog.html</link>
   <description><![CDATA[ 
 
 
 
 
-<div style="text-align:center;">
+<div style="text-align: center;">
 <p>
-<img src="https://b-rodrigues.github.io/assets/img/guess_we_doin_pdfs.png" width="60%">
+<a href="https://www.youtube.com/watch?v=n__GJuqLb00"> <img src="https://b-rodrigues.github.io/assets/img/shadow.png" style="width: 40%; height: auto;"> </a>
 </p>
 </div>
-<p>
-Nix is not only a package manager, but also a build automation tool, and you can use it to build polyglot data science pipelines in a completely reproducible way.
-</p>
-<p>
-For example, suppose that you need to mix Python, R and maybe some others tools for a project (by the way, some believe this will become the norm in the coming years, use your favourite search engine to look for “polyglot data science” and you’ll see), and suppose that you want to define your project as a nice reproducible pipeline, and not simply a series of scripts. What are the options available to you?
-</p>
-<p>
-One option would be to use the <code>{targets}</code> package for R, which allows you to do lay out your project as pipeline. But as amazing as <code>{targets}</code> is, it only works with R. If you also need Python, you would then need to also use the <code>{reticulate}</code> package to interface with it. But what do you do if you need some other command line tools? Well, you could wrap them in an R function using <code>system()</code> or <code>system2()</code>. But what if you need yet another language, like Julia? There might be a way to call Julia from R, but as you see, the more diverse tools you need, the more complex it gets. And it doesn’t really matter if you switch from <code>{targets}</code> to another such package that exists for, say, Python, you would always need to write wrappers or use packages that allow you to call the other programming languages that you need.
-</p>
-<p>
-Another possibility is to use good old <code>make</code>. <code>make</code> is a tool from the GNU project that allows you to define <em>targets</em>, which would be the outputs of a script or call to some cli tool by writing so-called <code>Makefiles</code>. For an example of a <code>Makefile</code> in research, take a look at <a href="https://github.com/grantmcdermott/skeptic-priors/blob/master/Makefile">this one</a> from a <a href="https://link.springer.com/article/10.1007/s10584-021-03089-x">paper</a> by <a href="https://mastodon.social/@gmcd">Grant McDermott</a>. You can use <code>make</code> as a to orchestrate several programming languages or cli tools, but you will need to write code to pass data from one script to the other. <code>{targets}</code> deals with that transparently by serialising all the targets’ outputs using <code>saveRDS()</code> but this only works because only R is supported. But if you’re trying to make R, Python, and whatever else work together, you will need to deal with this manually and find a common interface to pass data around.
-</p>
-<p>
-Despite this, using <code>make</code>, or some other tool on top of the required programming languages (and not tied to either one), is likely the best solution and it turns out that Nix can be used just like that! But why use Nix and not <code>make</code> then? Well, using Nix guarantees that whatever you produce will be completely reproducible. With <code>make</code>, you would need to either run it inside a Docker image or… inside a development environment built with Nix! I did something similar in <a href="../posts/2023-07-19-nix_for_r_part2.html">this blog post</a> where I ran a <code>{targets}</code> pipeline inside a Nix environment to make the analysis reproducible.
-</p>
-<p>
-But if I’m already defining a reproducible development environment using Nix, why not go all the way and build a complete project using Nix? After all, Nix allows you to package <em>software</em> and what is <em>software</em> but 0’s and 1’s? And what is a trained model, a paper or report in the PDF format, predictions exported into a CSV file, etc, if not 0’s and 1’s?
-</p>
-<p>
-Just like with any other build automation tool, Nix will only rebuild the project if something changes, and will only rebuild the parts that need to be rebuilt. So if you change a file somewhere, only whatever depends on this file will get rebuilt, just like with <code>{targets}</code>, or <code>make</code>.
-</p>
-<p>
-In the <a href="https://github.com/b-rodrigues/nixbat/tree/master">following repository</a> you can find an example of this.
-</p>
-<p>
-This is a very simple project: two functions are defined in the <code>python_functions.py</code> script. These functions are nothing special, and could be used interactively. One function reads a <code>.csv</code> file from the Internet and returns it, the other does some basic cleaning. Here are these two functions included in the <code>python_functions.py</code> file:
-</p>
-<pre><code>from pandas import read_csv
-
-def download_iris(iris_csv_url):
-    # Read the CSV file
-    df = read_csv(iris_csv_url)
-
-    return df
-
-def process_iris(iris_csv_path):
-    # Read the CSV file
-    df = read_csv(iris_csv_path)
-
-    # Replace the species numbers with their corresponding names
-    species_mapping = {0: "setosa", 1: "virginica", 2: "versicolor"}
-    df['species'] = df['species'].replace(species_mapping)
-
-    return df</code></pre>
-<p>
-Then, I want to use <code>{ggplot2}</code> to plot this data. You will notice the lack of R script in the repo. I did this on purpose, because I wanted to show how you could directly write R code inside of a Nix expression. But in practice, it is better to have Python code in a Python script, R code in an R script, and then use Nix to orchestrate the whole thing. But I just wanted to show you that you could, if you wanted to, have a completely self-contained Nix expression that encapsulates the business logic as well.
-</p>
-<p>
-There’s also a <code>.Qmd</code> file: this is the file that will get compiled into a PDF document, and is the output of the whole project. It could be anything else! As I stated above, this is just 0’s and 1’s so it could very well be some other output, it doesn’t really matter.
-</p>
-<p>
-Let’s now take a look at the <code>default.nix</code> that builds the whole thing. Let’s start by the top-level definitions:
-</p>
-<pre><code>let
-  pkgs =
-    import
-      (fetchTarball "https://github.com/NixOS/nixpkgs/archive/27285241da3bb285155d549a11192e9fdc3a0d04.tar.gz")
-      { };
-
-  tex = (
-    pkgs.texlive.combine {
-      inherit (pkgs.texlive) scheme-small;
-    }
-  );
-
-  # Because building happens in sandbox that cannot connect to the internet
-  # we need to download assets beforehand
-  iris_path = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/b-rodrigues/nixbat/7c319bcdbe15e7f7182e7685b8de176a40d0bde9/iris.csv";
-    hash = "sha256-2H6THCXKxIt4yxnDDY+AZRmbxqs7FndCp4MqaAR1Cpw=";
-  };
-
-  # Common python dependencies to use in my intermediary inputs
-  pythonEnv = pkgs.python312.withPackages (ps: with ps; [ pandas ]);
-
-  # Common python sources
-  python_src = pkgs.lib.fileset.toSource {
-    root = ./.;
-    fileset = ./python_functions.py;
-  };</code></pre>
-<p>
-Some variables are defined there:
-</p>
-<ul>
-<li>
-<code>pkgs</code>: this is the set of Nix packages to be used. All the dependencies of the project will get built using the Nix expressions available in the <code>nixpkgs</code> Github repository at a specific commit. This ensures that the output of this expression will always be exactly the same.
-</li>
-<li>
-<code>tex</code>: defines the set of LaTeX packages I need to compile the PDF.
-</li>
-<li>
-<code>iris_path</code>: the Python function I use to load the data takes a path, or url, to read the iris dataset. Because building a derivation happens in a sandbox, I need to download assets beforehand. This is what the <code>fetchurl</code> function does. I can then refer to the file path using <code>${iris_path}</code> later on.
-</li>
-<li>
-<code>pythonEnv</code>: This lists the dependencies I will need to run my Python functions.
-</li>
-<li>
-<code>pythonSrc</code>: Defines the path to the <code>python_functions.py</code> file.
-</li>
-</ul>
-<p>
-Then, I want to call each of my functions separately, and I want them to produce a single output. So for this, I now build a derivation, one per output. I start with the first one:
-</p>
-<pre><code>downloadCsv = pkgs.stdenv.mkDerivation {
-  name = "download-csv";
-  buildInputs =  [ pythonEnv ];
-  src = pythonSrc;
-  buildPhase = ''
-      python -c "
-import pandas as pd
-from python_functions import download_iris
-
-iris_raw = download_iris('${iris_path}')
-
-iris_raw.to_csv('iris_raw.csv', index=False)
-      "
-    '';
-  installPhase = ''
-    mkdir -p $out
-    cp iris_raw.csv $out/
-  '';
-  };</code></pre>
-<p>
-At first sight, there might seem that a lot is going on, but let’s take a closer look:
-</p>
-<ul>
-<li>
-first I give it a name: <code>name = “download-csv”</code>
-</li>
-<li>
-second, I list its dependencies in <code>buildInputs</code>. This is what’s required to build the target!
-</li>
-<li>
-then, I provide the source, in this case the <code>python_functions.py</code> file
-</li>
-</ul>
-<p>
-Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><img src="https://latex.codecogs.com/png.latex?%7Biris_path%7D%3C/code%3E%20to%20refer%20to%20the%20path%20to%20the%0Afile%20defined%20above.%20Finally,%20in%20the%20%3Ccode%3EinstallPhase%3C/code%3E%20I%20copy%20the%20%3Ccode%3E.csv%3C/code%3E%20file%20to%0A%3Ccode%3E">out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
-</p>
-<p>
-In the next derivation, I now use the second Python function to clean the data:
-</p>
-<pre><code>cleanCsv = pkgs.stdenv.mkDerivation {
-    name = "clean-csv";
-    buildInputs =  [ pythonEnv ];
-    src = pythonSrc;
-    buildPhase = ''
-      python -c "
-import pandas as pd
-from python_functions import process_iris
-
-iris = process_iris('${downloadCsv}/iris_raw.csv')
-
-iris.to_csv('iris.csv', index=False)
-      "
-    '';
-    installPhase = ''
-      mkdir -p $out
-      cp iris.csv $out/
-    '';
-  };</code></pre>
-<p>
-This is not very different than what I did before. Just notice how I refer to the output of the first derivation: <code>${downloadCsv}/iris_raw.csv</code>.
-</p>
-<p>
-Now comes the last intermediary derivation, the one that uses R to create a plot:
-</p>
-<pre><code>generatePlot = pkgs.stdenv.mkDerivation {
-    name = "generate-plot";
-    buildInputs = with pkgs; [
-      R
-      rPackages.ggplot2
-      rPackages.janitor
-    ];
-    dontUnpack = true;
-    buildPhase = ''
-            Rscript -e "
-
-      library(ggplot2)
-      library(janitor)
-
-      iris &lt;- read.csv('${cleanCsv}/iris.csv') |&gt;
-        clean_names() |&gt;
-        transform(species = as.character(species))
-
-      p &lt;- ggplot(iris,
-                  aes(x = sepal_length, y = sepal_width, color = species)) +
-          geom_point(size = 3) +
-          labs(title = 'Sepal Length vs Sepal Width',
-               x = 'Sepal Length',
-               y = 'Sepal Width') +
-          theme_minimal() +
-          theme(plot.title = element_text(hjust = 0.5))
-
-
-      ggsave('plot.png', plot = p, width = 6, height = 4, dpi = 300)
-
-      "
-    '';
-    installPhase = ''
-      mkdir -p $out
-      cp plot.png $out/
-    '';
-  };</code></pre>
-<p>
-As I said above, to make this better, it would need to be a function defined in its own R script, as this way there’s a nice separation of concerns. On one hand, there’s the business logic in Python and R scripts, and on the other there’s the orchestration in Nix. Putting R code in the Nix expression makes this less flexible, but I wanted to show you that this is also a possibility!
-</p>
-<p>
-Now comes the last part of the Nix expression, the actual thing I want to build, a PDF that uses the generated plot as an input:
-</p>
-<pre><code>in
-# Derivation to generate the PDF report from Markdown
-pkgs.stdenv.mkDerivation {
-  name = "generate-report";
-  buildInputs = [
-    pkgs.quarto
-    tex
-  ];
-  src = pkgs.lib.fileset.toSource {
-        root = ./.;
-        # Only include report.Qmd in the source
-        fileset = ./report.Qmd;
-  };
-  buildPhase = ''
-
-    cp ${generatePlot}/plot.png .
-
-    # Deno needs to add stuff to $HOME/.cache
-    # so we give it a home to do this
-    mkdir home
-    export HOME=$PWD/home
-    quarto render report.Qmd --to pdf
-
-  '';
-
-  installPhase = ''
-    mkdir -p $out
-    cp report.pdf $out/
-  '';
-}</code></pre>
-<p>
-Notice the dependencies of this derivation: <code>quarto</code> and <code>tex</code> (<code>tex</code> is the variable I defined right at the beginning that lists LaTeX packages). I then need to specify <code>report.Qmd</code> as the source of this derivation, and copy the plot generated before in R into the working/build directory. There’s also a idiosyncrasy where a dependency of Quarto, Deno, needs to have a directory to save some stuff in it. Nix being Nix, we need to manually define such a home directory for reproducibility purposes. If it would be using my <code>home/</code> directory on my machine, this wouldn’t be reproducible! We finish the <code>buildPhase</code> by rendering the document, and then <em>install</em> it into <code>$out/</code>. To build this project, you need to have Nix installed and then type <code>nix-build</code>, or alternatively, <code>nix-build -Q</code> which hides all the output of the build phases (so you don’t see any warnings or messages thrown by either Python or R).
-</p>
-<p>
-This will build the PDF, which you can then find in the Nix store. You’ll notice a file called <code>result</code> appear next to all your other files from the project. In a terminal, call <code>readlink result</code> and this will show you the path to the generated PDF, which you can now read!
-</p>
-<p>
-In conclusion, I think that this is a really useful way to orchestrate code written in different programming languages, but I would not use this for monolingual projects. For R, I’ll keep using <code>{targets}</code> together with a Nix shell to ensure reproducibility. Also, to really benefit from this, your code needs, ideally, to be written as a series of functions, each outputting a single object. Instead, if you write a script to orchestrate the whole thing in R or Python, and then put a Nix expression on top of it, I’m not sure it’s really worth it. Might as well just use a Nix shell then and execute your scripts in it.
-</p>
-<p>
-Also, let me state that this is my first attempt at using Nix for such a purpose, and there might be a better/more elegant way of doing it, so if you have any input, don’t hesitate!
-</p>
-<p>
-<em>Thanks to <a href="https://discourse.nixos.org/t/derivation-gets-always-rebuilt/51246/3">the amazing Nix community for helping out!</a></em>
-</p>
+<p>Happy new year! The blog has a new look! Well it’s not that different on the surface. But under the hood, it is quite different indeed!</p>
+<p>My previous setup was: GitHub to host the code, on each push the build process would get started on Netlify and then it would be hosted there. The engine was Hugo.</p>
+<p>This blog now still uses GitHub to host the code, but now also uses GitHub pages for hosting and the engine is <a href="https://quarto.org/docs/websites/website-blog.html">Quarto</a>. The blog also gets built on GitHub Actions inside of a Nix environment: so I just need to push and everything gets built! <a href="https://github.com/b-rodrigues/blog/blob/master/.github/workflows/build_publish.yaml">Here’s the workflow that achieves this</a>.</p>
+<p>What’s really amazing with Nix, is that I can preview my blog locally using <em>exactly</em> the same environment as the one that will be used for building it on GitHub actions. So if it <em>works on my machine</em> it’s going to <em>work anywhere</em>.</p>
+<p>You’ll notice that the last step uses the <code>rstats-on-nix/quarto-nix-actions/publish@main</code> action that is a fork of the <a href="https://github.com/quarto-dev/quarto-actions">quarto-dev/quarto-actions</a> actions that just make them work inside of a Nix shell! This fork is hosted on the <code>rstats-on-nix</code> organizations: I have a lot to say about this organizations, but that’s for a future blog post!</p>
+<p>Migrating the pages was a rather long process, as I needed to make sure everything was rendering correctly: because the folder structure of Quarto blogs is different than the structure of Hugo blogs, I had to update many paths. This was quite tedious and I didn’t want to use a script for this as I also wanted to take this opportunity to make some adjustments, such as centering images properly and correcting some typos if I saw some. It was also quite interesting to re-read some of my old blog posts.</p>
+<p>One neat thing about Quarto is the possibility to use pre- and post-render scripts that can be written in R. I’m using one to correctly sort the blog posts in the main page, as for some reason they weren’t being sorted properly. <a href="https://github.com/b-rodrigues/blog/blob/master/order_posts.R">Here’s the post-render script in question.</a></p>
+<p>Now I can go back to working on <a href="https://docs.ropensci.org/rix/">rix</a>.</p>
 
 
 
  ]]></description>
   <category>R</category>
   <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2024-08-27-nix_for_r_part_12.html</guid>
-  <pubDate>Wed, 28 Aug 2024 00:00:00 GMT</pubDate>
+  <guid>https://b-rodrigues.github.io/posts/2025-01-31-new_blog.html</guid>
+  <pubDate>Fri, 31 Jan 2025 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Reproducible data science with Nix, part 13 – {rix} is on CRAN!</title>
@@ -565,6 +318,283 @@ Don’t hesitate to give <code>{rix}</code> a try and let us know how it goes!
   <category>R</category>
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2024-09-27-nix_part_13.html</guid>
+  <pubDate>Fri, 27 Sep 2024 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science</title>
+  <link>https://b-rodrigues.github.io/posts/2024-08-28-nix_for_r_part_12.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/guess_we_doin_pdfs.png" width="60%">
+</p>
+</div>
+<p>
+Nix is not only a package manager, but also a build automation tool, and you can use it to build polyglot data science pipelines in a completely reproducible way.
+</p>
+<p>
+For example, suppose that you need to mix Python, R and maybe some others tools for a project (by the way, some believe this will become the norm in the coming years, use your favourite search engine to look for “polyglot data science” and you’ll see), and suppose that you want to define your project as a nice reproducible pipeline, and not simply a series of scripts. What are the options available to you?
+</p>
+<p>
+One option would be to use the <code>{targets}</code> package for R, which allows you to do lay out your project as pipeline. But as amazing as <code>{targets}</code> is, it only works with R. If you also need Python, you would then need to also use the <code>{reticulate}</code> package to interface with it. But what do you do if you need some other command line tools? Well, you could wrap them in an R function using <code>system()</code> or <code>system2()</code>. But what if you need yet another language, like Julia? There might be a way to call Julia from R, but as you see, the more diverse tools you need, the more complex it gets. And it doesn’t really matter if you switch from <code>{targets}</code> to another such package that exists for, say, Python, you would always need to write wrappers or use packages that allow you to call the other programming languages that you need.
+</p>
+<p>
+Another possibility is to use good old <code>make</code>. <code>make</code> is a tool from the GNU project that allows you to define <em>targets</em>, which would be the outputs of a script or call to some cli tool by writing so-called <code>Makefiles</code>. For an example of a <code>Makefile</code> in research, take a look at <a href="https://github.com/grantmcdermott/skeptic-priors/blob/master/Makefile">this one</a> from a <a href="https://link.springer.com/article/10.1007/s10584-021-03089-x">paper</a> by <a href="https://mastodon.social/@gmcd">Grant McDermott</a>. You can use <code>make</code> as a to orchestrate several programming languages or cli tools, but you will need to write code to pass data from one script to the other. <code>{targets}</code> deals with that transparently by serialising all the targets’ outputs using <code>saveRDS()</code> but this only works because only R is supported. But if you’re trying to make R, Python, and whatever else work together, you will need to deal with this manually and find a common interface to pass data around.
+</p>
+<p>
+Despite this, using <code>make</code>, or some other tool on top of the required programming languages (and not tied to either one), is likely the best solution and it turns out that Nix can be used just like that! But why use Nix and not <code>make</code> then? Well, using Nix guarantees that whatever you produce will be completely reproducible. With <code>make</code>, you would need to either run it inside a Docker image or… inside a development environment built with Nix! I did something similar in <a href="../posts/2023-07-19-nix_for_r_part2.html">this blog post</a> where I ran a <code>{targets}</code> pipeline inside a Nix environment to make the analysis reproducible.
+</p>
+<p>
+But if I’m already defining a reproducible development environment using Nix, why not go all the way and build a complete project using Nix? After all, Nix allows you to package <em>software</em> and what is <em>software</em> but 0’s and 1’s? And what is a trained model, a paper or report in the PDF format, predictions exported into a CSV file, etc, if not 0’s and 1’s?
+</p>
+<p>
+Just like with any other build automation tool, Nix will only rebuild the project if something changes, and will only rebuild the parts that need to be rebuilt. So if you change a file somewhere, only whatever depends on this file will get rebuilt, just like with <code>{targets}</code>, or <code>make</code>.
+</p>
+<p>
+In the <a href="https://github.com/b-rodrigues/nixbat/tree/master">following repository</a> you can find an example of this.
+</p>
+<p>
+This is a very simple project: two functions are defined in the <code>python_functions.py</code> script. These functions are nothing special, and could be used interactively. One function reads a <code>.csv</code> file from the Internet and returns it, the other does some basic cleaning. Here are these two functions included in the <code>python_functions.py</code> file:
+</p>
+<pre><code>from pandas import read_csv
+
+def download_iris(iris_csv_url):
+    # Read the CSV file
+    df = read_csv(iris_csv_url)
+
+    return df
+
+def process_iris(iris_csv_path):
+    # Read the CSV file
+    df = read_csv(iris_csv_path)
+
+    # Replace the species numbers with their corresponding names
+    species_mapping = {0: "setosa", 1: "virginica", 2: "versicolor"}
+    df['species'] = df['species'].replace(species_mapping)
+
+    return df</code></pre>
+<p>
+Then, I want to use <code>{ggplot2}</code> to plot this data. You will notice the lack of R script in the repo. I did this on purpose, because I wanted to show how you could directly write R code inside of a Nix expression. But in practice, it is better to have Python code in a Python script, R code in an R script, and then use Nix to orchestrate the whole thing. But I just wanted to show you that you could, if you wanted to, have a completely self-contained Nix expression that encapsulates the business logic as well.
+</p>
+<p>
+There’s also a <code>.Qmd</code> file: this is the file that will get compiled into a PDF document, and is the output of the whole project. It could be anything else! As I stated above, this is just 0’s and 1’s so it could very well be some other output, it doesn’t really matter.
+</p>
+<p>
+Let’s now take a look at the <code>default.nix</code> that builds the whole thing. Let’s start by the top-level definitions:
+</p>
+<pre><code>let
+  pkgs =
+    import
+      (fetchTarball "https://github.com/NixOS/nixpkgs/archive/27285241da3bb285155d549a11192e9fdc3a0d04.tar.gz")
+      { };
+
+  tex = (
+    pkgs.texlive.combine {
+      inherit (pkgs.texlive) scheme-small;
+    }
+  );
+
+  # Because building happens in sandbox that cannot connect to the internet
+  # we need to download assets beforehand
+  iris_path = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/b-rodrigues/nixbat/7c319bcdbe15e7f7182e7685b8de176a40d0bde9/iris.csv";
+    hash = "sha256-2H6THCXKxIt4yxnDDY+AZRmbxqs7FndCp4MqaAR1Cpw=";
+  };
+
+  # Common python dependencies to use in my intermediary inputs
+  pythonEnv = pkgs.python312.withPackages (ps: with ps; [ pandas ]);
+
+  # Common python sources
+  python_src = pkgs.lib.fileset.toSource {
+    root = ./.;
+    fileset = ./python_functions.py;
+  };</code></pre>
+<p>
+Some variables are defined there:
+</p>
+<ul>
+<li>
+<code>pkgs</code>: this is the set of Nix packages to be used. All the dependencies of the project will get built using the Nix expressions available in the <code>nixpkgs</code> Github repository at a specific commit. This ensures that the output of this expression will always be exactly the same.
+</li>
+<li>
+<code>tex</code>: defines the set of LaTeX packages I need to compile the PDF.
+</li>
+<li>
+<code>iris_path</code>: the Python function I use to load the data takes a path, or url, to read the iris dataset. Because building a derivation happens in a sandbox, I need to download assets beforehand. This is what the <code>fetchurl</code> function does. I can then refer to the file path using <code>${iris_path}</code> later on.
+</li>
+<li>
+<code>pythonEnv</code>: This lists the dependencies I will need to run my Python functions.
+</li>
+<li>
+<code>pythonSrc</code>: Defines the path to the <code>python_functions.py</code> file.
+</li>
+</ul>
+<p>
+Then, I want to call each of my functions separately, and I want them to produce a single output. So for this, I now build a derivation, one per output. I start with the first one:
+</p>
+<pre><code>downloadCsv = pkgs.stdenv.mkDerivation {
+  name = "download-csv";
+  buildInputs =  [ pythonEnv ];
+  src = pythonSrc;
+  buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import download_iris
+
+iris_raw = download_iris('${iris_path}')
+
+iris_raw.to_csv('iris_raw.csv', index=False)
+      "
+    '';
+  installPhase = ''
+    mkdir -p $out
+    cp iris_raw.csv $out/
+  '';
+  };</code></pre>
+<p>
+At first sight, there might seem that a lot is going on, but let’s take a closer look:
+</p>
+<ul>
+<li>
+first I give it a name: <code>name = “download-csv”</code>
+</li>
+<li>
+second, I list its dependencies in <code>buildInputs</code>. This is what’s required to build the target!
+</li>
+<li>
+then, I provide the source, in this case the <code>python_functions.py</code> file
+</li>
+</ul>
+<p>
+Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><img src="https://latex.codecogs.com/png.latex?%7Biris_path%7D%3C/code%3E%20to%20refer%20to%20the%20path%20to%20the%0Afile%20defined%20above.%20Finally,%20in%20the%20%3Ccode%3EinstallPhase%3C/code%3E%20I%20copy%20the%20%3Ccode%3E.csv%3C/code%3E%20file%20to%0A%3Ccode%3E">out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
+</p>
+<p>
+In the next derivation, I now use the second Python function to clean the data:
+</p>
+<pre><code>cleanCsv = pkgs.stdenv.mkDerivation {
+    name = "clean-csv";
+    buildInputs =  [ pythonEnv ];
+    src = pythonSrc;
+    buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import process_iris
+
+iris = process_iris('${downloadCsv}/iris_raw.csv')
+
+iris.to_csv('iris.csv', index=False)
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp iris.csv $out/
+    '';
+  };</code></pre>
+<p>
+This is not very different than what I did before. Just notice how I refer to the output of the first derivation: <code>${downloadCsv}/iris_raw.csv</code>.
+</p>
+<p>
+Now comes the last intermediary derivation, the one that uses R to create a plot:
+</p>
+<pre><code>generatePlot = pkgs.stdenv.mkDerivation {
+    name = "generate-plot";
+    buildInputs = with pkgs; [
+      R
+      rPackages.ggplot2
+      rPackages.janitor
+    ];
+    dontUnpack = true;
+    buildPhase = ''
+            Rscript -e "
+
+      library(ggplot2)
+      library(janitor)
+
+      iris &lt;- read.csv('${cleanCsv}/iris.csv') |&gt;
+        clean_names() |&gt;
+        transform(species = as.character(species))
+
+      p &lt;- ggplot(iris,
+                  aes(x = sepal_length, y = sepal_width, color = species)) +
+          geom_point(size = 3) +
+          labs(title = 'Sepal Length vs Sepal Width',
+               x = 'Sepal Length',
+               y = 'Sepal Width') +
+          theme_minimal() +
+          theme(plot.title = element_text(hjust = 0.5))
+
+
+      ggsave('plot.png', plot = p, width = 6, height = 4, dpi = 300)
+
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp plot.png $out/
+    '';
+  };</code></pre>
+<p>
+As I said above, to make this better, it would need to be a function defined in its own R script, as this way there’s a nice separation of concerns. On one hand, there’s the business logic in Python and R scripts, and on the other there’s the orchestration in Nix. Putting R code in the Nix expression makes this less flexible, but I wanted to show you that this is also a possibility!
+</p>
+<p>
+Now comes the last part of the Nix expression, the actual thing I want to build, a PDF that uses the generated plot as an input:
+</p>
+<pre><code>in
+# Derivation to generate the PDF report from Markdown
+pkgs.stdenv.mkDerivation {
+  name = "generate-report";
+  buildInputs = [
+    pkgs.quarto
+    tex
+  ];
+  src = pkgs.lib.fileset.toSource {
+        root = ./.;
+        # Only include report.Qmd in the source
+        fileset = ./report.Qmd;
+  };
+  buildPhase = ''
+
+    cp ${generatePlot}/plot.png .
+
+    # Deno needs to add stuff to $HOME/.cache
+    # so we give it a home to do this
+    mkdir home
+    export HOME=$PWD/home
+    quarto render report.Qmd --to pdf
+
+  '';
+
+  installPhase = ''
+    mkdir -p $out
+    cp report.pdf $out/
+  '';
+}</code></pre>
+<p>
+Notice the dependencies of this derivation: <code>quarto</code> and <code>tex</code> (<code>tex</code> is the variable I defined right at the beginning that lists LaTeX packages). I then need to specify <code>report.Qmd</code> as the source of this derivation, and copy the plot generated before in R into the working/build directory. There’s also a idiosyncrasy where a dependency of Quarto, Deno, needs to have a directory to save some stuff in it. Nix being Nix, we need to manually define such a home directory for reproducibility purposes. If it would be using my <code>home/</code> directory on my machine, this wouldn’t be reproducible! We finish the <code>buildPhase</code> by rendering the document, and then <em>install</em> it into <code>$out/</code>. To build this project, you need to have Nix installed and then type <code>nix-build</code>, or alternatively, <code>nix-build -Q</code> which hides all the output of the build phases (so you don’t see any warnings or messages thrown by either Python or R).
+</p>
+<p>
+This will build the PDF, which you can then find in the Nix store. You’ll notice a file called <code>result</code> appear next to all your other files from the project. In a terminal, call <code>readlink result</code> and this will show you the path to the generated PDF, which you can now read!
+</p>
+<p>
+In conclusion, I think that this is a really useful way to orchestrate code written in different programming languages, but I would not use this for monolingual projects. For R, I’ll keep using <code>{targets}</code> together with a Nix shell to ensure reproducibility. Also, to really benefit from this, your code needs, ideally, to be written as a series of functions, each outputting a single object. Instead, if you write a script to orchestrate the whole thing in R or Python, and then put a Nix expression on top of it, I’m not sure it’s really worth it. Might as well just use a Nix shell then and execute your scripts in it.
+</p>
+<p>
+Also, let me state that this is my first attempt at using Nix for such a purpose, and there might be a better/more elegant way of doing it, so if you have any input, don’t hesitate!
+</p>
+<p>
+<em>Thanks to <a href="https://discourse.nixos.org/t/derivation-gets-always-rebuilt/51246/3">the amazing Nix community for helping out!</a></em>
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-08-28-nix_for_r_part_12.html</guid>
   <pubDate>Wed, 28 Aug 2024 00:00:00 GMT</pubDate>
 </item>
 <item>
@@ -4402,215 +4432,6 @@ If this looked complicated, let me assure you that, yes, it was. That’s quite 
   <category>proramming</category>
   <guid>https://b-rodrigues.github.io/posts/2023-03-18-docxtractr.html</guid>
   <pubDate>Sat, 18 Mar 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Software engineering techniques that non-programmers who write a lot of code can benefit from — the DRY WIT approach</title>
-  <link>https://b-rodrigues.github.io/posts/2023-03-07-dry_wit.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/archetypical_data_scientist.png" width="80%" height="auto">
-</p>
-</div>
-<p>
-Data scientists, statisticians, analysts, researchers, and many other professionals write <em>a lot of code</em>.
-</p>
-<p>
-Not only do they write a lot of code, but they must also read and review a lot of code as well. They either work in teams and need to review each other’s code, or need to be able to reproduce results from past projects, be it for peer review or auditing purposes. And yet, they never, or very rarely, get taught the tools and techniques that would make the process of writing, collaborating, reviewing and reproducing projects possible.
-</p>
-<p>
-Which is truly unfortunate because software engineers face the same challenges and solved them decades ago. Software engineers developed a set of project management techniques and tools that non-programmers who write a lot of code could benefit from as well.
-</p>
-<p>
-These tools and techniques can be used right from the start of a project at a minimal cost, such that the analysis is well-tested, well-documented, trustworthy and reproducible <em>by design</em>. Projects are going to be reproducible simply because they were engineered, from the start, to be reproducible.
-</p>
-<p>
-But all these tools, frameworks and techniques boil down to two acronyms that I like to keep in my head at all times:
-</p>
-<ul>
-<li>
-DRY: Don’t Repeat Yourself;
-</li>
-<li>
-WIT: Write IT down.
-</li>
-</ul>
-<p>
-DRY WIT: by systematically avoiding not to repeat yourself and by writing everything down, projects become well-tested, well-documented, trustworthy and reproducible by design. Why is that?
-</p>
-<section id="dry-dont-repeat-yourself" class="level2">
-<h2 class="anchored" data-anchor-id="dry-dont-repeat-yourself">
-DRY: Don’t Repeat Yourself
-</h2>
-<p>
-Let’s start with DRY: what does it mean not having to repeat oneself? It means:
-</p>
-<ul>
-<li>
-using functions instead of copy-and-pasting bits of code here and there;
-</li>
-<li>
-using literate programming, to avoid having to copy and paste graphs and tables into word or pdf documents;
-</li>
-<li>
-treating code as data and making use of templating.
-</li>
-</ul>
-<p>
-The most widely used programming languages for data science/statistics, Python and R, both have first-class functions. This means that functions can be manipulated like any other object. So something like:
-</p>
-<pre class="r"><code>Reduce(`+`, seq(1:100))</code></pre>
-<pre><code>## [1] 5050</code></pre>
-<p>
-where the function <code>+</code>() gets used as an argument of the higher-order <code>Reduce()</code> function is absolutely valid (and so is Python’s equivalent <code>reduce</code> from <code>functools</code>) and avoids having to use a for-loop which can lead to other issues. Generally speaking, the functional programming paradigm lends itself very naturally to data analysis tasks, and in my opinion data scientists and statisticians would benefit a lot from adopting this paradigm.
-</p>
-<p>
-Literate programming is another tool that needs to be in the toolbox of any person analysing data. This is because at the end of the day, the results of an analysis need to be in some form of document. Without literate programming, this is how you would draft reports:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://github.com/b-rodrigues/rap4all/blob/master/images/report_draft_loop.png?raw=true" width="100%">
-</p>
-</div>
-<p>
-But with literate programming, this is how this loop would look like:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://github.com/b-rodrigues/rap4all/blob/master/images/md_draft_loop.png?raw=true" width="100%">
-</p>
-</div>
-<p>
-<a href="https://quarto.org/">Quarto</a> is the latest open-source scientific and technical publishing system that leverages Pandoc and supports R, Python, Julia and ObservableJs right out of the box.
-</p>
-<p>
-Below is a little Quarto Hello World:
-</p>
-<pre class="default"><code>---
-output: pdf
-
----
-
-In this example we embed parts of the examples from the
-\texttt{kruskal.test} help page into a LaTeX document:
-
-
-
-::: {.cell}
-
-```{.r .cell-code}
-data (airquality)
-kruskal.test(Ozone ~ Month, data = airquality)
-```
-
-::: {.cell-output .cell-output-stdout}
-
-```
-
-    Kruskal-Wallis rank sum test
-
-data:  Ozone by Month
-Kruskal-Wallis chi-squared = 29.267, df = 4, p-value = 6.901e-06
-```
-
-
-:::
-:::
-
-
-
-which shows that the location parameter of the Ozone
-distribution varies significantly from month to month.
-Finally we include a boxplot of the data:
-
-
-
-::: {.cell}
-::: {.cell-output-display}
-![](2023-03-07-dry_wit_files/figure-html/unnamed-chunk-2-1.png){width=672}
-:::
-:::
-
-
-</code></pre>
-<p>
-Compiling this document results in the following:
-</p>
-<div style="text-align:center;">
-<img src="https://raw.githubusercontent.com/b-rodrigues/rap4all/master/images/hello_rmd.PNG" width="100%">
-<figcaption>
-Example from Leisch’s 2002 paper.
-</figcaption>
-</div>
-<p>
-Of course, you could use Python code chunks instead of R, you could also compile this document to Word, or HTML, or anything else really. By combining code and prose, the process of data analysis gets streamlined and we don’t need to repeat ourselves copy and pasting images and tables into Word documents.
-</p>
-<p>
-Finally, treating code as data is also quite useful. This means that it is possible to compute on the language itself. This is a more advanced topic, but definitely worth the effort. As an illustration, consider the following R toy example:
-</p>
-<pre class="r"><code>show_and_eval &lt;- function(f, ...){
-  f &lt;- deparse(substitute(f))
-  dots &lt;- list(...)
-  message("Evaluating: ", f, "() with arguments: ", deparse(dots))
-  do.call(f, dots)
-}</code></pre>
-<p>
-Running this function does the following:
-</p>
-<pre class="r"><code>show_and_eval(sqrt, 2)</code></pre>
-<pre><code>## Evaluating: sqrt() with arguments: list(2)</code></pre>
-<pre><code>## [1] 1.414214</code></pre>
-<pre class="r"><code>show_and_eval(mean, x = c(NA, 1, 2))</code></pre>
-<pre><code>## Evaluating: mean() with arguments: list(x = c(NA, 1, 2))</code></pre>
-<pre><code>## [1] NA</code></pre>
-<pre class="r"><code>show_and_eval(mean, x = c(NA, 1, 2), na.rm = TRUE)</code></pre>
-<pre><code>## Evaluating: mean() with arguments: list(x = c(NA, 1, 2), na.rm = TRUE)</code></pre>
-<pre><code>## [1] 1.5</code></pre>
-<p>
-This is incredibly useful when writing packages (to know more about these techniques in the R programming language, read the chapter <em>Metaprogramming</em> from <a href="https://adv-r.hadley.nz/metaprogramming.html">Advanced R</a>).
-</p>
-</section>
-<section id="wit-write-it-down" class="level2">
-<h2 class="anchored" data-anchor-id="wit-write-it-down">
-WIT: Write IT down
-</h2>
-<p>
-Now on the WIT bit: <em>write it down</em>. You’ve just written a function. To see if it works correctly, you test it in the interactive console. You execute the test, see that it works, and move on. But wait! What you just did is called a unit test. Instead of writing that in the console and then never use it ever again, write it down in a script. Now you’ve got a unit test for that function that you can execute each time you update that function’s code, and make sure that it keeps working as expected. There are many unit testing frameworks that can help you how to write unit tests consistently and run them automatically.
-</p>
-<p>
-Documentation: write it down! How does the function work? What are its inputs? Its outputs? What else should the user know to make it work? Very often, documentation is but a series of comments in your scripts. That’s already nice, but using literate programming, you could also turn these comments into proper documentation. You could use <em>docstrings</em> in Python or <code>{roxygen2}</code> style comments in R.
-</p>
-<p>
-Another classic: you correct some data manually in the raw dataset (very often a <code>.csv</code> or <code>.xlsx</code> file). For example, when dealing with data on people, sex is sometimes “M” or “F”, sometimes “Male” or “Female”, sometimes “1” or “0”. You spot a couple of inconsistencies and decide to <em>quickly</em> correct them by hand. Maybe only 3 men were coded as “Male” so you simply erase the “ale” and go on with your project. Stop!
-</p>
-<p>
-Write IT down!
-</p>
-<p>
-Write a couple of lines of code that does the replacement for you. Not only will this leave a trace, it will ensure that when you get an update to that data in the future you don’t have to remember to have to change it by hand.
-</p>
-<p>
-You should aim at completely eliminating any required manual intervention when building your project. A project that can be fully run by a machine is easier to debug, its execution can be scheduled and can be iterated over very quickly.
-</p>
-<p>
-Something else that you should write down, or rather, let another tool do it for you: how you collaborate with your teammates. For this, you should be using Git. Who changed what part of what function when? If the project’s code is versioned, Git writes it down for you. You want to experiment with a new feature? Write it down by creating a new branch and going nuts. There’s something wrong in the code? Write it down as an issue on your versioning platform (usually Github).
-</p>
-<p>
-There are many more topics that us disciplines of the data could learn from software engineers. I’m currently working on a free ebook that you can read <a href="https://raps-with-r.dev/">here</a> that teaches these techniques. If this post opened your appetite, give the book a go!
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-03-07-dry_wit.html</guid>
-  <pubDate>Tue, 07 Mar 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
