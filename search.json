@@ -1,5 +1,26 @@
 [
   {
+    "objectID": "packages.html",
+    "href": "packages.html",
+    "title": "Packages",
+    "section": "",
+    "text": "Simplifies the creation of reproducible data science environments using the ‘Nix’ package manager, as described in Dolstra (2006) &lt;ISBN 90-393-4130-3&gt;. The included ‘rix()’ function generates a complete description of the environment as a ‘default.nix’ file, which can then be built using ’Nix’. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. Additional helpers make it easy to run R code in ‘Nix’ software environments for testing and production."
+  },
+  {
+    "objectID": "packages.html#rix-reproducible-data-science-environments-with-nix",
+    "href": "packages.html#rix-reproducible-data-science-environments-with-nix",
+    "title": "Packages",
+    "section": "",
+    "text": "Simplifies the creation of reproducible data science environments using the ‘Nix’ package manager, as described in Dolstra (2006) &lt;ISBN 90-393-4130-3&gt;. The included ‘rix()’ function generates a complete description of the environment as a ‘default.nix’ file, which can then be built using ’Nix’. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. Additional helpers make it easy to run R code in ‘Nix’ software environments for testing and production."
+  },
+  {
+    "objectID": "packages.html#chronicler-add-logging-to-functions",
+    "href": "packages.html#chronicler-add-logging-to-functions",
+    "title": "Packages",
+    "section": "chronicler: Add Logging to Functions",
+    "text": "chronicler: Add Logging to Functions\n\n\nDecorate functions to make them return enhanced output. The enhanced output consists in an object of type ‘chronicle’ containing the result of the function applied to its arguments, as well as a log detailing when the function was run, what were its inputs, what were the errors (if the function failed to run) and other useful information. Tools to handle decorated functions are included, such as a forward pipe operator that makes chaining decorated functions possible."
+  },
+  {
     "objectID": "posts/2018-12-21-tidyverse_pi.html",
     "href": "posts/2018-12-21-tidyverse_pi.html",
     "title": "Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods",
