@@ -131,7 +131,7 @@ ul.task-list li input[type="checkbox"] {
 This is going to be the type of blog posts that would perhaps be better as a gist, but it is easier for me to use my blog as my own personal collection of gists. Plus, someone else might find this useful, so here it is! In this blog post I am going to show a little trick to randomly sample rows from a text file using bash, and then train a model using the <code>{h2o}</code> package. I will also use the <code>{rsparkling}</code> package. From <code>{rsparkling}</code>’s documentation: <em><code>{rsparkling}</code> is a package that provides an R interface to the <code>H2O</code> Sparkling Water machine learning library.</em> and will be needed to transfer the data from Spark to H2O.
 </p>
 <p>
-In a <a href="http://www.brodrigues.co/blog/2018-02-16-importing_30gb_of_data/">previous blog post</a> I used the <code>{sparklyr}</code> package to load a 30GB csv file into R. I created the file by combining around 300 csv files, each around 80MB big. Here, I would like to use the machine learning functions included in the <code>{h2o}</code> packages to train a random forest on this data. However, I only want to have a simple prototype that simply runs, and check if all the packages work well together. If everything is ok, I’ll keep iterating to make the model better (in a possible subsequent post).
+In a <a href="../posts/2018-02-16-importing_30gb_of_data.html">previous blog post</a> I used the <code>{sparklyr}</code> package to load a 30GB csv file into R. I created the file by combining around 300 csv files, each around 80MB big. Here, I would like to use the machine learning functions included in the <code>{h2o}</code> packages to train a random forest on this data. However, I only want to have a simple prototype that simply runs, and check if all the packages work well together. If everything is ok, I’ll keep iterating to make the model better (in a possible subsequent post).
 </p>
 <p>
 For fast prototyping, using 30GB of data is not a good idea, so I am going to sample 500000 from this file using the linux command line (works on macOS too and also on Windows if you installed the linux subsystem). Why not use R to sample 500000 rows? Because on my machine, loading the 30GB file takes 25 minutes. Sampling half a million lines from it would take quite long too. So here are some bash lines that do that directly on the file, without needing to load it into R beforehand:
@@ -228,7 +228,7 @@ library(h2o)</code></pre>
 I left all the startup messages because they’re quite helpful. Especially that bit telling you to start <code>H2O</code> with <code>h2o.init()</code>. If something’s wrong, <code>h2o.init()</code> will give you helpful information.
 </p>
 <p>
-Now that all this is loaded, I can start working on the data (the steps below are explained in detail in my <a href="http://www.brodrigues.co/blog/2018-02-16-importing_30gb_of_data/">previous blog post</a>):
+Now that all this is loaded, I can start working on the data (the steps below are explained in detail in my <a href="../posts/2018-02-16-importing_30gb_of_data.html">previous blog post</a>):
 </p>
 <pre><code>spark_dir = "/my_2_to_disk/spark/"
 

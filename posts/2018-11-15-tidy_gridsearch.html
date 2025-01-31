@@ -229,7 +229,7 @@ I also define a helper function:
     reduce(list(point_estimate, upper, lower), full_join)
 }</code></pre>
 <p>
-This function takes a <code>forecast</code> object as argument, and returns a nice tibble. This will be useful later, and is based on the code I already used in my previous <a href="https://www.brodrigues.co/blog/2018-11-14-luxairport/">blog post</a>.
+This function takes a <code>forecast</code> object as argument, and returns a nice tibble. This will be useful later, and is based on the code I already used in my previous <a href="../posts/2018-11-14-luxairport.html">blog post</a>.
 </p>
 <p>
 Now, let’s take a closer look at the <code>arima()</code> function:
@@ -532,7 +532,7 @@ And now, I can plot it:
 <img src="../assets/img/tidy_gridsearch-28-1.png" width="80%" height="auto">
 </div>
 <p>
-Compared to the previous <a href="https://www.brodrigues.co/blog/2018-11-14-luxairport/">blog post</a>, the dotted line now seems to follow the true line even better! However, this is not suprising, as I am using the test set as a validation set, which might lead to overfitting the hyperparameters to the test set. Also, I am not saying that you should always do a gridsearch whenever you have a problem like this one. In the case of univariate time series, I am still doubtful that a gridsearch like this is really necessary. The goal of this blog post was not to teach you how to look for hyperparameters per se, but more to show you how to do a grid search the tidy way. I’ll be writing about <em>proper</em> hyperparameter optimization in a future blog post. Also, the other thing I wanted to show was the power of <code>{furrr}</code>.
+Compared to the previous <a href="../posts/2018-11-14-luxairport.html">blog post</a>, the dotted line now seems to follow the true line even better! However, this is not suprising, as I am using the test set as a validation set, which might lead to overfitting the hyperparameters to the test set. Also, I am not saying that you should always do a gridsearch whenever you have a problem like this one. In the case of univariate time series, I am still doubtful that a gridsearch like this is really necessary. The goal of this blog post was not to teach you how to look for hyperparameters per se, but more to show you how to do a grid search the tidy way. I’ll be writing about <em>proper</em> hyperparameter optimization in a future blog post. Also, the other thing I wanted to show was the power of <code>{furrr}</code>.
 </p>
 
 

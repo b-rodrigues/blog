@@ -146,7 +146,7 @@ In my <a href="../posts/2019-01-04-newspapers.html">first blog post</a>, I analy
 In the <a href="../posts/2019-01-13-newspapers_mets_alto.html">second blog post</a>), I extracted data from the <em>L’Union</em> newspaper, this time by using the metadata from the METS files too. By combining the data from the ALTO files with the metadata from the METS files, I know which words came from which article, which would make further analysis much more interesting.
 </p>
 <p>
-In the <a href="https://www.brodrigues.co/blog/2019-01-31-newspapers_shiny_app/">third blog post</a> of this series, I built a Shiny app which makes it easy to explore the 10 years of publications of <em>L’Union</em>. In this blog post, I will explain in great detail how I created this app.
+In the <a href="../posts/2019-01-31-newspapers_shiny_app.html">third blog post</a> of this series, I built a Shiny app which makes it easy to explore the 10 years of publications of <em>L’Union</em>. In this blog post, I will explain in great detail how I created this app.
 </p>
 </section>
 <section id="part-1-getting-the-data-ready-for-the-shiny-app" class="level2">
@@ -161,7 +161,7 @@ Step 1: Extracting the needed data
 If you want to follow along with a dataset from a single publication, you can download the following archive on <a href="https://www.dropbox.com/s/56ttqetz4cirsja/1533660_newspaper_lunion_1860-11-14.zip?dl=0">dropbox</a>. Extract this archive, and you will find the data exactly as you would get it from the the big archive you can download from the website of the National Library of Luxembourg. However, to keep the size of the archive small, I removed the .pdf and .jpeg scans.
 </p>
 <p>
-In the <a href="https://www.brodrigues.co/blog/2019-01-13-newspapers_mets_alto/">second blog post</a>) I wrote some functions that made extracting the needed data from the files easy. However, after I wrote the article, I noticed that in some cases these functions were not working exactly as intended. I rewrote them a little bit to overcome these issues. You can find the code I used right below. I won’t explain it too much, because you can read the details in the previous blog post. However, should something be unclear, just drop me an email or a tweet!
+In the <a href="../posts/2019-01-13-newspapers_mets_alto.html">second blog post</a>) I wrote some functions that made extracting the needed data from the files easy. However, after I wrote the article, I noticed that in some cases these functions were not working exactly as intended. I rewrote them a little bit to overcome these issues. You can find the code I used right below. I won’t explain it too much, because you can read the details in the previous blog post. However, should something be unclear, just drop me an email or a tweet!
 </p>
 <details>
 <p>
@@ -485,7 +485,7 @@ The <em>upos</em> column contains the tags. Now I know which words are nouns, ve
 Step 4: tf-idf
 </h3>
 <p>
-Just like what I did in my <a href="https://www.brodrigues.co/blog/2019-01-04-newspapers/">first blog post</a>, I compute the tf-idf of words. The difference, is that here the “document” is the article. This means that I will get the most frequent words inside each article, but who are at the same time rare in the other articles. Doing this ensures that I will only get very relevant words for each article.
+Just like what I did in my <a href="../posts/2019-01-04-newspapers.html">first blog post</a>, I compute the tf-idf of words. The difference, is that here the “document” is the article. This means that I will get the most frequent words inside each article, but who are at the same time rare in the other articles. Doing this ensures that I will only get very relevant words for each article.
 </p>
 <p>
 In the lines below, I prepare the data to then make the plots. The files that are created using the code below are available in the following <a href="https://github.com/b-rodrigues/newspapers_shinyapp/tree/master/tf_idf_data">Github link</a>.

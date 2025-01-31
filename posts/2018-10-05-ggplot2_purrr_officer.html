@@ -136,7 +136,7 @@ ul.task-list li input[type="checkbox"] {
 A kind reader let me know that the function <code>create_pptx()</code> is now outdated, and proposed an update which you can find here: <a href="https://gist.github.com/b-rodrigues/ef4e97ed75028ca1ddd5987bb4085c1c">here</a>. Thank you <a href="https://twitter.com/jerry_stones/status/1239625489578254336"><span class="citation" data-cites="Jeremy">@Jeremy</span></a>!
 </p>
 <p>
-I was recently confronted to the following problem: creating hundreds of plots that could still be edited by our client. What this meant was that I needed to export the graphs in Excel or Powerpoint or some other such tool that was familiar to the client, and not export the plots directly to pdf or png as I would normally do. I still wanted to use R to do it though, because I could do what I always do to when I need to perform repetitive tasks such as producing hundreds of plots; map over a list of, say, countries, and make one plot per country. This is something I discussed in a previous blog post, <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">Make ggplot2 purrr</a>.
+I was recently confronted to the following problem: creating hundreds of plots that could still be edited by our client. What this meant was that I needed to export the graphs in Excel or Powerpoint or some other such tool that was familiar to the client, and not export the plots directly to pdf or png as I would normally do. I still wanted to use R to do it though, because I could do what I always do to when I need to perform repetitive tasks such as producing hundreds of plots; map over a list of, say, countries, and make one plot per country. This is something I discussed in a previous blog post, <a href="../posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>.
 </p>
 <p>
 So, after some online seaching, I found the <code>{officer}</code> package. This package allows you to put objects into Microsoft documents. For example, editable plots in a Powerpoint document. This is what I will show in this blog post.
@@ -148,10 +148,10 @@ Let’s start by loading the required packages:
 library("officer")
 library("rvg")</code></pre>
 <p>
-Then, I will use the data from the time use survey, which I discussed in a previous blog post <a href="http://www.brodrigues.co/blog/2018-09-11-human_to_machine/">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>.
+Then, I will use the data from the time use survey, which I discussed in a previous blog post <a href="../posts/2018-09-11-human_to_machine.html">Going from a human readable Excel file to a machine-readable csv with {tidyxl}</a>.
 </p>
 <p>
-You can download the data <a href="https://github.com/rbind/b-rodrigues.github.com/blob/master/content/blog/clean_data.csv">here</a>.
+You can download the data <a href="../assets/files/clean_data.csv">here</a>.
 </p>
 <p>
 Let’s import and prepare it:
@@ -204,7 +204,7 @@ I can now create plots for each of the days with the following code:
                        ylab("Time in minutes") +
                        xlab("Activities")))</code></pre>
 <p>
-These steps are all detailled in my blog post <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">Make ggplot2 purrr</a>. Let’s take a look at <code>my_plots</code>:
+These steps are all detailled in my blog post <a href="../posts/2017-03-29-make-ggplot2-purrr.html">Make ggplot2 purrr</a>. Let’s take a look at <code>my_plots</code>:
 </p>
 <pre class="r"><code>my_plots</code></pre>
 <pre><code>## # A tibble: 3 x 3

@@ -81,35 +81,6 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 
@@ -157,7 +128,7 @@ window.Quarto = {
 
 
 <p>
-This blog post is an update to an older <a href="http://www.brodrigues.co/blog/2017-02-17-lesser_known_tricks/">one</a> I wrote in March. In the post from March, <code>dplyr</code> was at version 0.50, but since then a major update introduced some changes that make some of the tips in that post obsolete. So here I revisit the blog post from March by using <code>dplyr</code> 0.70.
+This blog post is an update to an older <a href="2017-02-17-lesser_known_tricks.qmd">one</a> I wrote in March. In the post from March, <code>dplyr</code> was at version 0.50, but since then a major update introduced some changes that make some of the tips in that post obsolete. So here I revisit the blog post from March by using <code>dplyr</code> 0.70.
 </p>
 <section id="create-new-columns-with-mutate-and-case_when" class="level2">
 <h2 class="anchored" data-anchor-id="create-new-columns-with-mutate-and-case_when">
@@ -169,12 +140,15 @@ The basic things such as selecting columns, renaming them, filtering, etc did no
 <pre class="r"><code>library("dplyr")
 data(mtcars)</code></pre>
 <p>
-This was how it was done in version 0.50 (notice the ’.<span class="math inline">\(’ symbol before the variable ‘carb’):&lt;/p&gt;
-&lt;pre class="r"&gt;&lt;code&gt;mtcars %&amp;gt;%
-    mutate(carb_new = case_when(.\)</span>carb == 1 ~ "one", .<span class="math inline">\(carb == 2 ~ &amp;quot;two&amp;quot;,
-                                .\)</span>carb == 4 ~ "four", TRUE ~ "other")) %&gt;% head(5)
-
-</p><pre><code>##    mpg cyl disp  hp drat    wt  qsec vs am gear carb carb_new
+This was how it was done in version 0.50 (notice the <code>.$</code> symbol before the variable <code>carb</code>):
+</p>
+<pre class="r"><code>mtcars %&gt;%
+    mutate(carb_new = case_when(.$carb == 1 ~ "one",
+                                .$carb == 2 ~ "two",
+                                .$carb == 4 ~ "four",
+                                 TRUE ~ "other")) %&gt;%
+    head(5)</code></pre>
+<pre><code>##    mpg cyl disp  hp drat    wt  qsec vs am gear carb carb_new
 ## 1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4     four
 ## 2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4     four
 ## 3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1      one
@@ -198,9 +172,9 @@ This has been simplified to:
 <p>
 No need for <code>.$</code> anymore.
 </p>
-</section></main></div>
+</section>
 <section id="apply-a-function-to-certain-columns-only-by-rows-with-purrrlyr" class="level2">
-<h2 data-anchor-id="apply-a-function-to-certain-columns-only-by-rows-with-purrrlyr">
+<h2 class="anchored" data-anchor-id="apply-a-function-to-certain-columns-only-by-rows-with-purrrlyr">
 Apply a function to certain columns only, by rows, with <code>purrrlyr</code>
 </h2>
 <p>
@@ -234,7 +208,7 @@ Think of <code>purrrlyr</code> as <code>purrr</code>s and <code>dplyr</code>s lo
 </p>
 </section>
 <section id="using-dplyr-functions-inside-your-own-functions-or-what-is-tidyeval" class="level2">
-<h2 data-anchor-id="using-dplyr-functions-inside-your-own-functions-or-what-is-tidyeval">
+<h2 class="anchored" data-anchor-id="using-dplyr-functions-inside-your-own-functions-or-what-is-tidyeval">
 Using <code>dplyr</code> functions inside your own functions, or what is <code>tidyeval</code>
 </h2>
 <p>
@@ -250,7 +224,7 @@ Programming with <code>dplyr</code> has been simplified a lot. Before version <c
 
 extract_vars(mtcars, "spam")</code></pre>
 <p>
-More examples are available in <a href="http://www.brodrigues.co/blog/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions/">this other blog post</a>.
+More examples are available in <a href="../posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.html">this other blog post</a>.
 </p>
 <p>
 I will revisit them now with <code>dplyr</code>’s new <code>tidyeval</code> syntax. I’d recommend you read the <em>Tidy evaluation</em> vignette <a href="https://cran.r-project.org/web/packages/rlang/vignettes/tidy-evaluation.html">here</a>. This vignette is part of the <code>rlang</code> package, which gets used under the hood by <code>dplyr</code> for all your programming needs. Here is the function I called <code>simpleFunction()</code>, written with the old <code>dplyr</code> syntax:
@@ -388,8 +362,7 @@ Have fun with <code>dplyr 0.70</code>!
 
 
 
-
- <!-- /main -->
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
@@ -830,7 +803,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
- <!-- /content -->
+</div> <!-- /content -->
 
 
 

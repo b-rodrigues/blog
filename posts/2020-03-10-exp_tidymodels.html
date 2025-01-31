@@ -297,10 +297,10 @@ predictions %&gt;%
 ##          N 2539  156
 ##          S   64  149</code></pre>
 <p>
-We see that predicting class <code>S</code> (“Si”, meaning, “yes” in Spanish) is tricky. One would probably need to use techniques such as <code>SMOTE</code> to deal with this (see this <a href="https://www.brodrigues.co/blog/2018-02-11-census-random_forest/">blog post</a> for more info). Anyways, this is not today’s topic.
+We see that predicting class <code>S</code> (“Si”, meaning, “yes” in Spanish) is tricky. One would probably need to use techniques such as <code>SMOTE</code> to deal with this (see this <a href="../posts/2018-02-11-census-random_forest.html">blog post</a> for more info). Anyways, this is not today’s topic.
 </p>
 <p>
-Let’s say that we are satisfied with the model and want some explanations out of it. I have already blogged about it in the past, so if you want more details, you can read this <a href="https://www.brodrigues.co/blog/2018-02-11-census-random_forest/">blog post</a>.
+Let’s say that we are satisfied with the model and want some explanations out of it. I have already blogged about it in the past, so if you want more details, you can read this <a href="../posts/2018-02-11-census-random_forest.html">blog post</a>.
 </p>
 <p>
 Now, what is important, is that I have defined a complete workflow to deal with the data preprocessing and then the training of the model. So I’ll be using this workflow as well to get my explainability. What I mean with this is the following: to get explanations, we need a model, and a way to get predictions out of it. As I have shown before, my fitted workflow is able to give me predictions. So I should have every needed ingredient; <code>{iml}</code>, the package that I am using for explainability provides several functions that work all the same; you first define an object that takes as an input the fitted model, the design matrix, the target variable and the prediction function. Let’s start with defining the design matrix and the target variable:

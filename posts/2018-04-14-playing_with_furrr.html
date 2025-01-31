@@ -138,7 +138,7 @@ For those of us that just can't wait until RStudio officially supports parallel 
 </blockquote>
 <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <p>
-and as a heavy <code>{purrr}</code> user, as well as the happy owner of a 6-core AMD Ryzen 5 1600X cpu, I was very excited to try out <code>{furrr}</code>. For those unfamiliar with <code>{purrr}</code>, you can read some of my previous blog posts on it <a href="http://www.brodrigues.co/blog/2017-03-24-lesser_known_purrr/">here</a>, <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">here</a> or <a href="http://www.brodrigues.co/blog/2018-01-19-mapping_functions_with_any_cols/">here</a>.
+and as a heavy <code>{purrr}</code> user, as well as the happy owner of a 6-core AMD Ryzen 5 1600X cpu, I was very excited to try out <code>{furrr}</code>. For those unfamiliar with <code>{purrr}</code>, you can read some of my previous blog posts on it <a href="../posts/2017-03-24-lesser_known_purrr.html">here</a>, <a href="../posts/2017-03-29-make-ggplot2-purrr.html">here</a> or <a href="../posts/2018-01-19-mapping_functions_with_any_cols.html">here</a>.
 </p>
 <p>
 To summarize very quickly: <code>{purrr}</code> contains so-called higher order functions, which are functions that take other functions as argument. One such function is <code>map()</code>. Consider the following simple example:
@@ -215,7 +215,7 @@ brotools::describe(boys) %&gt;%
 ## 9 reg      Factor          3   748  NA    NA    south NA      NA   NA   
 ## # ... with 3 more variables: median &lt;dbl&gt;, q75 &lt;dbl&gt;, n_unique &lt;int&gt;</code></pre>
 <p>
-In the code above I use the <code>describe()</code> function from my personal package to get some summary statistics of the <code>boys</code> dataset (you can read more about this function <a href="http://www.brodrigues.co/blog/2018-04-10-brotools_describe">here</a>). I am especially interested in the number of missing values, which is why I re-order the columns. If I did not re-order the columns, it would not appear in the output on my blog.
+In the code above I use the <code>describe()</code> function from my personal package to get some summary statistics of the <code>boys</code> dataset (you can read more about this function <a href="../posts/2018-04-10-brotools_describe.html">here</a>). I am especially interested in the number of missing values, which is why I re-order the columns. If I did not re-order the columns, it would not appear in the output on my blog.
 </p>
 <p>
 We see that some columns have a lot of missing values. Using the <code>mice</code> function, it is very easy to impute them:
@@ -496,9 +496,6 @@ So imputation went from 3.4 minutes (around 200 seconds) to 30 seconds. How cool
 If you are not comfortable with <code>map()</code> (and thus <code>future_map()</code>) but still want to impute in parallel, there is this very nice script <a href="https://github.com/gerkovink/parlMICE">here</a> to do just that. I created a package around this script, called <a href="https://github.com/b-rodrigues/parlMICE">parlMICE</a> (the same name as the script), to make installation and usage easier. You can install it like so:
 </p>
 <pre class="r"><code>devtools::install_github("b-rodrigues/parlMICE")</code></pre>
-<p>
-If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates.
-</p>
 
 
 
