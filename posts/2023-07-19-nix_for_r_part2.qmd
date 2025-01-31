@@ -165,7 +165,7 @@ that I know what you’re thinking. Probably something along the lines of: <em>d
 it Bruno, this looks complicated and why should I care? Let me just use
 {renv}!!</em> and I’m not going to lie, writing the above file from scratch didn’t
 take me long in typing, but it took me long in reading. I had to read quite a
-lot (look at <a href="https://www.brodrigues.co/blog/2023-07-13-nix_for_r_part1/">part
+lot (look at <a href="2023-07-13-nix_for_r_part1.qmd">part
 1</a> for some nice
 references) before being comfortable enough to write it. But I’ll just say this:</p>
 <ul>

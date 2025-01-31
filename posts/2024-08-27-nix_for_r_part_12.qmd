@@ -52,7 +52,7 @@ out that Nix can be used just like that! But why use Nix and not <code>make</cod
 Well, using Nix guarantees that whatever you produce will be completely
 reproducible. With <code>make</code>, you would need to either run it inside a Docker image
 or… inside a development environment built with Nix! I did something similar
-in <a href="https://www.brodrigues.co/blog/2023-07-19-nix_for_r_part2/">this blog post</a>
+in <a href="2023-07-19-nix_for_r_part2.qmd">this blog post</a>
 where I ran a <code>{targets}</code> pipeline inside a Nix environment to make the analysis
 reproducible.</p>
 <p>But if I’m already defining a reproducible development environment using Nix,

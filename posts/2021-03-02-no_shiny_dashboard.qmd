@@ -72,7 +72,7 @@ the user has entered some input. But these dashboards don’t need to have Shiny
 involved, even though you can zoom and select different levels in the legend on the top right
 (try double-clicking on the “0” level for instance). This visualisation was made with the
 <code>{plotly}</code> package, one of the many <code>htmlwidgets</code> available. My favorite for making such visualisations
-is <code>{echarts4r}</code> which I’ve used to create the <a href="https://covid-grande-region.brodrigues.co/">following map</a> (how-to blog post <a href="https://www.brodrigues.co/blog/2021-02-06-echarts_map/">here</a>).
+is <code>{echarts4r}</code> which I’ve used to create the <a href="https://covid-grande-region.brodrigues.co/">following map</a> (how-to blog post <a href="2021-02-06-echarts_map.qmd">here</a>).
 <code>htmlwidgets</code> bring JavaScript visualisations (and other goodies) to R, and what’s really cool
 about them is that they don’t need a Shiny server to run (that’s the whole point of
 JavaScript, everything runs in the browser).
@@ -80,7 +80,7 @@ So this means that by combining <code>{flexdashboard}</code> with the right <cod
 simple, yet useful, dashboard that can be deployed as a web page.</p>
 <p>To illustrate, I’ve made the <a href="https://raw.githack.com/b-rodrigues/shinyless_dashboard/master/dashboard.html">following dashboard</a>, which shows tables, graphs, and even a
 pivot table of COVID-19 cases and deaths of the Greater Region (to know more about the Greater
-Region and why this interests me currently, you can <a href="https://www.brodrigues.co/blog/2021-02-20-covid_paper/">read this</a>).</p>
+Region and why this interests me currently, you can <a href="2021-02-20-covid_paper.qmd">read this</a>).</p>
 <p>Something else I need to talk about: on the very first tab, you can see a sidebar with some
 inputs that the user can interact with. For instance, the user can choose which country’s data should
 appear on the table. It is also possible to filter the positive cases data (not the deaths, but

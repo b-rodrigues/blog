@@ -70,7 +70,7 @@ the vast majority of CRAN (and Bioconductor) packages are made available through
 intervention to work on Nix. And we only know this if we try to build these
 packages, but building packages requires quite a lot of resources. I go into
 more detail
-<a href="https://www.brodrigues.co/blog/2024-02-29-nix_for_r_part_10/">here</a>, but in
+<a href="2024-02-29-nix_for_r_part_10.qmd">here</a>, but in
 summary we can’t build CRAN packages every single day to see if everything works
 well, so we only rebuild the whole tree whenever there’s a new release of R.
 Packages get built on a CI infrastructure called <em>Hydra</em>, and then get cached on

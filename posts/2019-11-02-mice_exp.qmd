@@ -458,7 +458,7 @@ converted to numbers:</p>
 For this, I’ll use the <code>group_by()</code>-<code>nest()</code> trick which consists in grouping the dataset by
 the <code>.imp</code> column, then nesting it, then mapping the <code>h2o.gbm()</code> function to each imputed
 dataset. If you are not familiar with this, you can read
-<a href="https://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">this other</a> blog post, which
+<a href="2017-03-29-make-ggplot2-purrr.qmd">this other</a> blog post, which
 explains the approach. I define a custom function, <code>train_on_imputed_data()</code> to run <code>h2o.gbm()</code> on
 each imputed data set:</p>
 <pre class="r"><code>train_on_imputed_data &lt;- function(long_data){
@@ -1212,9 +1212,3 @@ imputed datasets!</p>
 with the way one should conduct an analysis with multiple imputed datasets. However, the pooling
 step is non-trivial and there is no magic recipe; it really depends on the goal of the analysis
 and what you want or need to show.</p>
-<p>Hope you enjoyed! If you found this blog post useful, you might want to follow
-me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates and
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my ebook on <a href="https://leanpub.com/modern_tidyverse">Leanpub</a>.</p>
-<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
-<p><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a></p>
-</div>

@@ -18,7 +18,7 @@ execute:
 <p><em>In this blog post, I present a paper that has really interested me for a long time. This is part2,
 where I will briefly present the model of the paper, and try to play around with the data.
 If you haven’t, I suggest you read
-<a href="https://www.brodrigues.co/blog/2020-01-26-harold/">part 1</a> where I provide more context.</em></p>
+<a href="2020-01-26-harold.qmd">part 1</a> where I provide more context.</em></p>
 <div id="rusts-model" class="section level2">
 <h2>Rust’s model</h2>
 <p>Welcome to part 2 of this series, which might or might not have a part 3. I have been quite busy

@@ -53,7 +53,7 @@ The package also contains a sample of 6000 runs from NetHack version 3.6.1.</p>
 </div>
 <div id="the-nethack-package" class="section level2">
 <h2>The <code>{nethack}</code> package</h2>
-<p>In <a href="https://www.brodrigues.co/blog/2018-11-03-nethack_analysis/">part 1</a> I showed what killed
+<p>In <a href="2018-11-03-nethack_analysis.qmd">part 1</a> I showed what killed
 players the most. Here, I will focus on what monsters players kill the most.
 Let’s start by loading some packages:</p>
 <pre class="r"><code>library(tidyverse)
@@ -268,7 +268,7 @@ algorithms. This helps convergence of the gradient descent algorithm for instanc
 <p>Monsters can also get genocided or extinct. Let’s make a pie chart of the proportion of genocided
 and extinct monsters (I lump monsters that are genocided or extinct less than 5% of the times
 into a category called other). Because I want two pie charts, I nest the data after having grouped
-it by the status variable. This is a trick I discussed in this blog <a href="https://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">post</a>
+it by the status variable. This is a trick I discussed in this blog <a href="2017-03-29-make-ggplot2-purrr.qmd">post</a>
 and that I use very often:</p>
 <pre class="r"><code>nethack %&gt;%
   filter(!is.na(monsters_destroyed)) %&gt;%

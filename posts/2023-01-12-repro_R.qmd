@@ -746,7 +746,7 @@ file suffice? Or even just <code>{groundhog}</code> which is arguably even easie
 <p>Ok, so this one is easier. In this scenario, you have no idea what people are going to use, so you
 cannot generate an <code>renv.lock</code> file beforehand, and <code>{groundhog}</code> is of no help either, because,
 well, there’s no scripts yet to actually make reproducible. This is the situation I’ve had for this
-project that I’ve discussed at the end of last year, on <a href="https://www.brodrigues.co/blog/2022-12-21-longevity/">code
+project that I’ve discussed at the end of last year, on <a href="2022-12-21-longevity.qmd">code
 longevity</a> of the R programming language. The
 solution is to write a Dockerfile that people can modify and run; this in turn produces some
 results that can then be shared. This Dockerfile pulls from another Dockerfile, and that other
@@ -874,8 +874,8 @@ need to make it so future proof that architecture changes won’t matter is like
 teams to deal with this question (and this also holds true for the private sector; there should be someone
 whose job is make code reproducible across the organization).</p>
 <p>Anyways, if you read until here, I appreciate it. This was a long blog post. If you want to know more, you can read
-this <a href="https://www.brodrigues.co/blog/2022-11-19-raps/">other blog post</a> of mine that explains how to use Docker,
-and also this <a href="https://www.brodrigues.co/blog/2022-11-30-pipelines-as/">other blog post</a>
+this <a href="2022-11-19-raps.qmd">other blog post</a> of mine that explains how to use Docker,
+and also this <a href="2022-11-30-pipelines-as.qmd">other blog post</a>
 that explains why Docker <em>is not</em> optional (but now that I’ve discovered Guix, maybe it’s Guix that is not
 optional).</p>
 <p>By the way, if you want to grab the scripts and Dockerfiles from this blog post, you can get them

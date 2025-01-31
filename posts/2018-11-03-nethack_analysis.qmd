@@ -17,7 +17,7 @@ execute:
 <h2>Abstract</h2>
 <p>In this post, I will analyse the data I scraped and put into an R package, which I called <code>{nethack}</code>.
 NetHack is a roguelike game; for more context, read my previous blog
-<a href="https://www.brodrigues.co/blog/2018-11-01-nethack/">post</a>.
+<a href="2018-11-01-nethack.qmd">post</a>.
 You can install the <code>{nethack}</code> package and play around with the data yourself by installing it from github:</p>
 <pre class="r"><code>devtools::install_github(&quot;b-rodrigues/nethack&quot;)</code></pre>
 <p>And to use it:</p>

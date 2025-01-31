@@ -53,7 +53,7 @@ something on your computer, and then have to make it work somewhere else:
 deployment. If you’ve had to deal with deployments you might not understand why
 it’s so hard. I certainly didn’t really get it until I’ve wanted to deploy my
 first Shiny app, many moons ago. And this is especially true whenever you don’t
-want to use any “off the shelf” services like <em>shinyapps.io</em>. In the <a href="https://www.brodrigues.co/blog/2021-06-04-own_knit_server/">blog post
+want to use any “off the shelf” services like <em>shinyapps.io</em>. In the <a href="2021-06-04-own_knit_server.qmd">blog post
 I mentioned above</a>,
 I used Docker to deploy the api. But Docker, while an amazing tool, is also
 quite heavy to deal with. Nix offers an alternative to Docker which I think you

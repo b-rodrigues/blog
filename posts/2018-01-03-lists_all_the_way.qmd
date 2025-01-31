@@ -8,7 +8,7 @@ toc: true
 ---
 
 
-<p><em>There’s a part 2 to this post: read it <a href="http://www.brodrigues.co/blog/2018-01-05-lists_all_the_way2/">here</a>.</em></p>
+<p><em>There’s a part 2 to this post: read it <a href="2018-01-05-lists_all_the_way2.qmd">here</a>.</em></p>
 <p>Today, I had the opportunity to help someone over at the R for Data Science Slack group (read more
 about this group <a href="https://medium.com/@kierisi/r4ds-the-next-iteration-d51e0a1b0b82">here</a>) and I
 thought that the question asked could make for an interesting blog post, so here it is!</p>

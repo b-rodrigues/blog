@@ -18,7 +18,7 @@ execute:
 distribute the data used in the Card and Krueger 1994 paper that you can read
 <a href="http://davidcard.berkeley.edu/papers/njmin-aer.pdf">here</a> (PDF warning). However, I decided that I
 would add code to perform diff-in-diff.</p>
-<p>In my <a href="https://www.brodrigues.co/blog/2019-04-28-diffindiff_part1/">previous blog post</a> I showed
+<p>In my <a href="2019-04-28-diffindiff_part1.qmd">previous blog post</a> I showed
 how to set up the structure of your new package. In this blog post, I will only focus on getting
 Card and Krueger’s data and prepare it for distribution. The next blog posts will focus on writing
 a function to perform difference-in-differences.</p>

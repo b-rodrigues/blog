@@ -41,7 +41,7 @@ outputs as artifacts. Also, in practice that image would not be exactly the same
 as my local environment: I would have the same version of R and R packages, but
 every other system-level dependency would be a different version unless I use
 that Dockerized environment to develop locally, something I suggested you should
-do merely <a href="https://www.brodrigues.co/blog/2023-05-08-dock_dev_env/">4 months
+do merely <a href="2023-05-08-dock_dev_env.qmd">4 months
 ago</a> (oooh, how blind
 was I!).</p>
 <p>With Nix, not only can I take care of the version of R and R packages with one

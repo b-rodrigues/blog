@@ -43,7 +43,7 @@ some of their tasks.</p>
 <p>Now, not all blog posts were about problems that I encountered throughout my
 career. There were also some blog posts about topics that piqued my interest,
 but purely out of curiosity. For example the ones about NLP, like this
-<a href="https://www.brodrigues.co/blog/2019-04-07-historical_newspaper_scraping_tesseract/">one</a>,
+<a href="2019-04-07-historical_newspaper_scraping_tesseract.qmd">one</a>,
 among others. I’m lucky enough that I find enjoyment in programming and exploring
 data for fun, so I do write a lot of code. But how did I manage to consistently
 write blog posts for 10 years+?</p>
@@ -93,7 +93,7 @@ Minimal Reproducible Example when opening an issue because (you think) you found
 a nasty bug somewhere in that package you use daily and never bothered reading
 the documentation for carefully. Blogging is also a way to get some feedback by
 other people, and sometimes people show me other ways of doing things, like
-<a href="https://www.brodrigues.co/blog/2021-09-05-speedrunning_rows/">here</a>. Blogging
+<a href="2021-09-05-speedrunning_rows.qmd/">here</a>. Blogging
 also helped me meet people in the real world, and discuss with them about
 certain of the topics I’ve blogged about. I think that’s really neat.</p>
 Blogging also helps (at least it helped me) realize what I really enjoy about

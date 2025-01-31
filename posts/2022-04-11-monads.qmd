@@ -520,7 +520,7 @@ extra sure we’re dealing with a monad, but that’s outside the scope of this 
 <a href="https://twitter.com/armcn_">Andrew McNeil</a> who implemented this monad as an R
 <a href="https://armcn.github.io/maybe/">package</a>. I have also developed a monad for logging (which
 also logs execution time), which I called <code>{chronicler}</code>, read more about it
-<a href="https://www.brodrigues.co/blog/2022-04-04-chron_post/">here</a>.</p>
+<a href="2022-04-04-chron_post.qmd">here</a>.</p>
 <p>To conclude, why did I title this post <em>why you should(n’t) care about Monads if you’re an R programmer</em>?
 The reason is that you can live without monads. However, certain things will be more complex if you
 don’t know about monads or if you don’t want to use them, just like functions. If for some reason

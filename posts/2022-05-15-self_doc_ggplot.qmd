@@ -85,7 +85,7 @@ with it. Let’s print the object:</p>
 ## [5] &quot;OK! summarise(mean(mass, na.rm = TRUE)) ran successfully at 2022-05-15 17:10:43&quot;
 ## [6] &quot;Total running time: 0.0434844493865967 secs&quot;</code></pre>
 <p>If you want to understand how this works, I suggest you read the blog post I linked above but also
-<a href="https://www.brodrigues.co/blog/2022-04-11-monads/">this one</a>, where I explain the nitty gritty,
+<a href="2022-04-11-monads.qmd">this one</a>, where I explain the nitty gritty,
 theoretical details behind what <code>{chronicler}</code> does. To make a long story short, <code>{chronicler}</code>
 uses an advanced functional programming concept called a monad. And using the power of monads,
 I can now make self-documenting <code>{ggplot2}</code> graphs.</p>

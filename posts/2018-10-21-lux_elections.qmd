@@ -11,7 +11,7 @@ toc: true
 <p><a href="https://www.youtube.com/watch?v=yjzUxDhuXig">
 <img src="../assets/img/gambia.png"/ width="80%" height="auto"></a></p>
 </div>
-<p>In this blog post, similar to a <a href="https://www.brodrigues.co/blog/2018-09-11-human_to_machine/">previous blog post</a>
+<p>In this blog post, similar to a <a href="2018-09-11-human_to_machine.qmd">previous blog post</a>
 I am going to show you how we can go from an Excel workbook that contains data to flat file. I will
 taking advantage of the structure of the tables inside the Excel sheets by writing a function
 that extracts the tables and then mapping it to each sheet!</p>
@@ -37,7 +37,7 @@ red, blue and green. If you want to take a look at the ballot from 2013 for the 
 click <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Specimen_Elections_legislatives_Luxembourg_2013.png/1280px-Specimen_Elections_legislatives_Luxembourg_2013.png">here</a>.</p>
 <p>Now that you have the context, we can go back to some data science. The results of the elections
 of last week can be found on Luxembourg’s Open Data portal, right <a href="https://data.public.lu/fr/datasets/elections-legislatives-du-14-octobre-2018-donnees-officieuses/">here</a>.
-The data is trapped inside Excel sheets; just like I explained in a <a href="https://www.brodrigues.co/blog/2018-09-11-human_to_machine/">previous blog post</a>
+The data is trapped inside Excel sheets; just like I explained in a <a href="2018-09-11-human_to_machine.qmd">previous blog post</a>
 the data is easily read by human, but not easily digested by any type of data analysis software.
 So I am going to show you how we are going from this big Excel workbook to a flat file.</p>
 <p>First of all, if you open the Excel workbook, you will notice that there are a lot of sheets; there

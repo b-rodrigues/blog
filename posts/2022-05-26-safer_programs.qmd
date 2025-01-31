@@ -217,8 +217,8 @@ rev_char(&quot;abc&quot;)</code></pre>
 use recursion to define a functions, this is not always the case, and (in the case of R)
 runs slower than using a loop. If you’re interested in learning more about <code>map()</code>
 and <code>reduce()</code>, I wrote
-several blog posts on it <a href="https://www.brodrigues.co/blog/2018-01-03-lists_all_the_way/">here</a>,
-<a href="https://www.brodrigues.co/blog/2018-01-05-lists_all_the_way2/">here</a> and <a href="https://www.brodrigues.co/blog/2018-01-19-mapping_functions_with_any_cols/">here</a>
+several blog posts on it <a href="2018-01-03-lists_all_the_way.qmd">here</a>,
+<a href="2018-01-05-lists_all_the_way2.qmd">here</a> and <a href="2018-01-19-mapping_functions_with_any_cols.qmd">here</a>
 and some youtube videos as well:</p>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=3xIKZbZKCWQ" class="uri">https://www.youtube.com/watch?v=3xIKZbZKCWQ</a></li>

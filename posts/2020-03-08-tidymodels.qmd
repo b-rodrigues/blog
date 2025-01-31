@@ -18,7 +18,7 @@ execute:
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <div id="intro-what-is-tidymodels" class="section level2">
 <h2>Intro: what is <code>{tidymodels}</code></h2>
-<p>I have already written about <code>{tidymodels}</code> in the <a href="https://www.brodrigues.co/blog/2018-11-25-tidy_cv/">past</a>
+<p>I have already written about <code>{tidymodels}</code> in the <a href="2018-11-25-tidy_cv.qmd">past</a>
 but since then, the <code>{tidymodels}</code> meta-package has evolved quite a lot. If you don’t know what
 <code>{tidymodels}</code> is, it is a suite of packages that make machine learning with R a breeze. R has many
 packages for machine learning, each with their own syntax and function arguments. <code>{tidymodels}</code> aims
@@ -45,7 +45,7 @@ code, I think it is important to learn about them as soon as possible and see wh
 <p>As I will show you, these packages do make the process of training machine learning models a breeze, and of
 course they integrate very well with the rest of the <code>{tidyverse}</code> packages. The problem we’re going
 to tackle is to understand which variables play an important role in the probability of someone looking
-for a job. I’ll use Eustat’s microdata, which I already discussed in my <a href="https://www.brodrigues.co/blog/2020-02-23-synthpop/">previous blog post</a>.
+for a job. I’ll use Eustat’s microdata, which I already discussed in my <a href="2020-02-23-synthpop.qmd">previous blog post</a>.
 The dataset can be downloaded from <a href="https://en.eustat.eus/estadisticas/tema_37/opt_0/tipo_11/temas.html">here</a>, and is called
 <em>Population with relation to activity (PRA)</em>.</p>
 </div>

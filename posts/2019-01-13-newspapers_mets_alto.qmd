@@ -14,7 +14,7 @@ execute:
 <p><a href="https://www.youtube.com/watch?v=V1qpvpH26fo">
 <img src="../assets/img/union.png" title = "The 19th century was a tough place" width="80%" height="auto"></a></p>
 </div>
-<p>Last week I wrote a <a href="https://www.brodrigues.co/blog/2019-01-04-newspapers/">blog post</a> where I analyzed
+<p>Last week I wrote a <a href="2019-01-04-newspapers.qmd">blog post</a> where I analyzed
 one year of newspapers ads from 19th century newspapers. The data is made available by the
 <a href="https://data.bnl.lu/data/historical-newspapers/">national library of Luxembourg</a>.
 In this blog post, which is part 1 of a 2 part series, I extract data from the 257gb archive, which

@@ -55,9 +55,9 @@ create_table &lt;- function(dataset, var){
 <p>If I want such tables for hundreds of columns, I can use this function and loop over the columns and
 not have to write the code inside the body of the function over and over again. You’ll notice that
 the function <code>create_table()</code> makes use of some advanced programming techniques I have discussed
-<a href="https://www.brodrigues.co/blog/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions/">here</a>.
+<a href="2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.qmd">here</a>.
 There’s also an alternative way of programming with <code>{dplyr}</code>, using the <code>{{}}</code> construct I
-discussed <a href="https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/">here</a>, but I couldn’t get
+discussed <a href="2019-06-20-tidy_eval_saga.qmd">here</a>, but I couldn’t get
 what I’m going to show you here to work with <code>{{}}</code>.</p>
 <p>Recently, I had to create a Rmarkdown document with many sections, where each section title was
 a question from a survey and the content was a frequency table. I wanted to write a fuction that

@@ -34,7 +34,7 @@ down several times…</p>
 <p>ALTO is an XML schema for the description of text OCR and layout information of pages for digitzed
 material, such as newspapers (source: <a href="https://en.wikipedia.org/wiki/ALTO_(XML)">ALTO Wikipedia page</a>).
 For more details, you can read my
-<a href="https://www.brodrigues.co/blog/2019-01-13-newspapers_mets_alto/">blogpost</a>
+<a href="2019-01-13-newspapers_mets_alto.qmd">blogpost</a>
 on the matter, but for our current purposes, it is enough to know that the file contains the text
 of newspaper articles. The file looks like this:</p>
 <pre><code>&lt;TextLine HEIGHT=&quot;138.0&quot; WIDTH=&quot;2434.0&quot; HPOS=&quot;4056.0&quot; VPOS=&quot;5814.0&quot;&gt;

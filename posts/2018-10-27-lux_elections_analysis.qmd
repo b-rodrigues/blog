@@ -17,7 +17,7 @@ execute:
 <div id="abstract" class="section level2">
 <h2>Abstract</h2>
 <p>You can find the data used in this blog post here: <a href="https://github.com/b-rodrigues/elections_lux" class="uri">https://github.com/b-rodrigues/elections_lux</a></p>
-<p>This is a follow up to a <a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">previous blog post</a>
+<p>This is a follow up to a <a href="2018-10-21-lux_elections.qmd">previous blog post</a>
 where I extracted data of the 2018 Luxembourguish elections from Excel Workbooks.
 Now that I have the data, I will create a map of Luxembourg by commune, with pie charts of the
 results on top of each commune! To do this, I use good ol’ <code>{ggplot2}</code> and another packages
@@ -52,7 +52,7 @@ library(&quot;tidyxl&quot;)
 library(&quot;ggplot2&quot;)
 library(&quot;scatterpie&quot;)</code></pre>
 <p>Ok, now, let’s import the elections results data, which is the output of
-<a href="https://www.brodrigues.co/blog/2018-10-21-lux_elections/">last week’s blog post</a>:</p>
+<a href="2018-10-21-lux_elections.qmd">last week’s blog post</a>:</p>
 <pre class="r"><code>elections &lt;- read_csv(&quot;elections_2018.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(

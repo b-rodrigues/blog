@@ -52,7 +52,7 @@ looking PDF compiled on a serious operating system.</p>
 <h2>Getting started: Docker</h2>
 <p>I started by writing a prototype on my local machine that (sort of, but not really) worked, but to
 put it on my Raspberry Pi I wanted to create a new Docker image to make deployment easier. For
-this, just like I did for this <a href="https://www.brodrigues.co/blog/2020-09-20-shiny_raspberry/">other blog
+this, just like I did for this <a href="2020-09-20-shiny_raspberry.qmd">other blog
 post</a>, I wrote a ’Dockerfile’ and
 pushed an image to Docker Hub. The Dockerfile is heavily inspired by
 <a href="https://github.com/hvalev/shiny-server-arm-docker">hvalev’s</a> Dockerfile, and also by the official

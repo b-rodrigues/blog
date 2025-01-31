@@ -129,7 +129,7 @@ in a completely different way) is that they have big teams and/or companies behi
 So users feel much more confident adopting such packages, than if they’re written by a very small
 team (sometimes even just one person).</p>
 <p>The reason I’m thinking about all this, is because I
-<a href="https://www.brodrigues.co/blog/2022-05-18-cran_0_2_0/">recently released a package</a> that raises
+<a href="2022-05-18-cran_0_2_0.qmd">recently released a package</a> that raises
 all of the above red flags:</p>
 <ul>
 <li>new syntax (makes heavy use of a new pipe <code>%&gt;=%</code>);</li>

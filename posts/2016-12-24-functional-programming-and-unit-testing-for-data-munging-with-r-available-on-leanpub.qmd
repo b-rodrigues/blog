@@ -8,7 +8,7 @@ categories:
 toc: true
 ---
 
-The book I've been working on these pasts months (you can read about it [here](http://www.brodrigues.co/2016/11/04/ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r), and read it for free [here](http://www.brodrigues.co/fput)) is now available on Leanpub! You can grab a copy and read it on your ebook reader or on your computer, and what's even better is that it is available for free (but you can also decide to buy it if you really like it). Here is the link on [Leanpub](https://leanpub.com/fput).
+The book I've been working on these pasts months (you can read about it [here](2016/11/04/ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.qmd), and read it for free [here](http://www.brodrigues.co/fput)) is now available on Leanpub! You can grab a copy and read it on your ebook reader or on your computer, and what's even better is that it is available for free (but you can also decide to buy it if you really like it). Here is the link on [Leanpub](https://leanpub.com/fput).
 
 In the book, I show you the basics of functional programming, unit testing and package development for the R programming language. The end goal is to make your data tidy in a reproducible way!
 

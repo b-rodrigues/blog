@@ -34,7 +34,7 @@ library(&quot;lubridate&quot;)
 library(&quot;broom&quot;)
 library(&quot;purrr&quot;)</code></pre>
 <p>and also the required dataset. This is a dataset that I have already featured in one of my previous
-blog posts <a href="https://www.brodrigues.co/blog/2020-02-23-synthpop/">here</a>, a blog post about synthetic
+blog posts <a href="2020-02-23-synthpop.qmd">here</a>, a blog post about synthetic
 datasets. I’ll reuse the description from this other blog post here:</p>
 <p><em>The Survey on the Population in Relation to Activity operation is a continuous source of information on the characteristics and dynamics of the labour force of the Basque Country. It records the relation to productive activity of the population resident in family households, as well as the changes produced in labour situations; it produces indicators of conjunctural variations in the evolution of the active population; it also estimates the degree of participation of the population in economically non-productive activities. It offers information on the province and capital level.</em></p>
 <p>To make it easy for you to follow along, I have re-uploaded the data <a href="https://raw.githubusercontent.com/rbind/b-rodrigues.github.com/master/public/assets/MICRO_PRA_2021_1.csv">here</a>.

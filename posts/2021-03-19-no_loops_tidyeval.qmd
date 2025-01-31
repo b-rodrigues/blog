@@ -83,7 +83,7 @@ attached to them. Other computer scientist released spreadsheets for research pu
 read the whole story on <a href="https://www.felienne.com/archives/3634">Felienne Hermans’ blog</a> (read it, it’s quite interesting).</p>
 <p>Anyways, you can now get this treasure trove of nightmarish Excel spreadsheets by clicking <a href="https://figshare.com/articles/dataset/Enron_Spreadsheets_and_Emails/1221767">here</a>
 (this is the link provided in the blog post by Felienne Hermans). I already discussed this
-in a <a href="https://www.brodrigues.co/blog/2020-11-21-guis_mistake/">previous blog post</a>.</p>
+in a <a href="2020-11-21-guis_mistake.qmd">previous blog post</a>.</p>
 <p>On Felienne Hermans’ blog post, you can spot the following table:</p>
 <p><img src="https://i0.wp.com/www.felienne.com/wp-content/uploads/2014/10/Table1.png" width="80%" height="auto" /><!-- --></p>
 <p>I’m going to show how this table could be replicated using R and the <code>mutate()</code>-<code>map()</code> workflow

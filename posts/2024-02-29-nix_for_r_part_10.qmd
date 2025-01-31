@@ -44,7 +44,7 @@ more than capable on its own and had forgotten that.</p>
 <div id="contributing-to-nixpkgs" class="section level2">
 <h2>Contributing to nixpkgs</h2>
 <p>As explained in
-<a href="https://www.brodrigues.co/blog/2023-12-19-nix_for_r_part_8/">part 8</a>, <code>nixpkgs</code> is
+<a href="2023-12-19-nix_for_r_part_8.qmd">part 8</a>, <code>nixpkgs</code> is
 “nothing but” a huge GitHub repository containing thousands of Nix expressions.
 These expressions are then used to actually build the software that then gets
 installed by Nix. For example, <a href="https://github.com/NixOS/nixpkgs/blob/nixpkgs-unstable/pkgs/development/libraries/quarto/default.nix">this is the expression for

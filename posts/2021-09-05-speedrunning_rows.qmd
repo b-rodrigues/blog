@@ -40,7 +40,7 @@ which very much reminded me of what you’d see in the speedrunning community.</
 function over the rows of a data frame, and employed some basic strategies for it.
 As a reminder, here is the example code with the top two strategies: using <code>apply()</code> and a combination
 of <code>asplit()</code> and <code>map()</code> (I won’t be showing all the code here, it’s the same as in the
-<a href="https://www.brodrigues.co/blog/2021-09-04-quest_fast/">previous blog post</a>):</p>
+<a href="2021-09-04-quest_fast.qmd">previous blog post</a>):</p>
 <pre class="r"><code>run_apply &lt;- function(dataset, my_function = my_function){
 
   dataset %&gt;%
