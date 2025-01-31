@@ -39,8 +39,8 @@ GitHub actions. So if it *works on my machine* it's going to *work anywhere*.
 You'll notice that the last step uses the
 `rstats-on-nix/quarto-nix-actions/publish@main` action that is a fork of the
 [quarto-dev/quarto-actions](https://github.com/quarto-dev/quarto-actions)
-actions that just make them work inside of a Nix shell! This fork is hosted on the
-`rstats-on-nix` organizations: I have a lot to say about this organizations, but
+actions that just makes them work inside of a Nix shell! This fork is hosted on the
+`rstats-on-nix` organization: I have a lot to say about this organization, but
 that's for a future blog post!
 
 Migrating the pages was a rather long process, as I needed to make sure
