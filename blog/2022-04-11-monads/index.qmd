@@ -1,0 +1,12 @@
+---
+date: 2022-04-11
+title: Why you should(n't) care about Monads if you're an R programmer
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-04-11-monads.qmd)

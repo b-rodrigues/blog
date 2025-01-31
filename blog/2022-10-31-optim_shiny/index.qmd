@@ -1,0 +1,12 @@
+---
+date: 2022-10-31
+title: How to deal with annoying medium sized data inside a Shiny app
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-10-31-optim_shiny.qmd)

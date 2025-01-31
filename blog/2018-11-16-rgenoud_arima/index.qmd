@@ -1,0 +1,12 @@
+---
+date: 2018-11-16
+title: "Using a genetic algorithm for the hyperparameter optimization of a SARIMA model"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-16-rgenoud_arima.qmd)

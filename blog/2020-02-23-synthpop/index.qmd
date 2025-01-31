@@ -1,0 +1,12 @@
+---
+date: 2020-02-23
+title: "Synthetic micro-datasets: a promising middle ground between data privacy and data analysis"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-02-23-synthpop.qmd)

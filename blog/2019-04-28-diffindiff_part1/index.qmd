@@ -1,0 +1,12 @@
+---
+date: 2019-04-28
+title: "Fast food, causality and R packages, part 1"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-04-28-diffindiff_part1.qmd)

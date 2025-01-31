@@ -1,0 +1,12 @@
+---
+date: 2022-05-18
+title: chronicler is now available on CRAN
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-05-18-cran_0_2_0.qmd)

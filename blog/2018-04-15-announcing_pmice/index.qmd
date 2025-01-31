@@ -1,0 +1,10 @@
+---
+date: 2018-04-15
+title: "{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-04-15-announcing_pmice.qmd)

@@ -1,0 +1,11 @@
+---
+title: "Introduction to programming econometrics with R"
+date: "2015-01-12"
+categories:
+  - R
+  - econometrics
+  - book
+toc: true
+---
+
+[Permanently moved.](../../posts/2015-01-12-introduction-to-programming-econometrics-with-r.qmd)

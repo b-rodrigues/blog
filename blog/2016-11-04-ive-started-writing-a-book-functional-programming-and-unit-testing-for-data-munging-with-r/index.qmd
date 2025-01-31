@@ -1,0 +1,10 @@
+---
+title: "I've started writing a 'book': Functional programming and unit testing for data munging with R"
+date: "2016-11-04"
+categories:
+  - R
+  - book
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-11-04-ive-started-writing-a-book-functional-programming-and-unit-testing-for-data-munging-with-r.qmd)

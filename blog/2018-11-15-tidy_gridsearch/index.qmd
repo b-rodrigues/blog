@@ -1,0 +1,12 @@
+---
+date: 2018-11-15
+title: "Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-15-tidy_gridsearch.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Lesser known dplyr 0.7* tricks"
+date: 2017-07-02
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-07-02-dplyr-0-70-tutorial.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2020-12-05
+title: Poorman's automated translation with R and Google Sheets using {googlesheets4}
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-12-05-poorman_translate.qmd)

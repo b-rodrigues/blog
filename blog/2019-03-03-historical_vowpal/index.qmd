@@ -1,0 +1,12 @@
+---
+date: 2019-03-03
+title: "Classification of historical newspapers content: a tutorial combining R, bash and Vowpal Wabbit, part 1"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-03-03-historical_vowpal.qmd)

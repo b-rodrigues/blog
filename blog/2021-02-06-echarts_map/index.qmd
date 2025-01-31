@@ -1,0 +1,12 @@
+---
+date: 2021-02-06
+title: How to draw a map of arbitrary contiguous regions, or visualizing the spread of COVID-19 in the Greater Region
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-02-06-echarts_map.qmd)

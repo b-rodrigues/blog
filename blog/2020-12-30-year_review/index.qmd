@@ -1,0 +1,12 @@
+---
+date: 2020-12-30
+title: A year in review
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-12-30-year_review.qmd)

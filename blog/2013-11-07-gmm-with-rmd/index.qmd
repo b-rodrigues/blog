@@ -1,0 +1,10 @@
+---
+title: "Nonlinear Gmm with R - Example with a logistic regression"
+date: "2013-11-07"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2013-11-07-gmm-with-rmd.qmd)

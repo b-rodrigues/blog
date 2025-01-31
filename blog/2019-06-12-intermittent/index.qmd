@@ -1,0 +1,12 @@
+---
+date: 2019-06-12
+title: "Intermittent demand, Croston and Die Hard"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-06-12-intermittent.qmd)

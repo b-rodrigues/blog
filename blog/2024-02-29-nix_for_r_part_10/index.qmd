@@ -1,0 +1,12 @@
+---
+date: 2024-02-29
+title: Reproducible data science with Nix, part 10 -- contributing to nixpkgs
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2024-02-29-nix_for_r_part_10.qmd)

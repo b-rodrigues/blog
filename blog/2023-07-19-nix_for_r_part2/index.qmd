@@ -1,0 +1,12 @@
+---
+date: 2023-07-19
+title: Reproducible data science with Nix, part 2 -- running {targets} pipelines with Nix
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-07-19-nix_for_r_part2.qmd)

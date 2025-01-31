@@ -1,0 +1,12 @@
+---
+date: 2019-03-20
+title: "Pivoting data frames just got easier thanks to `pivot_wide()` and `pivot_long()`"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-03-20-pivot.qmd)

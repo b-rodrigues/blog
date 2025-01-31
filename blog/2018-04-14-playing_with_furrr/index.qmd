@@ -1,0 +1,10 @@
+---
+date: 2018-04-14
+title: "Imputing missing values in parallel using {furrr}"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-04-14-playing_with_furrr.qmd)

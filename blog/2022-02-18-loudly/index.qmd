@@ -1,0 +1,12 @@
+---
+date: 2022-02-18
+title: Add logging to your functions using my newest package `{loud}`
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-02-18-loudly.qmd)

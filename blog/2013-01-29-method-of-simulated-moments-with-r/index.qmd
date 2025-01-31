@@ -1,0 +1,12 @@
+---
+title: "Method of Simulated Moments with R"
+date: "2013-01-29"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2013-01-29-method-of-simulated-moments-with-r.qmd)

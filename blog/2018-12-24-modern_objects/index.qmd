@@ -1,0 +1,12 @@
+---
+date: 2018-12-24
+title: "Objects types and some useful R functions for beginners"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-24-modern_objects.qmd)

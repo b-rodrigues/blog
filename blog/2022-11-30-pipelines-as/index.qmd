@@ -1,0 +1,12 @@
+---
+date: 2022-11-30
+title: Functional programming explains why containerization is needed for reproducibility
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-11-30-pipelines-as.qmd)

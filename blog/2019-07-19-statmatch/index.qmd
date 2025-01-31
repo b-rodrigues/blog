@@ -1,0 +1,12 @@
+---
+date: 2019-07-19
+title: "Statistical matching, or when one single data source is not enough"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-07-19-statmatch.qmd)

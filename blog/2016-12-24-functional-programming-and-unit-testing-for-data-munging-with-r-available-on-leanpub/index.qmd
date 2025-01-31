@@ -1,0 +1,11 @@
+---
+title: "Functional programming and unit testing for data munging with R available on Leanpub"
+date: "2016-12-24"
+categories:
+  - R
+  - book
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-12-24-functional-programming-and-unit-testing-for-data-munging-with-r-available-on-leanpub.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2018-12-27
+title: "Some fun with {gganimate}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-27-fun_gganimate.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2021-03-19
+title: How to treat as many files as fit on your hard disk without loops (sorta) nor running out of memory all the while being as lazy as possible
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-03-19-no_loops_tidyeval.qmd)

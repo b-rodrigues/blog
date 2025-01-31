@@ -1,0 +1,10 @@
+---
+title: "Object Oriented Programming with R: An example with a Cournot duopoly"
+date: "2014-04-23"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2014-04-23-r-s4-rootfinding.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Bootstrapping standard errors for difference-in-differences estimation with R"
+date: "2015-11-11"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2015-11-11-bootstrapping-did-with-r.qmd)

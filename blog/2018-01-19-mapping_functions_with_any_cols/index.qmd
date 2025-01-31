@@ -1,0 +1,10 @@
+---
+title: "Mapping a list of functions to a list of datasets with a list of columns as arguments"
+date: 2018-01-19
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-01-19-mapping_functions_with_any_cols.qmd)

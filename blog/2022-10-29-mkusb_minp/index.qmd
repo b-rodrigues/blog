@@ -1,0 +1,12 @@
+---
+date: 2022-10-29
+title: A Linux Live USB as a statistical programming dev environment
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-10-29-mkusb_minp.qmd)

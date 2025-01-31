@@ -1,0 +1,12 @@
+---
+date: 2023-09-29
+title: ZSA Voyager review
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-09-29-voyager.qmd)

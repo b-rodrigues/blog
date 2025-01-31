@@ -1,0 +1,12 @@
+---
+date: 2020-01-26
+title: "Dynamic discrete choice models, reinforcement learning and Harold, part 1"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-01-26-harold.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Lesser known purrr tricks"
+date: "2017-03-24"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-03-24-lesser_known_purrr.qmd)

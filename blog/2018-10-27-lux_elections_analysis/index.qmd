@@ -1,0 +1,12 @@
+---
+date: 2018-10-27
+title: "Maps with pie charts on top of each administrative division: an example with Luxembourg's elections data"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-10-27-lux_elections_analysis.qmd)

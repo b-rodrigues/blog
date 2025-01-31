@@ -1,0 +1,12 @@
+---
+date: 2021-12-17
+title: "How to write code that returns (Rmarkdown) code"
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-12-17-expand_knitr.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2023-05-08
+title: Why you should consider working on a dockerized development environment
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-05-08-dock_dev_env.qmd)

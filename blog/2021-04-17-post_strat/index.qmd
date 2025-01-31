@@ -1,0 +1,12 @@
+---
+date: 2021-04-17
+title: Dealing with non-representative samples with post-stratification
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-04-17-post_strat.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Introducing brotools"
+date: "2017-03-27"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-03-27-introducing_brotools.qmd)

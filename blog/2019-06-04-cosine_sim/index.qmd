@@ -1,0 +1,12 @@
+---
+date: 2019-06-04
+title: "Using cosine similarity to find matching documents: a tutorial using Seneca's letters to his friend Lucilius"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-06-04-cosine_sim.qmd)

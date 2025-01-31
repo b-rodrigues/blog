@@ -1,0 +1,10 @@
+---
+date: 2018-04-10
+title: "Get basic summary statistics for all the variables in a data frame"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-04-10-brotools_describe.qmd)

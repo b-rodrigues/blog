@@ -1,0 +1,12 @@
+---
+date: 2023-03-07
+title: Software engineering techniques that non-programmers who write a lot of code can benefit from — the DRY WIT approach
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-03-07-dry_wit.qmd)

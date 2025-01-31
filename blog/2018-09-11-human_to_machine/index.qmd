@@ -1,0 +1,10 @@
+---
+date: 2018-09-11
+title: "Going from a human readable Excel file to a machine-readable csv with {tidyxl}"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-09-11-human_to_machine.qmd)

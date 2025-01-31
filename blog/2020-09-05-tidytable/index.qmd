@@ -1,0 +1,12 @@
+---
+date: 2020-09-05
+title: Gotta go fast with "{tidytable}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-09-05-tidytable.qmd)

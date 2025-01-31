@@ -1,0 +1,10 @@
+---
+title: "Careful with tryCatch"
+date: "2016-03-31"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-06-21-careful-with-trycatch.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2019-03-31
+title: "Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-03-31-tesseract.qmd)

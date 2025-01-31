@@ -1,0 +1,12 @@
+---
+date: 2018-12-30
+title: "R or Python? Why not both? Using Anaconda Python within R with {reticulate}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-30-reticulate.qmd)

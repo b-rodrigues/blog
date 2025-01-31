@@ -1,0 +1,12 @@
+---
+date: 2022-11-19
+title: Reproducibility with Docker and Github Actions for the average R enjoyer
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-11-19-raps.qmd)

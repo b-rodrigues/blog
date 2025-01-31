@@ -1,0 +1,11 @@
+---
+title: "My free book has a cover!"
+date: 2017-01-07
+categories:
+  - R
+  - book
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-01-07-my-free-book-has-a-cover.qmd)

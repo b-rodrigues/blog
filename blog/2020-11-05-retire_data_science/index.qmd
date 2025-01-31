@@ -1,0 +1,12 @@
+---
+date: 2020-11-05
+title: It's time to retire the "data scientist" label
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-11-05-retire_data_science.qmd)

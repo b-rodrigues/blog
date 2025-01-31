@@ -1,0 +1,12 @@
+---
+date: 2022-12-21
+title: Code longevity of the R programming language
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-12-21-longevity.qmd)

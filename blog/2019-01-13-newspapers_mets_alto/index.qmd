@@ -1,0 +1,12 @@
+---
+date: 2019-01-13
+title: "Making sense of the METS and ALTO XML standards"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-01-13-newspapers_mets_alto.qmd)

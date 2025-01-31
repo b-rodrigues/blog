@@ -1,0 +1,12 @@
+---
+date: 2024-02-02
+title: Reproducible data science with Nix, part 9 -- rix is looking for testers!
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2024-02-02-nix_for_r_part_9.qmd)

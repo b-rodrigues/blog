@@ -1,0 +1,12 @@
+---
+date: 2021-06-04
+title: Building your own knitr compile farm on your Raspberry Pi with {plumber}
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-06-04-own_knit_server.qmd)

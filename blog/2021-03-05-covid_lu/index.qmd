@@ -1,0 +1,12 @@
+---
+date: 2021-03-05
+title: Using explainability methods to understand (some part) of the spread of COVID-19 in a landlocked country
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-03-05-covid_lu.qmd)

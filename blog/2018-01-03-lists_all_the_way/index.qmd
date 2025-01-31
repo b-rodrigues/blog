@@ -1,0 +1,10 @@
+---
+date: 2018-01-03
+title: "It's lists all the way down"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-01-03-lists_all_the_way.qmd)

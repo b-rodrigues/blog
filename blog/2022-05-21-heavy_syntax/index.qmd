@@ -1,0 +1,12 @@
+---
+date: 2022-05-21
+title: Get packages that introduce unique syntax adopted less?
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-05-21-heavy_syntax.qmd)

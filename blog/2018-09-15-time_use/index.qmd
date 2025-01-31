@@ -1,0 +1,10 @@
+---
+date: 2018-09-14
+title: "How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-09-15-time_use.qmd)

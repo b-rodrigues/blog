@@ -1,0 +1,10 @@
+---
+title: "Using R as a Computer Algebra System with Ryacas"
+date: "2013-12-31"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2013-12-31-r-cas.qmd)

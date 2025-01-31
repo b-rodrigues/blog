@@ -1,0 +1,10 @@
+---
+date: 2018-01-05
+title: "It's lists all the way down, part 2: We need to go deeper"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-01-05-lists_all_the_way2.qmd)

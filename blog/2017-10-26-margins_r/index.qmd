@@ -1,0 +1,10 @@
+---
+date: 2017-10-26
+title: "Easy peasy STATA-like marginal effects with R"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-10-26-margins_r.qmd)

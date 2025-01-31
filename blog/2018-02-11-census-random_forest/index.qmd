@@ -1,0 +1,10 @@
+---
+title: "Predicting job search by training a random forest on an unbalanced dataset"
+date: 2018-02-11
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-02-11-census-random_forest.qmd)

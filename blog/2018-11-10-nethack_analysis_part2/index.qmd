@@ -1,0 +1,12 @@
+---
+date: 2018-11-10
+title: "Analyzing NetHack data, part 2: What players kill the most"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-10-nethack_analysis_part2.qmd)

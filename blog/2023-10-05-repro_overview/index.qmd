@@ -1,0 +1,12 @@
+---
+date: 2023-10-05
+title: An overview of what's out there for reproducibility with R
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-10-05-repro_overview.qmd)

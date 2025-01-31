@@ -1,0 +1,12 @@
+---
+date: 2024-08-28
+title: Reproducible data science with Nix, part 13 -- {rix} is on CRAN!
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2024-09-27-nix_part_13.qmd)

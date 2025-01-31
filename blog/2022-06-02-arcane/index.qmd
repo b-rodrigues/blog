@@ -1,0 +1,12 @@
+---
+date: 2022-06-02
+title: R will always be arcane to those who do not make a serious effort to learn it...
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-06-02-arcane.qmd)

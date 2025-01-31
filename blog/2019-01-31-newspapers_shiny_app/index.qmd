@@ -1,0 +1,12 @@
+---
+date: 2019-01-31
+title: "Using Data Science to read 10 years of Luxembourguish newspapers from the 19th century"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-01-31-newspapers_shiny_app.qmd)

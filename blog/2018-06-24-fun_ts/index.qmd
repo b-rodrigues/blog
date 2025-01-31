@@ -1,0 +1,10 @@
+---
+date: 2018-06-24
+title: "Forecasting my weight with R"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-06-24-fun_ts.qmd)

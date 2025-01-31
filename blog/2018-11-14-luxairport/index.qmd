@@ -1,0 +1,12 @@
+---
+date: 2018-11-14
+title: "Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-14-luxairport.qmd)

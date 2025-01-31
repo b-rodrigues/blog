@@ -1,0 +1,12 @@
+---
+date: 2023-10-20
+title: Reproducible data science with Nix, part 7 -- Building a Quarto book using Nix on Github Actions
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-10-20-nix_for_r_part7.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2019-11-09
+title: "Intrumental variable regression and machine learning"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-11-06-explainability_econometrics.qmd)

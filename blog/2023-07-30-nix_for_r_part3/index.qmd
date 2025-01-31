@@ -1,0 +1,12 @@
+---
+date: 2023-07-30
+title: Reproducible data science with Nix, part 3 -- frictionless {plumber} api deployments with Nix
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-07-30-nix_for_r_part3.qmd)

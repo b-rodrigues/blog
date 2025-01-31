@@ -1,0 +1,12 @@
+---
+date: 2022-05-15
+title: Self-documenting {ggplot}s thanks to the power of monads!
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-05-15-self_doc_ggplot.qmd)

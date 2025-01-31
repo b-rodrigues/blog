@@ -1,0 +1,12 @@
+---
+date: 2020-11-21
+title: Graphical User Interfaces were a mistake but you can still make things right
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-11-21-guis_mistake.qmd)

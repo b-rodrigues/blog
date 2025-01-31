@@ -1,0 +1,12 @@
+---
+date: 2022-03-12
+title: Capture errors, warnings and messages
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-03-12-purely.qmd)

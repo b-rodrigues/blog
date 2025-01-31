@@ -1,0 +1,10 @@
+---
+title: "Read a lot of datasets at once with R"
+date: "2016-07-26"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-07-26-read-a-lot-of-datasets-at-once-with-r.qmd)

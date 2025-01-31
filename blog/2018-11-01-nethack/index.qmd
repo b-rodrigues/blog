@@ -1,0 +1,12 @@
+---
+date: 2018-11-01
+title: "From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-01-nethack.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Unit testing with R"
+date: "2016-03-31"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-03-31-unit-testing-with-r.qmd)

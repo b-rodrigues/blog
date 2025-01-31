@@ -1,0 +1,10 @@
+---
+date: 2018-10-05
+title: "Exporting editable plots from R to Powerpoint: making ggplot2 purrr with officer"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-10-05-ggplot2_purrr_officer.qmd)

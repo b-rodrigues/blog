@@ -1,0 +1,12 @@
+---
+date: 2023-06-29
+title: How to self-publish a technical book on Leanpub and Amazon using Quarto
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-06-29-book_quarto.qmd)

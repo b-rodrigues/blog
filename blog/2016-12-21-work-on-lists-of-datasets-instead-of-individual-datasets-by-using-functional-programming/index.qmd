@@ -1,0 +1,10 @@
+---
+title: "Work on lists of datasets instead of individual datasets by using functional programming"
+date: "2016-12-21"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming.qmd)

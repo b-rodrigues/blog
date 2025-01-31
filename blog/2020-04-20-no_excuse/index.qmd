@@ -1,0 +1,12 @@
+---
+date: 2020-04-20
+title: "No excuse not to be a Bayesian anymore"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-04-20-no_excuse.qmd)

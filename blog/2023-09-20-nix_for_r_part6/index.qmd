@@ -1,0 +1,12 @@
+---
+date: 2023-09-20
+title: Reproducible data science with Nix, part 6 -- CI/CD has never been easier
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-09-20-nix_for_r_part6.qmd)

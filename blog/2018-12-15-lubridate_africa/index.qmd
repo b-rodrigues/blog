@@ -1,0 +1,12 @@
+---
+date: 2018-12-15
+title: "Manipulate dates easily with {lubridate}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-15-lubridate_africa.qmd)

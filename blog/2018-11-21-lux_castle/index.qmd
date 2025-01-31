@@ -1,0 +1,12 @@
+---
+date: 2018-11-21
+title: "The best way to visit Luxembourguish castles is doing data science + combinatorial optimization"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-21-lux_castle.qmd)

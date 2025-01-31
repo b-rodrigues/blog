@@ -1,0 +1,12 @@
+---
+date: 2023-12-19
+title: Reproducible data science with Nix, part 8 -- nixpkgs, a tale of the magic of free and open source software and a call for charity
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-12-19-nix_for_r_part_8.qmd)

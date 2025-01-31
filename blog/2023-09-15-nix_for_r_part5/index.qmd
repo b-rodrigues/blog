@@ -1,0 +1,12 @@
+---
+date: 2023-09-15
+title: Reproducible data science with Nix, part 5 -- Reproducible literate programming with Nix and Quarto
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-09-15-nix_for_r_part5.qmd)

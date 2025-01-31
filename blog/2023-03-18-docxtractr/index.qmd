@@ -1,0 +1,12 @@
+---
+date: 2023-03-18
+title: Automating checks of *handcrafted* Word tables with {docxtractr}
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-03-18-docxtractr.qmd)

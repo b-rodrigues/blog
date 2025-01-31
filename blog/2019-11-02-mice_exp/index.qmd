@@ -1,0 +1,12 @@
+---
+date: 2019-11-02
+title: "Multiple data imputation and explainability"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-11-02-mice_exp.qmd)

@@ -1,0 +1,10 @@
+---
+date: 2017-08-27
+title: "Why I find tidyeval useful"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-08-27-why_tidyeval.qmd)

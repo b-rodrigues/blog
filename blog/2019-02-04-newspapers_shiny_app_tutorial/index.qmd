@@ -1,0 +1,12 @@
+---
+date: 2019-02-04
+title: "Building a shiny app to explore historical newspapers: a step-by-step guide"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-02-04-newspapers_shiny_app_tutorial.qmd)

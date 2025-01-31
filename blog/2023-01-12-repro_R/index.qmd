@@ -1,0 +1,12 @@
+---
+date: 2023-01-12
+title: MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-01-12-repro_R.qmd)

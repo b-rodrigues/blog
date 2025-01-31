@@ -1,0 +1,12 @@
+---
+date: 2019-09-03
+title: "{disk.frame} is epic"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-09-03-disk_frame.qmd)

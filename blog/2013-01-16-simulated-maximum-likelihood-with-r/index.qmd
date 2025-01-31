@@ -1,0 +1,12 @@
+---
+title: "Simulated Maximum Likelihood with R"
+date: "2013-12-11"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2013-01-16-simulated-maximum-likelihood-with-r.qmd)

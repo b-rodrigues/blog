@@ -1,0 +1,12 @@
+---
+date: 2020-09-20
+title: The Raspberry Pi 4B as a shiny server
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-09-20-shiny_raspberry.qmd)

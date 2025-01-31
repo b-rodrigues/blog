@@ -1,0 +1,10 @@
+---
+title: How to use jailbreakr
+date: "2017-02-17"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-02-17-how_to_use_jailbreakr.qmd)

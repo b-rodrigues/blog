@@ -1,0 +1,12 @@
+---
+date: 2021-02-20
+title: R makes it too easy to write papers
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-02-20-covid_paper.qmd)

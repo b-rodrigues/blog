@@ -1,0 +1,12 @@
+---
+date: 2019-02-10
+title: "Manipulating strings with the {stringr} package"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-02-10-stringr_package.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2024-04-04
+title: Reproducible data science with Nix, part 11 -- build and cache binaries with Github Actions and Cachix
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2024-04-04-nix_for_r_part_11.qmd)

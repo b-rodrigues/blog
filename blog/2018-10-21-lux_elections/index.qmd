@@ -1,0 +1,10 @@
+---
+date: 2018-10-21
+title: "Getting the data from the Luxembourguish elections out of Excel"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-10-21-lux_elections.qmd)

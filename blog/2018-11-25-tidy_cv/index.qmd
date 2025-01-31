@@ -1,0 +1,12 @@
+---
+date: 2018-11-25
+title: "A tutorial on tidy cross-validation with R"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-25-tidy_cv.qmd)

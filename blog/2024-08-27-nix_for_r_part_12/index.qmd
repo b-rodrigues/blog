@@ -1,0 +1,12 @@
+---
+date: 2024-08-28
+title: Reproducible data science with Nix, part 12 -- Nix as a polyglot build automation tool for data science
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2024-08-27-nix_for_r_part_12.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2020-12-12
+title: (Half) Lies, (half) truths and (half) statistics
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-12-12-ethics_statistics.qmd)

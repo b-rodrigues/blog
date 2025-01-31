@@ -1,0 +1,10 @@
+---
+date: 2018-09-08
+title: "The year of the GNU+Linux desktop is upon us: using user ratings of Steam Play compatibility to play around with regex and the tidyverse"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-09-08-steam_linux.qmd)

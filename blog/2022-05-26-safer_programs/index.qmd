@@ -1,0 +1,12 @@
+---
+date: 2022-05-26
+title: Some learnings from functional programming you can use to write safer programs
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-05-26-safer_programs.qmd)

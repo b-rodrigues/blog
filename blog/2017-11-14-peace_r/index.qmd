@@ -1,0 +1,10 @@
+---
+date: 2017-11-13
+title: "Peace of mind with purrr"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-11-14-peace_r.qmd)

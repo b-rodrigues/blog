@@ -1,0 +1,12 @@
+---
+date: 2020-09-27
+title: Building apps with {shinipsum} and {golem}
+categories:
+  - R
+  - programming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-09-27-golemDemo.qmd)

@@ -1,0 +1,12 @@
+---
+date: 2023-04-25
+title: I've been blogging for 10 years
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-04-25-10_years.qmd)

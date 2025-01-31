@@ -1,0 +1,10 @@
+---
+date: 2018-03-03
+title: "Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-03-03-sparklyr_h2o_rsparkling.qmd)

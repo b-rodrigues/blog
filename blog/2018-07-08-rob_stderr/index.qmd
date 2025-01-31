@@ -1,0 +1,10 @@
+---
+date: 2018-07-08
+title: "Dealing with heteroskedasticity; regression with robust standard errors using R"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-07-08-rob_stderr.qmd)

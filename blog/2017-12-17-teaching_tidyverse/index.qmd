@@ -1,0 +1,10 @@
+---
+date: 2017-12-17
+title: "Teaching the tidyverse to beginners"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-12-17-teaching_tidyverse.qmd)

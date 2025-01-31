@@ -1,0 +1,12 @@
+---
+date: 2023-03-03
+title: What I've learned making an .epub Ebook with Quarto
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2023-03-03-quarto_books.qmd)

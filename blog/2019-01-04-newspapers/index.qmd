@@ -1,0 +1,12 @@
+---
+date: 2019-01-04
+title: "Looking into 19th century ads from a Luxembourguish newspaper with R"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-01-04-newspapers.qmd)

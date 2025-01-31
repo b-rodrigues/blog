@@ -1,0 +1,12 @@
+---
+date: 2018-12-02
+title: "What hyper-parameters are, and what to do with them; an illustration with ridge regression"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-02-hyper-parameters.qmd)

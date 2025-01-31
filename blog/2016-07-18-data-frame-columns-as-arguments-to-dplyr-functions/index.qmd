@@ -1,0 +1,10 @@
+---
+title: "Data frame columns as arguments to dplyr functions"
+date: "2016-07-18"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions.qmd)

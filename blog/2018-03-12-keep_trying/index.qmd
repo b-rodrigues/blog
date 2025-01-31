@@ -1,0 +1,10 @@
+---
+date: 2018-03-03
+title: "Keep trying that api call with purrr::possibly()"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-03-12-keep_trying.qmd)

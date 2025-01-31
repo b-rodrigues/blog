@@ -1,0 +1,10 @@
+---
+date: 2019-10-05
+title: "Split-apply-combine for Maximum Likelihood Estimation of a linear model"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2019-10-05-parallel_maxlik.qmd)

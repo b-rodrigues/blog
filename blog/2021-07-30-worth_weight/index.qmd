@@ -1,0 +1,12 @@
+---
+date: 2021-07-30
+title: Is it worth the weight?
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2021-07-30-worth_weight.qmd)

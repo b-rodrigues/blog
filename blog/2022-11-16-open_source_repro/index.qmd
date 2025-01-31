@@ -1,0 +1,12 @@
+---
+date: 2022-11-16
+title: Open source is a hard requirement for reproducibility
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-11-16-open_source_repro.qmd)

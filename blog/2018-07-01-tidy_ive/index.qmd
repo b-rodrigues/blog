@@ -1,0 +1,10 @@
+---
+date: 2018-07-01
+title: "Missing data imputation and instrumental variables regression: the tidy approach"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-07-01-tidy_ive.qmd)

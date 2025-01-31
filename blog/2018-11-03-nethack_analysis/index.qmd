@@ -1,0 +1,12 @@
+---
+date: 2018-11-03
+title: "Analyzing NetHack data, part 1: What kills the players"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-11-03-nethack_analysis.qmd)

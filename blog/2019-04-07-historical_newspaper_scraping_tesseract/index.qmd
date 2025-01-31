@@ -1,0 +1,12 @@
+---
+date: 2019-04-07
+title: "Historical newspaper scraping with {tesseract} and R"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-04-07-historical_newspaper_scraping_tesseract.qmd)

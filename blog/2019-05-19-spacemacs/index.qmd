@@ -1,0 +1,12 @@
+---
+date: 2019-05-19
+title: "The never-ending editor war (?)"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2019-05-19-spacemacs.qmd)

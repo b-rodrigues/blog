@@ -1,0 +1,12 @@
+---
+date: 2020-04-27
+title: "Exploring NACE codes"
+categories:
+  - R
+  - econometrics
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-04-27-nace_explorer.qmd)

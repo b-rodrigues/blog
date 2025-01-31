@@ -1,0 +1,12 @@
+---
+date: 2018-12-21
+title: "Using the tidyverse for more than data manipulation: estimating pi with Monte Carlo methods"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2018-12-21-tidyverse_pi.qmd)

@@ -1,0 +1,10 @@
+---
+title: "Export R output to a file"
+date: "2015-02-22"
+categories:
+  - R
+  - econometrics
+toc: true
+---
+
+[Permanently moved.](../../posts/2015-02-22-export-r-output-to-file.qmd)

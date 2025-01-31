@@ -1,0 +1,10 @@
+---
+title: "Make ggplot2 purrr"
+date: "2017-03-29"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2017-03-29-make-ggplot2-purrr.qmd)

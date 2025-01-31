@@ -1,0 +1,12 @@
+---
+date: 2022-10-01
+title: Why and how to use JS in your Shiny app
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-10-01-why_js_shiny.qmd)

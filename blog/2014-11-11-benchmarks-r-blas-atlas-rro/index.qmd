@@ -1,0 +1,9 @@
+---
+title: "R, R with Atlas, R with OpenBLAS and Revolution R Open: which is fastest?"
+date: "2014-11-11"
+categories:
+  - R
+toc: true
+---
+
+[Permanently moved.](../../posts/2014-11-11-benchmarks-r-blas-atlas-rro.qmd)

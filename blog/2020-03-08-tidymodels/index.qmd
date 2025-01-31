@@ -1,0 +1,12 @@
+---
+date: 2020-03-08
+title: "Machine learning with {tidymodels}"
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2020-03-08-tidymodels.qmd)

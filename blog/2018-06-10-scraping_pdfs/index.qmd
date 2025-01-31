@@ -1,0 +1,10 @@
+---
+date: 2018-06-10
+title: "Getting data from pdfs using the pdftools package"
+categories:
+  - R
+  - programming
+toc: true
+---
+
+[Permanently moved.](../../posts/2018-06-10-scraping_pdfs.qmd)

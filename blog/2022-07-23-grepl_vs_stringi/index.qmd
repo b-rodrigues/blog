@@ -1,0 +1,12 @@
+---
+date: 2022-07-23
+title: What's the fastest way to search and replace strings in a data frame?
+categories:
+  - R
+  - proramming
+toc: true
+execute:
+  freeze: auto
+---
+
+[Permanently moved.](../../posts/2022-07-23-grepl_vs_stringi.qmd)
