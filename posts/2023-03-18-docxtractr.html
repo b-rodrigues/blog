@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-03-18">
+
+<title>Automating checks of handcrafted Word tables with {docxtractr} – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Automating checks of <em>handcrafted</em> Word tables with {docxtractr}</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">proramming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 18, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/excel_nightmare.png" width="80%" height="auto">
+</p>
+</div>
+<p>
+Unfortunately not everyone knows about literate programming so many tables in Word documents are “generated” by hand (generated is really too strong a word) and what very often happens is that these handcrafted tables have typos. Usually it’s totals that are wrong. Checking the totals in these tables by hand with a pocket calculator is a tedious, long and boring job.
+</p>
+<p>
+So as my job’s <em>statistician but also kinda automation dude that types all day in a weird black box</em>, I’ve been asked if it were possible to automate these checks on tables in a Word document. And of course, the answer is yes, because whatever you need to get done, there’s an R package for that!
+</p>
+<p>
+There are, to my knowledge, 2 packages that we can use to get tables from a Word document into R (an activity that I will now refer to as <em>office-scraping</em>).
+</p>
+<p>
+These packages are <code>{officer}</code> and <code>{docxtractr}</code>. For his particular task I’ve used <code>{docxtractr}</code>. The reason is that <code>{docxtractr}</code> returns the table “as-is”, while <code>{officer}</code> returns a tibble where each cell of the table gets a row in the tibble. <code>{officer}</code>’s representation of the scraped tables might be useful in some cases, but in this particular case, <code>{docxtractr}</code>’s approach was exactly what I needed.
+</p>
+<p>
+First of all, we need a Word document with some tables.<a href="https://github.com/rbind/b-rodrigues.github.com/raw/master/content/blog/report.docx">Here’s one</a> I’ve prepared that contains two tables that look close to the ones I had to deal with. In the actual document, there were hundreds of such tables. Here’s a picture of the tables in case you can’t open the document:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/report_tables.png" width="80%" height="auto">
+</p>
+</div>
+<p>
+The first table is divided by departments of the company, and each section of the table has its own sub-total. As stated in the beginning, the goal is to check for typos by recomputing the sub-totals and totals and then comparing the original tables with the ones where the totals were recomputed.
+</p>
+<p>
+The problem we will face with each table are the merged cells; if there were no merged cells, scraping them with <code>{docxtractr}</code> would be trivially simple, but because of these merged cells, we will have to write quite a lot of code to get them in a format that we can actually use.
+</p>
+<section id="extracting-the-tables-using-docxtractr" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-the-tables-using-docxtractr">
+Extracting the tables using {docxtractr}
+</h2>
+<p>
+<code>{docxtractr}</code> has a very handy function that gets all the tables from a Word document and puts them into a list (it’s also possible to extract other stuff like comments). Let’s start by loading <code>{dplyr}</code> (for the rest of the functions, I’ll use the <code>package::function()</code> notation to make it clear where the functions come from):
+</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<p>
+Let’s now read the document using <code>{docxtractr}</code>:
+</p>
+<pre class="r"><code>doc_raw &lt;- docxtractr::read_docx("report.docx")</code></pre>
+<p>
+And let’s get all the tables:
+</p>
+<pre class="r"><code>list_tables &lt;- docxtractr::docx_extract_all_tbls(doc_raw)</code></pre>
+<p>
+Let’s now take a look at the second element of the list, which corresponds to the second table (I’m starting with the second table because it’s the smallest of the two):
+</p>
+<pre class="r"><code>table_1 &lt;- list_tables[[1]] %&gt;%
+  janitor::clean_names()
+
+table_2 &lt;- list_tables[[2]] %&gt;%
+  janitor::clean_names()
+
+table_2</code></pre>
+<pre><code>## # A tibble: 8 × 11
+##   company            x2020 x2021 x2022 na    na_2  na_3  na_4  na_5  na_6  na_7 
+##   &lt;chr&gt;              &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 ""                 M     F     Total M     F     Total M     F     Total &lt;NA&gt; 
+## 2 "Luxembourg branc… Work… 92    124   210   87    129   216   99    129   228  
+## 3 ""                 Mana… 22    81    103   28    81    109   26    85    112  
+## 4 ""                 Assi… 1     0     10    1     0     1     1     0     1    
+## 5 ""                 Dire… 3     1     4     0     0     0     0     1     0    
+## 6 "External consult… 38    55    95    35    64    99    42    70    112   &lt;NA&gt; 
+## 7 "Statisticians"    0     0     0     0     0     0     0     0     0     &lt;NA&gt; 
+## 8 "Total"            156   263   419   151   274   425   168   285   453   &lt;NA&gt;</code></pre>
+<p>
+As you can see, because of the merged cells, the rows are not all aligned with the columns. So we need to split the table, and treat the two parts separately. I’m starting with the part of the table where the rows are correctly aligned with the columns. This is just a matter of renaming some columns, and converting the numbers (that are represented as characters) into <code>numeric</code>s:
+</p>
+<pre class="r"><code>table_2_1 &lt;- table_2 %&gt;%
+  select(-company) %&gt;%
+  filter(!is.na(na_7)) %&gt;%
+  purrr::set_names(
+    c("worker_type",
+      "m_2020",
+      "f_2020",
+      "t_2020",
+      "m_2021",
+      "f_2021",
+      "t_2021",
+      "m_2022",
+      "f_2022",
+      "t_2022"
+      )
+    ) %&gt;%
+  mutate(across(!starts_with("worker"),
+                as.numeric))
+
+table_2_1</code></pre>
+<pre><code>## # A tibble: 4 × 10
+##   worker_type m_2020 f_2020 t_2020 m_2021 f_2021 t_2021 m_2022 f_2022 t_2022
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Workers         92    124    210     87    129    216     99    129    228
+## 2 Managers        22     81    103     28     81    109     26     85    112
+## 3 Assistants       1      0     10      1      0      1      1      0      1
+## 4 Directors        3      1      4      0      0      0      0      1      0</code></pre>
+<p>
+Let’s now deal with the second part of the table. This is the part of the table where the rows were not aligned with the columns, due to the merged cells. The operations are essentially the same as before, the difference is that we need to remove a different column (here we remove <code>na_7</code>, before it was <code>company</code>):
+</p>
+<pre class="r"><code>table_2_2 &lt;- table_2 %&gt;%
+  filter(is.na(na_7)) %&gt;%
+  select(-na_7) %&gt;%
+  rename(worker_type = company) %&gt;%
+  filter(worker_type != "") %&gt;%
+  purrr::set_names(
+           c("worker_type",
+             "m_2020",
+             "f_2020",
+             "t_2020",
+             "m_2021",
+             "f_2021",
+             "t_2021",
+             "m_2022",
+             "f_2022",
+             "t_2022"
+             )
+         ) %&gt;%
+  mutate(across(!starts_with("worker"),
+                as.numeric))
+
+table_2_2</code></pre>
+<pre><code>## # A tibble: 3 × 10
+##   worker_type     m_2020 f_2020 t_2020 m_2021 f_2021 t_2021 m_2022 f_2022 t_2022
+##   &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 External consu…     38     55     95     35     64     99     42     70    112
+## 2 Statisticians        0      0      0      0      0      0      0      0      0
+## 3 Total              156    263    419    151    274    425    168    285    453</code></pre>
+<p>
+I didn’t comment the operations, but if you’re following along, take some time to see what each line does.
+</p>
+<p>
+Now we can bind the rows and we end up with the table from the Word document as a flat and easy to manipulate data frame:
+</p>
+<pre class="r"><code>table_2_clean &lt;- bind_rows(
+  table_2_1,
+  table_2_2
+)
+
+table_2_clean</code></pre>
+<pre><code>## # A tibble: 7 × 10
+##   worker_type     m_2020 f_2020 t_2020 m_2021 f_2021 t_2021 m_2022 f_2022 t_2022
+##   &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Workers             92    124    210     87    129    216     99    129    228
+## 2 Managers            22     81    103     28     81    109     26     85    112
+## 3 Assistants           1      0     10      1      0      1      1      0      1
+## 4 Directors            3      1      4      0      0      0      0      1      0
+## 5 External consu…     38     55     95     35     64     99     42     70    112
+## 6 Statisticians        0      0      0      0      0      0      0      0      0
+## 7 Total              156    263    419    151    274    425    168    285    453</code></pre>
+<p>
+All of this because of these merged cells! This may seem like a lot of work, but imagine that you need to check 50 such tables. You could put all the previous operations into a function and then simply apply that function over all the tables (which is exactly what I did at my job). So you end up with 50 cleaned tables in a matter of seconds. Now let’s not forget our original objective, we wanted to recompute the totals to check if everything was alright. In the operations below I remove the columns that represent the totals and remove the row with the grand totals as well. I then simply recompute the totals:
+</p>
+<pre class="r"><code>table_2_totals &lt;- table_2_clean %&gt;%
+  select(-starts_with("t_")) %&gt;%
+  filter(worker_type != "Total") %&gt;%
+  mutate(
+    t_2020 = m_2020 + f_2020,
+    t_2021 = m_2021 + f_2021,
+    t_2022 = m_2022 + f_2022,
+    ) %&gt;%
+  select(
+    worker_type,
+    m_2020,
+    f_2020,
+    t_2020,
+    m_2021,
+    f_2021,
+    t_2021,
+    m_2022,
+    f_2022,
+    t_2022,
+    ) %&gt;%
+  janitor::adorn_totals()</code></pre>
+<p>
+We can now compare both data frames and see if there were mistakes:
+</p>
+<pre class="r"><code>table_2_clean == table_2_totals</code></pre>
+<pre><code>##      worker_type m_2020 f_2020 t_2020 m_2021 f_2021 t_2021 m_2022 f_2022 t_2022
+## [1,]        TRUE   TRUE   TRUE  FALSE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE
+## [2,]        TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE  FALSE
+## [3,]        TRUE   TRUE   TRUE  FALSE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE
+## [4,]        TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE  FALSE
+## [5,]        TRUE   TRUE   TRUE  FALSE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE
+## [6,]        TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE
+## [7,]        TRUE   TRUE  FALSE  FALSE   TRUE   TRUE   TRUE   TRUE   TRUE   TRUE</code></pre>
+<p>
+We do see a bunch of <code>FALSE</code> statements, so we need to check those! This is where some typos where found.
+</p>
+<p>
+Let’s now deal with table 1. The way we will handle this one will be very similar to the one before. It’s just that we have subtotals to deal with as well.
+</p>
+<pre class="r"><code>table_1</code></pre>
+<pre><code>## # A tibble: 32 × 8
+##    by_department   fte        persons na    na_2  na_3  na_4  na_5 
+##    &lt;chr&gt;           &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 ""              M          F       Total M     F     Total &lt;NA&gt; 
+##  2 "Dep A"         Workers    12,30   33,40 55,70 13    36    59   
+##  3 ""              Managers   3,80    19,90 15,70 4     19    19   
+##  4 ""              Assistants 0,00    0,00  0,00  0     0     0    
+##  5 ""              Directors  0,20    0,00  0,20  1     0     1    
+##  6 "Total – Dep A" 26,30      45,30   71,60 28,00 51,00 79,00 &lt;NA&gt; 
+##  7 "Dep B"         Workers    31,80   39,60 71,40 32    41    73   
+##  8 ""              Managers   3,00    13,50 16,50 3     15    18   
+##  9 ""              Assistants 0,00    0,00  0,00  0     0     0    
+## 10 ""              Directors  0,20    0,20  0,40  1     1     2    
+## # … with 22 more rows</code></pre>
+<p>
+Here as well, we have a problem with merged cells. But only the rows with the totals are affected. So just like before, we can split that into two tables and deal with the two parts separately:
+</p>
+<pre class="r"><code>table_1_1 &lt;- table_1 %&gt;%
+  filter(!grepl("(t|T)otal", by_department),
+         fte != "M") %&gt;%
+  purrr::set_names(
+           c("department",
+             "worker_type",
+             "m_fte",
+             "f_fte",
+             "t_fte",
+             "m_hc",
+             "f_hc",
+             "t_hc"
+             )
+         ) %&gt;%
+  mutate(department = ifelse(department == "",
+                              NA,
+                              department)) %&gt;%
+  tidyr::fill(department, .direction = "down") %&gt;%
+  mutate(across(contains("fte"),
+                \(x)(gsub(pattern = ",", replacement = ".", x = x))),
+         across(-c("department", "worker_type"),
+                as.numeric)) %&gt;%
+  as.data.frame()</code></pre>
+<p>
+Here again, it’s really worth it to take your time going through all the different commands.
+</p>
+<p>
+Let’s now clean the totals:
+</p>
+<pre class="r"><code>table_1_2 &lt;- table_1 %&gt;%
+  filter(grepl("(t|T)otal", by_department),
+         fte != "M") %&gt;%
+  select(by_department, na_5, everything()) %&gt;%
+  purrr::set_names(
+           c("department",
+             "worker_type",
+             "m_fte",
+             "f_fte",
+             "t_fte",
+             "m_hc",
+             "f_hc",
+             "t_hc"
+             )
+         ) %&gt;%
+  tidyr::fill(department, .direction = "down") %&gt;%
+  mutate(across(-c("department", "worker_type"),
+                \(x)(gsub(pattern = ",", replacement = ".", x = x))),
+         across(-c("department", "worker_type"),
+                as.numeric)) %&gt;%
+  as.data.frame()</code></pre>
+<p>
+Finally, we can bind the rows and we end up with a clean data frame:
+</p>
+<pre class="r"><code>table_1 &lt;- bind_rows(
+  table_1_1,
+  table_1_2
+)
+
+table_1</code></pre>
+<pre><code>##       department worker_type m_fte  f_fte  t_fte m_hc f_hc t_hc
+## 1          Dep A     Workers  12.3  33.40  55.70   13   36   59
+## 2          Dep A    Managers   3.8  19.90  15.70    4   19   19
+## 3          Dep A  Assistants   0.0   0.00   0.00    0    0    0
+## 4          Dep A   Directors   0.2   0.00   0.20    1    0    1
+## 5          Dep B     Workers  31.8  39.60  71.40   32   41   73
+## 6          Dep B    Managers   3.0  13.50  16.50    3   15   18
+## 7          Dep B  Assistants   0.0   0.00   0.00    0    0    0
+## 8          Dep B   Directors   0.2   0.20   0.40    1    1    2
+## 9          Dep C     Workers  19.0  24.20  43.20   20   26   46
+## 10         Dep C    Managers   1.0   8.95   9.95    1   11   12
+## 11         Dep C  Assistants   0.0   0.00   0.00    0    0    0
+## 12         Dep C   Directors   0.0   0.00   0.00    0    0    0
+## 13         Dep D     Workers   7.5   5.00  12.50    8    5   13
+## 14         Dep D    Managers   0.5   1.60   2.10    1    2    3
+## 15         Dep D  Assistants   1.0   0.00   1.60    1    0    1
+## 16         Dep D   Directors   0.4   0.00   0.40    1    0    1
+## 17         Dep E     Workers  11.8  13.75  27.55   14   16   30
+## 18         Dep E    Managers  16.0  38.20  54.20   17   42   59
+## 19         Dep E  Assistants   0.0   0.00   0.00    0    0    0
+## 20         Dep E   Directors   0.0   0.00   0.00    0    0    0
+## 21         Dep F     Workers   0.2   0.00   0.20    1    0    1
+## 22         Dep F    Managers   0.0   0.00   0.00    0    0    0
+## 23         Dep F  Assistants   0.0   0.00   0.00    0    0    0
+## 24         Dep F   Directors   0.2   0.00   0.20    1    0    1
+## 25 Total – Dep A        &lt;NA&gt;  26.3  45.30  71.60   28   51   79
+## 26 Total – Dep B        &lt;NA&gt;  35.0  53.30  98.30   36   57   93
+## 27 Total – Dep C        &lt;NA&gt;  20.0  33.15  53.15   21   37   58
+## 28 Total – Dep D        &lt;NA&gt;   9.4   6.60  16.00   11    7   18
+## 29 Total – Dep E        &lt;NA&gt;  29.8  51.95  81.75   31   58   89
+## 30 Total – Dep F        &lt;NA&gt;   1.0   1.00   0.20    1    1    1
+## 31   Grand total        &lt;NA&gt; 101.5 195.40 316.90  129  216  345</code></pre>
+<p>
+Again, let’s not forget our objective: recomputing the totals to see if everything is alright. So because we need each sub-total, one per department, we will simply group by departments and use <code>janitor::adorn_totals()</code>. But <code>janitor::adorn_totals()</code> does not work on grouped data frames. So instead I use <code>group_nest()</code> to create a tibble with a list column, and then map <code>janitor::adorn_totals</code>:
+</p>
+<pre class="r"><code>table_1_subtotals &lt;- table_1 %&gt;%
+  filter(!grepl("(t|T)otal", department)) %&gt;%
+  group_nest(department) %&gt;%
+  mutate(data = purrr::map(data, janitor::adorn_totals)) %&gt;%
+  tidyr::unnest(cols = data) %&gt;%
+  arrange(department) %&gt;%
+  as.data.frame()</code></pre>
+<p>
+Ok so in the table above I have the subtotals per department. Now, I need to compute the grand total:
+</p>
+<pre class="r"><code>table_1_total &lt;- table_1_subtotals %&gt;%
+  filter(grepl("Total", worker_type)) %&gt;%
+  janitor::adorn_totals()</code></pre>
+<p>
+Now I just need to bind the grand total to the table from before:
+</p>
+<pre class="r"><code>table_1_clean &lt;- bind_rows(
+  table_1_subtotals,
+  filter(
+    table_1_total,
+    department == "Total")
+)
+
+table_1_clean</code></pre>
+<pre><code>##    department worker_type m_fte  f_fte  t_fte m_hc f_hc t_hc
+## 1       Dep A     Workers  12.3  33.40  55.70   13   36   59
+## 2       Dep A    Managers   3.8  19.90  15.70    4   19   19
+## 3       Dep A  Assistants   0.0   0.00   0.00    0    0    0
+## 4       Dep A   Directors   0.2   0.00   0.20    1    0    1
+## 5       Dep A       Total  16.3  53.30  71.60   18   55   79
+## 6       Dep B     Workers  31.8  39.60  71.40   32   41   73
+## 7       Dep B    Managers   3.0  13.50  16.50    3   15   18
+## 8       Dep B  Assistants   0.0   0.00   0.00    0    0    0
+## 9       Dep B   Directors   0.2   0.20   0.40    1    1    2
+## 10      Dep B       Total  35.0  53.30  88.30   36   57   93
+## 11      Dep C     Workers  19.0  24.20  43.20   20   26   46
+## 12      Dep C    Managers   1.0   8.95   9.95    1   11   12
+## 13      Dep C  Assistants   0.0   0.00   0.00    0    0    0
+## 14      Dep C   Directors   0.0   0.00   0.00    0    0    0
+## 15      Dep C       Total  20.0  33.15  53.15   21   37   58
+## 16      Dep D     Workers   7.5   5.00  12.50    8    5   13
+## 17      Dep D    Managers   0.5   1.60   2.10    1    2    3
+## 18      Dep D  Assistants   1.0   0.00   1.60    1    0    1
+## 19      Dep D   Directors   0.4   0.00   0.40    1    0    1
+## 20      Dep D       Total   9.4   6.60  16.60   11    7   18
+## 21      Dep E     Workers  11.8  13.75  27.55   14   16   30
+## 22      Dep E    Managers  16.0  38.20  54.20   17   42   59
+## 23      Dep E  Assistants   0.0   0.00   0.00    0    0    0
+## 24      Dep E   Directors   0.0   0.00   0.00    0    0    0
+## 25      Dep E       Total  27.8  51.95  81.75   31   58   89
+## 26      Dep F     Workers   0.2   0.00   0.20    1    0    1
+## 27      Dep F    Managers   0.0   0.00   0.00    0    0    0
+## 28      Dep F  Assistants   0.0   0.00   0.00    0    0    0
+## 29      Dep F   Directors   0.2   0.00   0.20    1    0    1
+## 30      Dep F       Total   0.4   0.00   0.40    2    0    2
+## 31      Total           - 108.9 198.30 311.80  119  214  339</code></pre>
+<p>
+We’re almost done! We now need to make sure that the rows are in the same order across the two tables. So we need to transform the original table from the Word document a little bit:
+</p>
+<pre class="r"><code>table_1 &lt;- table_1 %&gt;%
+  mutate(worker_type = ifelse(is.na(worker_type),
+                              "Total",
+                              worker_type)) %&gt;%
+  mutate(department = stringr::str_remove_all(department, "Total – "),
+         worker_type = ifelse(department == "Grand total",
+                              "-",
+                              worker_type),
+         department = ifelse(department == "Grand total",
+                             "Total",
+                             department))</code></pre>
+<p>
+We can now order them the same way, and finally compare them!
+</p>
+<pre class="r"><code>arrange(table_1, worker_type) == arrange(table_1_clean, worker_type)</code></pre>
+<pre><code>##       department worker_type m_fte f_fte t_fte  m_hc  f_hc  t_hc
+##  [1,]       TRUE        TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [2,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [3,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [4,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [5,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [6,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [7,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [8,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [9,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [10,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [11,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [12,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [13,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [14,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [15,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [16,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [17,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [18,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [19,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [20,]       TRUE        TRUE FALSE FALSE FALSE FALSE FALSE  TRUE
+## [21,]       TRUE        TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+## [22,]       TRUE        TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+## [23,]       TRUE        TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+## [24,]       TRUE        TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [25,]       TRUE        TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+## [26,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [27,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [28,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [29,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [30,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [31,]       TRUE        TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+<p>
+Let’s see where all the <code>FALSE</code>s are:
+</p>
+<pre class="r"><code>arrange(table_1, worker_type)</code></pre>
+<pre><code>##    department worker_type m_fte  f_fte  t_fte m_hc f_hc t_hc
+## 1       Total           - 101.5 195.40 316.90  129  216  345
+## 2       Dep A  Assistants   0.0   0.00   0.00    0    0    0
+## 3       Dep B  Assistants   0.0   0.00   0.00    0    0    0
+## 4       Dep C  Assistants   0.0   0.00   0.00    0    0    0
+## 5       Dep D  Assistants   1.0   0.00   1.60    1    0    1
+## 6       Dep E  Assistants   0.0   0.00   0.00    0    0    0
+## 7       Dep F  Assistants   0.0   0.00   0.00    0    0    0
+## 8       Dep A   Directors   0.2   0.00   0.20    1    0    1
+## 9       Dep B   Directors   0.2   0.20   0.40    1    1    2
+## 10      Dep C   Directors   0.0   0.00   0.00    0    0    0
+## 11      Dep D   Directors   0.4   0.00   0.40    1    0    1
+## 12      Dep E   Directors   0.0   0.00   0.00    0    0    0
+## 13      Dep F   Directors   0.2   0.00   0.20    1    0    1
+## 14      Dep A    Managers   3.8  19.90  15.70    4   19   19
+## 15      Dep B    Managers   3.0  13.50  16.50    3   15   18
+## 16      Dep C    Managers   1.0   8.95   9.95    1   11   12
+## 17      Dep D    Managers   0.5   1.60   2.10    1    2    3
+## 18      Dep E    Managers  16.0  38.20  54.20   17   42   59
+## 19      Dep F    Managers   0.0   0.00   0.00    0    0    0
+## 20      Dep A       Total  26.3  45.30  71.60   28   51   79
+## 21      Dep B       Total  35.0  53.30  98.30   36   57   93
+## 22      Dep C       Total  20.0  33.15  53.15   21   37   58
+## 23      Dep D       Total   9.4   6.60  16.00   11    7   18
+## 24      Dep E       Total  29.8  51.95  81.75   31   58   89
+## 25      Dep F       Total   1.0   1.00   0.20    1    1    1
+## 26      Dep A     Workers  12.3  33.40  55.70   13   36   59
+## 27      Dep B     Workers  31.8  39.60  71.40   32   41   73
+## 28      Dep C     Workers  19.0  24.20  43.20   20   26   46
+## 29      Dep D     Workers   7.5   5.00  12.50    8    5   13
+## 30      Dep E     Workers  11.8  13.75  27.55   14   16   30
+## 31      Dep F     Workers   0.2   0.00   0.20    1    0    1</code></pre>
+<p>
+We see that the totals for department A and F are all wrong, and some others for other departments as well. Obviously the grand total is this completely wrong!
+</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">
+Conclusion
+</h2>
+<p>
+If this looked complicated, let me assure you that, yes, it was. That’s quite typical with tasks like these: if the data is not in a tidy format, you really have to type a lot of code to make it tidy. But the advantage now is that I could put all this code into two functions, and apply them to as many tables as I need. This is what I did, and what I will be doing in the future as well. Now that the code is written, I can simply keep applying it to future reports that use the same table format.
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-07-13">
+
+<title>Reproducible data science with Nix, part 1 – what is Nix – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Reproducible data science with Nix, part 1 – what is Nix</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">nix</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 13, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/nix.jpg" width="100%">
+</p>
+</div>
+<p>
+This is the first of a (hopefully) series of posts about Nix. Disclaimer: I’m a super beginner with Nix. So this series of blog posts is more akin to notes that I’m taking while learning than a super detailed tutorial. So if you’re a Nix expert and read something stupid in here, that’s normal. This post is going to focus on R (obviously) but the ideas are applicable to any programming language.
+</p>
+<p>
+To ensure that a project is reproducible you need to deal with at least four things:
+</p>
+<ul>
+<li>
+Make sure that the required/correct version of R (or any other language) is installed;
+</li>
+<li>
+Make sure that the required versions of packages are installed;
+</li>
+<li>
+Make sure that system dependencies are installed (for example, you’d need a working Java installation to install the <code>{rJava}</code> R package on Linux);
+</li>
+<li>
+Make sure that you can install all of this for the hardware you have on hand.
+</li>
+</ul>
+<p>
+For the three first bullet points, the consensus seems to be a mixture of Docker to deal with system dependencies, <code>{renv}</code> for the packages (or <code>{groundhog}</code>, or a fixed CRAN snapshot like those <a href="https://packagemanager.posit.co/__docs__/user/get-repo-url/#ui-frozen-urls">Posit provides</a>) and the <a href="https://github.com/r-lib/rig">R installation manager</a> to install the correct version of R (unless you use a Docker image as base that already ships the required version by default). As for the last point, the only way out is to be able to compile the software for the target architecture. There’s a lot of moving pieces, and knowledge that you need to know and I even wrote a whole 522 pages <a href="https://raps-with-r.dev/">book about all of this</a>.
+</p>
+<p>
+But it turns out that this is not the only solution. Docker + <code>{renv}</code> (or some other way to deal with packages) is likely the most popular way to ensure reproducibility of your projects, but there are other tools to achieve this. One such tool is called Nix.
+</p>
+<p>
+Nix is a package manager for Linux distributions, macOS and apparently it even works on Windows if you enable WSL2. What’s a package manager? If you’re not a Linux user, you may not be aware. Let me explain it this way: in R, if you want to install a package to provide some functionality not included with a vanilla installation of R, you’d run this:
+</p>
+<pre><code>install.packages("dplyr")</code></pre>
+<p>
+It turns out that Linux distributions, like Ubuntu for example, work in a similar way, but for software that you’d usually install using an installer (at least on Windows). For example you could install Firefox on Ubuntu using:
+</p>
+<pre><code>sudo apt-get install firefox</code></pre>
+<p>
+(there’s also graphical interfaces that make this process “more user-friendly”). In Linux jargon, <code>packages</code> are simply what normies call software (or I guess it’s all “apps” these days). These packages get downloaded from so-called repositories (think of CRAN, the repository of R packages) but for any type of software that you might need to make your computer work: web browsers, office suites, multimedia software and so on.
+</p>
+<p>
+So Nix is just another package manager that you can use to install software.
+</p>
+<p>
+But what interests us is not using Nix to install Firefox, but instead to install R and the R packages that we require for our analysis (or any other programming language that we need). But why use Nix instead of the usual ways to install software on our operating systems?
+</p>
+<p>
+The first thing that you should know is that Nix’s repository, <code>nixpkgs</code>, is huge. Humongously huge. As I’m writing these lines, <a href="https://search.nixos.org/packages">there’s more than 80’000 pieces of software available</a>, and the <em>entirety of CRAN</em> is also available through <code>nixpkgs</code>. So instead of installing R as you usually do and then use <code>install.packages()</code> to install packages, you could use Nix to handle everything. But still, why use Nix at all?
+</p>
+<p>
+Nix has an interesting feature: using Nix, it is possible to install software in (relatively) isolated environments. So using Nix, you can install as many versions of R and R packages that you need. Suppose that you start working on a new project. As you start the project, with Nix, you would install a project-specific version of R and R packages that you would only use for that particular project. If you switch projects, you’d switch versions of R and R packages. If you are familiar with <code>{renv}</code>, you should see that this is exactly the same thing: the difference is that not only will you have a project-specific library of R packages, you will also have a project-specific R version. So if you start a project now, you’d have R version 4.2.3 installed (the latest version available in <code>nixpkgs</code> but not the latest version available, more on this later), with the accompagnying versions of R packages, for as long as the project lives (which can be a long time). If you start a project next year, then that project will have its own R, maybe R version 4.4.2 or something like that, and the set of required R packages that would be current at that time. This is because Nix always installs the software that you need in separate, (isolated) environments on your computer. So you can define an environment for one specific project.
+</p>
+<p>
+But Nix even goes even further: not only can you install R and R packages using Nix (in isolated) project-specific environments, Nix even installs the required system dependencies. So for example if I need <code>{rJava}</code>, Nix will make sure to install the correct version of Java as well, always in that project-specific environment (so if you already some Java version installed on your system, there won’t be any interference).
+</p>
+<p>
+What’s also pretty awesome, is that you can use a specific version of <code>nixpkgs</code> to <em>always</em> get <em>exactly</em> the same versions of <strong>all</strong> the software whenever you build that environment to run your project’s code. The environment gets defined in a simple plain-text file, and anyone using that file to build the environment will get exactly, byte by byte, the same environment as you when you initially started the project. And this also regardless of the operating system that is used.
+</p>
+<p>
+So let me illustrate this. After <a href="https://nix.dev/tutorials/install-nix">installing Nix</a>, I can define an environment by writing a file called <code>default.nix</code> that looks like this:
+</p>
+<pre><code>{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/e11142026e2cef35ea52c9205703823df225c947.tar.gz") {} }:
+
+with pkgs;
+
+let
+  my-pkgs = rWrapper.override {
+    packages = with rPackages; [ dplyr ggplot2 R];
+  };
+in
+mkShell {
+  buildInputs = [my-pkgs];
+}</code></pre>
+<p>
+Now this certainly looks complicated! And it is. The entry cost to Nix is quite high, because, actually, Nix is more than a package manager. It is also a programming language, and this programming language gets used to configure environments. I won’t go too much into detail, but you’ll see in the first line that I’m using a specific version of <code>nixpkgs</code> that gets downloaded directly from Github. This means that all the software that I will install with that specific version of <code>nixpkgs</code> will always install the same software. This is what ensures that R and R packages are versioned. Basically, by using a specific version of <code>nixpkgs</code>, I pin all the versions of all the software that this particular version of Nix will <em>ever</em> install. I then define a variable called <code>my-pkgs</code> which lists the packages I want to install (<code>{dplyr}</code>, <code>{ggplot2}</code> and <code>R</code>).
+</p>
+<p>
+By the way, this may look like it would take a lot of time to install because, after all, you need to install R, R packages and underlying system dependencies, but thankfully there is an online cache of binaries that gets automatically used by Nix (<a href="https://cache.nixos.org/">cache.nixos.org</a>) for fast installations. If binaries are not available, sources get compiled.
+</p>
+<p>
+I can now create an environment with these exact specifications using (in the directory where <code>default.nix</code> is):
+</p>
+<pre><code>nix-build</code></pre>
+<p>
+or I could use the R version from this environment to run some arbitrary code:
+</p>
+<pre><code>nix-shell /home/renv/default.nix --run "Rscript -e 'sessionInfo()'" &gt;&gt; /home/renv/sessionInfo.txt</code></pre>
+<p>
+(assuming my <code>default.nix</code> file is available in the <code>/home/renv/</code> directory). This would build the environment on the fly and run <code>sessionInfo()</code> inside of it. Here are the contents of this <code>sessionInfo.txt</code> file:
+</p>
+<pre><code>R version 4.2.3 (2023-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+Matrix products: default
+BLAS/LAPACK: /nix/store/pbfs53rcnrzgjiaajf7xvwrfqq385ykv-blas-3/lib/libblas.so.3
+
+locale:
+[1] C
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.2.3</code></pre>
+<p>
+This looks like any other output of the <code>sessionInfo()</code> function, but there is something quite unusual: the <code>BLAS/LAPACK</code> line:
+</p>
+<pre><code>BLAS/LAPACK: /nix/store/pbfs53rcnrzgjiaajf7xvwrfqq385ykv-blas-3/lib/libblas.so.3</code></pre>
+<p>
+BLAS is a library that R uses for linear algebra, matrix multiplication and vector operations. R usually ships with its own version of BLAS and LAPACK, but it’s also possible to use external ones. Here, we see that the path to the shared object <code>libblas.so.3</code> is somewhere in <code>/nix/store/….</code>. <code>/nix/store/</code> is where all the software gets installed. The long chain of seemingly random characters is a hash, essentially the unique identifier of that particular version of BLAS. This means that unlike Docker, if you’re using Nix you are also certain than these types of dependencies, that may have an impact on your results, also get handled properly, and that the exact same version you used will keep getting installed in the future. Docker images also evolve, and even if you use an LTS release of Ubuntu as a base, the underlying system packages will evolve through time as well. And there will be a point in time where this release will be abandoned (LTS releases receive 5 years of support), so if you need to rebuild a Docker images based on an LTS that doesn’t get supported anymore, you’re out of luck.
+</p>
+<p>
+If you don’t want to install Nix just yet on your computer, you should know that there’s also a complete operating system called NixOS, that uses Nix as its package manager, and that there are Docker images that use NixOS as a base. So this means that you could use such an image and then build the environment (that is 100% completely reproducible) inside and run a container that will always produce the same output. To see an example of this, check out this <a href="https://github.com/b-rodrigues/nix_experiments/tree/master">Github repo</a>. I’m writing a Dockerfile as I usually do, but actually I could even use Nix to define the Docker image for me, it’s that powerful!
+</p>
+<p>
+Nix seems like a very powerful tool to me. But there are some “issues”:
+</p>
+<ul>
+<li>
+As I stated above, the entry cost is quite high, because Nix is not “just a tool”, it’s a complete programming language that can even run pipelines, so you could technically even replace something like <code>{targets}</code> with it;
+</li>
+<li>
+If you need to install specific versions of R packages, that are not pinned to dates, then Nix is not for you. Nix will always create a coherent environment with R and R packages that go together for a particular release of <code>nixpkgs</code>. If for some reason you need a very old version of <code>{ggplot2}</code> but a much more recent version of <code>{dplyr}</code>, using Nix won’t make this any easier than other methods;
+</li>
+<li>
+There is no easy way (afaik) to find the version of <code>nixpkgs</code> that you need to download to find the version of R that you may need; <strong>UPDATE</strong>: turns out that there is such a <a href="https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&amp;package=r">simple tool</a>, thanks to <span class="citation"><span class="citation" data-cites="shane">@shane</span></span><span class="citation"><span class="citation" data-cites="hachyderm.io">@hachyderm.io</span></span> for the telling me!
+</li>
+<li>
+R packages (and I guess others for other programming languages as well) that are available on the stable channel of <code>nixpkgs</code> lag a bit behind their counterparts on CRAN. These usually all get updated whenever there’s a new release of R. Currently however, R is at version 4.2.3, but R should be at version 4.3.1 on the stable branch of <code>nixpkgs</code>. This can sometimes happen due to various reasons (there are actual human beings behind this that volunteer their time and they also have a life). There is however an “unstable” <code>nixpkgs</code> channel that contains bleeding edge versions of R packages (and R itself) if you really need the latest versions of packages (don’t worry about the “unstable” label, from my understanding this simply means that package have not been thoroughly tested yet, but is still pretty much rock-solid);
+</li>
+<li>
+If you need something that is not on CRAN (or Bioconductor) then it’s still possible to use Nix to install these packages, but you’ll have to perform some manual configuration.
+</li>
+</ul>
+<p>
+I will keep exploring Nix, and this is essentially my todo:
+</p>
+<ul>
+<li>
+using my environment that I installed with Nix to work interactively;
+</li>
+<li>
+write some tool that lets me specify an R version, a list of packages and it generates a <code>default.nix</code> file automagically (ideally it should also deal with packages only available on Github);
+</li>
+<li>
+????
+</li>
+<li>
+Profit!
+</li>
+</ul>
+<section id="resources" class="level3">
+<h3 class="anchored" data-anchor-id="resources">
+Resources
+</h3>
+<p>
+Here are some of the resources I’ve been using:
+</p>
+<ul>
+<li>
+<a href="https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs">nix.dev tutorials</a>
+</li>
+<li>
+<a href="https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html">INRIA’s Nix tutorial</a>
+</li>
+<li>
+<a href="https://nixos.org/guides/nix-pills/">Nix pills</a>
+</li>
+<li>
+<a href="https://github.com/nix-community/nix-data-science">Nix for Data Science</a>
+</li>
+<li>
+<a href="https://christitus.com/nixos-explained/">NixOS explained</a>: NixOS is an entire Linux distribution that uses Nix as its package manager.
+</li>
+<li>
+<a href="https://rgoswami.me/posts/nix-r-devtools/">Blog post: Nix with R and devtools</a>
+</li>
+<li>
+<a href="https://rgoswami.me/posts/rethinking-r-nix/">Blog post: Statistical Rethinking and Nix</a>
+</li>
+<li>
+<a href="https://lazamar.github.io/download-specific-package-version-with-nix/">Blog post: Searching and installing old versions of Nix packages</a>
+</li>
+</ul>
+</section>
+<section id="thanks" class="level3">
+<h3 class="anchored" data-anchor-id="thanks">
+Thanks
+</h3>
+<p>
+Many thanks to <a href="https://github.com/jbedo">Justin Bedő</a>, maintainer of the R package for Nix, for answering all my questions on Nix!
+</p>
+<p>
+</p>
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

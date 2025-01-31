@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-01-12">
+
+<title>MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum? – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">proramming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 12, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/sisyphus.jpg" width="80%" height="auto">
+</p>
+</div>
+<section id="you-expect-me-to-read-this-long-ass-blog-post" class="level2">
+<h2 class="anchored" data-anchor-id="you-expect-me-to-read-this-long-ass-blog-post">
+You expect me to read this long ass blog post?
+</h2>
+<p>
+<em>If you’re too busy to read this blog post, know that I respect your time. The table below summarizes this blog post:</em>
+</p>
+<table class="table">
+<colgroup>
+<col width="70%">
+<col width="29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>
+Need
+</th>
+<th>
+Solution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>
+I want to start a project and make it reproducible.
+</td>
+<td>
+{renv} and Docker
+</td>
+</tr>
+<tr class="even">
+<td>
+There’s an old script laying around that I want to run.
+</td>
+<td>
+{groundhog} and Docker
+</td>
+</tr>
+<tr class="odd">
+<td>
+I want to work inside an environment that
+</td>
+<td>
+Docker and the Posit
+</td>
+</tr>
+<tr class="even">
+<td>
+enables me to run code in a reproducible way.
+</td>
+<td>
+CRAN mirror.
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+<em>But this table doesn’t show the whole picture, especially the issues with relying so much on Docker. So if you’re interesting in making science and your work reproducible and robust, my advice is that you stop doomscrolling on social media and keep on reading. If at the end of the blog post you think that this was a waste of time, just sent an insult my way, that’s ok.</em>
+</p>
+<p>
+I learnt last week that MRAN is going to get shutdown this year. For those of you that don’t know, MRAN was a CRAN mirror managed by Microsoft. What made MRAN stand out was the fact that Microsoft took daily snapshots of CRAN and it was thus possible to quite easily install old packages using the <code>{checkpoint}</code> package. This was a good thing for reproducibility, and for Windows and macOS, it was even possible to install binary packages, so no need to compile them from source.
+</p>
+<p>
+Last year I had the opportunity to teach a course on building reproducible analytical pipelines at the University of Luxembourg, and made my teaching material available as an ebook that you can find <a href="https://rap4mads.eu/">here</a>. I also wrote some blog posts about reproducibility and it looks like I will be continuing this trend for the forseeable future.
+</p>
+<p>
+So in this blog post I’m going to show what you, as an R user, can do to make your code reproducible now that MRAN is getting shutdown. MRAN is not the only option for reproducibility, and I’m going to present in this blog post everything I know about other options. So if you happen to know of some solution that I don’t discuss here, please leave a comment <a href="https://github.com/rbind/b-rodrigues.github.com/issues/5">here</a>. But this blog post is not just a tutorial. I will also discuss what I think is a major risk that is coming and what, maybe, we can do to avoid it.
+</p>
+</section>
+<section id="reproducibility-is-on-a-continuum" class="level2">
+<h2 class="anchored" data-anchor-id="reproducibility-is-on-a-continuum">
+Reproducibility is on a continuum
+</h2>
+<p>
+Reproducibility is on a continuum, and depending on the nature of your project different tools are needed. First, let’s understand what I mean by “reproducibility is on a continuum”. Let’s suppose that you have written a script that produces some output. Here is the list of everything that can influence the output (other than the mathematical algorithm running under the hood):
+</p>
+<ul>
+<li>
+Version of the programming language used;
+</li>
+<li>
+Versions of the packages/libraries of said programming language used;
+</li>
+<li>
+Operating System, and its version;
+</li>
+<li>
+Versions of the underlying system libraries (which often go hand in hand with OS version, but not necessarily).
+</li>
+<li>
+Hardware that you run all that software stack on.
+</li>
+</ul>
+<p>
+So by “reproducibility is on a continuum”, what I mean is that you could set up your project in a way that none, one, two, three, four or all of the preceding items are taken into consideration when making your project reproducible.
+</p>
+<p>
+There is, however, something else to consider. Before, I wrote “let’s suppose you have written a script”, which means that you actually have a script laying around that was written in a particular programming language, and which makes use of a known set of packages/libraries. So for example, if my script uses the following R packages:
+</p>
+<ul>
+<li>
+dplyr
+</li>
+<li>
+tidyr
+</li>
+<li>
+ggplot2
+</li>
+</ul>
+<p>
+I, obviously, know this list and if I want to make my script reproducible, I should take note of the versions of these 3 packages (and potentially of their own dependencies). However, what if you don’t know this set of packages that are used? This happens when you want to set up an environment that is frozen, and then distribute this environment. Developers will then all work on the same base environment, but you cannot possibly list all the packages that are going to be used because you have no idea what the developers will end up using (and remember that future you is included in these developers, and you should always try to be nice to future you).
+</p>
+<p>
+So these means that we have two scenarios:
+</p>
+<ul>
+<li>
+Scenario 1: I have a script (or several), and want to make sure that it will always produce the same output;
+</li>
+<li>
+Scenario 2: I don’t know what I (or my colleagues) will develop, but we want to use the same environment across the organization to develop and deploy data products.
+</li>
+</ul>
+<p>
+Turns out that the solutions to these two scenarios are different, but available in R, even though we won’t soon be able to count on MRAN anymore. HOWEVER! R won’t suffice for this job.
+</p>
+</section>
+<section id="scenario-1-making-a-script-reproducible" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-1-making-a-script-reproducible">
+Scenario 1: making a script reproducible
+</h2>
+<p>
+Ok, so let’s suppose that I want to make a script reproducible, or at least increase the probability that others (including future me) will be able to run this script and get the exact same output as I originally did. If you want to minimize the amount of time spent doing it, the minimum thing you should do is use <a href="https://rstudio.github.io/renv/articles/renv.html">{renv}</a>. <code>{renv}</code> allows you to create a file called <code>renv.lock</code>. You can then distribute this file to others alongside the code of your project, or the paper, data, whatever. Nothing else is required from you; if people have this file, they should be able to set up an environment that would closely mimic the one that was used to get the results originally (but ideally, you’d invest a bit more time to make your script run anywhere, for example by avoiding setting absolute paths that only exist on your machine).
+</p>
+<p>
+Let’s take a look at such an <code>renv.lock</code> file:
+</p>
+<details>
+<summary>
+Click me to see lock file
+</summary>
+<pre><code>{
+  "R": {
+    "Version": "4.2.1",
+    "Repositories": [
+      {
+        "Name": "CRAN",
+        "URL": "http://cran.rstudio.com"
+      }
+    ]
+  },
+  "Packages": {
+    "MASS": {
+      "Package": "MASS",
+      "Version": "7.3-58.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "762e1804143a332333c054759f89a706",
+      "Requirements": []
+    },
+    "Matrix": {
+      "Package": "Matrix",
+      "Version": "1.5-1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "539dc0c0c05636812f1080f473d2c177",
+      "Requirements": [
+        "lattice"
+      ]
+    },
+    "R6": {
+      "Package": "R6",
+      "Version": "2.5.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "470851b6d5d0ac559e9d01bb352b4021",
+      "Requirements": []
+    },
+    "RColorBrewer": {
+      "Package": "RColorBrewer",
+      "Version": "1.1-3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "45f0398006e83a5b10b72a90663d8d8c",
+      "Requirements": []
+    },
+    "cli": {
+      "Package": "cli",
+      "Version": "3.4.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "0d297d01734d2bcea40197bd4971a764",
+      "Requirements": []
+    },
+    "colorspace": {
+      "Package": "colorspace",
+      "Version": "2.0-3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "bb4341986bc8b914f0f0acf2e4a3f2f7",
+      "Requirements": []
+    },
+    "digest": {
+      "Package": "digest",
+      "Version": "0.6.29",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "cf6b206a045a684728c3267ef7596190",
+      "Requirements": []
+    },
+    "fansi": {
+      "Package": "fansi",
+      "Version": "1.0.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "83a8afdbe71839506baa9f90eebad7ec",
+      "Requirements": []
+    },
+    "farver": {
+      "Package": "farver",
+      "Version": "2.1.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "8106d78941f34855c440ddb946b8f7a5",
+      "Requirements": []
+    },
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "3.3.6",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "0fb26d0674c82705c6b701d1a61e02ea",
+      "Requirements": [
+        "MASS",
+        "digest",
+        "glue",
+        "gtable",
+        "isoband",
+        "mgcv",
+        "rlang",
+        "scales",
+        "tibble",
+        "withr"
+      ]
+    },
+    "glue": {
+      "Package": "glue",
+      "Version": "1.6.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e",
+      "Requirements": []
+    },
+    "gtable": {
+      "Package": "gtable",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "36b4265fb818f6a342bed217549cd896",
+      "Requirements": []
+    },
+    "isoband": {
+      "Package": "isoband",
+      "Version": "0.2.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "7ab57a6de7f48a8dc84910d1eca42883",
+      "Requirements": []
+    },
+    "labeling": {
+      "Package": "labeling",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "3d5108641f47470611a32d0bdf357a72",
+      "Requirements": []
+    },
+    "lattice": {
+      "Package": "lattice",
+      "Version": "0.20-45",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "b64cdbb2b340437c4ee047a1f4c4377b",
+      "Requirements": []
+    },
+    "lifecycle": {
+      "Package": "lifecycle",
+      "Version": "1.0.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "001cecbeac1cff9301bdc3775ee46a86",
+      "Requirements": [
+        "cli",
+        "glue",
+        "rlang"
+      ]
+    },
+    "magrittr": {
+      "Package": "magrittr",
+      "Version": "2.0.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "7ce2733a9826b3aeb1775d56fd305472",
+      "Requirements": []
+    },
+    "mgcv": {
+      "Package": "mgcv",
+      "Version": "1.8-40",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c6b2fdb18cf68ab613bd564363e1ba0d",
+      "Requirements": [
+        "Matrix",
+        "nlme"
+      ]
+    },
+    "munsell": {
+      "Package": "munsell",
+      "Version": "0.5.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "6dfe8bf774944bd5595785e3229d8771",
+      "Requirements": [
+        "colorspace"
+      ]
+    },
+    "nlme": {
+      "Package": "nlme",
+      "Version": "3.1-159",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "4a0b3a68f846cb999ff0e8e519524fbb",
+      "Requirements": [
+        "lattice"
+      ]
+    },
+    "pillar": {
+      "Package": "pillar",
+      "Version": "1.8.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "f2316df30902c81729ae9de95ad5a608",
+      "Requirements": [
+        "cli",
+        "fansi",
+        "glue",
+        "lifecycle",
+        "rlang",
+        "utf8",
+        "vctrs"
+      ]
+    },
+    "pkgconfig": {
+      "Package": "pkgconfig",
+      "Version": "2.0.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "01f28d4278f15c76cddbea05899c5d6f",
+      "Requirements": []
+    },
+    "purrr": {
+      "Package": "purrr",
+      "Version": "0.3.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "54842a2443c76267152eface28d9e90a",
+      "Requirements": [
+        "magrittr",
+        "rlang"
+      ]
+    },
+    "renv": {
+      "Package": "renv",
+      "Version": "0.16.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c9e8442ab69bc21c9697ecf856c1e6c7",
+      "Requirements": []
+    },
+    "rlang": {
+      "Package": "rlang",
+      "Version": "1.0.6",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "4ed1f8336c8d52c3e750adcdc57228a7",
+      "Requirements": []
+    },
+    "scales": {
+      "Package": "scales",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "906cb23d2f1c5680b8ce439b44c6fa63",
+      "Requirements": [
+        "R6",
+        "RColorBrewer",
+        "farver",
+        "labeling",
+        "lifecycle",
+        "munsell",
+        "rlang",
+        "viridisLite"
+      ]
+    },
+    "tibble": {
+      "Package": "tibble",
+      "Version": "3.1.8",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "56b6934ef0f8c68225949a8672fe1a8f",
+      "Requirements": [
+        "fansi",
+        "lifecycle",
+        "magrittr",
+        "pillar",
+        "pkgconfig",
+        "rlang",
+        "vctrs"
+      ]
+    },
+    "utf8": {
+      "Package": "utf8",
+      "Version": "1.2.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "c9c462b759a5cc844ae25b5942654d13",
+      "Requirements": []
+    },
+    "vctrs": {
+      "Package": "vctrs",
+      "Version": "0.5.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "970324f6572b4fd81db507b5d4062cb0",
+      "Requirements": [
+        "cli",
+        "glue",
+        "lifecycle",
+        "rlang"
+      ]
+    },
+    "viridisLite": {
+      "Package": "viridisLite",
+      "Version": "0.4.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "62f4b5da3e08d8e5bcba6cac15603f70",
+      "Requirements": []
+    },
+    "withr": {
+      "Package": "withr",
+      "Version": "2.5.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "c0e49a9760983e81e55cdd9be92e7182",
+      "Requirements": []
+    }
+  }
+}
+</code></pre>
+</details>
+<p>
+as you can see this file lists the R version that was used as well as the different libraries for a project. Versions of the libraries are also listed, where they came from (CRAN or Github for example) and these libraries’ requirements as well. So someone who wants to run the original script in a similar environment has all the info needed to do it. <code>{renv}</code> also provides a simple way to install all of this. Simply put the <code>renv.lock</code> file in the same folder as the original script and run <code>renv::restore()</code>, and the right packages with the right versions get automagically installed (and without interfering with your system-wide, already installed library of packages). The “only” difficulty that you might have is installing the right version of R. If this is a recent enough version of R, this shouldn’t be a problem, but installing old software might be difficult. For example installing R version 2.5 might, or might not, be possible depending on your operating system (I don’t like microsoft windows, but generally speaking it is quite easy to install very old software on it, which in the case of Linux distros can be quite difficult. So I guess on windows this could work more easily). Then there’s also the system libraries that your script might need, and it might also be difficult to install these older versions. So that’s why I said that providing the <code>renv.lock</code> file is the bare minimum. But before seeing how we can deal with that, let’s discuss a scenario 1bis, which is the case where you want to run an old script (say, from 5 years ago), but there’s no <code>renv.lock</code> file to be found.
+</p>
+</section>
+<section id="scenario-1bis-old-script-no-renv.lock-file" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-1bis-old-script-no-renv.lock-file">
+Scenario 1bis: old script, no renv.lock file
+</h2>
+<p>
+For these cases I would have used <code>{checkpoint}</code>, but as explained in the intro MRAN is getting shutdown, and with it out of the picture <code>{checkpoint}</code> will cease to work.
+</p>
+<p>
+The way <code>{checkpoint}</code> worked is that you would simply add the following line at the very top of the script in question:
+</p>
+<pre class="r"><code>checkpoint::checkpoint("2018-12-12")</code></pre>
+<p>
+and this would download the packages needed for the script from that specific date and run your script. Really, really useful. But unfortunately, Microsoft decided that MRAN should get the axe. So what else is there? While researching for this blog post, I learned about <code>{groundhog}</code> which supposedly provides the same functionality. Suppose I have a script from 5 years ago that loads the following libraries:
+</p>
+<pre class="r"><code>library(purrr)
+library(ggplot2)</code></pre>
+<p>
+By rewriting this like so (and installing <code>{groundhog}</code> beforehand):
+</p>
+<pre class="r"><code>groundhog.library("
+    library(purrr)
+    library(ggplot2)",
+    "2017-10-04",
+    tolerate.R.version = "4.2.2")</code></pre>
+<p>
+<code>{purrr}</code> and <code>{ggplot2}</code> get downloaded as they were on the date I provided. If you want to know what I had to use the “tolerate.R.version” option, this is because if you try to run it without it, you get the following very useful message:
+</p>
+<pre><code>---------------------------------------------------------------------------
+|IMPORTANT.
+|    Groundhog says: you are using R-4.2.2, but the version of R current 
+|    for the entered date, '2017-10-04', is R-3.4.x. It is recommended 
+|    that you either keep this date and switch to that version of R, or 
+|    you keep the version of R you are using but switch the date to 
+|    between '2022-04-22' and '2023-01-08'. 
+|
+|    You may bypass this R-version check by adding: 
+|    `tolerate.R.version='4.2.2'`as an option in your groundhog.library() 
+|    call. Please type 'OK' to confirm you have read this message. 
+|   &gt;ok</code></pre>
+<p>
+That’s is pretty neat, as it tells you “hey, getting the right packages is good, but if your R version is not the same, you’re not guaranteed to get the same results back, and this might not even work at all”.
+</p>
+<p>
+So, here’s what happens when I try to install these packages (on my windows laptop, as most people would do), without installing the right version of R as suggested by <code>{groundhog}</code>:
+</p>
+<details>
+<summary>
+Click me to see lock file
+</summary>
+<pre><code>+ Will now attempt installing 5 packages from source.
+
+groundhog says: Installing 'magrittr_1.5', package #1 (from source) out of 5 needed
+&gt; As of 16:12, the best guess is that all 5 packages will install around 16:14
+trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/magrittr/magrittr_1.5.tar.gz'
+Content type 'application/x-tar' length 200957 bytes (196 KB)
+downloaded 196 KB
+
+
+groundhog says: Installing 'rlang_0.1.2', package #2 (from source) out of 5 needed
+&gt; As of 16:12, the best guess is that all 5 packages will install around 16:14
+trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/rlang/rlang_0.1.2.tar.gz'
+Content type 'application/x-tar' length 200867 bytes (196 KB)
+downloaded 196 KB
+
+
+groundhog says: Installing 'Rcpp_0.12.13', package #3 (from source) out of 5 needed
+&gt; As of 16:13, the best guess is that all 5 packages will install around 16:14
+trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/Rcpp/Rcpp_0.12.13.tar.gz'
+Content type 'application/x-tar' length 3752364 bytes (3.6 MB)
+downloaded 3.6 MB
+
+Will try again, now showing all installation output.
+trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/Rcpp/Rcpp_0.12.13.tar.gz'
+Content type 'application/x-tar' length 3752364 bytes (3.6 MB)
+downloaded 3.6 MB
+
+* installing *source* package 'Rcpp' ...
+** package 'Rcpp' successfully unpacked and MD5 sums checked
+staged installation is only possible with locking
+** using non-staged installation
+** libs
+g++ -std=gnu++11  -I"c:/Users/Bruno/AppData/Roaming/R-42~1.2/include" -DNDEBUG -I../inst/include/    -I"c:/rtools42/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c Date.cpp -o Date.o
+In file included from ../inst/include/RcppCommon.h:67,
+                 from ../inst/include/Rcpp.h:27,
+                 from Date.cpp:31:
+../inst/include/Rcpp/sprintf.h: In function 'std::string Rcpp::sprintf(const char*, ...)':
+../inst/include/Rcpp/sprintf.h:30:12: warning: unnecessary parentheses in declaration of 'ap' [-Wparentheses]
+   30 |     va_list(ap);
+      |            ^~~~
+../inst/include/Rcpp/sprintf.h:30:12: note: remove parentheses
+   30 |     va_list(ap);
+      |            ^~~~
+      |            -  -
+In file included from ../inst/include/Rcpp.h:77,
+                 from Date.cpp:31:
+../inst/include/Rcpp/Rmath.h: In function 'double R::pythag(double, double)':
+../inst/include/Rcpp/Rmath.h:222:60: error: '::Rf_pythag' has not been declared; did you mean 'pythag'?
+  222 |     inline double pythag(double a, double b)    { return ::Rf_pythag(a, b); }
+      |                                                            ^~~~~~~~~
+      |                                                            pythag
+make: *** [c:/Users/Bruno/AppData/Roaming/R-42~1.2/etc/x64/Makeconf:260: Date.o] Error 1
+ERROR: compilation failed for package 'Rcpp'
+* removing 'C:/Users/Bruno/Documents/R_groundhog/groundhog_library/R-4.2/Rcpp_0.12.13/Rcpp'
+The package 'Rcpp_0.12.13' failed to install!
+groundhog says:
+The package may have failed to install because you are using R-4.2.2
+which is at least one major update after the date you entered '2017-10-04'.
+You can try using a more recent date in your groundhog.library() command, 
+or run it with the same date using 'R-3.4.4'
+Instructions for running older versions of R: 
+    http://groundhogr.com/many
+
+----------------   The package purrr_0.2.3 did NOT install.  Read above for details  -----------------
+
+Warning message:
+In utils::install.packages(url, repos = NULL, lib = snowball$installation.path[k],  :
+  installation of package 'C:/Users/Bruno/AppData/Local/Temp/RtmpyKYXFd/downloaded_packages/Rcpp_0.12.13.tar.gz' had non-zero exit status
+&gt; </code></pre>
+</details>
+<p>
+As you can see it failed, very likely because I don’t have the right development libraries installed on my windows laptop, due to the version mismatch that <code>{groundhog}</code> complained about. I also tried on my Linux workstation, and got the same outcome. In any case, I want to stress that this is not <code>{groundhog}</code>’s fault, but this due to the fact that I was here only concerned with packages; as I said multiple times now, reproducibility is on an continuum, and you also need to deal with OS and system libraries. So for now, we only got part of the solution.
+</p>
+<p>
+By the way, you should know 3 more things about <code>{groundhog}</code>:
+</p>
+<ul>
+<li>
+the earliest available date is, in theory, any date. However, according to its author, <code>{groundhog}</code> should work reliably with a date as early as “2015-04-16”. That’s because the oldest R version <code>{groundhog}</code> is compatible with is R 3.2. However, again according to its author, it should be possible to patch <code>{groundhog}</code> to work with any earlier versions of R.
+</li>
+<li>
+<code>{groundhog}</code>’s developer is <a href="https://github.com/CredibilityLab/groundhog/issues/83#issuecomment-1379932166">planning</a> to save the binary packages off MRAN so that <code>{groundhog}</code> will continue offering binary packages once MRAN is out of the picture, which will make installing these packages more reliable.
+</li>
+<li>
+On Windows and macOS, <code>{groundhog}</code> installs binary packages if they’re available (which basically is always the case, in the example above it was not the case because I was using Posit’s CRAN mirror, and I don’t think they have binary packages for Windows that are that old. But if using another mirror, that should not be a problem). So if you install the right version of R, you’re almost guaranteed that it’s going to work. But, there is always a but, this also depends on hardware now. I’ll explain in the last part of this blog post, so read on.
+</li>
+</ul>
+</section>
+<section id="docker-to-the-rescue" class="level2">
+<h2 class="anchored" data-anchor-id="docker-to-the-rescue">
+Docker to the rescue
+</h2>
+<p>
+The full solution in both scenarios involves Docker. If you are totally unfamiliar with Docker, you can imagine that Docker makes it easy to set up a Linux virtual machine and run it. In Docker, you use Dockerfiles (which are configuration files) to define Docker <em>images</em> and you can then run <em>containers</em> (your VMs, if you wish) based on that image. Inside that Dockerfile you can declare which operating system you want to use and what you want to run inside of it. For example, here’s a very simple Dockerfile that prints “Hello from Docker” on the Ubuntu operating system (a popular Linux distribution):
+</p>
+<pre><code>FROM ubuntu:latest
+
+RUN echo "Hello, World!"</code></pre>
+<p>
+You then need to build the image as defined from this Dockerfile. (Don’t try to follow along for now with your own computer; I’ll link to resources below so that you can get started if you’re interested. What matters is that you understand <em>why</em> Docker is needed).
+</p>
+<p>
+Building the image can be achieved by running this command where the Dockerfile is located:
+</p>
+<pre><code>docker build -t hello .</code></pre>
+<p>
+and then run a container from this image:
+</p>
+<pre><code>docker run --rm -d --name hello_container hello</code></pre>
+<pre><code>Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu:latest
+ ---&gt; 6b7dfa7e8fdb
+Step 2/2 : RUN echo "Hello, World!"
+ ---&gt; Running in 5dfbff5463cf
+Hello, World!
+Removing intermediate container 5dfbff5463cf
+ ---&gt; c14004cd1801
+Successfully built c14004cd1801
+Successfully tagged hello:latest</code></pre>
+<p>
+You should see “Hello, World!” inside your terminal. Ok so this is the very basics. Now why is that useful? It turns out that there’s the so-called Rocker project, and this project provides a collection of Dockerfiles for current, but also older versions of R. So if we go back to our <code>renv.lock</code> file from before, we can see which R version was used (it was R 4.2.1) and define a new Dockerfile that builds upon the <a href="https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.2.1.Dockerfile">Dockerfile from the Rocker project for R version 4.2.1</a>.
+</p>
+<p>
+Let’s first start by writing a very simple script. Suppose that this is the script that we want to make reproducible:
+</p>
+<pre class="r"><code>library(purrr)
+library(ggplot2)
+
+data(mtcars)
+
+myplot &lt;- ggplot(mtcars) +
+  geom_line(aes(y = hp, x = mpg))
+
+ggsave("/home/project/output/myplot.pdf", myplot)</code></pre>
+<p>
+First, let’s assume that I did my homework and that the <code>renv.lock</code> file from before is actually the one that was generated at the time this script was written. In that case, you could write a Dockerfile with the correct version of R and use the <code>renv.lock</code> file to install the right packages. This Dockerfile would look like this:
+</p>
+<pre><code>FROM rocker/r-ver:4.2.1
+
+RUN mkdir /home/project
+
+RUN mkdir /home/project/output
+
+COPY renv.lock /home/project/renv.lock
+
+COPY script.R /home/project/script.R
+
+RUN R -e "install.packages('renv')"
+
+RUN R -e "setwd('/home/project/');renv::restore(confirm = FALSE)"
+
+CMD R -e "source('/home/project/script.R')"</code></pre>
+<p>
+We need to put the <code>renv.lock</code> file, as well as the script <code>script.R</code> in the same folder as the Dockerfile, and then build and run the image:
+</p>
+<pre><code># Build it with
+docker build -t project .</code></pre>
+<p>
+run the container (and mount a volume to get the image back – don’t worry if you don’t know what volumes are, I’ll link resources at the end):
+</p>
+<pre><code>docker run --rm -d --name project_container -v /path/to/your/project/output:/home/project/output:rw project</code></pre>
+<p>
+Even if you’ve never seen a Dockerfile in your life, you likely understand what is going on here: the first line pulls a Docker image that contains R version 4.2.1 pre-installed on Ubuntu. Then, we create a directory to hold our files, we copy said files in the directory, and then run several R commands to install the packages as defined in the <code>renv.lock</code> file and run our script in an environment that not only has the right versions of the packages but also the right version of R. This script then saves the plot in a folder called <code>output/</code>, which we link to a folder also called <code>output/</code> but on our machine, so that we can then look at the generated plot (this is what <code>-v /path/to/your/project/output:/home/project/output:rw</code> does). Just as this script saves a plot, it could be doing any arbitrarily complex thing, like compiling an Rmarkdown file, running a model, etc, etc.
+</p>
+<p>
+Here’s a short video of this process in action:
+</p>
+<p>
+<a href="http://www.youtube.com/watch?v=E3E0yd6aFss" title="renv Docker demo"><img src="http://img.youtube.com/vi/E3E0yd6aFss/0.jpg" alt="Link to renv and Docker demo"></a>
+</p>
+<p>
+Now, let’s do the same thing but for our scenario 1bis that relied on <code>{groundhog}</code>. Before writing the Dockerfile down, here’s how you should change the script. Add these lines at the very top:
+</p>
+<pre class="r"><code>groundhog::set.groundhog.folder("/home/groundhog_folder")
+
+groundhog::groundhog.library("
+    library(purrr)
+    library(ggplot2)",
+    "2017-10-04"
+    )
+
+data(mtcars)
+
+myplot &lt;- ggplot(mtcars) +
+  geom_line(aes(y = hp, x = mpg))
+
+ggsave("/home/project/output/myplot.pdf", myplot)</code></pre>
+<p>
+I also created a new script that installs the dependencies of my script when building my Dockerfile. This way, when I run the container, nothing gets installed anymore. Here’s what this script looks like:
+</p>
+<pre class="r"><code>groundhog::set.groundhog.folder("/home/groundhog_folder")
+
+groundhog::groundhog.library("
+    library(purrr)
+    library(ggplot2)",
+    "2017-10-04"
+    )</code></pre>
+<p>
+It’s exactly the beginning from the main script. Now here comes the Dockerfile, and this time it’s going to be a bit more complicated:
+</p>
+<pre><code>FROM rocker/r-ver:3.4.4
+
+RUN echo "options(repos = c(CRAN='https://packagemanager.rstudio.com/cran/latest'), download.file.method = 'libcurl')" &gt;&gt; /usr/local/lib/R/etc/Rprofile.site
+
+RUN mkdir /home/project
+
+RUN mkdir /home/groundhog_folder
+
+RUN mkdir /home/project/output
+
+COPY script.R /home/project/script.R
+
+COPY install_deps.R /home/project/install_deps.R
+
+RUN R -e "install.packages('groundhog');source('/home/project/install_deps.R')"
+
+CMD R -e "source('/home/project/script.R')"</code></pre>
+<p>
+As you can see from the first line, this time we’re pulling an image that comes with R 3.4.4. This is because that version of R was the current version as of 2017-10-04, the date we assumed this script was written on. Because this is now quite old, we need to add some more stuff to the Dockerfile to make it work. First, I change the repositories to the current mirror from <a href="https://packagemanager.rstudio.com/client/#/repos/2/overview">Posit</a>. This is because the repositories from this image are set to MRAN at a fixed date. This was done at the time for reproducibility, but now MRAN is getting shutdown, so we need to change the repositories or else our container will not be able to download packages. Also, <code>{groundhog}</code> will take care of installing the right package versions. Then I create the necessary folders and run the <code>install_deps.R</code> script which is the one that will install the packages. This way, the packages get installed when building the Docker image, and not when running the container, which is preferable. Finally, the main script gets run, and an output gets produced. Here’s a video showing this process:
+</p>
+<p>
+<a href="http://www.youtube.com/watch?v=g0eG1OvXl9s" title="renv Docker demo"><img src="http://img.youtube.com/vi/g0eG1OvXl9s/0.jpg" alt="Link to the groundhog and Docker demo"></a>
+</p>
+<p>
+Now all of this may seem complicated, and to be honest it is. Reproducibility is no easy task, but I hope that I’ve convinced you that by combining <code>{renv}</code> and Docker, or <code>{groundhog}</code> and Docker it is possible to rerun any analysis. But you do have to be familiar with these tools, and there’s also another issue by using Docker. Docker works on Windows, macOS and Linux, but the container that runs must be a Linux distribution, usually Ubuntu. But what if the original analysis was done on Windows and macOS? This can be a problem if the script relies on some Windows or macOS specific things, which even for a language available on all platforms like R can happen. For example, I’ve recently noticed that the <code>tar()</code> function in R, which is used to decompress <code>tar.gz</code> files, behaves differently on Windows than on Linux. So ideally, even if you’re running your analysis on Windows, you should then try to distribute a working Dockerfile alongside your paper (if you’re a researcher, or if you’re working in the private sector, you should do the same for each project). Of course, that is quite demanding, and you would need to learn about these tools, or hire someone to do that for you… But a natural question is then, well, “why use Docker at all? Since it’s easy to install older versions of R on Windows and macOS, wouldn’t an <code>renv.lock</code> file suffice? Or even just <code>{groundhog}</code> which is arguably even easier to use?”
+</p>
+<p>
+Well, more on this later. I still need to discuss scenario 2 first.
+</p>
+</section>
+<section id="scenario-2-offering-an-environment-that-is-made-for-reproducibility" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-2-offering-an-environment-that-is-made-for-reproducibility">
+Scenario 2: offering an environment that is made for reproducibility
+</h2>
+<p>
+Ok, so this one is easier. In this scenario, you have no idea what people are going to use, so you cannot generate an <code>renv.lock</code> file beforehand, and <code>{groundhog}</code> is of no help either, because, well, there’s no scripts yet to actually make reproducible. This is the situation I’ve had for this project that I’ve discussed at the end of last year, on <a href="https://www.brodrigues.co/blog/2022-12-21-longevity/">code longevity</a> of the R programming language. The solution is to write a Dockerfile that people can modify and run; this in turn produces some results that can then be shared. This Dockerfile pulls from another Dockerfile, and that other Dockerfile is made for reproducibility. How? Because that other Dockerfile is based on Ubuntu 22.04, compiles R 4.2.2 from source, and sets the repositories to <a href="https://packagemanager.rstudio.com/cran/__linux__/jammy/2022-11-21" class="uri">https://packagemanager.rstudio.com/cran/<strong>linux</strong>/jammy/2022-11-21</a> . This way, the packages get downloaded exactly as they were on November 21st 2022. So every time this image defined from this Dockerfile gets built, we get exactly the same environment.
+</p>
+<p>
+It should also be noted that this solution can be used in the case of scenario 1bis. Let’s say I have a script from August 2018; by using a Docker image that ships the current version of R at that time (which should be R version 3.5.x) and Ubuntu (which at the time was 18.04, codenamed Bionic Beaver) and then using the Posit package manager at a frozen date, for example <a href="https://packagemanager.rstudio.com/cran/__linux__/bionic/2018-08-16" class="uri">https://packagemanager.rstudio.com/cran/<strong>linux</strong>/bionic/2018-08-16</a> I should be able to reproduce an environment that is close enough. However the problem is that Posit’s package manager earliest available date is Octobre 2017, so anything before that would not be possible to reproduce.
+</p>
+<p>
+Ok, great, here are the solutions for reproducibility. But there are still problems.
+</p>
+</section>
+<section id="a-single-point-of-failure-docker" class="level2">
+<h2 class="anchored" data-anchor-id="a-single-point-of-failure-docker">
+A single point of failure: Docker
+</h2>
+<p>
+Let’s be blunt: having Docker as the common denominator in all these solutions is a problem. This is because Docker represents a single point of failure. But the problem is not Docker itself, but the infrastructure.
+</p>
+<p>
+Let me explain: Docker is based on many different open source parts, and that’s great. There’s also Podman, which is basically a drop-in replacement (when combined with other tools) made by Red Hat, which is completely open source as well. So the risk does not come from there, because even if for some reason Docker would disappear, or get abandoned or whatever, we could still work with Podman, and it would likely be possible to create a fork from Docker.
+</p>
+<p>
+But the issue is the infrastructure. For now, using Docker and more importantly hosting images is free for personal use, education, open source communities and small businesses. So this means that a project like Rocker likely pays nothing for hosting all the images they produce (but who knows, I may be wrong on this). And Rocker makes a lot of images. See, at the top of the Dockerfiles I’ve used in this blog post, there’s always a statement like:
+</p>
+<pre><code>FROM rocker/r-ver:4.2.1</code></pre>
+<p>
+as explained before, this states that a pre-built image that ships R version 4.2.1 on Ubuntu gets downloaded. But from where? This image gets downloaded from Docker Hub, see <a href="https://hub.docker.com/layers/rocker/r-ver/4.2.1/images/sha256-3636493af7028d899a6598ee4aabe70d231fb0ff60f61a70f8ea0ea24a51c3e6?context=explore">here</a>.
+</p>
+<p>
+This means that you can download this pre-built image and don’t need to build it each time you need to work with it. You can simply use that as a base for your work, like the image built for reproducibility described in scenario 2. But what happens if at some point in the future Docker changes its licensing model? What if they still have a free tier, but massively limit the amount of images that get hosted for free? What if they get rid of the free tier entirely? This is a massive risk that needs to be managed in my opinion. There is the option of the Rocker project hosting the images themselves. It is possible to create your own, self-hosted Docker registry and not use Docker Hub, after all. But this is costly not only in terms of storage, but also of manpower to maintain all this. But maybe worse than that is: what if at some point in the future you cannot rebuild these images, at all? You would need to make sure that these pre-built images do not get lost. And this is already happening because of MRAN getting shutdown. In this blog post I’ve used the <code>rocker/r-ver:3.4.4</code> image to run code from 2017. The problem is that if you look at its Dockerfile, you see that building this image <a href="https://github.com/rocker-org/rocker-versioned/blob/1920e7cfc757bad02d041a0bddec1a18b1ebc4c1/r-ver/3.4.4.Dockerfile#L118">requires MRAN</a>. So in other words, once MRAN is offline, it won’t be possible to rebuild this image, and the Rocker project will need to make sure that the pre-built image that is currently available on Docker Hub stays available forever. Because if not, it would be quite hard to rerun code from, say, 2017. Same goes for Posit’s package manager. Posit’s package manager could be used as a drop-in replacement for MRAN, but for how long? Even though Posit is a very responsible company, I believe that it is dangerous that such a crucial service is managed by only one company.
+</p>
+<p>
+And rebuilding old images will be necessary. This is now the part where I answer the question from above:
+</p>
+<p>
+“why use Docker at all? Since it’s easy to install older versions of R on Windows and macOS, wouldn’t an <code>renv.lock</code> file suffice? Or even just <code>{groundhog}</code> which is arguably even easier to use?”
+</p>
+<p>
+The problem is hardware. You see, Apple has changed hardware architecture recently, their new computers switched from Intel based hardware to their own proprietary architecture (Apple Silicon) based on the ARM specification. And what does that mean concretely? It means that all the binary packages that were built for Intel based Apple computers cannot work on their new computers. Which means that if you have a recent M1 Macbook and need to install old CRAN packages (for example, by using <code>{groundhog}</code>), these need to be compiled to work on M1. You cannot even install older versions of R, unless you also compile those from source! Now I have read about a compatibility layer called Rosetta which enables to run binaries compiled for the Intel architecture on the ARM architecture, and maybe this works well with R and CRAN binaries compiled for Intel architecture. Maybe, I don’t know. But my point is that you never know what might come in the future, and thus needing to be able to compile from source is important, because compiling from source is what requires the least amount of dependencies that are outside of your control. Relying on binaries is not future-proof.
+</p>
+<p>
+And for you Windows users, don’t think that the preceding paragraph does not concern you. I think that it is very likely that Microsoft will push in the future for OEM manufacturers to develop more ARM based computers. There is already an ARM version of Windows after all, and it has been around for quite some time, and I think that Microsoft will not kill that version any time in the future. This is because ARM is much more energy efficient than other architectures, and any manufacturer can build its own ARM cpus by purchasing a license, which can be quite interesting. For example in the case of Apple silicon cpus, Apple can now get exactly the cpus they want for their machines and make their software work seamlessly with it. I doubt that others will pass the chance to do the same.
+</p>
+<p>
+Also, something else that might happen is that we might move towards more and more cloud based computing, but I think that this scenario is less likely than the one from before. But who knows. And in that case it is quite likely that the actual code will be running on Linux servers that will likely be ARM based because of energy costs. Here again, if you want to run your historical code, you’ll have to compile old packages and R versions from source.
+</p>
+<p>
+Basically, binary packages are in my opinion not a future-proof option, so that’s why something like Docker will stay, and become ever more relevant. But as I argued before, that’s a single point of failure.
+</p>
+<p>
+But there might be a way we can solve this and not have to rely on Docker at all.
+</p>
+</section>
+<section id="guix-toward-practical-transparent-verifiable-and-long-term-reproducible-research" class="level2">
+<h2 class="anchored" data-anchor-id="guix-toward-practical-transparent-verifiable-and-long-term-reproducible-research">
+Guix: <em>toward practical transparent verifiable and long-term reproducible research</em>
+</h2>
+<p>
+The title of this section is the same as the title from a research paper published in 2022 that you can read <a href="https://www.nature.com/articles/s41597-022-01720-9#Abs1">here</a>.
+</p>
+<p>
+This paper presents and shows how to use Guix, which is a tool to build, from scratch and in a reproducible manner, the computational environment that was used to run some code for research. Very importantly, Guix doesn’t rely on containers, virtual machines or anything like that. From my, albeit still limited, understanding of how it works, Guix requires some recipes telling it how it should build software. Guix integrates with CRAN, so it’s possible to tell Guix “hey, could you build ggplot2” and Guix does as instructed. It builds <code>{ggplot2}</code> and all the required dependencies. And what’s great about Guix is that it’s also possible to build older versions of software.
+</p>
+<p>
+The authors illustrate this by reproducing results from a 2019 paper, by recreating the environment used at the time, 3 years later.
+</p>
+<p>
+This could be a great solution, because it would always allow the recreation of computational environments from source. So architecture changes would not be a problem, making Guix quite future proof. The issue I’ve found though, is that Guix only works on Linux. So if you’re working on Windows or macOS, you would need Docker to recreate a computational environment with Guix. So you could think that we’re back to square one, but actually no. Because you could always have a Linux machine or server that you would use for reproducibility, on which Linux is installed, thus eliminating the need for Docker, thus removing that risk entirely.
+</p>
+<p>
+I’m currently exploring Guix and will report on it in greater detail in the future. In the meantime, I hope to have convinced you that, while reproducibility is no easy task, the tools that are currently available can help you set up reproducible project. However, for something to be and stay truly reproducible, some long term maintenance is also required.
+</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">
+Conclusion
+</h2>
+<p>
+So here we are, these are, as far as I know, the options to make your code reproducible. But it is no easy task and it takes time. Unfortunately, many scientists are not really concerned with making their code reproducible, simply because there is no real incentive for them to do it. And it’s a task that is becoming more and more complex as there are other risks that need to be managed, like the transition from Intel based architectures for cpus towards ARM. I’m pretty sure there are many scientists who have absolutely no idea what Intel based cpus or ARM cpus or Rosetta or whatever are. So telling them they need to make their code reproducible is one thing, telling them they need to make it so future proof that architecture changes won’t matter is like asking for the Moon.
+</p>
+<p>
+So research software engineers will become more and more crucial, and should be integrated to research teams to deal with this question (and this also holds true for the private sector; there should be someone whose job is make code reproducible across the organization).
+</p>
+<p>
+Anyways, if you read until here, I appreciate it. This was a long blog post. If you want to know more, you can read this <a href="https://www.brodrigues.co/blog/2022-11-19-raps/">other blog post</a> of mine that explains how to use Docker, and also this <a href="https://www.brodrigues.co/blog/2022-11-30-pipelines-as/">other blog post</a> that explains why Docker <em>is not</em> optional (but now that I’ve discovered Guix, maybe it’s Guix that is not optional).
+</p>
+<p>
+By the way, if you want to grab the scripts and Dockerfiles from this blog post, you can get them <a href="https://github.com/b-rodrigues/repro_r">here</a>.
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
