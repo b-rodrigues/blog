@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-12-17">
+
+<title>How to write code that returns (Rmarkdown) code – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to write code that returns (Rmarkdown) code</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 17, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://en.wikipedia.org/wiki/Fractal"> <img src="../assets/img/fractal_doge.gif" title="Nature is fractal"></a>
+</p>
+</div>
+<p>
+One of the most useful aspects of using a programming language instead of… well, not using a programming language, is that you can write code in a way that minimizes, and ideally, eliminates the need to repeat yourself.
+</p>
+<p>
+For instance, you can write a function to show you a frequency table, like so:
+</p>
+<pre class="r"><code>suppressMessages(library(dplyr))
+
+create_table &lt;- function(dataset, var){
+
+  var &lt;- enquo(var)
+
+  dataset %&gt;%
+    count(!!var) %&gt;%
+    knitr::kable()
+
+}</code></pre>
+<p>
+And can now get some fancy looking tables by simply writing:
+</p>
+<pre class="r"><code>create_table(mtcars, cyl)</code></pre>
+<table class="table">
+<thead>
+<tr class="header">
+<th align="right">
+cyl
+</th>
+<th align="right">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">
+4
+</td>
+<td align="right">
+11
+</td>
+</tr>
+<tr class="even">
+<td align="right">
+6
+</td>
+<td align="right">
+7
+</td>
+</tr>
+<tr class="odd">
+<td align="right">
+8
+</td>
+<td align="right">
+14
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+If I want such tables for hundreds of columns, I can use this function and loop over the columns and not have to write the code inside the body of the function over and over again. You’ll notice that the function <code>create_table()</code> makes use of some advanced programming techniques I have discussed <a href="https://www.brodrigues.co/blog/2016-07-18-data-frame-columns-as-arguments-to-dplyr-functions/">here</a>. There’s also an alternative way of programming with <code>{dplyr}</code>, using the <code>{{}}</code> construct I discussed <a href="https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/">here</a>, but I couldn’t get what I’m going to show you here to work with <code>{{}}</code>.
+</p>
+<p>
+Recently, I had to create a Rmarkdown document with many sections, where each section title was a question from a survey and the content was a frequency table. I wanted to write a fuction that would create a section with the right question title, and then show the table, and I wanted to then call this function over all the questions from the survey and have my document automatically generated.
+</p>
+<p>
+The result should look like <a href="https://dazzling-thompson-964d5b.netlify.app/">this</a>, but it would be a PDF instead of HTML.
+</p>
+<p>
+Let’s first load the data and see how it looks like:
+</p>
+<pre class="r"><code>library(dplyr)
+library(purrr)
+library(readr)
+
+suppressMessages(
+  survey_data &lt;- read_csv(
+    "https://gist.githubusercontent.com/b-rodrigues/0c2249dec5a9c9477e0d1ad9964a1340/raw/873bcc7532b8bad613235f029884df1d0b947c90/survey_example.csv"
+  )
+)
+
+glimpse(survey_data)</code></pre>
+<pre><code>## Rows: 100
+## Columns: 4
+## $ `Random question?`                         &lt;chr&gt; "no", "yes", "yes", "yes", …
+## $ `Copy of Random question?`                 &lt;chr&gt; "yes", "yes", "no", "yes", …
+## $ `Copy of Copy of Random question?`         &lt;chr&gt; "yes", "no", "no", "yes", "…
+## $ `Copy of Copy of Copy of Random question?` &lt;chr&gt; "yes", "yes", "no", "yes", …</code></pre>
+<p>
+Each column name is the question, and each row is one answer to the survey question. To create the document I showed above, you’d probably write something like this:
+</p>
+<pre><code>
+## Random question?
+
+` ``{r}
+
+create_table(survey_data, `Random question?`)
+
+` ``
+
+## Copy of Random question?
+
+` ``{r}
+
+create_table(survey_data, `Copy of Random question?`)
+
+` ``
+
+## Copy of Copy of Random question?
+
+` ``{r}
+
+create_table(survey_data, `Copy of Copy of Random question?`)
+
+` ``
+
+## Copy of Copy of Copy of Random question?
+
+` ``{r}
+
+create_table(survey_data, `Copy of Copy of Copy of Random question?`)
+
+` ``
+</code></pre>
+<p>
+As you can see, this gets tedious very quickly, especially if you have 100’s of variables. So how to not repeat yourself? The solution has two steps; first you should try to automate what you have as much as possible. Ideally, you don’t want to have to write the complete question every time. So first, let’s replace the questions by simpler variable names:
+</p>
+<pre class="r"><code>questions &lt;- colnames(survey_data)
+
+codes &lt;- paste0("var_", seq(1, length(questions)))
+
+lookup &lt;- bind_cols("codes" = codes, "questions" = questions)
+
+colnames(survey_data) &lt;- codes</code></pre>
+<p>
+<code>lookup</code> is a data frame with the questions and their respective codes:
+</p>
+<pre class="r"><code>lookup</code></pre>
+<pre><code>## tibble [4, 2] 
+## codes     chr var_1 var_2 var_3 var_4
+## questions chr Random question? Copy of Random question? Cop~</code></pre>
+<p>
+and our data now has simpler variable names:
+</p>
+<pre class="r"><code>glimpse(survey_data)</code></pre>
+<pre><code>## Rows: 100
+## Columns: 4
+## $ var_1 &lt;chr&gt; "no", "yes", "yes", "yes", "no", NA, "no", NA, "no", "no", "no",…
+## $ var_2 &lt;chr&gt; "yes", "yes", "no", "yes", "no", "yes", "yes", NA, "yes", NA, "n…
+## $ var_3 &lt;chr&gt; "yes", "no", "no", "yes", "yes", "no", "no", "yes", "no", "yes",…
+## $ var_4 &lt;chr&gt; "yes", "yes", "no", "yes", "yes", "no", "no", "yes", "no", "no",…</code></pre>
+<p>
+Doing this allows us to replace the source code of our Rmarkdown like so:
+</p>
+<pre class="r"><code>## `r lookup$questions[grepl("var_1", lookup$codes)]`
+
+`&nbsp;``{r}
+create_table(survey_data, var_1)
+`&nbsp;``</code></pre>
+<p>
+This already makes things easier, as now you only have to change <code>var_1</code> to <code>var_2</code> to <code>var_3</code>… the inline code gets executed and the right title (the question text) appears. But how to go further? I don’t want to have to copy and paste this and change <code>var_1</code> to <code>var_2</code> etc… So the second step of the two-step solution is to use a function called <code>knitr_expand()</code> described <a href="https://bookdown.org/yihui/rmarkdown-cookbook/knit-expand.html">here</a>. The idea of <code>knitr::knitr_expand()</code> is that it uses some Rmd source as a template, and also allows the user to define some variables that will be replaced at compile time. Simple examples are available <a href="https://cran.r-project.org/web/packages/knitr/vignettes/knit_expand.html">here</a>. I want to build upon that, because I need to pass my variable (in this case <code>var_1</code> for instance) to my function <code>create_table()</code>.
+</p>
+<p>
+The solution is to write another function that uses <code>knitr::knitr_expand()</code>. This is how it could look like:
+</p>
+<pre class="r"><code>create_table &lt;- function(dataset, var){
+
+  dataset %&gt;%
+    count(!!var) %&gt;%
+    knitr::kable()
+
+}
+
+
+return_section &lt;- function(var){
+
+  a &lt;- knitr::knit_expand(text = c("## {{question}}",   create_table(survey_data, var)),
+                          question =  lookup$questions[grepl(quo_name(var), lookup$codes)])
+
+  cat(a, sep = "\n")
+}</code></pre>
+<p>
+I needed to edit <code>create_table()</code> a little bit, and remove the line <code>var &lt;- enquo(var)</code>. This is because now, I won’t be passing a variable down to the function, but a quosure, and there is a very good reason for it, you’ll see. <code>return_section()</code> makes use of <code>knitr_expand()</code>, and the <code>text =</code> argument is the template that will get expanded. <code>{{question}}</code> will get replaced by the variable I defined which is the code I wrote above to automatically get the question text. Finally, <code>var</code> will get replaced by the variable I pass to the function.
+</p>
+<p>
+First, let’s get it running on one single variable:
+</p>
+<pre class="r"><code>return_section(quo(var_1))</code></pre>
+<pre><code>## ## Random question?
+## |var_1 |  n|
+## |:-----|--:|
+## |no    | 40|
+## |yes   | 44|
+## |NA    | 16|</code></pre>
+<p>
+As you see, I had to use <code>quo(var_1)</code> and not only <code>var_1</code>. But apart from this, the function seems to work well. Putting this in an Rmarkdown document would create a section with the question as the text of the section and a frequency table as the body. I could now copy and paste this and only have to change <code>var_1</code>. But I don’t want to have to copy and paste! So the idea would be to loop the function over a list of variables.
+</p>
+<p>
+I have such a list already:
+</p>
+<pre class="r"><code>codes</code></pre>
+<pre><code>## [1] "var_1" "var_2" "var_3" "var_4"</code></pre>
+<p>
+But it’s not a list of quosures, but a list of strings, and this is not going to work (it will return an error):
+</p>
+<pre class="r"><code>walk(codes, return_section)</code></pre>
+<p>
+(I’m using <code>walk()</code> instead of <code>map()</code> because <code>return_section()</code> doesn’t return an object, but only shows something on screen. This is called a side effect, and <code>walk()</code> allows you to loop properly over functions that only return side effects).
+</p>
+<p>
+The problem I have now is to convert strings to quosures. This is possible using <code>rlang::sym()</code>:
+</p>
+<pre class="r"><code>sym_codes &lt;- map(codes, sym)</code></pre>
+<p>
+And now I’m done:
+</p>
+<pre class="r"><code>walk(sym_codes, return_section)</code></pre>
+<pre><code>## ## Random question?
+## |var_1 |  n|
+## |:-----|--:|
+## |no    | 40|
+## |yes   | 44|
+## |NA    | 16|
+## ## Copy of Random question?
+## |var_2 |  n|
+## |:-----|--:|
+## |no    | 52|
+## |yes   | 32|
+## |NA    | 16|
+## ## Copy of Copy of Random question?
+## |var_3 |  n|
+## |:-----|--:|
+## |no    | 46|
+## |yes   | 47|
+## |NA    |  7|
+## ## Copy of Copy of Copy of Random question?
+## |var_4 |  n|
+## |:-----|--:|
+## |no    | 48|
+## |yes   | 42|
+## |NA    | 10|</code></pre>
+<p>
+Putting this in an Rmarkdown source create a PDF (or Word, or HTML) document with one section per question, and without have to do copy-pasting which is quite error-prone. Here is the final Rmarkdown <a href="https://gist.github.com/b-rodrigues/843011bb863f27a8fe7f299e13eb4491">file</a>. You’ll notice that the last chunk has the option <code>results = ‘asis’</code>, which is needed for this trick to work.
+</p>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

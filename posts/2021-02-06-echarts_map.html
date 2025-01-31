@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-02-06">
+
+<title>How to draw a map of arbitrary contiguous regions, or visualizing the spread of COVID-19 in the Greater Region – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="../index.html">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="../about.html">About</a> - 
+      <a href="../talks.html">Talks</a> -
+      <a href="../books.html">Books</a> - 
+      <a href="../packages.html">Packages</a> -
+      <a href="index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to draw a map of arbitrary contiguous regions, or visualizing the spread of COVID-19 in the Greater Region</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">data-science</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 6, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://happy-newton-bf63ad.netlify.app/"> <img src="../assets/img/covidGrandeRegion.gif" title="Click to go to visualisations"></a>
+</p>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">
+Introduction
+</h2>
+<p>
+I was able to blog during the year 2020 without mentioning the ongoing pandemic once. It’s not that I made any conscious effort not to talk about it, but I did not really want to do something that had already been done a 1000 times. This changed this year, when I wanted to look at the spread of COVID-19, not only in the Grand-Duchy of Luxembourg, the country I live in, but also among our neighbours. You see, the Grand-Duchy of Luxembourg is like an island, but instead of being surrounded by water, it’s surrounded by Belgians, Germans and Frenchmen. Many of them commute every day to Luxembourg to work, and even though they technically don’t live inside the country, many aspects of their lives happen inside Luxembourguish borders. Their children might even come to school here, and sometimes they live so close by the border, that they can catch Luxembourguish public transportation in their towns. 200k commuters from Belgium, Germany and France work here every day. That’s half our workforce! So that’s why I thought that it would make sense to look at the spread of the disease at the level of the so-called <em>Greater Region</em>. This <em>Greater Region</em> is made up of the Grand-Duchy of Luxembourg, the Provinces of Liège and Luxembourg in Belgium (hence why I keep writing the <em>Grand-Duchy of</em> Luxembourg to refer to the country, and the <em>Province of Luxembourg</em> to refer to the Belgian province of the same name), and two German <em>Länders</em>, the Saarland and the Rhineland-Palatinate. Confused? Welcome to Europe, where supranational institutions literally have to have a page entitled <a href="https://www.coe.int/en/web/about-us/do-not-get-confused">Do not get confused</a> so that citizens don’t get lost (we still do).
+</p>
+<p>
+So the Greater Region is not a state, but facilitates collaboration between the regions comprising it. To me, technically a citizen of the Greater Region, it feels like there was a want to <strong>peacefully</strong> correct for the randomness of history, where German-speaking regions ended up in both France and Belgium, and where Belgium and Luxembourg, well, somehow became independent countries.
+</p>
+<p>
+Anyways, what I wanted to do was to first of all get the COVID-19 daily cases data for each of these regions. I did that, and even created a package called <code>{covidGrandeRegion}</code> hosted <a href="https://github.com/b-rodrigues/covidGrandeRegion">here</a> that makes it very easy to download the latest data for the Greater Region. I will write another blog post about it, I have something in mind that I wanted to try for some time, and this was the first step. Then I thought that adding a function that would create a map could also be nice. And this is where the technical aspect of this blog post starts.
+</p>
+</section>
+<section id="the-problems-to-map-the-greater-region" class="level2">
+<h2 class="anchored" data-anchor-id="the-problems-to-map-the-greater-region">
+The problems to map the Greater Region
+</h2>
+<p>
+So how do you draw a map for an arbitrary landmass like the Greater Region? I wanted to draw the maps using <code>{echarts4r}</code>, and there’s a very easy <a href="https://echarts4r.john-coene.com/articles/make-geo-json.html">guide you can read</a>. If you want to draw a map for one, or several, countries, this guide is all you need. But I wanted a map with only parts of France, Belgium and Germany. The only complete country was Luxembourg. So the first problem was how to get only parts of a country. The second problem, is that I had daily covid cases for the lowest administrative levels for France (which are <em>Départements</em>), Belgium (the <em>Provinces</em>) and Germany (<em>Land-</em> and <em>Stadtkreise</em>). But for the Grand-Duchy of Luxembourg, there’s only data at the level of the country. So this would be another problem. How to draw a map with unequal levels of precision? One final problem: the names of the administrative divisions in my covid datasets are not the same than the ones that get downloaded if you follow the guide I linked before. So I had to rename them as well.
+</p>
+</section>
+<section id="the-solutions" class="level2">
+<h2 class="anchored" data-anchor-id="the-solutions">
+The solutions
+</h2>
+<p>
+Let’s first start by following the guide, so loading the packages, and getting the maps I need:
+</p>
+<pre class="r"><code>library(echarts4r)
+library(sp)
+library(raster)
+library(geojsonio)</code></pre>
+<pre class="r"><code>france_dep &lt;- getData("GADM", country = "FRANCE", level = 2)
+
+ger_kreise &lt;- getData("GADM", country = "GERMANY", level = 2)
+
+be_province &lt;- getData("GADM", country = "BELGIUM", level = 2)</code></pre>
+<p>
+The above lines of code load the required packages, and download the maps for France, Belgium and Germany with the required administrative level I need. I’ll leave Luxembourg for last.
+</p>
+<p>
+Let’s take a look at what type of object we’re dealing with:
+</p>
+<pre class="r"><code>class(france_dep)</code></pre>
+<pre><code>## [1] "SpatialPolygonsDataFrame"
+## attr(,"package")
+## [1] "sp"</code></pre>
+<p>
+So it seems to be something like a data frame, but probably more complex. Looking for some help online, I saw that you can coerce it to a data frame:
+</p>
+<pre class="r"><code>as.data.frame(be_province)</code></pre>
+<pre><code>##    GID_0  NAME_0   GID_1     NAME_1 NL_NAME_1     GID_2          NAME_2
+## 1    BEL Belgium BEL.1_1  Bruxelles      &lt;NA&gt; BEL.1.1_1       Bruxelles
+## 2    BEL Belgium BEL.2_1 Vlaanderen      &lt;NA&gt; BEL.2.1_1       Antwerpen
+## 3    BEL Belgium BEL.2_1 Vlaanderen      &lt;NA&gt; BEL.2.2_1         Limburg
+## 4    BEL Belgium BEL.2_1 Vlaanderen      &lt;NA&gt; BEL.2.3_1 Oost-Vlaanderen
+## 5    BEL Belgium BEL.2_1 Vlaanderen      &lt;NA&gt; BEL.2.4_1  Vlaams Brabant
+## 6    BEL Belgium BEL.2_1 Vlaanderen      &lt;NA&gt; BEL.2.5_1 West-Vlaanderen
+## 7    BEL Belgium BEL.3_1   Wallonie      &lt;NA&gt; BEL.3.1_1  Brabant Wallon
+## 8    BEL Belgium BEL.3_1   Wallonie      &lt;NA&gt; BEL.3.2_1         Hainaut
+## 9    BEL Belgium BEL.3_1   Wallonie      &lt;NA&gt; BEL.3.3_1           Liège
+## 10   BEL Belgium BEL.3_1   Wallonie      &lt;NA&gt; BEL.3.4_1      Luxembourg
+## 11   BEL Belgium BEL.3_1   Wallonie      &lt;NA&gt; BEL.3.5_1           Namur
+##                                                                                                             VARNAME_2
+## 1  Brussel Hoofstadt|Brusselse Hoofdstedelijke Gewest|Brüssel|Bruxelas|Région de Bruxelles-Capitale|Brussels|Bruselas
+## 2                                                                            Amberes|Antuérpia|Antwerp|Anvers|Anversa
+## 3                                                                                                   Limbourg|Limburgo
+## 4                   Flandres Oriental|Fiandra Orientale|Flandes Oriental|Flandre orientale|East Flanders|Ost Flandern
+## 5                                                 Brabant Flamand|Brabante Flamenco|Brabante Flamengo|Flemish Brabant
+## 6           Fiandra Occidentale|Flandes Occidental|Flandre occidentale|Flandres Ocidental|West Flandern|West Flanders
+## 7                                                                                       Waals Brabant|Walloon Brabant
+## 8                                                                                                 Henegouwen|Hennegau
+## 9                                                                                            Luik|Liegi|Lieja|Lüttich
+## 10                                                                                   Lussemburgo|Luxemburg|Luxemburgo
+## 11                                                                                                              Namen
+##    NL_NAME_2                                TYPE_2      ENGTYPE_2 CC_2 HASC_2
+## 1       &lt;NA&gt; Hoofdstedelijk Gewest|Région Capitale Capital Region &lt;NA&gt;  BE.BU
+## 2       &lt;NA&gt;                             Provincie       Province &lt;NA&gt;  BE.AN
+## 3       &lt;NA&gt;                             Provincie       Province &lt;NA&gt;  BE.LI
+## 4       &lt;NA&gt;                             Provincie       Province &lt;NA&gt;  BE.OV
+## 5       &lt;NA&gt;                             Provincie       Province &lt;NA&gt;  BE.VB
+## 6       &lt;NA&gt;                             Provincie       Province &lt;NA&gt;  BE.WV
+## 7       &lt;NA&gt;                              Province      Provincie &lt;NA&gt;  BE.BW
+## 8       &lt;NA&gt;                              Province      Provincie &lt;NA&gt;  BE.HT
+## 9       &lt;NA&gt;                              Province      Provincie &lt;NA&gt;  BE.LG
+## 10      &lt;NA&gt;                              Province      Provincie &lt;NA&gt;  BE.LX
+## 11      &lt;NA&gt;                              Province      Provincie &lt;NA&gt;  BE.NA</code></pre>
+<p>
+We’re not going to convert them to data frames however; but this is an interesting clue; these <code>SpatialPolygonsDataFrame</code> objects share common methods with data frames. What this means is that we can use the usual, base R way of manipulating these objects.
+</p>
+<p>
+So to get only the French <em>départements</em> I need, I can slice them like so:
+</p>
+<pre class="r"><code>lorraine &lt;- france_dep[`%in%`(france_dep$NAME_2, c("Meurthe-et-Moselle", "Meuse", "Moselle", "Vosges")),]</code></pre>
+<p>
+Same for the German <em>kreise</em>, here I select the <em>Länder</em> which are a higher administrative division than the Kreise, which makes it faster (so I don’t need to type all the 40+ Kreise):
+</p>
+<pre class="r"><code>ger_kreise &lt;- ger_kreise[`%in%`(ger_kreise$NAME_1, c("Rheinland-Pfalz", "Saarland")),]</code></pre>
+<p>
+For Germany, many Kreise had a name which was different than on my covid data, so I had to rename them. So here again, the base R way of doing things works:
+</p>
+<pre class="r"><code>ger_kreise$NAME_2[ger_kreise$NAME_2 == "Eifelkreis Bitburg-Prüm"]  &lt;- "Bitburg-Prüm"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "St. Wendel"]  &lt;- "Sankt Wendel"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "Altenkirchen (Westerwald)"]  &lt;- "Altenkirchen"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "Neustadt an der Weinstraße"]  &lt;- "Neustadt a.d.Weinstraße"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "Landau in der Pfalz"]  &lt;- "Landau i.d.Pfalz"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "Ludwigshafen am Rhein"]  &lt;- "Ludwigshafen"
+ger_kreise$NAME_2[ger_kreise$NAME_2 == "Frankenthal (Pfalz)"]  &lt;- "Frankenthal"</code></pre>
+<p>
+Finally, I do the same for Belgium, and rename their province of Luxembourg, which was simply called “Luxembourg”, to “Province de Luxembourg”:
+</p>
+<pre class="r"><code>be_wallonia &lt;- be_province[be_province$NAME_1 == "Wallonie", ]
+be_wallonia$NAME_2[be_wallonia$NAME_2 == "Luxembourg"]  &lt;- "Province de Luxembourg"</code></pre>
+<p>
+I rename the province because the Grand-Duchy of Luxembourg is also only called “Luxembourg” in the data, and this would cause issues when mapping.
+</p>
+<p>
+Now, comes Luxembourg. As I’ve written above, I only have data at the level of the country, so I download the country map:
+</p>
+<pre class="r"><code>lu_map_0 &lt;- getData("GADM", country = "LUXEMBOURG", level = 0)</code></pre>
+<p>
+Let’s also see how it looks like as a data frame:
+</p>
+<pre class="r"><code>as.data.frame(lu_map_0)</code></pre>
+<pre><code>##   GID_0     NAME_0
+## 1   LUX Luxembourg</code></pre>
+<p>
+Unlike the previous <code>SpatialPolygonsDataFrame</code>s, there are much less columns and this will cause an issue. Indeed, in order to have a single <code>SpatialPolygonsDataFrame</code> object to draw my map, I will need to combine them. This will be very easy, by simple using the <code>rbind()</code> function. Again, simply using base R functions. However, this only works if the data frames have the same columns. Another issue, is that I will be using the names of the regions which are in the <code>SpatialPolygonsDataFrame</code>s’ column called <code>NAME_2</code>, but for Luxembourg, the name of the region (in this case the whole country) is in the column called <code>NAME_0</code>. So I need to add this columns to the <code>SpatialPolygonsDataFrame</code> object for Luxembourg:
+</p>
+<pre class="r"><code>lu_map_0$GID_1 &lt;- NA
+lu_map_0$NAME_1 &lt;- NA
+lu_map_0$NL_NAME_1 &lt;- NA
+lu_map_0$GID_2 &lt;- NA
+lu_map_0$NAME_2 &lt;- "Luxembourg"
+lu_map_0$VARNAME_2 &lt;- NA
+lu_map_0$NL_NAME_2 &lt;- NA
+lu_map_0$TYPE_2 &lt;- NA
+lu_map_0$ENGTYPE_2 &lt;- NA
+lu_map_0$CC_2 &lt;- NA
+lu_map_0$HASC_2 &lt;- NA</code></pre>
+<p>
+Aaaand… that’s it! Wasn’t that hard, but a bit convoluted nonetheless. Now I can bind all the <code>SpatialPolygonsDataFrame</code> objects in one and use that for mapping:
+</p>
+<pre class="r"><code>grande_region &lt;- do.call(rbind, list(lorraine, ger_kreise, be_wallonia, lu_map_0))
+
+as.data.frame(grande_region)</code></pre>
+<pre><code>##     GID_0     NAME_0    GID_1          NAME_1 NL_NAME_1       GID_2
+## 76    FRA     France  FRA.6_1       Grand Est      &lt;NA&gt;   FRA.6.7_1
+## 77    FRA     France  FRA.6_1       Grand Est      &lt;NA&gt;   FRA.6.8_1
+## 78    FRA     France  FRA.6_1       Grand Est      &lt;NA&gt;   FRA.6.9_1
+## 70    FRA     France  FRA.6_1       Grand Est      &lt;NA&gt;  FRA.6.10_1
+## 99    DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.1_1
+## 110   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.2_1
+## 121   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.3_1
+## 129   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.4_1
+## 130   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.5_1
+## 131   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.6_1
+## 132   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.7_1
+## 133   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.8_1
+## 134   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt;  DEU.11.9_1
+## 100   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.10_1
+## 101   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.11_1
+## 102   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.12_1
+## 104   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.14_1
+## 103   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.13_1
+## 105   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.15_1
+## 106   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.16_1
+## 107   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.17_1
+## 108   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.18_1
+## 111   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.20_1
+## 109   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.19_1
+## 112   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.21_1
+## 113   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.22_1
+## 114   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.23_1
+## 115   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.24_1
+## 116   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.25_1
+## 117   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.26_1
+## 118   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.27_1
+## 119   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.28_1
+## 120   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.29_1
+## 122   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.30_1
+## 124   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.32_1
+## 123   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.31_1
+## 125   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.33_1
+## 126   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.34_1
+## 127   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.35_1
+## 128   DEU    Germany DEU.11_1 Rheinland-Pfalz      &lt;NA&gt; DEU.11.36_1
+## 135   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.1_1
+## 136   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.2_1
+## 137   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.3_1
+## 138   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.4_1
+## 139   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.5_1
+## 140   DEU    Germany DEU.12_1        Saarland      &lt;NA&gt;  DEU.12.6_1
+## 7     BEL    Belgium  BEL.3_1        Wallonie      &lt;NA&gt;   BEL.3.1_1
+## 8     BEL    Belgium  BEL.3_1        Wallonie      &lt;NA&gt;   BEL.3.2_1
+## 9     BEL    Belgium  BEL.3_1        Wallonie      &lt;NA&gt;   BEL.3.3_1
+## 10    BEL    Belgium  BEL.3_1        Wallonie      &lt;NA&gt;   BEL.3.4_1
+## 11    BEL    Belgium  BEL.3_1        Wallonie      &lt;NA&gt;   BEL.3.5_1
+## 1     LUX Luxembourg     &lt;NA&gt;            &lt;NA&gt;      &lt;NA&gt;        &lt;NA&gt;
+##                                NAME_2                        VARNAME_2
+## 76                 Meurthe-et-Moselle                             &lt;NA&gt;
+## 77                              Meuse                             &lt;NA&gt;
+## 78                            Moselle                       Lothringen
+## 70                             Vosges                             &lt;NA&gt;
+## 99                          Ahrweiler                             &lt;NA&gt;
+## 110                      Altenkirchen                             &lt;NA&gt;
+## 121                       Alzey-Worms                             &lt;NA&gt;
+## 129                      Bad Dürkheim                             &lt;NA&gt;
+## 130                     Bad Kreuznach                             &lt;NA&gt;
+## 131               Bernkastel-Wittlich                             &lt;NA&gt;
+## 132                        Birkenfeld                             &lt;NA&gt;
+## 133                       Cochem-Zell                             &lt;NA&gt;
+## 134                  Donnersbergkreis                             &lt;NA&gt;
+## 100                      Bitburg-Prüm                             &lt;NA&gt;
+## 101                       Frankenthal                             &lt;NA&gt;
+## 102                       Germersheim                             &lt;NA&gt;
+## 104                    Kaiserslautern                             &lt;NA&gt;
+## 103 Kaiserslautern (Kreisfreie Stadt)                             &lt;NA&gt;
+## 105                           Koblenz                             &lt;NA&gt;
+## 106                             Kusel                             &lt;NA&gt;
+## 107                  Landau i.d.Pfalz                             &lt;NA&gt;
+## 108                      Ludwigshafen                             &lt;NA&gt;
+## 111                             Mainz                             &lt;NA&gt;
+## 109                      Mainz-Bingen                             &lt;NA&gt;
+## 112                     Mayen-Koblenz                             &lt;NA&gt;
+## 113           Neustadt a.d.Weinstraße                             &lt;NA&gt;
+## 114                           Neuwied                             &lt;NA&gt;
+## 115                         Pirmasens                             &lt;NA&gt;
+## 116              Rhein-Hunsrück-Kreis                             &lt;NA&gt;
+## 117                  Rhein-Lahn-Kreis                             &lt;NA&gt;
+## 118                 Rhein-Pfalz-Kreis                             &lt;NA&gt;
+## 119                            Speyer                             &lt;NA&gt;
+## 120               Südliche Weinstraße                             &lt;NA&gt;
+## 122                      Südwestpfalz                             &lt;NA&gt;
+## 124                             Trier                             &lt;NA&gt;
+## 123                    Trier-Saarburg                             &lt;NA&gt;
+## 125                       Vulkaneifel                             &lt;NA&gt;
+## 126                   Westerwaldkreis                             &lt;NA&gt;
+## 127                             Worms                             &lt;NA&gt;
+## 128                       Zweibrücken                             &lt;NA&gt;
+## 135                     Merzig-Wadern                             &lt;NA&gt;
+## 136                       Neunkirchen                             &lt;NA&gt;
+## 137       Regionalverband Saarbrücken                             &lt;NA&gt;
+## 138                         Saarlouis                             &lt;NA&gt;
+## 139                   Saarpfalz-Kreis                             &lt;NA&gt;
+## 140                      Sankt Wendel                             &lt;NA&gt;
+## 7                      Brabant Wallon    Waals Brabant|Walloon Brabant
+## 8                             Hainaut              Henegouwen|Hennegau
+## 9                               Liège         Luik|Liegi|Lieja|Lüttich
+## 10             Province de Luxembourg Lussemburgo|Luxemburg|Luxemburgo
+## 11                              Namur                            Namen
+## 1                          Luxembourg                             &lt;NA&gt;
+##     NL_NAME_2           TYPE_2  ENGTYPE_2  CC_2   HASC_2
+## 76       &lt;NA&gt;      Département Department    54    FR.MM
+## 77       &lt;NA&gt;      Département Department    55    FR.MS
+## 78       &lt;NA&gt;      Département Department    57    FR.MO
+## 70       &lt;NA&gt;      Département Department    88    FR.VG
+## 99       &lt;NA&gt;        Landkreis   District 07131 DE.RP.AR
+## 110      &lt;NA&gt;        Landkreis   District 07132 DE.RP.AT
+## 121      &lt;NA&gt;        Landkreis   District 07331 DE.RP.AW
+## 129      &lt;NA&gt;        Landkreis   District 07332 DE.RP.BD
+## 130      &lt;NA&gt;        Landkreis   District 07133 DE.RP.BK
+## 131      &lt;NA&gt;        Landkreis   District 07231 DE.RP.BW
+## 132      &lt;NA&gt;        Landkreis   District 07134 DE.RP.BR
+## 133      &lt;NA&gt;        Landkreis   District 07135 DE.RP.CZ
+## 134      &lt;NA&gt;        Landkreis   District 07333 DE.RP.DN
+## 100      &lt;NA&gt;        Landkreis   District 07232 DE.RP.EB
+## 101      &lt;NA&gt; Kreisfreie Stadt   District 07311 DE.RP.FA
+## 102      &lt;NA&gt;        Landkreis   District 07334 DE.RP.GR
+## 104      &lt;NA&gt;        Landkreis   District 07335 DE.RP.KL
+## 103      &lt;NA&gt; Kreisfreie Stadt   District 07312 DE.RP.KL
+## 105      &lt;NA&gt; Kreisfreie Stadt   District 07111 DE.RP.KO
+## 106      &lt;NA&gt;        Landkreis   District 07336 DE.RP.KU
+## 107      &lt;NA&gt; Kreisfreie Stadt   District 07313 DE.RP.LP
+## 108      &lt;NA&gt; Kreisfreie Stadt   District 07314 DE.RP.LR
+## 111      &lt;NA&gt; Kreisfreie Stadt   District 07315 DE.RP.MI
+## 109      &lt;NA&gt;        Landkreis   District 07339 DE.RP.MB
+## 112      &lt;NA&gt;        Landkreis   District 07137 DE.RP.MK
+## 113      &lt;NA&gt; Kreisfreie Stadt   District 07316 DE.RP.NW
+## 114      &lt;NA&gt;        Landkreis   District 07138 DE.RP.NU
+## 115      &lt;NA&gt; Kreisfreie Stadt   District 07317 DE.RP.PR
+## 116      &lt;NA&gt;        Landkreis   District 07140 DE.RP.RH
+## 117      &lt;NA&gt;        Landkreis   District 07141 DE.RP.RN
+## 118      &lt;NA&gt;        Landkreis   District 07338 DE.RP.RZ
+## 119      &lt;NA&gt; Kreisfreie Stadt   District 07318 DE.RP.SE
+## 120      &lt;NA&gt;        Landkreis   District 07337 DE.RP.SW
+## 122      &lt;NA&gt;        Landkreis   District 07340 DE.RP.SD
+## 124      &lt;NA&gt; Kreisfreie Stadt   District 07211 DE.RP.TI
+## 123      &lt;NA&gt;        Landkreis   District 07235 DE.RP.TS
+## 125      &lt;NA&gt;        Landkreis   District 07233 DE.RP.VL
+## 126      &lt;NA&gt;        Landkreis   District 07143 DE.RP.WS
+## 127      &lt;NA&gt; Kreisfreie Stadt   District 07319 DE.RP.WR
+## 128      &lt;NA&gt; Kreisfreie Stadt   District 07320 DE.RP.ZE
+## 135      &lt;NA&gt;        Landkreis   District 10042 DE.SL.MW
+## 136      &lt;NA&gt;        Landkreis   District 10043 DE.SL.NU
+## 137      &lt;NA&gt;        Landkreis   District 10041 DE.SL.SB
+## 138      &lt;NA&gt;        Landkreis   District 10044 DE.SL.SA
+## 139      &lt;NA&gt;        Landkreis   District 10045 DE.SL.SP
+## 140      &lt;NA&gt;        Landkreis   District 10046 DE.SL.SW
+## 7        &lt;NA&gt;         Province  Provincie  &lt;NA&gt;    BE.BW
+## 8        &lt;NA&gt;         Province  Provincie  &lt;NA&gt;    BE.HT
+## 9        &lt;NA&gt;         Province  Provincie  &lt;NA&gt;    BE.LG
+## 10       &lt;NA&gt;         Province  Provincie  &lt;NA&gt;    BE.LX
+## 11       &lt;NA&gt;         Province  Provincie  &lt;NA&gt;    BE.NA
+## 1        &lt;NA&gt;             &lt;NA&gt;       &lt;NA&gt;  &lt;NA&gt;     &lt;NA&gt;</code></pre>
+<p>
+And now I can continue following the tutorial from the <code>{echarts4r}</code> website, by converting this <code>SpatialPolygonsDataFrame</code> object for the Greater Region into a geojson file which can now be used to draw maps! You can take a look at the final result <a href="https://happy-newton-bf63ad.netlify.app/">here</a>.
+</p>
+<p>
+I don’t post the code to draw the map here, because it would require some more tinkering by joining the COVID data. But you can find my raw script <a href="https://github.com/b-rodrigues/covidGrandeRegion/blob/master/data-raw/maps.R">here</a> (lines 51 to 61) or you could also take a look at the <code>draw_map()</code> function from the package I made, which you can find <a href="https://github.com/b-rodrigues/covidGrandeRegion/blob/master/R/draw_map.R">here</a>.
+</p>
+<p>
+I really like the end result, <code>{echarts4r}</code> is really a fantastic package! Stay tuned part 2 of the project, which will deal with machine learning.
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
