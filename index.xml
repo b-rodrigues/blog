@@ -10,7 +10,1179 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Tue, 19 Dec 2023 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 28 Aug 2024 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science</title>
+  <link>https://b-rodrigues.github.io/posts/2024-08-27-nix_for_r_part_12.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/guess_we_doin_pdfs.png" width="60%">
+</p>
+</div>
+<p>
+Nix is not only a package manager, but also a build automation tool, and you can use it to build polyglot data science pipelines in a completely reproducible way.
+</p>
+<p>
+For example, suppose that you need to mix Python, R and maybe some others tools for a project (by the way, some believe this will become the norm in the coming years, use your favourite search engine to look for “polyglot data science” and you’ll see), and suppose that you want to define your project as a nice reproducible pipeline, and not simply a series of scripts. What are the options available to you?
+</p>
+<p>
+One option would be to use the <code>{targets}</code> package for R, which allows you to do lay out your project as pipeline. But as amazing as <code>{targets}</code> is, it only works with R. If you also need Python, you would then need to also use the <code>{reticulate}</code> package to interface with it. But what do you do if you need some other command line tools? Well, you could wrap them in an R function using <code>system()</code> or <code>system2()</code>. But what if you need yet another language, like Julia? There might be a way to call Julia from R, but as you see, the more diverse tools you need, the more complex it gets. And it doesn’t really matter if you switch from <code>{targets}</code> to another such package that exists for, say, Python, you would always need to write wrappers or use packages that allow you to call the other programming languages that you need.
+</p>
+<p>
+Another possibility is to use good old <code>make</code>. <code>make</code> is a tool from the GNU project that allows you to define <em>targets</em>, which would be the outputs of a script or call to some cli tool by writing so-called <code>Makefiles</code>. For an example of a <code>Makefile</code> in research, take a look at <a href="https://github.com/grantmcdermott/skeptic-priors/blob/master/Makefile">this one</a> from a <a href="https://link.springer.com/article/10.1007/s10584-021-03089-x">paper</a> by <a href="https://mastodon.social/@gmcd">Grant McDermott</a>. You can use <code>make</code> as a to orchestrate several programming languages or cli tools, but you will need to write code to pass data from one script to the other. <code>{targets}</code> deals with that transparently by serialising all the targets’ outputs using <code>saveRDS()</code> but this only works because only R is supported. But if you’re trying to make R, Python, and whatever else work together, you will need to deal with this manually and find a common interface to pass data around.
+</p>
+<p>
+Despite this, using <code>make</code>, or some other tool on top of the required programming languages (and not tied to either one), is likely the best solution and it turns out that Nix can be used just like that! But why use Nix and not <code>make</code> then? Well, using Nix guarantees that whatever you produce will be completely reproducible. With <code>make</code>, you would need to either run it inside a Docker image or… inside a development environment built with Nix! I did something similar in <a href="https://www.brodrigues.co/blog/2023-07-19-nix_for_r_part2/">this blog post</a> where I ran a <code>{targets}</code> pipeline inside a Nix environment to make the analysis reproducible.
+</p>
+<p>
+But if I’m already defining a reproducible development environment using Nix, why not go all the way and build a complete project using Nix? After all, Nix allows you to package <em>software</em> and what is <em>software</em> but 0’s and 1’s? And what is a trained model, a paper or report in the PDF format, predictions exported into a CSV file, etc, if not 0’s and 1’s?
+</p>
+<p>
+Just like with any other build automation tool, Nix will only rebuild the project if something changes, and will only rebuild the parts that need to be rebuilt. So if you change a file somewhere, only whatever depends on this file will get rebuilt, just like with <code>{targets}</code>, or <code>make</code>.
+</p>
+<p>
+In the <a href="https://github.com/b-rodrigues/nixbat/tree/master">following repository</a> you can find an example of this.
+</p>
+<p>
+This is a very simple project: two functions are defined in the <code>python_functions.py</code> script. These functions are nothing special, and could be used interactively. One function reads a <code>.csv</code> file from the Internet and returns it, the other does some basic cleaning. Here are these two functions included in the <code>python_functions.py</code> file:
+</p>
+<pre><code>from pandas import read_csv
+
+def download_iris(iris_csv_url):
+    # Read the CSV file
+    df = read_csv(iris_csv_url)
+
+    return df
+
+def process_iris(iris_csv_path):
+    # Read the CSV file
+    df = read_csv(iris_csv_path)
+
+    # Replace the species numbers with their corresponding names
+    species_mapping = {0: "setosa", 1: "virginica", 2: "versicolor"}
+    df['species'] = df['species'].replace(species_mapping)
+
+    return df</code></pre>
+<p>
+Then, I want to use <code>{ggplot2}</code> to plot this data. You will notice the lack of R script in the repo. I did this on purpose, because I wanted to show how you could directly write R code inside of a Nix expression. But in practice, it is better to have Python code in a Python script, R code in an R script, and then use Nix to orchestrate the whole thing. But I just wanted to show you that you could, if you wanted to, have a completely self-contained Nix expression that encapsulates the business logic as well.
+</p>
+<p>
+There’s also a <code>.Qmd</code> file: this is the file that will get compiled into a PDF document, and is the output of the whole project. It could be anything else! As I stated above, this is just 0’s and 1’s so it could very well be some other output, it doesn’t really matter.
+</p>
+<p>
+Let’s now take a look at the <code>default.nix</code> that builds the whole thing. Let’s start by the top-level definitions:
+</p>
+<pre><code>let
+  pkgs =
+    import
+      (fetchTarball "https://github.com/NixOS/nixpkgs/archive/27285241da3bb285155d549a11192e9fdc3a0d04.tar.gz")
+      { };
+
+  tex = (
+    pkgs.texlive.combine {
+      inherit (pkgs.texlive) scheme-small;
+    }
+  );
+
+  # Because building happens in sandbox that cannot connect to the internet
+  # we need to download assets beforehand
+  iris_path = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/b-rodrigues/nixbat/7c319bcdbe15e7f7182e7685b8de176a40d0bde9/iris.csv";
+    hash = "sha256-2H6THCXKxIt4yxnDDY+AZRmbxqs7FndCp4MqaAR1Cpw=";
+  };
+
+  # Common python dependencies to use in my intermediary inputs
+  pythonEnv = pkgs.python312.withPackages (ps: with ps; [ pandas ]);
+
+  # Common python sources
+  python_src = pkgs.lib.fileset.toSource {
+    root = ./.;
+    fileset = ./python_functions.py;
+  };</code></pre>
+<p>
+Some variables are defined there:
+</p>
+<ul>
+<li>
+<code>pkgs</code>: this is the set of Nix packages to be used. All the dependencies of the project will get built using the Nix expressions available in the <code>nixpkgs</code> Github repository at a specific commit. This ensures that the output of this expression will always be exactly the same.
+</li>
+<li>
+<code>tex</code>: defines the set of LaTeX packages I need to compile the PDF.
+</li>
+<li>
+<code>iris_path</code>: the Python function I use to load the data takes a path, or url, to read the iris dataset. Because building a derivation happens in a sandbox, I need to download assets beforehand. This is what the <code>fetchurl</code> function does. I can then refer to the file path using <code>${iris_path}</code> later on.
+</li>
+<li>
+<code>pythonEnv</code>: This lists the dependencies I will need to run my Python functions.
+</li>
+<li>
+<code>pythonSrc</code>: Defines the path to the <code>python_functions.py</code> file.
+</li>
+</ul>
+<p>
+Then, I want to call each of my functions separately, and I want them to produce a single output. So for this, I now build a derivation, one per output. I start with the first one:
+</p>
+<pre><code>downloadCsv = pkgs.stdenv.mkDerivation {
+  name = "download-csv";
+  buildInputs =  [ pythonEnv ];
+  src = pythonSrc;
+  buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import download_iris
+
+iris_raw = download_iris('${iris_path}')
+
+iris_raw.to_csv('iris_raw.csv', index=False)
+      "
+    '';
+  installPhase = ''
+    mkdir -p $out
+    cp iris_raw.csv $out/
+  '';
+  };</code></pre>
+<p>
+At first sight, there might seem that a lot is going on, but let’s take a closer look:
+</p>
+<ul>
+<li>
+first I give it a name: <code>name = “download-csv”</code>
+</li>
+<li>
+second, I list its dependencies in <code>buildInputs</code>. This is what’s required to build the target!
+</li>
+<li>
+then, I provide the source, in this case the <code>python_functions.py</code> file
+</li>
+</ul>
+<p>
+Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><img src="https://latex.codecogs.com/png.latex?%7Biris_path%7D%3C/code%3E%20to%20refer%20to%20the%20path%20to%20the%0Afile%20defined%20above.%20Finally,%20in%20the%20%3Ccode%3EinstallPhase%3C/code%3E%20I%20copy%20the%20%3Ccode%3E.csv%3C/code%3E%20file%20to%0A%3Ccode%3E">out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
+</p>
+<p>
+In the next derivation, I now use the second Python function to clean the data:
+</p>
+<pre><code>cleanCsv = pkgs.stdenv.mkDerivation {
+    name = "clean-csv";
+    buildInputs =  [ pythonEnv ];
+    src = pythonSrc;
+    buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import process_iris
+
+iris = process_iris('${downloadCsv}/iris_raw.csv')
+
+iris.to_csv('iris.csv', index=False)
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp iris.csv $out/
+    '';
+  };</code></pre>
+<p>
+This is not very different than what I did before. Just notice how I refer to the output of the first derivation: <code>${downloadCsv}/iris_raw.csv</code>.
+</p>
+<p>
+Now comes the last intermediary derivation, the one that uses R to create a plot:
+</p>
+<pre><code>generatePlot = pkgs.stdenv.mkDerivation {
+    name = "generate-plot";
+    buildInputs = with pkgs; [
+      R
+      rPackages.ggplot2
+      rPackages.janitor
+    ];
+    dontUnpack = true;
+    buildPhase = ''
+            Rscript -e "
+
+      library(ggplot2)
+      library(janitor)
+
+      iris &lt;- read.csv('${cleanCsv}/iris.csv') |&gt;
+        clean_names() |&gt;
+        transform(species = as.character(species))
+
+      p &lt;- ggplot(iris,
+                  aes(x = sepal_length, y = sepal_width, color = species)) +
+          geom_point(size = 3) +
+          labs(title = 'Sepal Length vs Sepal Width',
+               x = 'Sepal Length',
+               y = 'Sepal Width') +
+          theme_minimal() +
+          theme(plot.title = element_text(hjust = 0.5))
+
+
+      ggsave('plot.png', plot = p, width = 6, height = 4, dpi = 300)
+
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp plot.png $out/
+    '';
+  };</code></pre>
+<p>
+As I said above, to make this better, it would need to be a function defined in its own R script, as this way there’s a nice separation of concerns. On one hand, there’s the business logic in Python and R scripts, and on the other there’s the orchestration in Nix. Putting R code in the Nix expression makes this less flexible, but I wanted to show you that this is also a possibility!
+</p>
+<p>
+Now comes the last part of the Nix expression, the actual thing I want to build, a PDF that uses the generated plot as an input:
+</p>
+<pre><code>in
+# Derivation to generate the PDF report from Markdown
+pkgs.stdenv.mkDerivation {
+  name = "generate-report";
+  buildInputs = [
+    pkgs.quarto
+    tex
+  ];
+  src = pkgs.lib.fileset.toSource {
+        root = ./.;
+        # Only include report.Qmd in the source
+        fileset = ./report.Qmd;
+  };
+  buildPhase = ''
+
+    cp ${generatePlot}/plot.png .
+
+    # Deno needs to add stuff to $HOME/.cache
+    # so we give it a home to do this
+    mkdir home
+    export HOME=$PWD/home
+    quarto render report.Qmd --to pdf
+
+  '';
+
+  installPhase = ''
+    mkdir -p $out
+    cp report.pdf $out/
+  '';
+}</code></pre>
+<p>
+Notice the dependencies of this derivation: <code>quarto</code> and <code>tex</code> (<code>tex</code> is the variable I defined right at the beginning that lists LaTeX packages). I then need to specify <code>report.Qmd</code> as the source of this derivation, and copy the plot generated before in R into the working/build directory. There’s also a idiosyncrasy where a dependency of Quarto, Deno, needs to have a directory to save some stuff in it. Nix being Nix, we need to manually define such a home directory for reproducibility purposes. If it would be using my <code>home/</code> directory on my machine, this wouldn’t be reproducible! We finish the <code>buildPhase</code> by rendering the document, and then <em>install</em> it into <code>$out/</code>. To build this project, you need to have Nix installed and then type <code>nix-build</code>, or alternatively, <code>nix-build -Q</code> which hides all the output of the build phases (so you don’t see any warnings or messages thrown by either Python or R).
+</p>
+<p>
+This will build the PDF, which you can then find in the Nix store. You’ll notice a file called <code>result</code> appear next to all your other files from the project. In a terminal, call <code>readlink result</code> and this will show you the path to the generated PDF, which you can now read!
+</p>
+<p>
+In conclusion, I think that this is a really useful way to orchestrate code written in different programming languages, but I would not use this for monolingual projects. For R, I’ll keep using <code>{targets}</code> together with a Nix shell to ensure reproducibility. Also, to really benefit from this, your code needs, ideally, to be written as a series of functions, each outputting a single object. Instead, if you write a script to orchestrate the whole thing in R or Python, and then put a Nix expression on top of it, I’m not sure it’s really worth it. Might as well just use a Nix shell then and execute your scripts in it.
+</p>
+<p>
+Also, let me state that this is my first attempt at using Nix for such a purpose, and there might be a better/more elegant way of doing it, so if you have any input, don’t hesitate!
+</p>
+<p>
+<em>Thanks to <a href="https://discourse.nixos.org/t/derivation-gets-always-rebuilt/51246/3">the amazing Nix community for helping out!</a></em>
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-08-27-nix_for_r_part_12.html</guid>
+  <pubDate>Wed, 28 Aug 2024 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Reproducible data science with Nix, part 13 – {rix} is on CRAN!</title>
+  <link>https://b-rodrigues.github.io/posts/2024-09-27-nix_part_13.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div data-align="center">
+<p>
+<a href="https://docs.ropensci.org/rix"> <img src="https://b-rodrigues.github.io/assets/img/rix-logo.png" width="100%" height="auto"> </a>
+</p>
+</div>
+<p>
+<em>Simplifies the creation of reproducible data science environments using the ‘Nix’ package manager, as described in Dolstra (2006) <a href="https://dspace.library.uu.nl/handle/1874/7540">&lt;ISBN 90-393-4130-3&gt;</a>. The included ‘rix()’ function generates a complete description of the environment as a ‘default.nix’ file, which can then be built using ‘Nix’. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. Additional helpers make it easy to run R code in ‘Nix’ software environments for testing and production.</em>
+</p>
+<p>
+After 15 months of coding, 1364 commits, 143 closed issues, 175 closed PRs, an rOpenSci pre-review, an rOpenSci review, <code>{rix}</code> is finally on <a href="https://cran.r-project.org/web/packages/rix/index.html">CRAN</a>!
+</p>
+<p>
+You can now install <code>{rix}</code> using good old <code>install.packages()</code>. Soon, <code>{rix}</code> will also be included into the <code>nixpkgs</code> collection of packages, meaning that you will be able to install <code>{rix}</code> with Nix.
+</p>
+<p>
+Important sidenote: as it so happened, there is currently a bug in the released CRAN version that we thought we had solved, which we did, but only partially. When running <code>rix::rix()</code> two files should be generated: a <code>default.nix</code> and an <code>.Rprofile</code> for your project. It turns out that this file can be empty. If it is, run <code>rix::rix_init(rprofile_action = “overwrite”)</code> to generate a proper <code>.Rprofile</code>. This is important, especially on Mac or if you have a system-wide library of packages! We will submit a fix asap.
+</p>
+<p>
+If you want to watch a 5-Minute video introduction:
+</p>
+<div data-align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/OOu6gjQ310c?si=tQ-s9ZgEBxak8k8G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">
+</iframe>
+</div>
+<p>
+Btw, here is what <a href="https://github.com/boyter/scc">scc</a> has to say about the estimated cost of the project:
+</p>
+<p>
+<code>scc –format=html-table –avg-wage 100000 .</code>
+</p>
+<div data-align="center">
+<table class="table">
+<colgroup>
+<col width="15%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="13%">
+<col width="10%">
+<col width="16%">
+<col width="11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>
+<strong>Language</strong>
+</th>
+<th align="right">
+<strong>Files</strong>
+</th>
+<th align="right">
+<strong>Lines</strong>
+</th>
+<th align="right">
+<strong>Blank</strong>
+</th>
+<th align="right">
+<strong>Comment</strong>
+</th>
+<th align="right">
+<strong>Code</strong>
+</th>
+<th align="right">
+<strong>Complexity</strong>
+</th>
+<th align="right">
+<strong>Bytes</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>
+YAML
+</td>
+<td align="right">
+61
+</td>
+<td align="right">
+2798
+</td>
+<td align="right">
+320
+</td>
+<td align="right">
+174
+</td>
+<td align="right">
+2304
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+69187
+</td>
+</tr>
+<tr class="even">
+<td>
+R
+</td>
+<td align="right">
+33
+</td>
+<td align="right">
+4515
+</td>
+<td align="right">
+483
+</td>
+<td align="right">
+1225
+</td>
+<td align="right">
+2807
+</td>
+<td align="right">
+389
+</td>
+<td align="right">
+153288
+</td>
+</tr>
+<tr class="odd">
+<td>
+Nix
+</td>
+<td align="right">
+10
+</td>
+<td align="right">
+781
+</td>
+<td align="right">
+95
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+686
+</td>
+<td align="right">
+32
+</td>
+<td align="right">
+18644
+</td>
+</tr>
+<tr class="even">
+<td>
+Markdown
+</td>
+<td align="right">
+5
+</td>
+<td align="right">
+1371
+</td>
+<td align="right">
+339
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+1032
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+63758
+</td>
+</tr>
+<tr class="odd">
+<td>
+JSON
+</td>
+<td align="right">
+1
+</td>
+<td align="right">
+147
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+147
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+4637
+</td>
+</tr>
+<tr class="even">
+<td>
+Plain Text
+</td>
+<td align="right">
+1
+</td>
+<td align="right">
+41
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+41
+</td>
+<td align="right">
+0
+</td>
+<td align="right">
+2269
+</td>
+</tr>
+<tr class="odd">
+<td>
+<strong>Total</strong>
+</td>
+<td align="right">
+<strong>111</strong>
+</td>
+<td align="right">
+<strong>9653</strong>
+</td>
+<td align="right">
+<strong>1237</strong>
+</td>
+<td align="right">
+<strong>1399</strong>
+</td>
+<td align="right">
+<strong>7017</strong>
+</td>
+<td align="right">
+<strong>421</strong>
+</td>
+<td align="right">
+<strong>311783</strong>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>
+Estimated Cost to Develop (organic) $371,264 - Estimated Schedule Effort (organic) 7.59 months - Estimated People Required (organic) 2.45
+</p>
+<p>
+Don’t hesitate to give <code>{rix}</code> a try and let us know how it goes!
+</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-09-27-nix_part_13.html</guid>
+  <pubDate>Wed, 28 Aug 2024 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Reproducible data science with Nix, part 11 – build and cache binaries with Github Actions and Cachix</title>
+  <link>https://b-rodrigues.github.io/posts/2024-04-04-nix_for_r_part_11.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/own_cache.jpg" width="60%">
+</p>
+</div>
+<section id="intro" class="level2">
+<h2 class="anchored" data-anchor-id="intro">
+Intro
+</h2>
+<p>
+I have this package on CRAN called <code>{chronicler}</code> and last month I got an email from CRAN telling me that building the package was failing, and I had two weeks to fix it.
+</p>
+<p>
+I immediately thought that some dependency that my package depends on got updated, and somehow broke something. But when I checked the results of the build, I was surprised, to say the least:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/chronicler_check_results.png" width="80%">
+</p>
+</div>
+<p>
+How come my package was only failing on Fedora? Now that was really weird. There was no way this was right. Also, I couldn’t reproduce this bug on my local machine… but I could reproduce it on Github Actions, on Ubuntu (but it was ok on CRAN’s Debian which is really close to Ubuntu!), but couldn’t reproduce it either on Windows! What was going on? So I started digging, and my first idea was to look at the list of packages that got released on CRAN on that day (March 12th 2024) or just before, and saw something that caught my eye: a new version of <code>{tidyselect}</code> had just been released and even though my package doesn’t directly depend on it, I knew that this package was likely a dependency of some direct dependency of <code>{chronicler}</code>. So I looked into the release notes, and there it was:
+</p>
+<pre><code>* `eval_select()` out-of-bounds errors now use the verb "select" rather than
+  "subset" in the error message for consistency with `dplyr::select()` (#271).</code></pre>
+<p>
+I knew this was what I was looking for, because the unit test that was failing to pass was a test that should error because <code>dplyr::select()</code> was being used on a column that didn’t exist. So the success of that test was defined as <em>finding the following error message in the log</em>, which contained the word <em>subset</em> but now it should be <em>select</em>.
+</p>
+<p>
+But why was this failing only on Fedora on CRAN and on Ubuntu on Github Actions (but ok on Debian on CRAN)? And why couldn’t I reproduce the bug on my OpenSuse Linux computer, even though I was building a bleeding edge development environment using Nix?
+</p>
+<p>
+And then it hit me like my older brother used to.
+</p>
+<p>
+When building packages, CRAN doesn’t seem to use pre-compiled binaries on Fedora, so packages get built from source. This means that it takes longer to test on Fedora, as packages have to be built from source, but it also means that only the very latest releases of packages get used. On other platforms, pre-compiled binaries get used if available, and because <code>{tidyselect}</code> had just come out that very day, older binaries of <code>{tidyselect}</code> were being used on these platforms, but not on Fedora. And because these older binaries didn’t include this change, the unit test was still passing successfully on there.
+</p>
+<p>
+On Github Actions, code coverage was computed using <code>covr::codecov()</code> which installs the package in a temporary directory and seems to pull its dependencies directly from CRAN. Because CRAN doesn’t offer Linux binaries packages got compiled from source, hence why the test was failing there, as the very latest version of <code>{tidyselect}</code> was being used (btw, use Dirk Eddelbuettel’s <a href="https://github.com/eddelbuettel/r2u">r2u</a> if you binaries for Ubuntu).
+</p>
+<p>
+And on my local machine, even though I was using the latest commit of <code>nixpkgs</code> to have the most bleeding edge packages for my environment, I had forgotten that the R packages on <code>nixpkgs</code> always lag behind the CRAN releases.
+</p>
+<p>
+This is because R packages on <code>nixpkgs</code> tend to get updated alongside a new release of R, and the reason is to ensure a certain level of quality. You see, the vast majority of CRAN (and Bioconductor) packages are made available through <code>nixpkgs</code> in a fully automated way. But some packages do require some manual intervention to work on Nix. And we only know this if we try to build these packages, but building packages requires quite a lot of resources. I go into more detail <a href="https://www.brodrigues.co/blog/2024-02-29-nix_for_r_part_10/">here</a>, but in summary we can’t build CRAN packages every single day to see if everything works well, so we only rebuild the whole tree whenever there’s a new release of R. Packages get built on a CI infrastructure called <em>Hydra</em>, and then get cached on <code>cache.nixos.org</code> so whenever someone wants to install a package, a pre-built binary gets pulled from the cache instead of getting installed from source. For packages that don’t need compiling this is not that big of a time save, but for packages that do need to get compiled it is huge. Depending on which packages you want to install, if you had to build everything from source, it could potentially take hours, but if you can install pre-built binaries it’s just a matter of how quick your internet connection is.
+</p>
+<p>
+Anyways, I went back to my fork of <code>nixpkgs</code> and updated the expression defining the CRAN packages myself and installed the latest versions of packages from my fork.
+</p>
+<p>
+Before the update, this was the error message I was testing against:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/cant_subset.png" width="80%">
+</p>
+</div>
+<p>
+and this was on version 1.2.0 of <code>{tidyselect}</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/tidyselect_120.png" width="50%">
+</p>
+</div>
+<p>
+but after the update, this was the error message:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/cant_select.png" width="80%">
+</p>
+</div>
+<p>
+on version 1.2.1 of <code>{tidyselect}</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/tidyselect_121.png" width="50%">
+</p>
+</div>
+<p>
+so I found the issue, and updated my unit testing accordingly, and pushed the update to CRAN. All is well that ends well, but… this made me think. I needed to have an easy way to have bleeding edge packages on hand from Nix at all moments, and so I started working on it.
+</p>
+</section>
+<section id="github-actions-to-the-rescue" class="level2">
+<h2 class="anchored" data-anchor-id="github-actions-to-the-rescue">
+Github Actions to the rescue
+</h2>
+<p>
+As described in my <a href="../posts/2024-02-29-nix_for_r_part_10.html">previous blog post</a> updating the Nix expressions defining the R packages on <code>nixpkgs</code> involves running an R script that generates a Nix expression which then builds the R packages when needed. So what I did was create a Github actions that would run this R script every 6 hours, and push the changes to a branch of my <code>nixpkgs</code> fork. This way, I would always have the possibility to use this branch if I needed bleeding edge packages. Because this can be of interest to others, <a href="https://github.com/philipp-baumann">Philipp Baumann</a> started a Github organisation hosting this fork of <code>nixpkgs</code> that gets updated daily which you can find <a href="https://github.com/rstats-on-nix">here</a>. Because this action needs to run several times a day, it should be on a schedule, but actions on a schedule can only run from master/main. But that’s not what we wanted, so instead, we are using another action, on another repository, that pushes a random file to the target repository to get the action going. You can find this repository <a href="https://github.com/b-rodrigues/trigger-r-updates">here</a> with complete instructions. So to summarise:
+</p>
+<ul>
+<li>
+An action on schedule runs from b-rodrigues/trigger-r-updates and pushes a file to rstats-on-nix/nixpkgs on the <code>r-daily-source</code> branch
+</li>
+<li>
+This triggers an action that updates all of <code>nixpkgs</code>, including R packages, and pushes all the updates to the <code>r-daily</code> branch (you can find it <a href="https://github.com/rstats-on-nix/nixpkgs/blob/r-daily-source/.github/workflows/r-daily.yml">here</a>)
+</li>
+<li>
+We can now use the <code>r-daily</code> branch to get bleeding edge R packages on Nix!
+</li>
+</ul>
+<p>
+This happens without any form of testing though, so packages could be in a broken state (hey, that’s the definition of bleeding edge, after all!), and also, if anyone would like to use this fork to build a development environment, they’d have to rebuild a lot of packages from source. Again, this is because these packages are defined in a fork of <code>nixpkgs</code> and they don’t get built on Hydra to populate the public cache that Nix uses by default. So while this fork is interesting because it provides bleeding edges packages, using it on a day-to-day basis can be quite tedious.
+</p>
+<p>
+And this is where <a href="https://www.cachix.org/">Cachix</a> comes into play.
+</p>
+</section>
+<section id="setting-up-your-own-binary-cache-on-cachix" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-your-own-binary-cache-on-cachix">
+Setting up your own binary cache on Cachix
+</h2>
+<p>
+<a href="https://www.cachix.org/">Cachix</a> is an amazing tool that makes it incredibly easy to set up your own cache. Simply build the packages once, and push the binaries to the cache. As long as these packages don’t get updated, they’ll get pulled from the cache instead of getting rebuilt.
+</p>
+<p>
+So now, here is what I do with my packages: I define a <code>default.nix</code> file that defines a development environment that uses my fork of <code>nixpkgs</code> as the source for packages. For example, <a href="https://github.com/b-rodrigues/rix/blob/master/default.nix">here</a> is this file that defines the environment for my <code>{rix}</code> package. I can use this environment to work on my package, and make sure that anyone else that wants to contribute, contributes using the same environment. As you can see on line 2, the <code>rstats-on-nix</code> bleeding edge fork gets used:
+</p>
+<pre><code> pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz") {};</code></pre>
+<p>
+Then, still on <code>{rix}</code>’s repository, I define a new action that builds this environment periodically, but using the binary cache I set up with Cachix. You can find this action <a href="https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix-dev-env.yml">here</a>. So the <code>r-daily</code> branch of our <code>nixpkgs</code> fork gets updated every 6 hour and this environment gets updated every 12 hours, 30 minutes past the hour.
+</p>
+<p>
+Now, every time I want to work on my package, I simply use <code>nix-build</code> on my computer to update the development environment. This is what I see:
+</p>
+<pre><code>copying path '/nix/store/0l0iw4hz7xvykvhsjg8nqkvyl31js96l-r-stringr-1.5.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/cw3lc7b0zydsricl5155jbmldm1vcyvr-r-tibble-3.2.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/y32kpp09l34cdgksnr89cyvz6p5s94z8-r-tidyselect-1.2.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/sw24yx1jwy9xzq8ai5m2gzaamvyi5r0h-r-rematch2-2.1.2' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/z6b4vii7hvl9mc53ykxrwks1lkfzgmr4-r-dplyr-1.1.4' from 'https://b-rodrigues.cachix.org'...</code></pre>
+<p>
+as you can see, packages get pulled from my cache. Packages that are already available from the usual, public, <code>cache.nixos.org</code> don’t get rebuilt nor cached in mine; they simply continue getting pulled directly from there. This makes using the development environment very easy, and guarantees I’m always mirroring the state of packages released on CRAN. The other interesting thing is that I can use that cache with other actions. For example, <a href="https://github.com/b-rodrigues/rix/blob/master/.github/workflows/tests-r-via-nix.yaml">here</a> is the action that runs the unit tests included in the package in an environment that has Nix installed on it (some unit tests need Nix to be available to run). On line 25 you can see that we install Nix and set our fork as the repository to use:
+</p>
+<pre><code>nix_path: nixpkgs=https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz</code></pre>
+<p>
+and just below, we set up the cache:
+</p>
+<pre><code>- uses: cachix/cachix-action@v14
+  with:
+    name: b-rodrigues # this is the name of my cache</code></pre>
+<p>
+By using my cache, I make sure that the test runs with the freshest possible packages, and don’t run the risk of having a test succeed on an outdated environment. And you might have noticed that I am not authenticating to Cachix: to simply pull binaries, to authentication is needed!
+</p>
+<p>
+Cachix has a free plan of up to 5Gb which is more than enough to set up several development environments like this, and is really, really, easy to set up, and it works on your computer and on Github Actions, as shown. If you want to use this development environment to contribute to <code>{rix}</code>, check out the instructions on <a href="https://github.com/b-rodrigues/rix/blob/master/CONTRIBUTING.md#development-environment">Contributing.md</a> file.
+</p>
+<p>
+You can use the same approach to always have development environments ready for your different projects, and I will likely add the possibility to use this fork of <code>nixpkgs</code> with my <code>{rix}</code> package.
+</p>
+<p>
+<em>Thanks to <a href="https://github.com/philipp-baumann">Philipp Baumann</a> for nudging me into the direction of using Cachix and showing the way!</em>
+</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-04-04-nix_for_r_part_11.html</guid>
+  <pubDate>Thu, 04 Apr 2024 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Reproducible data science with Nix, part 10 – contributing to nixpkgs</title>
+  <link>https://b-rodrigues.github.io/posts/2024-02-29-nix_for_r_part_10.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/nix_parents.jpg" width="60%">
+</p>
+</div>
+<p>
+I’ve very recently started contributing to the <code>nixpkgs</code> repository of packages, which contains all the packages you can install from the Nix package manager. My contributions are fairly modest: I help fix R packages that need some tweaking to make them successfully build for Nix. Most of these fixes are very simple one-liners.
+</p>
+<p>
+Most users of any free and open source tool rarely contribute to the development of this tool: I don’t think it is due to lack of skills and/or time or interest, but mostly because starting to contribute to a tool requires some knowledge that is rarely written down (even more so for an entire ecosystem). These tools and ecosystems grow organically, and if you’re not in the right spot at the right time or are not lucky enough to have kind people taking time to explain things to you, contributing might feel completely overwhelming.
+</p>
+<p>
+Thankfully, I was very lucky to have found the small but very active community of R contributors to <code>nixpkgs</code> on <a href="https://matrix.to/#/#r:nixos.org">Matrix</a> which very kindly took the time to bring me up to speed!
+</p>
+<p>
+I wanted to share my experiences in this blog post: but this blog post is not just going to be about me contributing to <code>nixpkgs</code> from the perspective of an R user (and giving you some pointers on how to start yourself), but also about how I built a report (let’s call it like that) to keep track of which R packages got fixed. This report is built using R, Nix, Github Actions and lists all the failed R package builds from Hydra (more on this later). The report gets updated every day automatically at midnight, and is accessible <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a>. I also used a very minimalistic approach to build this: no <code>{tidyverse}</code> packages, and no Quarto. Why? Mostly just to keep dependencies at a minimum to accelerate CI/CD, but also for fun. And honestly, I must admit that base R is more than capable on its own and had forgotten that.
+</p>
+<section id="contributing-to-nixpkgs" class="level2">
+<h2 class="anchored" data-anchor-id="contributing-to-nixpkgs">
+Contributing to nixpkgs
+</h2>
+<p>
+As explained in <a href="https://www.brodrigues.co/blog/2023-12-19-nix_for_r_part_8/">part 8</a>, <code>nixpkgs</code> is “nothing but” a huge GitHub repository containing thousands of Nix expressions. These expressions are then used to actually build the software that then gets installed by Nix. For example, <a href="https://github.com/NixOS/nixpkgs/blob/nixpkgs-unstable/pkgs/development/libraries/quarto/default.nix">this is the expression for Quarto</a>. As you can see, it starts by downloading the pre-compiled binary, and then applying “patches”. Essentially making sure that Quarto installed by Nix is able to find the other pieces installed by Nix that Quarto needs (Deno, Pandoc, Typst and so on). It then continues by installing Quarto itself (because we’re downloading a pre-compiled binary, <em>installation</em> consists in moving files in the right spot), finally some tests are executed (<code>quarto check</code>) and then some metadata is defined. Not every package is defined like this, with a single Nix expression, though. For example, individual R packages are not defined like this. Instead, every package from CRAN and Bioconductor gets built using only a handful of files that can be found <a href="https://github.com/NixOS/nixpkgs/tree/nixpkgs-unstable/pkgs/development/r-modules">here</a>.
+</p>
+<p>
+(By the way, you can look for packages and find their associated Nix expressions on the <a href="https://search.nixos.org/packages?channel=unstable&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=quarto">NixOS package search</a>).
+</p>
+<p>
+The way this works, is that periodically the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/generic-builder.nix"><code>generate-r-packages.R</code></a> script is run and generates the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/cran-packages.nix"><code>cran-packages.nix</code></a> file (and the equivalent Bioconductor files). For each package on CRAN, a line gets written in the script with the package’s name, its current version on CRAN, and very importantly its dependencies. For example, here is the line for <code>{dplyr}</code>:
+</p>
+<pre><code>dplyr = derive2 { name="dplyr"; version="1.1.4";
+   sha256="1jsq8pj12bngy66xms486j8a65wxvyqs944q9rxkiaylsla08wyg";
+   depends=[cli generics glue lifecycle magrittr pillar R6 rlang tibble tidyselect vctrs]; };</code></pre>
+<p>
+These dependencies are actually the packages that can be found in the <a href="https://github.com/tidyverse/dplyr/blob/main/DESCRIPTION"><code>DESCRIPTION</code></a> file under <code>Imports</code>. <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/cran-packages.nix"><code>cran-packages.nix</code></a> (and the same goes for the Bioconductor equivalents, <code>bioc-packages.nix</code>, <code>bioc-annotation-packages.nix</code> and <code>bioc-experiment-packages.nix</code>) get imported in the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/default.nix"><code>default.nix</code></a> file. In it, another file, <code>generic-builder.nix</code> gets also imported, which contains a function that will attempt building the package. Most of the time this succeeds, but some packages require further tweaks. Packages that have a field <code>NeedsCompilation</code> in their DESCRIPTION files are usually candidates for further tweaking: these packages require system-level dependencies, which are often listed under <code>SystemRequirements</code> (but not always, which complicates matters). For example, the <code>{terra}</code> package has these system requirements listed in itself DESCRIPTION file:
+</p>
+<pre><code>SystemRequirements:  C++17, GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), sqlite3</code></pre>
+<p>
+so these also need to be added if we want to build them on Nix. But if we look at the line for <code>{terra}</code> in <code>cran-packages.nix</code>, this is what we see:
+</p>
+<pre><code>terra = derive2 { name="terra"; version="1.7-65"; 
+  sha256="0m9s5am8l6il1q0skab614cx0qjsb1i9xcv6nm0sdzj7p9lrzkfl"; 
+  depends=[Rcpp]; };</code></pre>
+<p>
+Only <code>{Rcpp}</code> is listed, which is a dependency, yes, but an R package dependency, not a system-level requirement. System-level requirements need to be added in the <code>default.nix</code> file manually. In the <code>default.nix</code>, you’ll find a long list of packages called <code>packagesWithNativeBuildInputs</code> and <code>packagesWithBuildInputs</code>. <em>NativeBuildInputs</em> and <em>BuildInputs</em> are Nix jargon for dependencies the package needs, at compile-time and then at run-time specifically. For example, <code>{Rcpp}</code> is a <em>BuildInput</em> of <code>{terra}</code>, while the system-level requirements are <em>NativeBuildInputs</em> (in the context of R packages though, this rarely matters. If you want more details, refer to <a href="https://gist.github.com/b-rodrigues/c677b59126d05d43347ed9623ddd5b0c">this Gist</a> I’ve forked).
+</p>
+<p>
+For <code>{terra}</code>, this means that we need to add this line to the list <code>{packagesWithNativeBuildInputs}</code> (I simplified the syntax here a bit):
+</p>
+<pre><code>terra = [ gdal proj geos ];</code></pre>
+<p>
+<code>gdal</code>, <code>proj</code> and <code>geos</code> are the system requirements that need to be added for <code>{terra}</code> to build successfully on Hydra.
+</p>
+</section>
+<section id="hydra" class="level2">
+<h2 class="anchored" data-anchor-id="hydra">
+Hydra
+</h2>
+<p>
+<em>Hydra is a tool for continuous integration testing and software release that uses a purely functional language to describe build jobs and their dependencies</em> (source: <a href="https://hydra.nixos.org/build/248007843/download/1/hydra/#introduction">the Hydra Manual</a>)
+</p>
+<p>
+If you’re coming from R, think of Hydra as <a href="https://builder.r-hub.io/">R-hub</a>, which will check and build your R package before submitting to CRAN. Hydra periodically tries to rebuild packages. If that package fails, then the log gets hosted. When it comes to R packages, we can check which packages built successfully or not on <a href="https://hydra.nixos.org/jobset/nixpkgs/r-updates">here</a>.
+</p>
+<p>
+As of writing, the latest evaluation was in mid-January. A new release of R is going to get released on the 29th of February (or maybe was already released, I’m not sure when this blog post is going to get posted), and this is when new evaluations will likely be executed. Evaluations are the processes by which Nix expressions get… evaluated and used to actually build packages. So if we look into the results of the evaluation of the 17th of January, we see that 757 jobs failed:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/hydra_failing_jobs.jpg" width="80%">
+</p>
+</div>
+<p>
+One job doesn’t strictly correspond to one package though: packages get built for different architectures, and each architecture gets its build process. If we log into the details of the first package whose build failed <code>{AIUQ}</code>, we see this:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/hydra_failed.jpg" width="80%">
+</p>
+</div>
+<p>
+From the log we see that actually what failed one of its dependencies, <code>{SuperGauss}</code>, so fixing <code>{SuperGauss}</code> will likely fix <code>{AIUQ}</code> (I say likely because maybe another needed dependency also fails). So we could try to fix <code>{SuperGauss}</code> first. Let’s see why <code>{SuperGauss}</code>, by clicking on <code>raw</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/hydra_failed_raw.jpg" width="80%">
+</p>
+</div>
+<p>
+Here is what we see:
+</p>
+<pre><code>Running phase: unpackPhase
+unpacking source archive /nix/store/615bdvjchxrd7wp5m7dhg4g04yv7ncza-SuperGauss_2.0.3.tar.gz
+source root is SuperGauss
+setting SOURCE_DATE_EPOCH to timestamp 1645735202 of file SuperGauss/MD5
+Running phase: patchPhase
+Running phase: updateAutotoolsGnuConfigScriptsPhase
+Running phase: configurePhase
+Running phase: buildPhase
+Running phase: checkPhase
+Running phase: installPhase
+* installing *source* package 'SuperGauss' ...
+** package 'SuperGauss' successfully unpacked and MD5 sums checked
+** using staged installation
+checking for gcc... /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc accepts -g... yes
+checking for /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc option to accept ISO C89... none needed
+checking for pkg-config... no
+checking for FFTW... configure: error: in `/build/SuperGauss':
+configure: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables FFTW_CFLAGS
+and FFTW_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see &lt;http://pkg-config.freedesktop.org/&gt;.
+See `config.log' for more details
+ERROR: configuration failed for package 'SuperGauss'
+* removing '/nix/store/jxv5p85x24xmfcnifw2ibvx9jhk9f2w4-r-SuperGauss-2.0.3/library/SuperGauss'</code></pre>
+<p>
+This is essentially what we would see if we tried to install <code>{SuperGauss}</code> on Linux. The error message is quite clear here: a system-level dependency, <code>pkg-config</code> is missing. Looks like we found our first package to fix!
+</p>
+</section>
+<section id="fixing-a-package" class="level2">
+<h2 class="anchored" data-anchor-id="fixing-a-package">
+Fixing a package
+</h2>
+<p>
+The first step is to fork and clone the <code>nixpkgs</code> GitHub repository to your computer (be patient, the repository is huge so the download will take some time):
+</p>
+<pre><code>git clone git@github.com:b-rodrigues/nixpkgs.git</code></pre>
+<p>
+It’s also a good idea to add the original <code>nixpkgs</code> as an <code>upstream</code>:
+</p>
+<pre><code>git remote add upstream https://github.com/NixOS/nixpkgs</code></pre>
+<p>
+This way, you can pull changes from the original <code>nixpkgs</code> repository into your fork easily with:
+</p>
+<pre><code>git fetch upstream master
+git merge upstream/master</code></pre>
+<p>
+These two commands synchronize your local copy of the repository with upstream. So now we can create a new branch to try to fix <code>{SuperGauss}</code>:
+</p>
+<pre><code>git branch -b fix_supergauss</code></pre>
+<p>
+and then we should try to build <code>{SuperGauss}</code> locally. This is because it might have been fixed in the meantime by someone else, so let’s try to build it with (run the following command in a terminal at the root of your local copy of the <code>nixpkgs</code> repository):
+</p>
+<pre><code>nix-build -A rPackages.SuperGauss</code></pre>
+<p>
+but I often prefer to use this instead, because this will build the package and drop me into a shell where I can start R, load the package, and try it by running some of its examples:
+</p>
+<pre><code>nix-shell -I nixpkgs=/path/to/my/nixpkgs -p rPackages.SuperGauss R</code></pre>
+<p>
+If any of the commands above fail with the same error message as on Hydra, we know that it hasn’t been fixed yet. So the fix consists in opening the <code>pkgs/development/r-modules/default.nix</code> and add the following line:
+</p>
+<pre><code>SuperGauss = [ pkg-config ];</code></pre>
+<p>
+in either the lists <code>packagesWithBuildInputs</code> or <code>packagesWithNativeBuildInputs</code> (as explained above, it doesn’t really matter). Trying to rebuild <code>SuperGauss</code> again will result in a new error message. Another dependecy needs to be added:
+</p>
+<pre><code>SuperGauss = [ pkg-config fftw.dev ];</code></pre>
+<p>
+Then, building succeeds! We can now commit, push, and open a pull request. Commit messages need to be formatted in a certain way, as per <code>nixpkgs</code> <a href="https://github.com/NixOS/nixpkgs/blob/master/CONTRIBUTING.md">contributing guide</a>, so:
+</p>
+<pre><code>git add .
+git commit -m "rPackages.SuperGauss: add dependencies"</code></pre>
+<p>
+also, there should only be one commit per fix. So if in the process of fixing a package you commited several times, you will need to use <code>git rebase</code> to squash all the commits into one. Once you open the pull request, a maintainer will get pinged, and merge the PR if everything is alright (which is usually the case for these one-liners). You can see the PR for <code>{SuperGauss}</code> <a href="https://github.com/NixOS/nixpkgs/pull/287209">here</a>.
+</p>
+<p>
+The process is relatively simple once you did it once or twice, but there are some issues: there is no easy way to find out on which packages we should focus on. For example, is <code>{SuperGauss}</code> really that important? The fix was very simple, so it’s ok, but if it took more effort, should we spend the limited time we have on it, or should we focus on another package? Also, if someone has already opened a PR to fix a package, but that PR hasn’t been merged yet, if I try to also fix the same package and try to build the package, it would still fail. So I might think that no one is taking care of it, and waste time duplicating efforts instead of either focusing on another package, or reviewing the open PR to accelerate the process of merging.
+</p>
+<p>
+Discussing this with other contributors, <a href="https://fosstodon.org/deck/@kupac@functional.cafe">László Kupcsik</a> suggested we could use <code>{packageRank}</code> to find out which packages are getting a lot of downloads from CRAN, and so we could focus on fixing these packages first. This is a great idea and it gave me the idea to build some kind of report that would do this automatically for us, and also list opened and merged PRs so we wouldn’t risk duplicating efforts.
+</p>
+<p>
+This report can be found <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a> and now I’ll explain how I built it.
+</p>
+</section>
+<section id="which-packages-to-fix-and-keeping-track-of-prs" class="level2">
+<h2 class="anchored" data-anchor-id="which-packages-to-fix-and-keeping-track-of-prs">
+Which packages to fix and keeping track of PRs
+</h2>
+<p>
+So the main idea was to know on which packages to focus on. So essentially, we wanted this table:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/hydra_failing_jobs.jpg" width="80%">
+</p>
+</div>
+<p>
+but with <code>{packageRank}</code> added to it. So the first step was to scrape this table, using <code>{rvest}</code>. This is what you can find on lines 11 to 63 of this <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R">{targets} workflow</a> (alongside some basic cleaning). I won’t go too much into detail, but if something’s not clear, ping me on <a href="https://twitter.com/brodriguesco">twitter</a> or <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or even open an issue on the report’s <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/issues">repository</a>.
+</p>
+<p>
+Next I also get the reason the package failed building. So in the example from before, <code>{AIUQ}</code> failed because <code>{SuperGauss}</code> failed. On Hydra, you should be clicking to see this, but here I scrape it as well automatically, and add this information in a column called <code>fails_because_of</code>. This is what you can read on lines <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R#L65">65 to 77</a>. I use a function called <code>safe_get_failed_deps()</code>, which you can find in the <code>functions.R</code> script <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L41C1-L68C2">on here</a>. <code>safe_get_failed_deps()</code> wraps the main function, <code>get_failed_deps()</code>, with <code>tryCatch()</code>. This is because if anything goes wrong, I want my function to return <code>NULL</code> instead of an error, which would crash the whole pipeline.
+</p>
+<p>
+Next, I add the packages’ rank using a function that wraps <code>packageRank::packageRank()</code> called <code>safe_packageRank()</code> on <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R#L97">line 97</a>.
+</p>
+<p>
+<code>safe_packageRank()</code> uses <code>tryCatch()</code> to return <code>NULL</code> in case there’s an error. This is needed because <code>packageRank()</code> will only work on CRAN packages, but Hydra also tries to build Bioconductor packages: when these packages’ names get passed to <code>packageRank()</code>, an error gets returned because these are not CRAN packages:
+</p>
+<pre class="r"><code>packageRank("haha")
+Error: haha: misspelled or not on CRAN/Archive.</code></pre>
+<p>
+but instead of an error that would stop the pipeline, I prefer it simply returns <code>NULL</code>, hence <code>tryCatch()</code>. Also, I compute the rank of the package listed under the <code>fails_because_of</code> column and not the <code>package</code> column. If we go back to our example from before, <code>{AIUQ}</code> failed because <code>{SuperGauss}</code> failed, I’m actually interested in the rank of <code>{SuperGauss}</code>, and not <code>{AIUQ}</code> (which I way I went to all the trouble to scrape the failing dependency).
+</p>
+<p>
+So, for now, when comparing to the table on Hydra, we have two further columns with the dependency that actually fails (or not, if the package fails on its own and not because of a dependency), and the rank of either the dependency that fails or the package itself.
+</p>
+<p>
+Next, I’d like to see if PRs have already been opened and merged. For this, I use the <code>gh</code> tool, which is a command line tool to interact with GitHub repositories. I wrote the <code>get_prs()</code> wrapper around <code>gh</code> to list the opened or the merged PRs of the <code>nixpkgs</code> repository. This is what it looks like (and is defined <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L8C1-L21C2">here</a>):
+</p>
+<pre><code>get_prs &lt;- function(state){
+
+  output_path &lt;- paste0(state, "_prs.json")
+
+  # Run the command
+  system(paste0(
+    "gh pr list --state=", state,
+    " --search=rPackages -R NixOS/nixpkgs --json title,updatedAt,url &gt; ",
+    output_path
+  ))
+
+  # Return path for targets
+  output_path
+}</code></pre>
+<p>
+Because the PRs follow the contributing guidelines, I can easily process the PRs titles to get the name of the package (I essentially need to go from the string “rPackages.SuperGauss: fixing build” to “SuperGauss”) using regular expressions. This is what happens in the <code>clean_prs()</code> function <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L23">here</a>.
+</p>
+<p>
+Most of what follows is merging the right data frames and ensuring that I have something clean to show. Finally, an <code>.Rmd</code> document gets compiled, which you can find <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/r-updates-fails.Rmd">here</a>. This will get compiled to an <code>.html</code> file which is what you see when you click <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a>.
+</p>
+<p>
+This runs every day at midnight using GitHub actions (<a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/.github/workflows/compile_table.yaml">the workflow is here</a>) and then I use the <code>raw.githack.com</code> <a href="https://raw.githack.com/">here</a> to serve the rendered HTML file. So every time I push, or at midnight, the action runs, computes the package rank, checks if new PRs are available or have been merged, and the rendered file is immediately available. How’s that for serverless CI/CD?
+</p>
+<p>
+If you are interested in using Nix to make your analyses reproducible, check out <a href="https://b-rodrigues.github.io/blog/index.html#category=nix">the other blog posts in this series</a> and join our small but motivated community of R contributors to <code>nixpkgs</code> on <a href="https://matrix.to/#/#r:nixos.org">Matrix</a>. If you are interested in the history of Nix, checkout this super interesting <a href="https://economicsfromthetopdown.com/2024/02/17/nixing-technological-lock-in/">blog post</a> by <a href="https://mastodon.online/@blair_fix">Blair Fix</a>.
+</p>
+<p>
+If you’re interested into using project-specific, and reproducible development environments, give <code>{rix}</code> and Nix a try! Learn more about <code>{rix}</code> on its Github repository <a href="https://github.com/b-rodrigues/rix">here</a> or <a href="https://docs.ropensci.org/rix/index.html">website</a>. We wrote many vignettes that are conveniently numbered, so don’t hesitate to <a href="https://docs.ropensci.org/rix/articles/a-getting-started.html">get started</a>!
+</p>
+<p>
+<em>Thanks to the colleagues of the Matrix nixpkgs R channel for the fruitful discussions that helped shape this blog post and for proof-reading.</em>
+</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-02-29-nix_for_r_part_10.html</guid>
+  <pubDate>Thu, 29 Feb 2024 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Reproducible data science with Nix, part 9 – rix is looking for testers!</title>
+  <link>https://b-rodrigues.github.io/posts/2024-02-02-nix_for_r_part_9.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align:center;">
+<p>
+<img src="https://b-rodrigues.github.io/assets/img/kick_rix.png">
+</p>
+</div>
+<p>
+After 5 months of work, <a href="https://github.com/philipp-baumann">Philipp Baumann</a> and myself are happy to announce that our package, <code>{rix}</code> is getting quite close to being in a state we consider “done” (well, at least, for a first release). We plan on submit it first to <a href="https://ropensci.org/software-review/">rOpenSci</a> for review, and later to CRAN. But in the meantime, if you could test the package, we’d be grateful! We are especially interested to see if you find the documentation clear, and if you are able to run the features that require an installation of Nix, the <code>nix_build()</code> and <code>with_nix()</code> functions. And I would truly recommend you read this blog post to the end, because I guarantee you’ll have your mind blown! If that’s not the case, send an insult my way on social media.
+</p>
+<section id="what-is-rix" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-rix">
+What is rix?
+</h2>
+<p>
+<code>{rix}</code> is an R package that leverages Nix, a powerful package manager focusing on reproducible builds. With Nix, it is possible to create project-specific environments that contain a project-specific version of R and R packages (as well as other tools or languages, if needed). You can use <code>{rix}</code> and Nix to replace renv and Docker with one single tool. Nix is an incredibly useful piece of software for ensuring reproducibility of projects, in research or otherwise, or for running web applications like Shiny apps or plumber APIs in a controlled environment. The advantage of using Nix over Docker is that the environments that you define using Nix are not isolated from the rest of your machine: you can still access files and other tools installed on your computer.
+</p>
+<p>
+For example, here is how you could use <code>{rix}</code> to generate a file called <code>default.nix</code>, which can then be used by Nix to actually build that environment for you:
+</p>
+<pre class="r"><code>library(rix)
+
+path_default_nix &lt;- tempdir()
+
+rix(r_ver = "latest",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "code",
+    shell_hook = NULL,
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)</code></pre>
+<pre><code>## # This file was generated by the {rix} R package v0.5.1.9000 on 2024-02-02
+## # with following call:
+## # &gt;rix(r_ver = "5ad9903c16126a7d949101687af0aa589b1d7d3d",
+## #  &gt; r_pkgs = c("dplyr",
+## #  &gt; "ggplot2"),
+## #  &gt; system_pkgs = NULL,
+## #  &gt; git_pkgs = NULL,
+## #  &gt; ide = "code",
+## #  &gt; project_path = path_default_nix,
+## #  &gt; overwrite = TRUE,
+## #  &gt; print = TRUE,
+## #  &gt; shell_hook = NULL)
+## # It uses nixpkgs' revision 5ad9903c16126a7d949101687af0aa589b1d7d3d for reproducibility purposes
+## # which will install R version latest
+## # Report any issues to https://github.com/b-rodrigues/rix
+## let
+##  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/5ad9903c16126a7d949101687af0aa589b1d7d3d.tar.gz") {};
+##  rpkgs = builtins.attrValues {
+##   inherit (pkgs.rPackages) dplyr ggplot2 languageserver;
+## };
+##    system_packages = builtins.attrValues {
+##   inherit (pkgs) R glibcLocales nix ;
+## };
+##   in
+##   pkgs.mkShell {
+##     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+##     LANG = "en_US.UTF-8";
+##     LC_ALL = "en_US.UTF-8";
+##     LC_TIME = "en_US.UTF-8";
+##     LC_MONETARY = "en_US.UTF-8";
+##     LC_PAPER = "en_US.UTF-8";
+##     LC_MEASUREMENT = "en_US.UTF-8";
+## 
+##     buildInputs = [  rpkgs  system_packages  ];
+##       
+##   }</code></pre>
+<p>
+You don’t need to have Nix installed to use <code>{rix}</code> and generate this expression! This is especially useful if you want to generate an expression that should then be used in a CI/CD environment for example.
+</p>
+<p>
+But if you do have Nix installed, then you can use two great functions that Philipp implemented, which we are really excited to tell you about!
+</p>
+</section>
+<section id="nix_build-and-with_nix" class="level2">
+<h2 class="anchored" data-anchor-id="nix_build-and-with_nix">
+nix_build() and with_nix()
+</h2>
+<p>
+When you have a <code>default.nix</code> file that was generated by <code>rix::rix()</code>, and if you have Nix installed on your system, you can build the corresponding environment using the command line tool <code>nix-build</code>. But you can also build that environment straight from an R session, by using <a href="https://b-rodrigues.github.io/rix/reference/nix_build.html"><code>rix::nix_build()</code></a>!
+</p>
+<p>
+But the reason <a href="https://b-rodrigues.github.io/rix/reference/nix_build.html"><code>nix_build()</code></a> is really useful, is because it gets called by <a href="https://b-rodrigues.github.io/rix/reference/with_nix.html"><code>with_nix()</code></a>. <a href="https://b-rodrigues.github.io/rix/reference/with_nix.html"><code>with_nix()</code></a> is a very interesting function, because it allows you to evaluate a single function within a so-called subshell. That subshell can have a whole other version of R and R packages than your main session, and you can use it to execute an arbitrary function (or a whole, complex expression), and then get the result back into your main session. You could use older versions of packages to get a result that might not be possible to get in a current version. Consider the following example: on a recent version of <code>{stringr}</code>, <code>stringr::str_subset(c(““,”a”), ““)</code> results in an error, but older versions would return <code>”a”</code>. Returning an error is actually what this should do, but hey, if you have code that relies on that old behaviour you can now execute that old code within a subshell that contains that older version of <code>{stringr}</code>. Start by creating a folder to contain everything needed for your subshell:
+</p>
+<pre class="r"><code>path_env_stringr &lt;- file.path(".", "_env_stringr_1.4.1")</code></pre>
+<p>
+Then, it is advised to use <a href="https://b-rodrigues.github.io/rix/reference/rix_init.html"><code>rix::rix_init()</code></a> to generate an <code>.Rprofile</code> for that subshell, which sets a number of environment variables. This way, when the R session in that subshell starts, we don’t have any interference between that subshell and the main R session, as the R packages that must be available to the subshell are only taken from the Nix store. The Nix store is where software installed by Nix is… stored, and we don’t want R to be confused and go look for R packages in the user’s library, which could happen without this specific <code>.Rprofile</code> file:
+</p>
+<pre class="r"><code>rix_init(
+  project_path = path_env_stringr,
+  rprofile_action = "overwrite",
+  message_type = "simple"
+)</code></pre>
+<pre><code>## 
+## ### Bootstrapping isolated, project-specific, and runtime-pure R setup via Nix ###
+## 
+## ==&gt; Created isolated nix-R project folder:
+##  /home/cbrunos/six_to/dev_env/b-rodrigues.github.com/content/blog/_env_stringr_1.4.1 
+## ==&gt; R session running via Nix (nixpkgs)
+## * R session not running from RStudio
+## ==&gt; Added `.Rprofile` file and code lines for new R sessions launched from:
+## /home/cbrunos/six_to/dev_env/b-rodrigues.github.com/content/blog/_env_stringr_1.4.1
+## 
+## * Added the location of the Nix store to `PATH` environmental variable for new R sessions on host/docker RStudio:
+## /nix/var/nix/profiles/default/bin</code></pre>
+<p>
+We now generate the <code>default.nix</code> file for that subshell:
+</p>
+<pre class="r"><code>rix(
+  r_ver = "latest",
+  r_pkgs = "stringr@1.4.1",
+  overwrite = TRUE,
+  project_path = path_env_stringr
+)</code></pre>
+<p>
+Notice how we use the latest version of R (we could have used any other), but <code>{stringr}</code> on version 1.4.1. Finally, we use <code>with_nix()</code> to evaluate <code>stringr::str_subset(c(““,”a”), ““)</code> inside that subshell:
+</p>
+<pre class="r"><code>out_nix_stringr &lt;- with_nix(
+  expr = function() stringr::str_subset(c("", "a"), ""),
+  program = "R",
+  exec_mode = "non-blocking",
+  project_path = path_env_stringr,
+  message_type = "simple"
+)</code></pre>
+<pre><code>## * R session not running from RStudio
+## ### Prepare to exchange arguments and globals for `expr` between the host and Nix R sessions ###
+## * checking code in `expr` for potential problems:
+##  `codetools::checkUsage(fun = expr)`
+## 
+## * checking code in `expr` for potential problems:
+## 
+## * checking code in `globals_exprs` for potential problems:
+## 
+## ==&gt; Running deparsed expression via `nix-shell` in non-blocking mode:
+## 
+## 
+## ==&gt; Process ID (PID) is 19688.
+## ==&gt; Receiving stdout and stderr streams...
+## 
+## ==&gt; `expr` succeeded!
+## ### Finished code evaluation in `nix-shell` ###
+## 
+## * Evaluating `expr` in `nix-shell` returns:
+## [1] "a"</code></pre>
+<p>
+Finally, we can check if the result is really <code>“a”</code> or not:
+</p>
+<pre class="r"><code>identical("a", out_nix_stringr)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>
+<code>with_nix()</code> should work whether you installed your main R session using Nix, or not, but we’re not sure this is true for Windows (or rather, WSL2): we don’t have a Windows license to test this on Windows, so if you’re on Windows and use WSL2 and want to test this, we would be very happy to hear from you!
+</p>
+<p>
+If you’re interested into using project-specific, and reproducible development environments, give <code>{rix}</code> and Nix a try! Learn more about <code>{rix}</code> on its Github repository <a href="https://github.com/b-rodrigues/rix">here</a> or <a href="https://docs.ropensci.org/rix/">website</a>. We wrote many vignettes that are conveniently numbered, so don’t hesitate to <a href="https://docs.ropensci.org/rix/articles/a-getting-started.html">get started</a>!
+</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2024-02-02-nix_for_r_part_9.html</guid>
+  <pubDate>Fri, 02 Feb 2024 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Reproducible data science with Nix, part 8 – nixpkgs, a tale of the magic of free and open source software and a call for charity</title>
   <link>https://b-rodrigues.github.io/posts/2023-12-19-nix_for_r_part_8.html</link>
@@ -3439,1944 +4611,6 @@ There are many more topics that us disciplines of the data could learn from soft
   <category>proramming</category>
   <guid>https://b-rodrigues.github.io/posts/2023-03-07-dry_wit.html</guid>
   <pubDate>Tue, 07 Mar 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>What I’ve learned making an .epub Ebook with Quarto</title>
-  <link>https://b-rodrigues.github.io/posts/2023-03-03-quarto_books.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/epubcheck.png" width="50%">
-</p>
-</div>
-<p>
-I’ve been working on an ebook (that you can read over <a href="https://raps-with-r.dev/">here</a>) made using Quarto. Since I’m also selling a DRM-free Epub and PDF on <a href="https://leanpub.com/raps-with-r/">Leanpub</a> I wanted to share some tips and tricks I’ve learned to generate an Epub that passes <code>epubcheck</code> using Quarto.
-</p>
-<div style="text-align:center;">
-<p>
-<iframe width="160" height="400" src="https://leanpub.com/raps-with-r/embed" frameborder="0" allowtransparency="true">
-</iframe>
-</p>
-</div>
-<p>
-Quarto is a tool made by Posit and is an <em>open-source scientific and technical</em> publishing tool. If you know what LaTeX is, then it should be easy for you to grok Quarto. The idea of Quarto is that you write documents using Markdown, and then compile these source files into either PDFs, Word documents, but also books, web-sites, ebooks (in the Epub format) and so on… It’s quite powerful, and you can also use programming language code chunks for literate programming. Quarto support R, Python, Julia and ObsevableJS chunks.
-</p>
-<p>
-So, as I said, I’ve been using Quarto to write an ebook, and from a single set of Markdown source files I can generate the website (linked above), the PDF of the book and the Epub of the book. But you see, if you want to sell an Epub on platforms like Leanpub, the generated Epub must pass <code>epubcheck</code>. <code>epubcheck</code> is a command line application that verifies that your Epub satisfies certain quality checks. If these quality standards are not satisfied, there is no guarantee that Epub readers can successfully open your Epub. Leanpub actually allows you to upload an Epub that does not pass <code>epubcheck</code>, but they warn you that you really should strive for publishing an Epub without any errors or warnings raised by <code>epubcheck</code>. For example, the first version of my Epub did not pass <code>epubcheck</code> and I couldn’t upload it to my Kindle.
-</p>
-<p>
-In this blog post I’ll show you what you should do to generate an Epub that passes <code>epubcheck</code> using Quarto.
-</p>
-<section id="starting-from-the-default-template" class="level2">
-<h2 class="anchored" data-anchor-id="starting-from-the-default-template">
-Starting from the default template
-</h2>
-<p>
-Start by installing Quarto by downloading the right package for your operating system <a href="https://quarto.org/docs/get-started/">here</a>. To start from a book template open a terminal and run:
-</p>
-<pre><code>quarto create-project example_book --type book</code></pre>
-<p>
-Let’s open the <code>_quarto.yml</code> file that is inside the newly created <code>example_book/</code>. This is your book’s configuration file. It should look like this:
-</p>
-<pre><code>project:
-  type: book
-
-book:
-  title: "example_book"
-  author: "Jane Doe"
-  date: "3/3/2023"
-  chapters:
-    - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
-
-bibliography: references.bib
-
-format:
-  html:
-    theme: cosmo
-  pdf:
-    documentclass: scrreprt</code></pre>
-<p>
-You can change whatever you like, but for our purposes, we are going to add the <code>epub</code> output format all the way at the bottom of the file. So change these lines:
-</p>
-<pre><code>format:
-  html:
-    theme: cosmo
-  pdf:
-    documentclass: scrreprt</code></pre>
-<p>
-into these lines:
-</p>
-<pre><code>format:
-  html:
-    theme: cosmo
-  epub:
-    toc: true</code></pre>
-<p>
-I’ve added the <code>epub</code> format as an output, as well as the <code>toc: true</code> option, which builds a table of contents. I’ve also removed the <code>pdf</code> output because you need to have a LaTeX distribution installed for this, and the point of this blog post is not to talk about the PDF output (which works flawlessly by the way). Before compiling, let’s open one of the <code>.qmd</code> files. These files are the Markdown source files that we need to edit in order to fill our book with content. Let’s open <code>intro.qmd</code> and change these lines from:
-</p>
-<pre><code># Introduction
-
-This is a book created from markdown and executable code.
-
-See @knuth84 for additional discussion of literate programming.</code></pre>
-<p>
-to:
-</p>
-<pre><code># Introduction
-
-This is a book created from markdown and executable code.
-
-See @knuth84 for additional discussion of literate programming.
-
-![By Boaworm - Own work, CC BY 3.0, https://commons.wikimedia.org/w/index.php?curid=10649477](images/640px-Eyjafjallajokull_Gigjokull_in_ash.jpg)
-</code></pre>
-<p>
-Download the image from this <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Eyjafjallajokull_Gigjokull_in_ash.jpg/640px-Eyjafjallajokull_Gigjokull_in_ash.jpg?download">link</a> and create the <code>images/</code> folder at the root of the book, right next to the <code>.qmd</code> files.
-</p>
-<p>
-This syntax is the default syntax for adding pictures in a Markdown document. If you’re an R user, you could also use an R code chunk and the function <code>knitr::include_graphics()</code> to achieve the same thing.
-</p>
-<p>
-Let’s compile our little example book, and then use <code>epubcheck</code> to see what’s wrong! Use these commands to render the book in all the formats:
-</p>
-<pre><code>cd example_book/
-
-quarto render</code></pre>
-<p>
-You should see a folder called <code>_book</code> appear on the root of your project. Inside this folder, you will see a bunch of <code>.html</code> files: these constitute the web-site of your book. You can right click on <code>index.html</code> and open it with a web browser and see how your book, as a web-site, looks like. You could host this book on Github pages for free!
-</p>
-<p>
-But what interests us is the <code>.epub</code> file. If your PDF reader supports this format, you can open it and see how it looks. On Windows you could use SumatraPDF. I use Okular on Linux to open PDF and Epub documents. Anyways, there doesn’t seem to be anything wrong with it. You can open it, you can read it, it seems to be working just fine. But let’s see if <code>epubcheck</code> thinks the same. You can download <code>epubcheck</code> from <a href="https://www.w3.org/publishing/epubcheck/">here</a>. Save the downloaded file on the root directory of the book and decompress it. Inside the decompressed folder, you’ll see a file called <code>epubcheck.jar</code>. Put your epub file right next to it, in the same folder. Now, open a terminal and navigate to the right folder and run the following command to check the epub file:
-</p>
-<pre><code>cd epubcheck-5.0.0 # or whatever version it is you downloaded
-
-java -jar epubcheck.jar example_book.epub</code></pre>
-<p>
-You should see this output:
-</p>
-<pre><code>Validating using EPUB version 3.3 rules.
-ERROR(RSC-005): example_book.epub/EPUB/content.opf(6,39): Error while parsing file: character content of element "dc:date" invalid; must 
-be a string with length at least 1 (actual length was 0)
-WARNING(OPF-053): example_book.epub/EPUB/content.opf(6,39): Date value "" does not follow recommended syntax as per http://www.w3.org/TR/NOTE-datetime:zero-length string.
-ERROR(RSC-005): example_book.epub/EPUB/text/ch002.xhtml(354,16): Error while parsing file: element "figcaption" not allowed here; expected the element end-tag, text, element "a", "abbr", "area", "audio", "b", "bdi", "bdo", "br", "button", "canvas", "cite", "code", "data", "datalist", "del", "dfn", "em", "embed", "epub:switch", "i", "iframe", "img", "input", "ins", "kbd", "label", "link", "map", "mark", "meta", "meter", "ns1:math", "ns2:svg", "object", "output", "picture", "progress", "q", "ruby", "s", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "template", "textarea", "time", "u", "var", "video" or "wbr" (with xmlns:ns1="http://www.w3.org/1998/Math/MathML" xmlns:ns2="http://www.w3.org/2000/svg") or an element from another namespace
-
-Check finished with errors
-Messages: 0 fatals / 2 errors / 1 warning / 0 infos
-
-EPUBCheck completed</code></pre>
-<p>
-So we get 2 errors and 1 warning! Let’s look at the first error:
-</p>
-<pre><code>ERROR(RSC-005): example_book.epub/EPUB/content.opf(6,39): Error while parsing file: character content of element "dc:date" invalid; must 
-be a string with length at least 1 (actual length was 0)</code></pre>
-<p>
-The first error message states that our epub does not have a valid <code>dc:date</code> attribute. The warning is also related to this. We can correct this by adding this attribute in the <code>_quarto.yml</code> file:
-</p>
-<pre><code>format:
-  epub:
-    toc:
-      true
-    date:
-      "2023-03-01"</code></pre>
-<p>
-However this is not enough. There is a bug in the current release of Quarto that prevents this from working, even though we did what we should. However, this bug <a href="https://github.com/quarto-dev/quarto-cli/issues/4615#issuecomment-1453921865">is already corrected in the development version of the next release</a>. But until the next version of Quarto, 1.3, gets released, here is the workaround; you need to also specify the language of the book:
-</p>
-<pre><code>format:
-  html:
-    theme: cosmo
-  epub:
-    toc:
-      true
-    lang:
-      en-GB
-    date:
-      "2023-03-01"</code></pre>
-<p>
-And now <code>epubcheck</code> does not complain about the date anymore!
-</p>
-<p>
-The next error:
-</p>
-<pre><code>ERROR(RSC-005): example_book.epub/EPUB/text/ch002.xhtml(354,16): Error while parsing file: element "figcaption" not allowed here; expected the element end-tag, text, element "a", "abbr", "area", "audio", "b", "bdi", "bdo", "br", "button", "canvas", "cite", "code", "data", "datalist", "del", "dfn", "em", "embed", "epub:switch", "i", "iframe", "img", "input", "ins", "kbd", "label", "link", "map", "mark", "meta", "meter", "ns1:math", "ns2:svg", "object", "output", "picture", "progress", "q", "ruby", "s", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "template", "textarea", "time", "u", "var", "video" or "wbr" (with xmlns:ns1="http://www.w3.org/1998/Math/MathML" xmlns:ns2="http://www.w3.org/2000/svg") or an element from another namespace</code></pre>
-<p>
-is related to the image. It turns out that including the image like we did generates code that is not quite correct from the point of view of the standard that Epubs should follow. You should know that Epubs are actually a collection of HTML files, so you can include images by using HTML code in the source Markdown files.
-</p>
-<p>
-If you insert the image like so, the error should disappear:
-</p>
-<pre><code>&lt;figure&gt;
-    &lt;img src="images/640px-Eyjafjallajokull_Gigjokull_in_ash.jpg"
-         alt="By Boaworm - Own work, CC BY 3.0, https://commons.wikimedia.org/w/index.php?curid=10649477"&gt;&lt;/img&gt;
-    &lt;figcaption&gt;By Boaworm - Own work, CC BY 3.0, https://commons.wikimedia.org/w/index.php?curid=10649477&lt;/figcaption&gt;
-&lt;/figure&gt;</code></pre>
-<p>
-If you re-render the Epub, and try <code>epubcheck</code> again, you should see this:
-</p>
-<pre><code>java -jar epubcheck.jar example_book.epub</code></pre>
-<pre><code>Validating using EPUB version 3.3 rules.
-No errors or warnings detected.
-Messages: 0 fatals / 0 errors / 0 warnings / 0 infos</code></pre>
-</section>
-<section id="using-github-actions-to-build-the-book" class="level2">
-<h2 class="anchored" data-anchor-id="using-github-actions-to-build-the-book">
-Using Github Actions to build the book
-</h2>
-<p>
-Finally, as a bonus, if you’re using Github, you can also use Github Actions to generate the web-site, as well as the Epub (and the PDF if you want). If you go to <a href="https://github.com/b-rodrigues/epubcheck_quarto_test">this repository</a>, which contains the example book from this post, you can find the workflow to automatically build the Epub and web-site from your Quarto source in the <code>.github/workflows/</code> folder. Create the same folder structure in your repository and copy the <code>.yml</code> file that is in it to these folders. You should then create a <code>gh-pages</code> branch and make sure that Github Actions has the required permissions to push. For this, go to the <em>Settings</em> menu of your repository, then <em>Actions</em> (listed in the menu on the left), then <em>General</em>, and then under <em>Workflow permissions</em> make sure that <em>Read and write permissions</em> is checked.
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/ga_permissions.png" width="100%">
-</p>
-</div>
-<p>
-Now, each time you push, you should see your Epub get built in the <code>gh-pages</code> branch! If you use R code chunks, you also need to set up an action to set up R. Take a look at the <a href="https://github.com/b-rodrigues/rap4all/blob/master/.github/workflows/quarto-publish.yml">repo</a> of my book for an example.
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-03-03-quarto_books.html</guid>
-  <pubDate>Fri, 03 Mar 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?</title>
-  <link>https://b-rodrigues.github.io/posts/2023-01-12-repro_R.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/sisyphus.jpg" width="80%" height="auto">
-</p>
-</div>
-<section id="you-expect-me-to-read-this-long-ass-blog-post" class="level2">
-<h2 class="anchored" data-anchor-id="you-expect-me-to-read-this-long-ass-blog-post">
-You expect me to read this long ass blog post?
-</h2>
-<p>
-<em>If you’re too busy to read this blog post, know that I respect your time. The table below summarizes this blog post:</em>
-</p>
-<table class="table">
-<colgroup>
-<col width="70%">
-<col width="29%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>
-Need
-</th>
-<th>
-Solution
-</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>
-I want to start a project and make it reproducible.
-</td>
-<td>
-{renv} and Docker
-</td>
-</tr>
-<tr class="even">
-<td>
-There’s an old script laying around that I want to run.
-</td>
-<td>
-{groundhog} and Docker
-</td>
-</tr>
-<tr class="odd">
-<td>
-I want to work inside an environment that
-</td>
-<td>
-Docker and the Posit
-</td>
-</tr>
-<tr class="even">
-<td>
-enables me to run code in a reproducible way.
-</td>
-<td>
-CRAN mirror.
-</td>
-</tr>
-</tbody>
-</table>
-<p>
-<em>But this table doesn’t show the whole picture, especially the issues with relying so much on Docker. So if you’re interesting in making science and your work reproducible and robust, my advice is that you stop doomscrolling on social media and keep on reading. If at the end of the blog post you think that this was a waste of time, just sent an insult my way, that’s ok.</em>
-</p>
-<p>
-I learnt last week that MRAN is going to get shutdown this year. For those of you that don’t know, MRAN was a CRAN mirror managed by Microsoft. What made MRAN stand out was the fact that Microsoft took daily snapshots of CRAN and it was thus possible to quite easily install old packages using the <code>{checkpoint}</code> package. This was a good thing for reproducibility, and for Windows and macOS, it was even possible to install binary packages, so no need to compile them from source.
-</p>
-<p>
-Last year I had the opportunity to teach a course on building reproducible analytical pipelines at the University of Luxembourg, and made my teaching material available as an ebook that you can find <a href="https://rap4mads.eu/">here</a>. I also wrote some blog posts about reproducibility and it looks like I will be continuing this trend for the forseeable future.
-</p>
-<p>
-So in this blog post I’m going to show what you, as an R user, can do to make your code reproducible now that MRAN is getting shutdown. MRAN is not the only option for reproducibility, and I’m going to present in this blog post everything I know about other options. So if you happen to know of some solution that I don’t discuss here, please leave a comment <a href="https://github.com/rbind/b-rodrigues.github.com/issues/5">here</a>. But this blog post is not just a tutorial. I will also discuss what I think is a major risk that is coming and what, maybe, we can do to avoid it.
-</p>
-</section>
-<section id="reproducibility-is-on-a-continuum" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility-is-on-a-continuum">
-Reproducibility is on a continuum
-</h2>
-<p>
-Reproducibility is on a continuum, and depending on the nature of your project different tools are needed. First, let’s understand what I mean by “reproducibility is on a continuum”. Let’s suppose that you have written a script that produces some output. Here is the list of everything that can influence the output (other than the mathematical algorithm running under the hood):
-</p>
-<ul>
-<li>
-Version of the programming language used;
-</li>
-<li>
-Versions of the packages/libraries of said programming language used;
-</li>
-<li>
-Operating System, and its version;
-</li>
-<li>
-Versions of the underlying system libraries (which often go hand in hand with OS version, but not necessarily).
-</li>
-<li>
-Hardware that you run all that software stack on.
-</li>
-</ul>
-<p>
-So by “reproducibility is on a continuum”, what I mean is that you could set up your project in a way that none, one, two, three, four or all of the preceding items are taken into consideration when making your project reproducible.
-</p>
-<p>
-There is, however, something else to consider. Before, I wrote “let’s suppose you have written a script”, which means that you actually have a script laying around that was written in a particular programming language, and which makes use of a known set of packages/libraries. So for example, if my script uses the following R packages:
-</p>
-<ul>
-<li>
-dplyr
-</li>
-<li>
-tidyr
-</li>
-<li>
-ggplot2
-</li>
-</ul>
-<p>
-I, obviously, know this list and if I want to make my script reproducible, I should take note of the versions of these 3 packages (and potentially of their own dependencies). However, what if you don’t know this set of packages that are used? This happens when you want to set up an environment that is frozen, and then distribute this environment. Developers will then all work on the same base environment, but you cannot possibly list all the packages that are going to be used because you have no idea what the developers will end up using (and remember that future you is included in these developers, and you should always try to be nice to future you).
-</p>
-<p>
-So these means that we have two scenarios:
-</p>
-<ul>
-<li>
-Scenario 1: I have a script (or several), and want to make sure that it will always produce the same output;
-</li>
-<li>
-Scenario 2: I don’t know what I (or my colleagues) will develop, but we want to use the same environment across the organization to develop and deploy data products.
-</li>
-</ul>
-<p>
-Turns out that the solutions to these two scenarios are different, but available in R, even though we won’t soon be able to count on MRAN anymore. HOWEVER! R won’t suffice for this job.
-</p>
-</section>
-<section id="scenario-1-making-a-script-reproducible" class="level2">
-<h2 class="anchored" data-anchor-id="scenario-1-making-a-script-reproducible">
-Scenario 1: making a script reproducible
-</h2>
-<p>
-Ok, so let’s suppose that I want to make a script reproducible, or at least increase the probability that others (including future me) will be able to run this script and get the exact same output as I originally did. If you want to minimize the amount of time spent doing it, the minimum thing you should do is use <a href="https://rstudio.github.io/renv/articles/renv.html">{renv}</a>. <code>{renv}</code> allows you to create a file called <code>renv.lock</code>. You can then distribute this file to others alongside the code of your project, or the paper, data, whatever. Nothing else is required from you; if people have this file, they should be able to set up an environment that would closely mimic the one that was used to get the results originally (but ideally, you’d invest a bit more time to make your script run anywhere, for example by avoiding setting absolute paths that only exist on your machine).
-</p>
-<p>
-Let’s take a look at such an <code>renv.lock</code> file:
-</p>
-<details>
-<summary>
-Click me to see lock file
-</summary>
-<pre><code>{
-  "R": {
-    "Version": "4.2.1",
-    "Repositories": [
-      {
-        "Name": "CRAN",
-        "URL": "http://cran.rstudio.com"
-      }
-    ]
-  },
-  "Packages": {
-    "MASS": {
-      "Package": "MASS",
-      "Version": "7.3-58.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "762e1804143a332333c054759f89a706",
-      "Requirements": []
-    },
-    "Matrix": {
-      "Package": "Matrix",
-      "Version": "1.5-1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "539dc0c0c05636812f1080f473d2c177",
-      "Requirements": [
-        "lattice"
-      ]
-    },
-    "R6": {
-      "Package": "R6",
-      "Version": "2.5.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "470851b6d5d0ac559e9d01bb352b4021",
-      "Requirements": []
-    },
-    "RColorBrewer": {
-      "Package": "RColorBrewer",
-      "Version": "1.1-3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "45f0398006e83a5b10b72a90663d8d8c",
-      "Requirements": []
-    },
-    "cli": {
-      "Package": "cli",
-      "Version": "3.4.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "0d297d01734d2bcea40197bd4971a764",
-      "Requirements": []
-    },
-    "colorspace": {
-      "Package": "colorspace",
-      "Version": "2.0-3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "bb4341986bc8b914f0f0acf2e4a3f2f7",
-      "Requirements": []
-    },
-    "digest": {
-      "Package": "digest",
-      "Version": "0.6.29",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "cf6b206a045a684728c3267ef7596190",
-      "Requirements": []
-    },
-    "fansi": {
-      "Package": "fansi",
-      "Version": "1.0.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "83a8afdbe71839506baa9f90eebad7ec",
-      "Requirements": []
-    },
-    "farver": {
-      "Package": "farver",
-      "Version": "2.1.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "8106d78941f34855c440ddb946b8f7a5",
-      "Requirements": []
-    },
-    "ggplot2": {
-      "Package": "ggplot2",
-      "Version": "3.3.6",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "0fb26d0674c82705c6b701d1a61e02ea",
-      "Requirements": [
-        "MASS",
-        "digest",
-        "glue",
-        "gtable",
-        "isoband",
-        "mgcv",
-        "rlang",
-        "scales",
-        "tibble",
-        "withr"
-      ]
-    },
-    "glue": {
-      "Package": "glue",
-      "Version": "1.6.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e",
-      "Requirements": []
-    },
-    "gtable": {
-      "Package": "gtable",
-      "Version": "0.3.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "36b4265fb818f6a342bed217549cd896",
-      "Requirements": []
-    },
-    "isoband": {
-      "Package": "isoband",
-      "Version": "0.2.5",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "7ab57a6de7f48a8dc84910d1eca42883",
-      "Requirements": []
-    },
-    "labeling": {
-      "Package": "labeling",
-      "Version": "0.4.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "3d5108641f47470611a32d0bdf357a72",
-      "Requirements": []
-    },
-    "lattice": {
-      "Package": "lattice",
-      "Version": "0.20-45",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b64cdbb2b340437c4ee047a1f4c4377b",
-      "Requirements": []
-    },
-    "lifecycle": {
-      "Package": "lifecycle",
-      "Version": "1.0.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "001cecbeac1cff9301bdc3775ee46a86",
-      "Requirements": [
-        "cli",
-        "glue",
-        "rlang"
-      ]
-    },
-    "magrittr": {
-      "Package": "magrittr",
-      "Version": "2.0.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "7ce2733a9826b3aeb1775d56fd305472",
-      "Requirements": []
-    },
-    "mgcv": {
-      "Package": "mgcv",
-      "Version": "1.8-40",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c6b2fdb18cf68ab613bd564363e1ba0d",
-      "Requirements": [
-        "Matrix",
-        "nlme"
-      ]
-    },
-    "munsell": {
-      "Package": "munsell",
-      "Version": "0.5.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "6dfe8bf774944bd5595785e3229d8771",
-      "Requirements": [
-        "colorspace"
-      ]
-    },
-    "nlme": {
-      "Package": "nlme",
-      "Version": "3.1-159",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "4a0b3a68f846cb999ff0e8e519524fbb",
-      "Requirements": [
-        "lattice"
-      ]
-    },
-    "pillar": {
-      "Package": "pillar",
-      "Version": "1.8.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "f2316df30902c81729ae9de95ad5a608",
-      "Requirements": [
-        "cli",
-        "fansi",
-        "glue",
-        "lifecycle",
-        "rlang",
-        "utf8",
-        "vctrs"
-      ]
-    },
-    "pkgconfig": {
-      "Package": "pkgconfig",
-      "Version": "2.0.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "01f28d4278f15c76cddbea05899c5d6f",
-      "Requirements": []
-    },
-    "purrr": {
-      "Package": "purrr",
-      "Version": "0.3.5",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "54842a2443c76267152eface28d9e90a",
-      "Requirements": [
-        "magrittr",
-        "rlang"
-      ]
-    },
-    "renv": {
-      "Package": "renv",
-      "Version": "0.16.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c9e8442ab69bc21c9697ecf856c1e6c7",
-      "Requirements": []
-    },
-    "rlang": {
-      "Package": "rlang",
-      "Version": "1.0.6",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "4ed1f8336c8d52c3e750adcdc57228a7",
-      "Requirements": []
-    },
-    "scales": {
-      "Package": "scales",
-      "Version": "1.2.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "906cb23d2f1c5680b8ce439b44c6fa63",
-      "Requirements": [
-        "R6",
-        "RColorBrewer",
-        "farver",
-        "labeling",
-        "lifecycle",
-        "munsell",
-        "rlang",
-        "viridisLite"
-      ]
-    },
-    "tibble": {
-      "Package": "tibble",
-      "Version": "3.1.8",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "56b6934ef0f8c68225949a8672fe1a8f",
-      "Requirements": [
-        "fansi",
-        "lifecycle",
-        "magrittr",
-        "pillar",
-        "pkgconfig",
-        "rlang",
-        "vctrs"
-      ]
-    },
-    "utf8": {
-      "Package": "utf8",
-      "Version": "1.2.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "c9c462b759a5cc844ae25b5942654d13",
-      "Requirements": []
-    },
-    "vctrs": {
-      "Package": "vctrs",
-      "Version": "0.5.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "970324f6572b4fd81db507b5d4062cb0",
-      "Requirements": [
-        "cli",
-        "glue",
-        "lifecycle",
-        "rlang"
-      ]
-    },
-    "viridisLite": {
-      "Package": "viridisLite",
-      "Version": "0.4.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "62f4b5da3e08d8e5bcba6cac15603f70",
-      "Requirements": []
-    },
-    "withr": {
-      "Package": "withr",
-      "Version": "2.5.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "c0e49a9760983e81e55cdd9be92e7182",
-      "Requirements": []
-    }
-  }
-}
-</code></pre>
-</details>
-<p>
-as you can see this file lists the R version that was used as well as the different libraries for a project. Versions of the libraries are also listed, where they came from (CRAN or Github for example) and these libraries’ requirements as well. So someone who wants to run the original script in a similar environment has all the info needed to do it. <code>{renv}</code> also provides a simple way to install all of this. Simply put the <code>renv.lock</code> file in the same folder as the original script and run <code>renv::restore()</code>, and the right packages with the right versions get automagically installed (and without interfering with your system-wide, already installed library of packages). The “only” difficulty that you might have is installing the right version of R. If this is a recent enough version of R, this shouldn’t be a problem, but installing old software might be difficult. For example installing R version 2.5 might, or might not, be possible depending on your operating system (I don’t like microsoft windows, but generally speaking it is quite easy to install very old software on it, which in the case of Linux distros can be quite difficult. So I guess on windows this could work more easily). Then there’s also the system libraries that your script might need, and it might also be difficult to install these older versions. So that’s why I said that providing the <code>renv.lock</code> file is the bare minimum. But before seeing how we can deal with that, let’s discuss a scenario 1bis, which is the case where you want to run an old script (say, from 5 years ago), but there’s no <code>renv.lock</code> file to be found.
-</p>
-</section>
-<section id="scenario-1bis-old-script-no-renv.lock-file" class="level2">
-<h2 class="anchored" data-anchor-id="scenario-1bis-old-script-no-renv.lock-file">
-Scenario 1bis: old script, no renv.lock file
-</h2>
-<p>
-For these cases I would have used <code>{checkpoint}</code>, but as explained in the intro MRAN is getting shutdown, and with it out of the picture <code>{checkpoint}</code> will cease to work.
-</p>
-<p>
-The way <code>{checkpoint}</code> worked is that you would simply add the following line at the very top of the script in question:
-</p>
-<pre class="r"><code>checkpoint::checkpoint("2018-12-12")</code></pre>
-<p>
-and this would download the packages needed for the script from that specific date and run your script. Really, really useful. But unfortunately, Microsoft decided that MRAN should get the axe. So what else is there? While researching for this blog post, I learned about <code>{groundhog}</code> which supposedly provides the same functionality. Suppose I have a script from 5 years ago that loads the following libraries:
-</p>
-<pre class="r"><code>library(purrr)
-library(ggplot2)</code></pre>
-<p>
-By rewriting this like so (and installing <code>{groundhog}</code> beforehand):
-</p>
-<pre class="r"><code>groundhog.library("
-    library(purrr)
-    library(ggplot2)",
-    "2017-10-04",
-    tolerate.R.version = "4.2.2")</code></pre>
-<p>
-<code>{purrr}</code> and <code>{ggplot2}</code> get downloaded as they were on the date I provided. If you want to know what I had to use the “tolerate.R.version” option, this is because if you try to run it without it, you get the following very useful message:
-</p>
-<pre><code>---------------------------------------------------------------------------
-|IMPORTANT.
-|    Groundhog says: you are using R-4.2.2, but the version of R current 
-|    for the entered date, '2017-10-04', is R-3.4.x. It is recommended 
-|    that you either keep this date and switch to that version of R, or 
-|    you keep the version of R you are using but switch the date to 
-|    between '2022-04-22' and '2023-01-08'. 
-|
-|    You may bypass this R-version check by adding: 
-|    `tolerate.R.version='4.2.2'`as an option in your groundhog.library() 
-|    call. Please type 'OK' to confirm you have read this message. 
-|   &gt;ok</code></pre>
-<p>
-That’s is pretty neat, as it tells you “hey, getting the right packages is good, but if your R version is not the same, you’re not guaranteed to get the same results back, and this might not even work at all”.
-</p>
-<p>
-So, here’s what happens when I try to install these packages (on my windows laptop, as most people would do), without installing the right version of R as suggested by <code>{groundhog}</code>:
-</p>
-<details>
-<summary>
-Click me to see lock file
-</summary>
-<pre><code>+ Will now attempt installing 5 packages from source.
-
-groundhog says: Installing 'magrittr_1.5', package #1 (from source) out of 5 needed
-&gt; As of 16:12, the best guess is that all 5 packages will install around 16:14
-trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/magrittr/magrittr_1.5.tar.gz'
-Content type 'application/x-tar' length 200957 bytes (196 KB)
-downloaded 196 KB
-
-
-groundhog says: Installing 'rlang_0.1.2', package #2 (from source) out of 5 needed
-&gt; As of 16:12, the best guess is that all 5 packages will install around 16:14
-trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/rlang/rlang_0.1.2.tar.gz'
-Content type 'application/x-tar' length 200867 bytes (196 KB)
-downloaded 196 KB
-
-
-groundhog says: Installing 'Rcpp_0.12.13', package #3 (from source) out of 5 needed
-&gt; As of 16:13, the best guess is that all 5 packages will install around 16:14
-trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/Rcpp/Rcpp_0.12.13.tar.gz'
-Content type 'application/x-tar' length 3752364 bytes (3.6 MB)
-downloaded 3.6 MB
-
-Will try again, now showing all installation output.
-trying URL 'https://packagemanager.rstudio.com/all/latest/src/contrib/Archive/Rcpp/Rcpp_0.12.13.tar.gz'
-Content type 'application/x-tar' length 3752364 bytes (3.6 MB)
-downloaded 3.6 MB
-
-* installing *source* package 'Rcpp' ...
-** package 'Rcpp' successfully unpacked and MD5 sums checked
-staged installation is only possible with locking
-** using non-staged installation
-** libs
-g++ -std=gnu++11  -I"c:/Users/Bruno/AppData/Roaming/R-42~1.2/include" -DNDEBUG -I../inst/include/    -I"c:/rtools42/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c Date.cpp -o Date.o
-In file included from ../inst/include/RcppCommon.h:67,
-                 from ../inst/include/Rcpp.h:27,
-                 from Date.cpp:31:
-../inst/include/Rcpp/sprintf.h: In function 'std::string Rcpp::sprintf(const char*, ...)':
-../inst/include/Rcpp/sprintf.h:30:12: warning: unnecessary parentheses in declaration of 'ap' [-Wparentheses]
-   30 |     va_list(ap);
-      |            ^~~~
-../inst/include/Rcpp/sprintf.h:30:12: note: remove parentheses
-   30 |     va_list(ap);
-      |            ^~~~
-      |            -  -
-In file included from ../inst/include/Rcpp.h:77,
-                 from Date.cpp:31:
-../inst/include/Rcpp/Rmath.h: In function 'double R::pythag(double, double)':
-../inst/include/Rcpp/Rmath.h:222:60: error: '::Rf_pythag' has not been declared; did you mean 'pythag'?
-  222 |     inline double pythag(double a, double b)    { return ::Rf_pythag(a, b); }
-      |                                                            ^~~~~~~~~
-      |                                                            pythag
-make: *** [c:/Users/Bruno/AppData/Roaming/R-42~1.2/etc/x64/Makeconf:260: Date.o] Error 1
-ERROR: compilation failed for package 'Rcpp'
-* removing 'C:/Users/Bruno/Documents/R_groundhog/groundhog_library/R-4.2/Rcpp_0.12.13/Rcpp'
-The package 'Rcpp_0.12.13' failed to install!
-groundhog says:
-The package may have failed to install because you are using R-4.2.2
-which is at least one major update after the date you entered '2017-10-04'.
-You can try using a more recent date in your groundhog.library() command, 
-or run it with the same date using 'R-3.4.4'
-Instructions for running older versions of R: 
-    http://groundhogr.com/many
-
-----------------   The package purrr_0.2.3 did NOT install.  Read above for details  -----------------
-
-Warning message:
-In utils::install.packages(url, repos = NULL, lib = snowball$installation.path[k],  :
-  installation of package 'C:/Users/Bruno/AppData/Local/Temp/RtmpyKYXFd/downloaded_packages/Rcpp_0.12.13.tar.gz' had non-zero exit status
-&gt; </code></pre>
-</details>
-<p>
-As you can see it failed, very likely because I don’t have the right development libraries installed on my windows laptop, due to the version mismatch that <code>{groundhog}</code> complained about. I also tried on my Linux workstation, and got the same outcome. In any case, I want to stress that this is not <code>{groundhog}</code>’s fault, but this due to the fact that I was here only concerned with packages; as I said multiple times now, reproducibility is on an continuum, and you also need to deal with OS and system libraries. So for now, we only got part of the solution.
-</p>
-<p>
-By the way, you should know 3 more things about <code>{groundhog}</code>:
-</p>
-<ul>
-<li>
-the earliest available date is, in theory, any date. However, according to its author, <code>{groundhog}</code> should work reliably with a date as early as “2015-04-16”. That’s because the oldest R version <code>{groundhog}</code> is compatible with is R 3.2. However, again according to its author, it should be possible to patch <code>{groundhog}</code> to work with any earlier versions of R.
-</li>
-<li>
-<code>{groundhog}</code>’s developer is <a href="https://github.com/CredibilityLab/groundhog/issues/83#issuecomment-1379932166">planning</a> to save the binary packages off MRAN so that <code>{groundhog}</code> will continue offering binary packages once MRAN is out of the picture, which will make installing these packages more reliable.
-</li>
-<li>
-On Windows and macOS, <code>{groundhog}</code> installs binary packages if they’re available (which basically is always the case, in the example above it was not the case because I was using Posit’s CRAN mirror, and I don’t think they have binary packages for Windows that are that old. But if using another mirror, that should not be a problem). So if you install the right version of R, you’re almost guaranteed that it’s going to work. But, there is always a but, this also depends on hardware now. I’ll explain in the last part of this blog post, so read on.
-</li>
-</ul>
-</section>
-<section id="docker-to-the-rescue" class="level2">
-<h2 class="anchored" data-anchor-id="docker-to-the-rescue">
-Docker to the rescue
-</h2>
-<p>
-The full solution in both scenarios involves Docker. If you are totally unfamiliar with Docker, you can imagine that Docker makes it easy to set up a Linux virtual machine and run it. In Docker, you use Dockerfiles (which are configuration files) to define Docker <em>images</em> and you can then run <em>containers</em> (your VMs, if you wish) based on that image. Inside that Dockerfile you can declare which operating system you want to use and what you want to run inside of it. For example, here’s a very simple Dockerfile that prints “Hello from Docker” on the Ubuntu operating system (a popular Linux distribution):
-</p>
-<pre><code>FROM ubuntu:latest
-
-RUN echo "Hello, World!"</code></pre>
-<p>
-You then need to build the image as defined from this Dockerfile. (Don’t try to follow along for now with your own computer; I’ll link to resources below so that you can get started if you’re interested. What matters is that you understand <em>why</em> Docker is needed).
-</p>
-<p>
-Building the image can be achieved by running this command where the Dockerfile is located:
-</p>
-<pre><code>docker build -t hello .</code></pre>
-<p>
-and then run a container from this image:
-</p>
-<pre><code>docker run --rm -d --name hello_container hello</code></pre>
-<pre><code>Sending build context to Docker daemon  2.048kB
-Step 1/2 : FROM ubuntu:latest
- ---&gt; 6b7dfa7e8fdb
-Step 2/2 : RUN echo "Hello, World!"
- ---&gt; Running in 5dfbff5463cf
-Hello, World!
-Removing intermediate container 5dfbff5463cf
- ---&gt; c14004cd1801
-Successfully built c14004cd1801
-Successfully tagged hello:latest</code></pre>
-<p>
-You should see “Hello, World!” inside your terminal. Ok so this is the very basics. Now why is that useful? It turns out that there’s the so-called Rocker project, and this project provides a collection of Dockerfiles for current, but also older versions of R. So if we go back to our <code>renv.lock</code> file from before, we can see which R version was used (it was R 4.2.1) and define a new Dockerfile that builds upon the <a href="https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.2.1.Dockerfile">Dockerfile from the Rocker project for R version 4.2.1</a>.
-</p>
-<p>
-Let’s first start by writing a very simple script. Suppose that this is the script that we want to make reproducible:
-</p>
-<pre class="r"><code>library(purrr)
-library(ggplot2)
-
-data(mtcars)
-
-myplot &lt;- ggplot(mtcars) +
-  geom_line(aes(y = hp, x = mpg))
-
-ggsave("/home/project/output/myplot.pdf", myplot)</code></pre>
-<p>
-First, let’s assume that I did my homework and that the <code>renv.lock</code> file from before is actually the one that was generated at the time this script was written. In that case, you could write a Dockerfile with the correct version of R and use the <code>renv.lock</code> file to install the right packages. This Dockerfile would look like this:
-</p>
-<pre><code>FROM rocker/r-ver:4.2.1
-
-RUN mkdir /home/project
-
-RUN mkdir /home/project/output
-
-COPY renv.lock /home/project/renv.lock
-
-COPY script.R /home/project/script.R
-
-RUN R -e "install.packages('renv')"
-
-RUN R -e "setwd('/home/project/');renv::restore(confirm = FALSE)"
-
-CMD R -e "source('/home/project/script.R')"</code></pre>
-<p>
-We need to put the <code>renv.lock</code> file, as well as the script <code>script.R</code> in the same folder as the Dockerfile, and then build and run the image:
-</p>
-<pre><code># Build it with
-docker build -t project .</code></pre>
-<p>
-run the container (and mount a volume to get the image back – don’t worry if you don’t know what volumes are, I’ll link resources at the end):
-</p>
-<pre><code>docker run --rm -d --name project_container -v /path/to/your/project/output:/home/project/output:rw project</code></pre>
-<p>
-Even if you’ve never seen a Dockerfile in your life, you likely understand what is going on here: the first line pulls a Docker image that contains R version 4.2.1 pre-installed on Ubuntu. Then, we create a directory to hold our files, we copy said files in the directory, and then run several R commands to install the packages as defined in the <code>renv.lock</code> file and run our script in an environment that not only has the right versions of the packages but also the right version of R. This script then saves the plot in a folder called <code>output/</code>, which we link to a folder also called <code>output/</code> but on our machine, so that we can then look at the generated plot (this is what <code>-v /path/to/your/project/output:/home/project/output:rw</code> does). Just as this script saves a plot, it could be doing any arbitrarily complex thing, like compiling an Rmarkdown file, running a model, etc, etc.
-</p>
-<p>
-Here’s a short video of this process in action:
-</p>
-<p>
-<a href="http://www.youtube.com/watch?v=E3E0yd6aFss" title="renv Docker demo"><img src="http://img.youtube.com/vi/E3E0yd6aFss/0.jpg" alt="Link to renv and Docker demo"></a>
-</p>
-<p>
-Now, let’s do the same thing but for our scenario 1bis that relied on <code>{groundhog}</code>. Before writing the Dockerfile down, here’s how you should change the script. Add these lines at the very top:
-</p>
-<pre class="r"><code>groundhog::set.groundhog.folder("/home/groundhog_folder")
-
-groundhog::groundhog.library("
-    library(purrr)
-    library(ggplot2)",
-    "2017-10-04"
-    )
-
-data(mtcars)
-
-myplot &lt;- ggplot(mtcars) +
-  geom_line(aes(y = hp, x = mpg))
-
-ggsave("/home/project/output/myplot.pdf", myplot)</code></pre>
-<p>
-I also created a new script that installs the dependencies of my script when building my Dockerfile. This way, when I run the container, nothing gets installed anymore. Here’s what this script looks like:
-</p>
-<pre class="r"><code>groundhog::set.groundhog.folder("/home/groundhog_folder")
-
-groundhog::groundhog.library("
-    library(purrr)
-    library(ggplot2)",
-    "2017-10-04"
-    )</code></pre>
-<p>
-It’s exactly the beginning from the main script. Now here comes the Dockerfile, and this time it’s going to be a bit more complicated:
-</p>
-<pre><code>FROM rocker/r-ver:3.4.4
-
-RUN echo "options(repos = c(CRAN='https://packagemanager.rstudio.com/cran/latest'), download.file.method = 'libcurl')" &gt;&gt; /usr/local/lib/R/etc/Rprofile.site
-
-RUN mkdir /home/project
-
-RUN mkdir /home/groundhog_folder
-
-RUN mkdir /home/project/output
-
-COPY script.R /home/project/script.R
-
-COPY install_deps.R /home/project/install_deps.R
-
-RUN R -e "install.packages('groundhog');source('/home/project/install_deps.R')"
-
-CMD R -e "source('/home/project/script.R')"</code></pre>
-<p>
-As you can see from the first line, this time we’re pulling an image that comes with R 3.4.4. This is because that version of R was the current version as of 2017-10-04, the date we assumed this script was written on. Because this is now quite old, we need to add some more stuff to the Dockerfile to make it work. First, I change the repositories to the current mirror from <a href="https://packagemanager.rstudio.com/client/#/repos/2/overview">Posit</a>. This is because the repositories from this image are set to MRAN at a fixed date. This was done at the time for reproducibility, but now MRAN is getting shutdown, so we need to change the repositories or else our container will not be able to download packages. Also, <code>{groundhog}</code> will take care of installing the right package versions. Then I create the necessary folders and run the <code>install_deps.R</code> script which is the one that will install the packages. This way, the packages get installed when building the Docker image, and not when running the container, which is preferable. Finally, the main script gets run, and an output gets produced. Here’s a video showing this process:
-</p>
-<p>
-<a href="http://www.youtube.com/watch?v=g0eG1OvXl9s" title="renv Docker demo"><img src="http://img.youtube.com/vi/g0eG1OvXl9s/0.jpg" alt="Link to the groundhog and Docker demo"></a>
-</p>
-<p>
-Now all of this may seem complicated, and to be honest it is. Reproducibility is no easy task, but I hope that I’ve convinced you that by combining <code>{renv}</code> and Docker, or <code>{groundhog}</code> and Docker it is possible to rerun any analysis. But you do have to be familiar with these tools, and there’s also another issue by using Docker. Docker works on Windows, macOS and Linux, but the container that runs must be a Linux distribution, usually Ubuntu. But what if the original analysis was done on Windows and macOS? This can be a problem if the script relies on some Windows or macOS specific things, which even for a language available on all platforms like R can happen. For example, I’ve recently noticed that the <code>tar()</code> function in R, which is used to decompress <code>tar.gz</code> files, behaves differently on Windows than on Linux. So ideally, even if you’re running your analysis on Windows, you should then try to distribute a working Dockerfile alongside your paper (if you’re a researcher, or if you’re working in the private sector, you should do the same for each project). Of course, that is quite demanding, and you would need to learn about these tools, or hire someone to do that for you… But a natural question is then, well, “why use Docker at all? Since it’s easy to install older versions of R on Windows and macOS, wouldn’t an <code>renv.lock</code> file suffice? Or even just <code>{groundhog}</code> which is arguably even easier to use?”
-</p>
-<p>
-Well, more on this later. I still need to discuss scenario 2 first.
-</p>
-</section>
-<section id="scenario-2-offering-an-environment-that-is-made-for-reproducibility" class="level2">
-<h2 class="anchored" data-anchor-id="scenario-2-offering-an-environment-that-is-made-for-reproducibility">
-Scenario 2: offering an environment that is made for reproducibility
-</h2>
-<p>
-Ok, so this one is easier. In this scenario, you have no idea what people are going to use, so you cannot generate an <code>renv.lock</code> file beforehand, and <code>{groundhog}</code> is of no help either, because, well, there’s no scripts yet to actually make reproducible. This is the situation I’ve had for this project that I’ve discussed at the end of last year, on <a href="https://www.brodrigues.co/blog/2022-12-21-longevity/">code longevity</a> of the R programming language. The solution is to write a Dockerfile that people can modify and run; this in turn produces some results that can then be shared. This Dockerfile pulls from another Dockerfile, and that other Dockerfile is made for reproducibility. How? Because that other Dockerfile is based on Ubuntu 22.04, compiles R 4.2.2 from source, and sets the repositories to <a href="https://packagemanager.rstudio.com/cran/__linux__/jammy/2022-11-21" class="uri">https://packagemanager.rstudio.com/cran/<strong>linux</strong>/jammy/2022-11-21</a> . This way, the packages get downloaded exactly as they were on November 21st 2022. So every time this image defined from this Dockerfile gets built, we get exactly the same environment.
-</p>
-<p>
-It should also be noted that this solution can be used in the case of scenario 1bis. Let’s say I have a script from August 2018; by using a Docker image that ships the current version of R at that time (which should be R version 3.5.x) and Ubuntu (which at the time was 18.04, codenamed Bionic Beaver) and then using the Posit package manager at a frozen date, for example <a href="https://packagemanager.rstudio.com/cran/__linux__/bionic/2018-08-16" class="uri">https://packagemanager.rstudio.com/cran/<strong>linux</strong>/bionic/2018-08-16</a> I should be able to reproduce an environment that is close enough. However the problem is that Posit’s package manager earliest available date is Octobre 2017, so anything before that would not be possible to reproduce.
-</p>
-<p>
-Ok, great, here are the solutions for reproducibility. But there are still problems.
-</p>
-</section>
-<section id="a-single-point-of-failure-docker" class="level2">
-<h2 class="anchored" data-anchor-id="a-single-point-of-failure-docker">
-A single point of failure: Docker
-</h2>
-<p>
-Let’s be blunt: having Docker as the common denominator in all these solutions is a problem. This is because Docker represents a single point of failure. But the problem is not Docker itself, but the infrastructure.
-</p>
-<p>
-Let me explain: Docker is based on many different open source parts, and that’s great. There’s also Podman, which is basically a drop-in replacement (when combined with other tools) made by Red Hat, which is completely open source as well. So the risk does not come from there, because even if for some reason Docker would disappear, or get abandoned or whatever, we could still work with Podman, and it would likely be possible to create a fork from Docker.
-</p>
-<p>
-But the issue is the infrastructure. For now, using Docker and more importantly hosting images is free for personal use, education, open source communities and small businesses. So this means that a project like Rocker likely pays nothing for hosting all the images they produce (but who knows, I may be wrong on this). And Rocker makes a lot of images. See, at the top of the Dockerfiles I’ve used in this blog post, there’s always a statement like:
-</p>
-<pre><code>FROM rocker/r-ver:4.2.1</code></pre>
-<p>
-as explained before, this states that a pre-built image that ships R version 4.2.1 on Ubuntu gets downloaded. But from where? This image gets downloaded from Docker Hub, see <a href="https://hub.docker.com/layers/rocker/r-ver/4.2.1/images/sha256-3636493af7028d899a6598ee4aabe70d231fb0ff60f61a70f8ea0ea24a51c3e6?context=explore">here</a>.
-</p>
-<p>
-This means that you can download this pre-built image and don’t need to build it each time you need to work with it. You can simply use that as a base for your work, like the image built for reproducibility described in scenario 2. But what happens if at some point in the future Docker changes its licensing model? What if they still have a free tier, but massively limit the amount of images that get hosted for free? What if they get rid of the free tier entirely? This is a massive risk that needs to be managed in my opinion. There is the option of the Rocker project hosting the images themselves. It is possible to create your own, self-hosted Docker registry and not use Docker Hub, after all. But this is costly not only in terms of storage, but also of manpower to maintain all this. But maybe worse than that is: what if at some point in the future you cannot rebuild these images, at all? You would need to make sure that these pre-built images do not get lost. And this is already happening because of MRAN getting shutdown. In this blog post I’ve used the <code>rocker/r-ver:3.4.4</code> image to run code from 2017. The problem is that if you look at its Dockerfile, you see that building this image <a href="https://github.com/rocker-org/rocker-versioned/blob/1920e7cfc757bad02d041a0bddec1a18b1ebc4c1/r-ver/3.4.4.Dockerfile#L118">requires MRAN</a>. So in other words, once MRAN is offline, it won’t be possible to rebuild this image, and the Rocker project will need to make sure that the pre-built image that is currently available on Docker Hub stays available forever. Because if not, it would be quite hard to rerun code from, say, 2017. Same goes for Posit’s package manager. Posit’s package manager could be used as a drop-in replacement for MRAN, but for how long? Even though Posit is a very responsible company, I believe that it is dangerous that such a crucial service is managed by only one company.
-</p>
-<p>
-And rebuilding old images will be necessary. This is now the part where I answer the question from above:
-</p>
-<p>
-“why use Docker at all? Since it’s easy to install older versions of R on Windows and macOS, wouldn’t an <code>renv.lock</code> file suffice? Or even just <code>{groundhog}</code> which is arguably even easier to use?”
-</p>
-<p>
-The problem is hardware. You see, Apple has changed hardware architecture recently, their new computers switched from Intel based hardware to their own proprietary architecture (Apple Silicon) based on the ARM specification. And what does that mean concretely? It means that all the binary packages that were built for Intel based Apple computers cannot work on their new computers. Which means that if you have a recent M1 Macbook and need to install old CRAN packages (for example, by using <code>{groundhog}</code>), these need to be compiled to work on M1. You cannot even install older versions of R, unless you also compile those from source! Now I have read about a compatibility layer called Rosetta which enables to run binaries compiled for the Intel architecture on the ARM architecture, and maybe this works well with R and CRAN binaries compiled for Intel architecture. Maybe, I don’t know. But my point is that you never know what might come in the future, and thus needing to be able to compile from source is important, because compiling from source is what requires the least amount of dependencies that are outside of your control. Relying on binaries is not future-proof.
-</p>
-<p>
-And for you Windows users, don’t think that the preceding paragraph does not concern you. I think that it is very likely that Microsoft will push in the future for OEM manufacturers to develop more ARM based computers. There is already an ARM version of Windows after all, and it has been around for quite some time, and I think that Microsoft will not kill that version any time in the future. This is because ARM is much more energy efficient than other architectures, and any manufacturer can build its own ARM cpus by purchasing a license, which can be quite interesting. For example in the case of Apple silicon cpus, Apple can now get exactly the cpus they want for their machines and make their software work seamlessly with it. I doubt that others will pass the chance to do the same.
-</p>
-<p>
-Also, something else that might happen is that we might move towards more and more cloud based computing, but I think that this scenario is less likely than the one from before. But who knows. And in that case it is quite likely that the actual code will be running on Linux servers that will likely be ARM based because of energy costs. Here again, if you want to run your historical code, you’ll have to compile old packages and R versions from source.
-</p>
-<p>
-Basically, binary packages are in my opinion not a future-proof option, so that’s why something like Docker will stay, and become ever more relevant. But as I argued before, that’s a single point of failure.
-</p>
-<p>
-But there might be a way we can solve this and not have to rely on Docker at all.
-</p>
-</section>
-<section id="guix-toward-practical-transparent-verifiable-and-long-term-reproducible-research" class="level2">
-<h2 class="anchored" data-anchor-id="guix-toward-practical-transparent-verifiable-and-long-term-reproducible-research">
-Guix: <em>toward practical transparent verifiable and long-term reproducible research</em>
-</h2>
-<p>
-The title of this section is the same as the title from a research paper published in 2022 that you can read <a href="https://www.nature.com/articles/s41597-022-01720-9#Abs1">here</a>.
-</p>
-<p>
-This paper presents and shows how to use Guix, which is a tool to build, from scratch and in a reproducible manner, the computational environment that was used to run some code for research. Very importantly, Guix doesn’t rely on containers, virtual machines or anything like that. From my, albeit still limited, understanding of how it works, Guix requires some recipes telling it how it should build software. Guix integrates with CRAN, so it’s possible to tell Guix “hey, could you build ggplot2” and Guix does as instructed. It builds <code>{ggplot2}</code> and all the required dependencies. And what’s great about Guix is that it’s also possible to build older versions of software.
-</p>
-<p>
-The authors illustrate this by reproducing results from a 2019 paper, by recreating the environment used at the time, 3 years later.
-</p>
-<p>
-This could be a great solution, because it would always allow the recreation of computational environments from source. So architecture changes would not be a problem, making Guix quite future proof. The issue I’ve found though, is that Guix only works on Linux. So if you’re working on Windows or macOS, you would need Docker to recreate a computational environment with Guix. So you could think that we’re back to square one, but actually no. Because you could always have a Linux machine or server that you would use for reproducibility, on which Linux is installed, thus eliminating the need for Docker, thus removing that risk entirely.
-</p>
-<p>
-I’m currently exploring Guix and will report on it in greater detail in the future. In the meantime, I hope to have convinced you that, while reproducibility is no easy task, the tools that are currently available can help you set up reproducible project. However, for something to be and stay truly reproducible, some long term maintenance is also required.
-</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">
-Conclusion
-</h2>
-<p>
-So here we are, these are, as far as I know, the options to make your code reproducible. But it is no easy task and it takes time. Unfortunately, many scientists are not really concerned with making their code reproducible, simply because there is no real incentive for them to do it. And it’s a task that is becoming more and more complex as there are other risks that need to be managed, like the transition from Intel based architectures for cpus towards ARM. I’m pretty sure there are many scientists who have absolutely no idea what Intel based cpus or ARM cpus or Rosetta or whatever are. So telling them they need to make their code reproducible is one thing, telling them they need to make it so future proof that architecture changes won’t matter is like asking for the Moon.
-</p>
-<p>
-So research software engineers will become more and more crucial, and should be integrated to research teams to deal with this question (and this also holds true for the private sector; there should be someone whose job is make code reproducible across the organization).
-</p>
-<p>
-Anyways, if you read until here, I appreciate it. This was a long blog post. If you want to know more, you can read this <a href="https://www.brodrigues.co/blog/2022-11-19-raps/">other blog post</a> of mine that explains how to use Docker, and also this <a href="https://www.brodrigues.co/blog/2022-11-30-pipelines-as/">other blog post</a> that explains why Docker <em>is not</em> optional (but now that I’ve discovered Guix, maybe it’s Guix that is not optional).
-</p>
-<p>
-By the way, if you want to grab the scripts and Dockerfiles from this blog post, you can get them <a href="https://github.com/b-rodrigues/repro_r">here</a>.
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-01-12-repro_R.html</guid>
-  <pubDate>Thu, 12 Jan 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Code longevity of the R programming language</title>
-  <link>https://b-rodrigues.github.io/posts/2022-12-21-longevity.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/spelunky.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-I’ve been working on a way to evaluate how old R code runs on the current version of R, and am now ready to share some results. It all started with this tweet:
-</p>
-<div style="text-align:center;">
-<p>
-<a href="https://twitter.com/brodriguesco/status/1588088437655093250?s=20&amp;t=-8DPAVEpMEcAuxy8Q2sAQw"> <img src="https://b-rodrigues.github.io/assets/img/tweet_old_code.png" width="80%" height="auto"> </a>
-</p>
-</div>
-<p>
-The problem is that you have to find old code laying around. Some people have found old code they wrote a decade or more ago and tried to rerun it; there’s <a href="https://notstatschat.rbind.io/2022/10/14/code-archaeology-polynomial-distributed-lags/">this blog post</a> by Thomas Lumley and <a href="https://www.jumpingrivers.com/blog/r-from-the-turn-of-the-century/">this other one</a> by Colin Gillespie that I find fascinating, but ideally we’d have more than a handful of old scripts laying around. This is when Dirk Eddelbuettel suggested this:
-</p>
-<div style="text-align:center;">
-<p>
-<a href="https://twitter.com/eddelbuettel/status/1588149491772923907?s=20&amp;t=-8DPAVEpMEcAuxy8Q2sAQw"> <img src="https://b-rodrigues.github.io/assets/img/tweet_dirk.png" width="80%" height="auto"> </a>
-</p>
-</div>
-<p>
-And this is what I did. I wrote a lot of code to achieve this graph here:
-</p>
-<div style="text-align:center;">
-<p>
-<a href="https://github.com/b-rodrigues/code_longevity"> <img src="https://b-rodrigues.github.io/assets/img/r_longevity.png" width="80%" height="auto"> </a>
-</p>
-</div>
-<p>
-This graph shows the following: for each version of R, starting with R version 0.6.0 (released in 1997), how well the examples that came with a standard installation of R run on the current version of R (version 4.2.2 as of writing). These are the examples from the default packages like <code>{base}</code>, <code>{stats}</code>, <code>{stats4}</code>, and so on. Turns out that more than 75% of the example code from version 0.6.0 still works on the current version of R. A small fraction output a message (which doesn’t mean the code doesn’t work), some 5% raise a warning, which again doesn’t necessarily mean that the code doesn’t work, and finally around 20% or so errors. As you can see, the closer we get to the current release, the less errors get raised.
-</p>
-<p>
-(But something important should be noted: just because some old piece of code runs without error, doesn’t mean that the result is exactly the same. There might be cases where the same function returns different results on different versions of R.)
-</p>
-<p>
-Then, once I had this graph, I had to continue with packages. How well do old examples from any given package run on the current version of the same package?
-</p>
-<p>
-What I came up with is a Docker image that runs this for you, and even starts a Shiny app to let you explore the results. All you have to do is edit one line in the Dockerfile. This Docker image uses a lot of code from other projects, and I even had to write a package for this, called <code>{wontrun}</code>.
-</p>
-<section id="the-wontrun-package" class="level2">
-<h2 class="anchored" data-anchor-id="the-wontrun-package">
-The {wontrun} package
-</h2>
-<p>
-The problem I needed to solve was how to easily run examples from archived packages. So I needed to first have an easy way to download them, then extract the examples, and then run them. So to help me with this I wrote the <code>{wontrun}</code> package (thanks again to <a href="https://fediscience.org/@dmi3kno/109296599193965025">Deemah</a> for suggesting the name and making the hex logo!). To be honest, the quality of this package could be improved. Documentation is still lacking, and the package only seems to work on Linux (but that’s not an issue, since it really only makes sense to use it within Docker). In any case, this package has a function to download the archived source code for a given package, using the <code>get_archived_sources()</code> function. This function takes the name of a package as an input and returns a data frame with the archived sources and the download links to them. To actually download the source packages, the <code>get_examples()</code> function is used. This function extracts the examples from the <code>man/</code> folder included in source packages, and converts the examples into scripts. Remember that example files are in the <code>.Rd</code> format, which is some kind of markup language format. Thankfully, there’s a function called <code>Rd2ex()</code> from the <code>{tools}</code> package which I use to convert <code>.Rd</code> files into <code>.R</code> scripts.
-</p>
-<p>
-Then, all that there is to do is to run these scripts. But that’s not as easy as one might think. This is becuse I first need to make sure that the latest version of the package is installed, and ideally, I don’t want to pollute my library with packages that I never use but only wanted to assess for their code longevity. I also need to make sure that I’m running all these scripts <em>all else being equal</em>: so same version of R, same version of the current packages and same operating system. That why I needed to use Docker for this. Also, all the required dependencies to run the examples should get installed as well. Sometimes, some examples load data from another package. So for this, I’m using the <code>renv::dependencies()</code> function which scans a file for calls to <code>library()</code> or <code>package::function()</code> to list the dependencies and then install them. This all happens automatically.
-</p>
-<p>
-To conclude this section: I cannot stress how much I’m relying on work by other people for this. This is the NAMESPACE file of the <code>{wontrun}</code> package (I’m only showing the import statements):
-</p>
-<pre><code>importFrom(callr,r_vanilla)
-importFrom(ctv,ctv)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,ungroup)
-importFrom(furrr,future_map2)
-importFrom(future,multisession)
-importFrom(future,plan)
-importFrom(janitor,clean_names)
-importFrom(lubridate,year)
-importFrom(lubridate,ymd)
-importFrom(lubridate,ymd_hm)
-importFrom(magrittr,"%&gt;%")
-importFrom(pacman,p_load)
-importFrom(pkgsearch,cran_package)
-importFrom(purrr,keep)
-importFrom(purrr,map)
-importFrom(purrr,map_chr)
-importFrom(purrr,map_lgl)
-importFrom(purrr,pluck)
-importFrom(purrr,pmap_chr)
-importFrom(purrr,possibly)
-importFrom(renv,dependencies)
-importFrom(rlang,`!!`)
-importFrom(rlang,cnd_message)
-importFrom(rlang,quo)
-importFrom(rlang,try_fetch)
-importFrom(rvest,html_nodes)
-importFrom(rvest,html_table)
-importFrom(rvest,read_html)
-importFrom(stringr,str_extract)
-importFrom(stringr,str_remove_all)
-importFrom(stringr,str_replace)
-importFrom(stringr,str_trim)
-importFrom(tibble,as_tibble)
-importFrom(tidyr,unnest)
-importFrom(tools,Rd2ex)
-importFrom(withr,with_package)</code></pre>
-<p>
-That’s a lot of packages, most of them from Posit. What can I say, these packages are great! Even if I could reduce the number of dependencies from <code>{wontrun}</code>, I honestly cannot be bothered, I’ve been spoilt by the quality of Posit packages.
-</p>
-</section>
-<section id="docker-for-reproducibility" class="level2">
-<h2 class="anchored" data-anchor-id="docker-for-reproducibility">
-Docker for reproducibility
-</h2>
-<p>
-The Dockerfile I wrote is based on Ubuntu 22.04, compiles R 4.2.2 from source, and sets the repositories to <a href="https://packagemanager.rstudio.com/cran/__linux__/jammy/2022-11-21" class="uri">https://packagemanager.rstudio.com/cran/<strong>linux</strong>/jammy/2022-11-21</a> . This way, the packages get downloaded exactly as they were on November 21st 2022. This ensures that if readers of this blog post want to run this to assess the code longevity of some R packages, we can compare results and be certain that any conditions raised are not specific to any difference in R or package version. It should be noted that this Dockerfile is based on the work of the Rocker project, and more specifically their <a href="https://rocker-project.org/images/versioned/r-ver.html">versioned images</a> which are recommended when reproducibility is needed. Becuse the code runs inside Docker, it doesn’t matter if the <code>{wontrun}</code> package only runs on Linux (I think that this is the case because of the <code>untar()</code> function which I use to decompress the downloaded compressed archives from CRAN, and which seems to have a different behaviour on Linux vs Windows. No idea how this function behaves on macOS).
-</p>
-<p>
-The image defined by this Dockerfile is quite heavy, because I also installed all possible dependencies required to run R packages smoothly. This is because even though the Posit repositories install compiled packages on Linux, shared libraries are still needed for the packages to run.
-</p>
-<p>
-Here is what the Dockerfile looks like:
-</p>
-<pre><code>FROM brodriguesco/wontrun:r4.2.2
-
-# This gets the shiny app
-RUN git clone https://github.com/b-rodrigues/longevity_app.git
-
-# These are needed for the Shiny app
-RUN R -e "install.packages(c('dplyr', 'forcats', 'ggplot2', 'shiny', 'shinyWidgets', 'DT'))"
-
-RUN mkdir /home/intermediary_output/
-RUN mkdir /home/output/
-
-COPY wontrun.R /home/wontrun.R
-
-# Add one line per package you want to asses
-RUN Rscript '/home/wontrun.R' dplyr 6
-RUN Rscript '/home/wontrun.R' haven 6
-
-CMD mv /home/intermediary_output/* /home/output/ &amp;&amp; R -e 'shiny::runApp("/longevity_app", port = 1506, host = "0.0.0.0")'</code></pre>
-<p>
-As you can see it starts by pulling an image from Docker Hub called <code>wontrun:r4.2.2</code>. This is the image based on Ubuntu 22.04 with R compiled from source and all dependencies pre-installed. (This Dockerfile is available <a href="https://github.com/b-rodrigues/code_longevity/tree/master/wontrun_dockerfile">here</a>.)
-</p>
-<p>
-Then my Shiny app gets cloned, the required packages for the app to run get installed, and some needed directories get made. Now comes the interesting part; a script called <code>wontrun.R</code> gets copied. This is what the script looks like:
-</p>
-<pre class="r"><code>#!/usr/bin/env Rscript
-args &lt;- commandArgs(trailingOnly = TRUE)
-
-library(wontrun)
-
-packages_sources &lt;- get_archived_sources(args[1])
-
-out &lt;- wontrun(packages_sources ,
-               ncpus = args[2],
-               setup = TRUE,
-               wontrun_lib = "/usr/local/lib/R/site-library/")
-
-saveRDS(object = out,
-        file = paste0("/home/intermediary_output/", args[1], ".rds"))</code></pre>
-<p>
-This script uses the <code>{wontrun}</code> package to get the archived sources of a package of interest, and the examples get executed and results tallied using the <code>wontrun()</code> function. The results then get saved into an <code>.rds</code> file.
-</p>
-<p>
-Calling this script is done with this line in the Dockerfile:
-</p>
-<pre><code>RUN Rscript '/home/wontrun.R' dplyr 6</code></pre>
-<p>
-The <code>dplyr</code> and <code>6</code> get passed down to the <code>wontrun.R</code> script as a list called <code>args</code>. So <code>args[1]</code> is the “dplyr” string, and <code>args[2]</code> is 6. This means that the examples from archived versions of the <code>{dplyr}</code> package will get assessed on the current version of <code>{dplyr}</code> using 6 cores. You can add as many lines as you want and thus assess as many packages as you want. Once you’re done with editing the Dockerfile, you can build the image; this will actually run the code, so depending on how many packages you want to assess and the complexity of the examples, this may take some hours. To build the image run this in a console:
-</p>
-<pre><code>docker build -t code_longevity_packages .</code></pre>
-<p>
-Now, you still need to actually run a container based on this image. Running the container will move the <code>.rds</code> files from the container to your machine so you can actually get to the results, and it will also start a Shiny app in which you will be able to upload the <code>.rds</code> file and explore the results. Run the container with (and don’t forget to change <code>path/to/repository/</code> with the correct path on your machine):
-</p>
-<pre><code>docker run --rm --name code_longevity_packages_container -v /path/to/repository/code_longevity_packages/output:/home/output:rw -p 1506:1506 code_longevity_packages</code></pre>
-<p>
-Go over to <code>http://localhost:1506/</code> to start the Shiny app and explore the results:
-</p>
-<div style="text-align:center;">
-<p>
-<video width="640" height="480" controls="">
-<source src="../assets/img/code_longevity.mp4" type="video/mp4">
-</video>
-</p>
-</div>
-</section> ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2022-12-21-longevity.html</guid>
-  <pubDate>Wed, 21 Dec 2022 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Functional programming explains why containerization is needed for reproducibility</title>
-  <link>https://b-rodrigues.github.io/posts/2022-11-30-pipelines-as.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/dino.png" width="80%" height="auto">
-</p>
-</div>
-<p>
-I’ve had some discussions online and in the real world about <a href="../posts/2022-11-16-open_source_repro.html">this blog post</a> and I’d like to restate why containerization is needed for reproducibility, and do so from the lens of functional programming.
-</p>
-<p>
-When setting up a pipeline, wether you’re a functional programming enthusiast or not, you’re aiming at setting it up in a way that this pipeline is the composition of (potentially) many referentially transparent and pure functions.
-</p>
-<p>
-As a reminder:
-</p>
-<ul>
-<li>
-<p>
-referentially transparent functions are functions that always return the same output for the same given input. So for example <code>f(x, y):=x+y</code> is referentially transparent, but <code>h(x):=x+y</code> is not. Because <code>y</code> is not an input of <code>h</code>, <code>h</code> will look for <code>y</code> in the global environment. Depending on the value of y, <code>h(1)</code> might equal 10 one day, but 100 the next. Let’s say that <code>f(1, 10)</code> is always equal to 11. Because this is true, you could replace <code>f(1, 10)</code> everywhere it appears with 11. But consider the following example of a function that is not referentially transparent, <code>rnorm()</code>. Try <code>rnorm(1)</code> several times… It will always give a different result! This is because <code>rnorm()</code> looks for the seed in the global environment and uses that to generate a random number.
-</p>
-</li>
-<li>
-<p>
-pure functions are functions without side effects. So a function just does its thing, and does not interact with anything else; doesn’t change anything in the global environment, doesn’t print anything on screen, doesn’t write anything to disk. Basically, pure functions are functions that do nothing else but computing stuff. Now this may seem limiting, and to some extent it is, so we will need to relax this a bit: we’ll be ok with functions that output stuff, but only the very last function in the pipeline will be allowed to do it.
-</p>
-</li>
-</ul>
-<p>
-To be pure, a function needs to be referentially transparent.
-</p>
-<p>
-Ok so now that we know what referentially transparent and pure functions are, let’s explain why we want a pipeline to be a composition of such functions. Function composition is an operation that takes two functions <em>g</em> and <em>f</em> and returns a new function <em>h</em> such that <code>h(x) = g(f(x))</code>. Formally:
-</p>
-<pre><code>h = g ∘ f such that h(x) = g(f(x))</code></pre>
-<p>
-<code>∘</code> is the composition operator. You can read <code>g ∘ f</code> as <em>g after f</em>. In R, you can compose functions very easily, simply by using |&gt; or %&gt;%:
-</p>
-<pre><code>h &lt;- f |&gt; g</code></pre>
-<p>
-<code>f |&gt; g</code> can be read as <em>f then g</em>, which is equivalent to <em>g after f</em> (ok, using <code>|&gt;</code> is chaining rather than composing functions, but the net effect is the same).
-</p>
-<p>
-So <code>h</code> would be our complete pipeline, which would be the composition, or chaining, of as many functions as needed:
-</p>
-<pre><code>h &lt;- a |&gt; b |&gt; c |&gt; d ... |&gt; z</code></pre>
-<p>
-If all the functions are pure (and referentially transparent) then we’re assured that <code>h</code> will always produce the same outputs for the same inputs. As stated above, <code>z</code> will be allowed to not be pure an actually output something (like a rendered Quarto document) to disk. Ok so that’s great, and all, but why does the title of this blog post say that containerization is needed?
-</p>
-<p>
-The problem is that all the functions we use have “hidden” inputs, and are never truly referentially transparent. These inputs are the following:
-</p>
-<ul>
-<li>
-Version of R (or whatever programming language you’re using)
-</li>
-<li>
-Versions of the packages you’re using
-</li>
-<li>
-Operating system and its version (and all the different operating system dependencies that get used at run- or compile time)
-</li>
-</ul>
-<p>
-For example, let’s take a look at this function:
-</p>
-<pre class="r"><code>f &lt;- function(x){
-  if (c(TRUE, FALSE)) x 
-}</code></pre>
-<p>
-which will return the following on R 4.1 (which was released on May 2021):
-</p>
-<pre class="r"><code>f(1)</code></pre>
-<pre class="r"><code>[1] 1
-Warning message:
-In if (c(TRUE, FALSE)) 1 :
-  the condition has length &gt; 1 and only the first element will be used</code></pre>
-<p>
-So a result 1 and a warning. On R 4.2.2 (the current version as of writing), the exact same call returns:
-</p>
-<pre class="r"><code>Error in if (c(TRUE, FALSE)) 1 : the condition has length &gt; 1</code></pre>
-<p>
-These types of breaking changes are rare in R, at least to my knowledge (I’m actually looking into this in greater detail, 2023 will likely be the year I show my findings), but in this case it illustrates my point: code that was behaving in a certain way started behaving in another way, even though nothing changed. What changed was the version of R, even though the function itself was pure. This wouldn’t be so surprising if instead of <code>f(x)</code>, the function was something like <code>f(x, r_version)</code>. In this case, the calls above would be something like:
-</p>
-<pre class="r"><code>f(1, r_version = "4.1")</code></pre>
-<p>
-and this would always return:
-</p>
-<pre class="r"><code>[1] 1
-Warning message:
-In if (c(TRUE, FALSE)) 1 :
-  the condition has length &gt; 1 and only the first element will be used</code></pre>
-<p>
-but changing the call to this:
-</p>
-<pre class="r"><code>f(1, r_version = "4.2.2")</code></pre>
-<p>
-would return the error:
-</p>
-<pre class="r"><code>Error in if (c(TRUE, FALSE)) 1 : the condition has length &gt; 1</code></pre>
-<p>
-regardless of the version of R we’re running, so our function would be referentially transparent.
-</p>
-<p>
-Alas, this is not possible, at least not like this.
-</p>
-<p>
-Hence why tools like Docker, Podman (a Docker alternative) or Guix (which I learned about recently but never used, yet, and as far as I know, not a containerization solution, but a solution actually based on functional programming) are crucial to ensure that your pipeline is truly reproducible. Basically, using Docker you turn the hidden inputs defined before (versions of tools and OS) explicit. Take a look at this Dockerfile:
-</p>
-<pre class="r"><code>FROM rocker/r-ver:4.1.0
-
-RUN R -e "f &lt;- function(x){if (c(TRUE, FALSE)) x};f(1)"
-
-CMD ["R"]</code></pre>
-<p>
-here’s what happens when you build it:
-</p>
-<pre><code>➤ docker build -t my_pipeline .</code></pre>
-<pre><code>Sending build context to Docker daemon  2.048kB
-Step 1/3 : FROM rocker/r-ver:4.1.0
-4.1.0: Pulling from rocker/r-ver
-
-eaead16dc43b: Already exists 
-35eac095fa03: Pulling fs layer
-c0088a79f8ab: Pulling fs layer
-28e8d0ade0c0: Pulling fs layer
-Digest: sha256:860c56970de1d37e9c376ca390617d50a127b58c56fbb807152c2e976ce02002
-Status: Downloaded newer image for rocker/r-ver:4.1.0
- ---&gt; d83268fb6cda
-Step 2/3 : RUN R -e "f &lt;- function(x){if (c(TRUE, FALSE)) x};f(1)"
- ---&gt; Running in a158e4ab474f
-
-R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
-Copyright (C) 2021 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-&gt; f &lt;- function(x){if (c(TRUE, FALSE)) x};f(1)
-[1] 1
-Warning message:
-In if (c(TRUE, FALSE)) x :&gt; 
-&gt; 
-
-  the condition has length &gt; 1 and only the first element will be used
-Removing intermediate container a158e4ab474f
- ---&gt; 49e2eb20a535
-Step 3/3 : CMD ["R"]
- ---&gt; Running in ccda657c4d95
-Removing intermediate container ccda657c4d95
- ---&gt; 5a432adbe6ff
-Successfully built 5a432adbe6ff
-Successfully tagged my_package:latest</code></pre>
-<p>
-as you can read from above, this starts the container with R version 4.1.0 and runs the code in it. We get back our result with the warning (it should be noted that in practice, you would structure your Dockerfile differently for running an actual pipeline).
-</p>
-<p>
-This Dockerfile starts by using rocker/r-ver:4.1 as a basis. You can find this image in the <a href="https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.1.0.Dockerfile">versioned</a> repository from the Rocker Project. This base image starts off from Ubuntu Focal Fossa so (Ubuntu version 20.04), uses R version 4.1.0 and even uses frozen CRAN repository as of 2021-08-09. It then runs our pipeline (or in this case, our simple function) in this, fixed environment. Our function essentially became <code>f(x, os_version, r_version, packages_version)</code> instead of just <code>f(x)</code>. By changing the first statement of the Dockerfile:
-</p>
-<pre class="r"><code>FROM rocker/r-ver:4.1.0</code></pre>
-<p>
-to this:
-</p>
-<pre class="r"><code>FROM rocker/r-ver:3.5.0</code></pre>
-<p>
-we can even do some archaeology and run the pipeline on R version 3.5.0! This has great potential and hopefully one day Docker or similar solution will become just another tool in scientists/analysts toolbox.
-</p>
-<p>
-If you want to start using Docker for your projects, I’ve written this <a href="../posts/2022-11-19-raps.html">tutorial</a> and even a whole <a href="https://rap4mads.eu/">ebook</a>.
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2022-11-30-pipelines-as.html</guid>
-  <pubDate>Wed, 30 Nov 2022 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Reproducibility with Docker and Github Actions for the average R enjoyer</title>
-  <link>https://b-rodrigues.github.io/posts/2022-11-19-raps.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/raps.png" width="80%" height="auto">
-</p>
-</div>
-<p>
-<em>This blog post is a summary of Chapters 9 and 10 of this <a href="https://rap4mads.eu/self-contained-raps-with-docker.html">ebook</a> I wrote for a course</em>
-</p>
-<p>
-The goal is the following: we want to write a pipeline that produces some plots. We want the code to be executed inside a Docker container for reproducibility, and we want this container to get executed on Github Actions. Github Actions is a <em>Continuous Integration and Continuous Delivery</em> service from Github that allows you to execute arbitrary code on events (like pushing code to a repo). It’s pretty neat. For example, you could be writing a paper using Latex and get the pdf compiled on Github Actions each time you push, without needing to have to do it yourself. Or if you are developing an R package, unit tests could get executed each time you push code, so you don’t have to do it manually.
-</p>
-<p>
-This blog post will assume that you are familiar with R and are comfortable with it, as well as Git and Github.
-</p>
-<p>
-It will also assume that you’ve at least heard of Docker and have it already installed on your computer, but ideally, you’ve already played a bit around with Docker. If you’re a total Docker beginner, this tutorial might be a bit too esoteric.
-</p>
-<p>
-Let’s start by writing a pipeline that works on our machines using the <code>{targets}</code> package.
-</p>
-<section id="getting-something-working-on-your-machine" class="level2">
-<h2 class="anchored" data-anchor-id="getting-something-working-on-your-machine">
-Getting something working on your machine
-</h2>
-<p>
-So, let’s say that you got some nice code that you need to rerun every month, week, day, or even hour. Or let’s say that you’re a researcher that is concerned with reproducibility. Let’s also say that you want to make sure that this code always produces the same result (let’s say it’s some plots that need to get remade once some data is refreshed).
-</p>
-<p>
-Ok, so first of all, you really want your workflow to be defined using the <code>{targets}</code> package. If you’re not familiar with <code>{targets}</code>, this will serve as a micro introduction, but you really should read the <code>{targets}</code> manual, at least the <a href="https://books.ropensci.org/targets/walkthrough.html">walkthrough</a> (watch the 4 minute video). <code>{targets}</code> is a build automation tool that you should definitely add to your toolbox.
-</p>
-<p>
-Let’s define a workflow that does the following: data gets read, data gets filtered, data gets plotted. What’s the data about? Unemployment in Luxembourg. Luxembourg is a little Western European country that looks like a shoe and is <a href="https://raw.githubusercontent.com/rbind/b-rodrigues.github.com/master/static/img/rhode_island.png" width="80%" height="auto">about the size of .98 Rhode Islands</a> from which yours truly hails from. Did you know that Luxembourg was a monarchy, and the last Grand-Duchy in the World? I bet you did not know that. Also, what you should know to understand the script below is that the country of Luxembourg is divided into Cantons, and each Cantons into Communes. Basically, if Luxembourg was the USA, Cantons would be States and Communes would be Counties (or Parishes or Boroughs). What’s confusing is that “Luxembourg” is also the name of a Canton, and of a Commune (which also has the status of a city).
-</p>
-<p>
-Anyways, here’s how my script looks like:
-</p>
-<pre class="r"><code>library(targets)
-library(dplyr)
-library(ggplot2)
-source("functions.R")
-
-
-list(
-    tar_target(
-        unemp_data,
-        get_data()
-    ),
-
-    tar_target(
-        lux_data,
-        clean_unemp(unemp_data,
-                    place_name_of_interest = "Luxembourg",
-                    level_of_interest = "Country",
-                    col_of_interest = active_population)
-    ),
-
-    tar_target(
-        canton_data,
-        clean_unemp(unemp_data,
-                    level_of_interest = "Canton",
-                    col_of_interest = active_population)
-    ),
-
-    tar_target(
-        commune_data,
-        clean_unemp(unemp_data,
-                    place_name_of_interest = c("Luxembourg",
-                                               "Dippach",
-                                               "Wiltz",
-                                               "Esch/Alzette",
-                                               "Mersch"),
-                    col_of_interest = active_population)
-    ),
-
-    tar_target(
-        lux_plot,
-        make_plot(lux_data)
-    ),
-
-    tar_target(
-        canton_plot,
-        make_plot(canton_data)
-    ),
-
-    tar_target(
-        commune_plot,
-        make_plot(commune_data)
-    ),
-
-    tar_target(
-        luxembourg_saved_plot,
-        save_plot("fig/luxembourg.png", lux_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        canton_saved_plot,
-        save_plot("fig/canton.png", canton_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        commune_saved_plot,
-        save_plot("fig/commune.png", commune_plot),
-        format = "file"
-    )
-
-
-)</code></pre>
-<p>
-Because this is a <code>{targets}</code> script, this needs to be saved inside a file called <code>_targets.R</code>. Each <code>tar_target()</code> object defines a target that will get built once we run the pipeline. The first element of <code>tar_target()</code> is the name of the target, the second line a call to a function that returns the first element and in the last three targets <code>format = “file”</code> is used to indicate that this target saves an output to disk (as a file).
-</p>
-<p>
-The fourth line of the script sources a script called <code>functions.R</code>. This script should be placed next to the <code>_targets.R</code> script and should look like this:
-</p>
-<pre><code># clean_unemp() is a function inside a package I made. Because I don't want you to install
-# the package if you're following along, I'm simply sourcing it:
-
-source("https://raw.githubusercontent.com/b-rodrigues/myPackage/main/R/functions.R")
-
-# The cleaned data is also available in that same package. But again, because I don't want you
-# to install a package just for a blog post, here is the script to clean it.
-# Don't waste time trying to understand it, it's very specific to the data I'm using
-# to illustrate the concept of reproducible analytical pipelines. Just accept this data 
-# as given.
-
-# This is a helper function to clean the data
-clean_data &lt;- function(x){
-  x %&gt;%
-    janitor::clean_names() %&gt;%
-    mutate(level = case_when(
-             grepl("Grand-D.*", commune) ~ "Country",
-             grepl("Canton", commune) ~ "Canton",
-             !grepl("(Canton|Grand-D.*)", commune) ~ "Commune"
-           ),
-           commune = ifelse(grepl("Canton", commune),
-                            stringr::str_remove_all(commune, "Canton "),
-                            commune),
-           commune = ifelse(grepl("Grand-D.*", commune),
-                            stringr::str_remove_all(commune, "Grand-Duche de "),
-                            commune),
-           ) %&gt;%
-    select(year,
-           place_name = commune,
-           level,
-           everything())
-}
-
-# This reads in the data.
-get_data &lt;- function(){
-  list(
-    "https://raw.githubusercontent.com/b-rodrigues/modern_R/master/datasets/unemployment/unemp_2013.csv",
-    "https://raw.githubusercontent.com/b-rodrigues/modern_R/master/datasets/unemployment/unemp_2014.csv",
-    "https://raw.githubusercontent.com/b-rodrigues/modern_R/master/datasets/unemployment/unemp_2015.csv",
-    "https://raw.githubusercontent.com/b-rodrigues/modern_R/master/datasets/unemployment/unemp_2016.csv",
-  ) |&gt;
-    purrr::map_dfr(readr::read_csv) %&gt;%
-    purrr::map_dfr(clean_data)
-}
-
-# This plots the data
-make_plot &lt;- function(data){
-  ggplot(data) +
-    geom_col(
-      aes(
-        y = active_population,
-        x = year,
-        fill = place_name
-      )
-    ) +
-    theme(legend.position = "bottom",
-          legend.title = element_blank())
-}
-
-# This saves plots to disk
-save_plot &lt;- function(save_path, plot){
-  ggsave(save_path, plot)
-  save_path
-}</code></pre>
-<p>
-What you could do instead of having a <code>functions.R</code> script that you source like this, is put everything inside a package that you then host on Github. But that’s outside the scope of this blog post. Put these scripts inside a folder, open an R session inside that folder, and run the pipeline using <code>targets::tar_make()</code>:
-</p>
-<pre class="r"><code>targets::tar_make()</code></pre>
-<pre><code>/
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-• start target unemp_data
-• built target unemp_data [1.826 seconds]
-• start target canton_data
-• built target canton_data [0.038 seconds]
-• start target lux_data
-• built target lux_data [0.034 seconds]
-• start target commune_data
-• built target commune_data [0.043 seconds]
-• start target canton_plot
-• built target canton_plot [0.007 seconds]
-• start target lux_plot
-• built target lux_plot [0.006 seconds]
-• start target commune_plot
-• built target commune_plot [0.003 seconds]
-• start target canton_saved_plot
-Saving 7 x 7 in image
-• built target canton_saved_plot [0.425 seconds]
-• start target luxembourg_saved_plot
-Saving 7 x 7 in image
-• built target luxembourg_saved_plot [0.285 seconds]
-• start target commune_saved_plot
-Saving 7 x 7 in image
-• built target commune_saved_plot [0.291 seconds]
-• end pipeline [3.128 seconds]</code></pre>
-<p>
-You can now see a <code>fig/</code> folder in the root of your project with the plots. Sweet.
-</p>
-</section>
-<section id="making-sure-this-is-reproducible" class="level2">
-<h2 class="anchored" data-anchor-id="making-sure-this-is-reproducible">
-Making sure this is reproducible
-</h2>
-<p>
-Now what we would like to do is make sure that this pipeline will, for the same inputs, returns the same outputs FOREVER. If I’m running this in 10 years on R version 6.9, I want the exact same plots back. So the idea is to actually never run this on whatever version of R will be available in 10 years, but keep rerunning it, <em>ad vitam æternam</em> on whatever environment I’m using now to type this blog post. So for this, I’m going to use Docker.
-</p>
-<p>
-(If, like me, you’re an average functional programming enjoyer, then this means getting rid of the hidden state of our pipeline. The hidden global state is the version of R and packages used to run the pipeline.)
-</p>
-<p>
-What’s Docker? Docker is a way to run a Linux computer inside your computer (Linux or not). That computer is not real, but real enough for our purposes. Ever heard of virtual machines? Basically the same thing, but without the overhead of actually setting up and running a virtual machine.
-</p>
-<p>
-You can write a simple text file that defines what your machine is, and what it should run. Thankfully, we don’t need to start from scratch and can use the amazing <a href="https://rocker-project.org/">Rocker project</a> that provides many, many, images for us to start playing with Docker. What’s a Docker image? A definition of a computer/machine. Which is a text file. Don’t ask why it’s called an image. Turns out the Rocker project has a page specifically on <a href="https://rocker-project.org/use/reproducibility.html">reproducibility</a>. Their advice can be summarised as follows: if you’re aiming at setting up a reproducible pipeline, use a version-stable image. This means that if you start from such an image, the exact same R version will always be used to run your pipeline. Plus, the RStudio Public Package Manager (RSPM), frozen at a specific date, will be used to fetch the packages needed for your pipeline. So, not only is the R version frozen, but the exact same packages will always get installed (as long as the RSPM exists, hopefully for a long time).
-</p>
-<p>
-Now, I’ve been talking about a script that defines an image for some time. This script is called a <code>Dockerfile</code>, and you can find the versioned <code>Dockerfiles</code> <a href="https://github.com/rocker-org/rocker-versioned2/tree/master/dockerfiles">here</a>. As you can see there are many <code>Dockerfile</code>s, each defining a Linux machine and with several things pre-installed. Let’s take a look at the image <a href="https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.2.1.Dockerfile">r-ver_4.2.1.Dockerfile</a>. What’s interesting here are the following lines (let’s ignore the others):
-</p>
-<pre><code>8 ENV R_VERSION=4.2.1
-
-16 ENV CRAN=https://packagemanager.rstudio.com/cran/__linux__/focal/2022-10-28</code></pre>
-<p>
-The last characters of that link are a date. This means that if you use this for your project, packages will be downloaded as they were on the October 28th, 2022, and the R version used will always be version 4.2.1.
-</p>
-<p>
-Ok so, how do we use this?
-</p>
-<p>
-Let’s add a <code>Dockerfile</code> to our project. Simply create a text file called <code>Dockerfile</code> and add the following lines in it:
-</p>
-<pre><code>FROM rocker/r-ver:4.2.1
-
-RUN R -e "install.packages(c('dplyr', 'purrr', 'readr', 'stringr', 'ggplot2', 'janitor', 'targets'))"
-
-RUN mkdir /home/fig
-
-COPY _targets.R /_targets.R
-
-COPY functions.R /functions.R
-
-CMD R -e "targets::tar_make()"</code></pre>
-<p>
-Before continuing, I should explain what the first line does:
-</p>
-<pre><code>FROM rocker/r-ver:4.2.1</code></pre>
-<p>
-This simply means that we are using the image <a href="https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.2.1.Dockerfile">from before</a> as a base. This image is itself based on <em>Ubuntu Focal</em>, see its first line:
-</p>
-<pre><code>FROM ubuntu:focal</code></pre>
-<p>
-Ubuntu is a very popular, likely the most popular, Linux distribution. So the versioned image is built on top of Ubuntu 20.04 codenamed Focal Fossa (which is a long term support release), and our image is built on top of that. To make sense of all this, you can take a look at the table <a href="https://github.com/rocker-org/rocker-versioned2/wiki/Versions">here</a>.
-</p>
-<p>
-So now that we’ve written this <code>Dockerfile</code>, we need to build the image. This can be done inside a terminal with the following line:
-</p>
-<pre><code>docker build -t my_pipeline .</code></pre>
-<p>
-This tells Docker to build an image called <code>my_pipeline</code> using the Dockerfile in the current directory (hence the <code>.</code>).
-</p>
-<p>
-But, here’s what happens when we try to run the pipeline (I’ll be showing the command to run the pipeline below):
-</p>
-<pre><code>&gt; targets::tar_make()
-Error in dyn.load(file, DLLpath = DLLpath, ...) : 
-  unable to load shared object '/usr/local/lib/R/site-library/igraph/libs/igraph.so':
-  libxml2.so.2: cannot open shared object file: No such file or directory
-Calls: loadNamespace ... asNamespace -&gt; loadNamespace -&gt; library.dynam -&gt; dyn.load
-Execution halted</code></pre>
-<p>
-We get a nasty error message; apparently some library, <code>libxml2.so</code> cannot be found. So we need to change our <code>Dockerfile</code>, and add the following lines:
-</p>
-<pre><code>FROM rocker/r-ver:4.2.1
-
-RUN apt-get update &amp;&amp; apt-get install -y \
-    libxml2-dev \
-    libglpk-dev \
-    libxt-dev
-
-RUN R -e "install.packages(c('dplyr', 'purrr', 'readr', 'stringr', 'ggplot2', 'janitor', 'targets'))"
-
-RUN mkdir /home/fig
-
-COPY _targets.R /_targets.R
-
-COPY functions.R /functions.R
-
-CMD R -e "targets::tar_make()"</code></pre>
-<p>
-I’ve added these lines:
-</p>
-<pre><code>RUN apt-get update &amp;&amp; apt-get install -y \
-    libxml2-dev \
-    libglpk-dev \
-    libxt-dev</code></pre>
-<p>
-this runs the <code>apt-get update</code> and <code>apt-get install</code> commands. Aptitude is Ubuntu’s package manager and is used to install software. The three pieces of software I installed will avoid further issues. <code>libxml2-dev</code> is for the error message I’ve pasted here, while the other two avoid further error messages. One last thing before we rebuild th image: we actually need to change the <code>_targets.R</code> file a bit. Let’s take a look at our <code>Dockerfile</code> again, there’s three lines I haven’t commented:
-</p>
-<pre><code>RUN mkdir /home/fig
-
-COPY _targets.R /_targets.R
-
-COPY functions.R /functions.R</code></pre>
-<p>
-The first line creates the <code>fig/</code> folder in the <code>home/</code> directory, and the <code>COPY</code> statements copy the files into the Docker image, so that they’re actually available inside the Docker. I also need to tell <code>_targets</code> to save the figures into the <code>home/fig</code> folder. So simply change the last three targets from this:
-</p>
-<pre><code>tar_target(
-        luxembourg_saved_plot,
-        save_plot("fig/luxembourg.png", lux_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        canton_saved_plot,
-        save_plot("fig/canton.png", canton_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        commune_saved_plot,
-        save_plot("fig/commune.png", commune_plot),
-        format = "file"
-    )</code></pre>
-<p>
-to this:
-</p>
-<pre><code>tar_target(
-        luxembourg_saved_plot,
-        save_plot("/home/fig/luxembourg.png", lux_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        canton_saved_plot,
-        save_plot("/home/fig/canton.png", canton_plot),
-        format = "file"
-    ),
-
-    tar_target(
-        commune_saved_plot,
-        save_plot("/home/fig/commune.png", commune_plot),
-        format = "file"
-    )</code></pre>
-<p>
-Ok, so now we’re ready to rebuild the image:
-</p>
-<pre><code>docker build -t my_pipeline .</code></pre>
-<p>
-and we can now run it:
-</p>
-<pre><code>docker run --rm --name my_pipeline_container -v /path/to/fig:/home/fig my_pipeline</code></pre>
-<p>
-<code>docker run</code> runs a container based on the image you defined. <code>–rm</code> means that the container should be removed once it stops, <code>–name</code> gives it a name, here <code>my_pipeline_container</code> (this is not really needed here, because the container stops and gets removed once it’s done running), and <code>-v</code> mounts a volume, which is a fancy way of saying that the folder <code>/path/to/fig/</code>, which is a real folder on your computer, is a portal to the folder <code>/home/fig/</code> (which we created in the <code>Dockerfile</code>). This means that whatever gets saved inside <code>home/fig/</code> inside the Docker container gets also saved inside <code>/path/to/fig</code> on your computer. The last argument <code>my_pipeline</code> is simply the Docker image you built before. You should see the three plots magically appearing in <code>/path/to/fig</code> once the container is done running. The other neat thing is that you can upload this image to Docker Hub, for free (to know how to do this, check out this <a href="https://rap4mads.eu/self-contained-raps-with-docker.html#building-a-truly-reproducible-pipeline">section</a> of the course I teach on this). This way, if other people want to run it, they could do so by running the same command as above, but replacing <code>my_pipeline</code> by <code>your_username_on_docker_hub/image_name_on_docker_hub</code>. People could even create new images based on this image, by using <code>FROM your_username_on_docker_hub/image_name_on_docker_hub</code> at the beginning of their <code>Dockerfile</code>s. If you want an example of a pipeline that starts off from such an image, you can check out this <a href="https://github.com/b-rodrigues/dockerized_pipeline_demo/tree/main">repository</a>. This repository tells you how can run a reproducible pipeline by simply cloning it, building the image (which only takes a few seconds because all software is already installed in the image that I start from) and then running it.
-</p>
-</section>
-<section id="running-this-on-github-actions" class="level2">
-<h2 class="anchored" data-anchor-id="running-this-on-github-actions">
-Running this on Github Actions
-</h2>
-<p>
-Ok, so now, let’s suppose that we got an image on Docker Hub that contains all the dependencies required for our pipeline, and let’s say that we create a Github repository containing a <code>Dockerfile</code> that pulls from this image, as well as the required scripts for our pipeline. Basically, this is what I did <a href="https://github.com/b-rodrigues/dockerized_pipeline_demo/tree/main">here</a> (the same repository that I linked above already). If you take a look at the first line of the <code>Dockerfile</code> in it, you will see this:
-</p>
-<pre><code>FROM brodriguesco/r421_rap:version1</code></pre>
-<p>
-This means that the image that gets built from this <code>Dockerfile</code> starts off from <a href="https://hub.docker.com/layers/brodriguesco/r421_rap/version1/images/sha256-9b8cdaaaf14828468f6c3136c6e2916d3a6efe9c654a97a2a0d12d5d9e5b9ccc?context=repo">this image I’ve uploaded on Docker Hub</a>, this way each time the image gets rebuilt, because the dependencies are already installed, it’s going to be fast. Ok, so now what I want is the following: each time I change a file, be it the <code>Dockerfile</code>, or the <code>_targets.R</code> script, commit my changes and push them, I want Github Actions to rebuild the image, run the container, and give me the plots back.
-</p>
-<p>
-This means that I can focus on coding, Github Actions will take care of the boring stuff.
-</p>
-<p>
-To do this, start by creating a <code>.github/</code> directory on the root of your Github repo, and inside of it, add a <code>.workflows</code> directory, and add a file in it called something like <code>docker-build-run.yml</code>. What matters is that this file ends in <code>.yml</code>. This is what the file I use to define the actions I’ve described above looks like:
-</p>
-<pre><code>name: Docker Image CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build -t my-image-name .
-    - name: Docker Run Action
-      run: docker run --rm --name my_pipeline_container -v /github/workspace/fig/:/home/graphs/:rw my-image-name
-    - uses: actions/upload-artifact@v3
-      with:
-        name: my-figures
-        path: /github/workspace/fig/</code></pre>
-<p>
-The first line defines the name of the job, here <code>Docker Image CI</code>. The lines state when this should get executed: whenever there’s a push on or pull request on <code>main</code>. The job itself runs on an Ubuntu VM (so Github Actions starts an Ubuntu VM that will pull a Docker image itself running Ubuntu…). Then, there’s the <code>steps</code> statement. For now, let’s focus on the <code>run</code> statements inside <code>steps</code>, because these should be familiar:
-</p>
-<pre><code>run: docker build -t my-image-name .</code></pre>
-<p>
-and:
-</p>
-<pre><code>run: docker run --rm --name my_pipeline_container -v /github/workspace/fig/:/home/graphs/:rw my-image-name</code></pre>
-<p>
-The only new thing here, is that the path “on our machine” has been changed to <code>/github/workspace/</code>. This is the home directory of your repository, so to speak. Now there’s the <code>uses</code> keyword that’s new:
-</p>
-<pre><code>uses: actions/checkout@v3</code></pre>
-<p>
-This action checkouts your repository inside the VM, so the files in the repo are available inside the VM. Then, there’s this action here:
-</p>
-<pre><code>- uses: actions/upload-artifact@v3
-  with:
-    name: my-figures
-    path: /github/workspace/fig/</code></pre>
-<p>
-This action takes what’s inside <code>/github/workspace/fig/</code> (which will be the output of our pipeline) and makes the contents available as so-called “artifacts”. Artifacts are the outputs of your workflow, and will be made available as <code>zip</code> files for download. In our case, as stated, the output of the pipeline. It is thus possible to rerun our workflow in the cloud. This has the advantage that we can now focus on simply changing the code, and not have to bother with useless manual steps. For example, let’s change this target in the <code>_targets.R</code> file:
-</p>
-<pre><code>tar_target(
-    commune_data,
-    clean_unemp(unemp_data,
-                place_name_of_interest = c("Luxembourg", "Dippach", 
-                                           "Wiltz", "Esch/Alzette", 
-                                           "Mersch", "Dudelange"),
-                col_of_interest = active_population)
-)
-</code></pre>
-<p>
-I’ve added “Dudelange” to the list of communes to plot. Let me push this change to the repo now, and let’s take a look at the artifacts. The video below summarises the process:
-</p>
-<div style="text-align:center;">
-<p>
-<video width="640" height="480" controls="">
-<source src="../assets/img/ga_3.mp4" type="video/mp4">
-</video>
-</p>
-</div>
-<p>
-As you can see in the video, the <code>_targets.R</code> script was changed, and the changes pushed to Github. This triggered the action we’ve defined before. The plots (artifacts) get refreshed, and we can download them. We see then that Dudelange was added in the <code>communes.png</code> plot!
-</p>
-<p>
-If you enjoyed this blog post and want more of this, I wrote a whole <a href="https://rap4mads.eu/">ebook on it</a>.
-</p>
-<p>
-</p>
-
-</section> ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2022-11-19-raps.html</guid>
-  <pubDate>Sat, 19 Nov 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

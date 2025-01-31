@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-02-29">
+
+<title>Reproducible data science with Nix, part 10 – contributing to nixpkgs – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Reproducible data science with Nix, part 10 – contributing to nixpkgs</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">nix</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 29, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/nix_parents.jpg" width="60%">
+</p>
+</div>
+<p>
+I’ve very recently started contributing to the <code>nixpkgs</code> repository of packages, which contains all the packages you can install from the Nix package manager. My contributions are fairly modest: I help fix R packages that need some tweaking to make them successfully build for Nix. Most of these fixes are very simple one-liners.
+</p>
+<p>
+Most users of any free and open source tool rarely contribute to the development of this tool: I don’t think it is due to lack of skills and/or time or interest, but mostly because starting to contribute to a tool requires some knowledge that is rarely written down (even more so for an entire ecosystem). These tools and ecosystems grow organically, and if you’re not in the right spot at the right time or are not lucky enough to have kind people taking time to explain things to you, contributing might feel completely overwhelming.
+</p>
+<p>
+Thankfully, I was very lucky to have found the small but very active community of R contributors to <code>nixpkgs</code> on <a href="https://matrix.to/#/#r:nixos.org">Matrix</a> which very kindly took the time to bring me up to speed!
+</p>
+<p>
+I wanted to share my experiences in this blog post: but this blog post is not just going to be about me contributing to <code>nixpkgs</code> from the perspective of an R user (and giving you some pointers on how to start yourself), but also about how I built a report (let’s call it like that) to keep track of which R packages got fixed. This report is built using R, Nix, Github Actions and lists all the failed R package builds from Hydra (more on this later). The report gets updated every day automatically at midnight, and is accessible <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a>. I also used a very minimalistic approach to build this: no <code>{tidyverse}</code> packages, and no Quarto. Why? Mostly just to keep dependencies at a minimum to accelerate CI/CD, but also for fun. And honestly, I must admit that base R is more than capable on its own and had forgotten that.
+</p>
+<section id="contributing-to-nixpkgs" class="level2">
+<h2 class="anchored" data-anchor-id="contributing-to-nixpkgs">
+Contributing to nixpkgs
+</h2>
+<p>
+As explained in <a href="https://www.brodrigues.co/blog/2023-12-19-nix_for_r_part_8/">part 8</a>, <code>nixpkgs</code> is “nothing but” a huge GitHub repository containing thousands of Nix expressions. These expressions are then used to actually build the software that then gets installed by Nix. For example, <a href="https://github.com/NixOS/nixpkgs/blob/nixpkgs-unstable/pkgs/development/libraries/quarto/default.nix">this is the expression for Quarto</a>. As you can see, it starts by downloading the pre-compiled binary, and then applying “patches”. Essentially making sure that Quarto installed by Nix is able to find the other pieces installed by Nix that Quarto needs (Deno, Pandoc, Typst and so on). It then continues by installing Quarto itself (because we’re downloading a pre-compiled binary, <em>installation</em> consists in moving files in the right spot), finally some tests are executed (<code>quarto check</code>) and then some metadata is defined. Not every package is defined like this, with a single Nix expression, though. For example, individual R packages are not defined like this. Instead, every package from CRAN and Bioconductor gets built using only a handful of files that can be found <a href="https://github.com/NixOS/nixpkgs/tree/nixpkgs-unstable/pkgs/development/r-modules">here</a>.
+</p>
+<p>
+(By the way, you can look for packages and find their associated Nix expressions on the <a href="https://search.nixos.org/packages?channel=unstable&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=quarto">NixOS package search</a>).
+</p>
+<p>
+The way this works, is that periodically the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/generic-builder.nix"><code>generate-r-packages.R</code></a> script is run and generates the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/cran-packages.nix"><code>cran-packages.nix</code></a> file (and the equivalent Bioconductor files). For each package on CRAN, a line gets written in the script with the package’s name, its current version on CRAN, and very importantly its dependencies. For example, here is the line for <code>{dplyr}</code>:
+</p>
+<pre><code>dplyr = derive2 { name="dplyr"; version="1.1.4";
+   sha256="1jsq8pj12bngy66xms486j8a65wxvyqs944q9rxkiaylsla08wyg";
+   depends=[cli generics glue lifecycle magrittr pillar R6 rlang tibble tidyselect vctrs]; };</code></pre>
+<p>
+These dependencies are actually the packages that can be found in the <a href="https://github.com/tidyverse/dplyr/blob/main/DESCRIPTION"><code>DESCRIPTION</code></a> file under <code>Imports</code>. <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/cran-packages.nix"><code>cran-packages.nix</code></a> (and the same goes for the Bioconductor equivalents, <code>bioc-packages.nix</code>, <code>bioc-annotation-packages.nix</code> and <code>bioc-experiment-packages.nix</code>) get imported in the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/default.nix"><code>default.nix</code></a> file. In it, another file, <code>generic-builder.nix</code> gets also imported, which contains a function that will attempt building the package. Most of the time this succeeds, but some packages require further tweaks. Packages that have a field <code>NeedsCompilation</code> in their DESCRIPTION files are usually candidates for further tweaking: these packages require system-level dependencies, which are often listed under <code>SystemRequirements</code> (but not always, which complicates matters). For example, the <code>{terra}</code> package has these system requirements listed in itself DESCRIPTION file:
+</p>
+<pre><code>SystemRequirements:  C++17, GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), sqlite3</code></pre>
+<p>
+so these also need to be added if we want to build them on Nix. But if we look at the line for <code>{terra}</code> in <code>cran-packages.nix</code>, this is what we see:
+</p>
+<pre><code>terra = derive2 { name="terra"; version="1.7-65"; 
+  sha256="0m9s5am8l6il1q0skab614cx0qjsb1i9xcv6nm0sdzj7p9lrzkfl"; 
+  depends=[Rcpp]; };</code></pre>
+<p>
+Only <code>{Rcpp}</code> is listed, which is a dependency, yes, but an R package dependency, not a system-level requirement. System-level requirements need to be added in the <code>default.nix</code> file manually. In the <code>default.nix</code>, you’ll find a long list of packages called <code>packagesWithNativeBuildInputs</code> and <code>packagesWithBuildInputs</code>. <em>NativeBuildInputs</em> and <em>BuildInputs</em> are Nix jargon for dependencies the package needs, at compile-time and then at run-time specifically. For example, <code>{Rcpp}</code> is a <em>BuildInput</em> of <code>{terra}</code>, while the system-level requirements are <em>NativeBuildInputs</em> (in the context of R packages though, this rarely matters. If you want more details, refer to <a href="https://gist.github.com/b-rodrigues/c677b59126d05d43347ed9623ddd5b0c">this Gist</a> I’ve forked).
+</p>
+<p>
+For <code>{terra}</code>, this means that we need to add this line to the list <code>{packagesWithNativeBuildInputs}</code> (I simplified the syntax here a bit):
+</p>
+<pre><code>terra = [ gdal proj geos ];</code></pre>
+<p>
+<code>gdal</code>, <code>proj</code> and <code>geos</code> are the system requirements that need to be added for <code>{terra}</code> to build successfully on Hydra.
+</p>
+</section>
+<section id="hydra" class="level2">
+<h2 class="anchored" data-anchor-id="hydra">
+Hydra
+</h2>
+<p>
+<em>Hydra is a tool for continuous integration testing and software release that uses a purely functional language to describe build jobs and their dependencies</em> (source: <a href="https://hydra.nixos.org/build/248007843/download/1/hydra/#introduction">the Hydra Manual</a>)
+</p>
+<p>
+If you’re coming from R, think of Hydra as <a href="https://builder.r-hub.io/">R-hub</a>, which will check and build your R package before submitting to CRAN. Hydra periodically tries to rebuild packages. If that package fails, then the log gets hosted. When it comes to R packages, we can check which packages built successfully or not on <a href="https://hydra.nixos.org/jobset/nixpkgs/r-updates">here</a>.
+</p>
+<p>
+As of writing, the latest evaluation was in mid-January. A new release of R is going to get released on the 29th of February (or maybe was already released, I’m not sure when this blog post is going to get posted), and this is when new evaluations will likely be executed. Evaluations are the processes by which Nix expressions get… evaluated and used to actually build packages. So if we look into the results of the evaluation of the 17th of January, we see that 757 jobs failed:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/hydra_failing_jobs.jpg" width="80%">
+</p>
+</div>
+<p>
+One job doesn’t strictly correspond to one package though: packages get built for different architectures, and each architecture gets its build process. If we log into the details of the first package whose build failed <code>{AIUQ}</code>, we see this:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/hydra_failed.jpg" width="80%">
+</p>
+</div>
+<p>
+From the log we see that actually what failed one of its dependencies, <code>{SuperGauss}</code>, so fixing <code>{SuperGauss}</code> will likely fix <code>{AIUQ}</code> (I say likely because maybe another needed dependency also fails). So we could try to fix <code>{SuperGauss}</code> first. Let’s see why <code>{SuperGauss}</code>, by clicking on <code>raw</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/hydra_failed_raw.jpg" width="80%">
+</p>
+</div>
+<p>
+Here is what we see:
+</p>
+<pre><code>Running phase: unpackPhase
+unpacking source archive /nix/store/615bdvjchxrd7wp5m7dhg4g04yv7ncza-SuperGauss_2.0.3.tar.gz
+source root is SuperGauss
+setting SOURCE_DATE_EPOCH to timestamp 1645735202 of file SuperGauss/MD5
+Running phase: patchPhase
+Running phase: updateAutotoolsGnuConfigScriptsPhase
+Running phase: configurePhase
+Running phase: buildPhase
+Running phase: checkPhase
+Running phase: installPhase
+* installing *source* package 'SuperGauss' ...
+** package 'SuperGauss' successfully unpacked and MD5 sums checked
+** using staged installation
+checking for gcc... /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc accepts -g... yes
+checking for /nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/cc option to accept ISO C89... none needed
+checking for pkg-config... no
+checking for FFTW... configure: error: in `/build/SuperGauss':
+configure: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables FFTW_CFLAGS
+and FFTW_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see &lt;http://pkg-config.freedesktop.org/&gt;.
+See `config.log' for more details
+ERROR: configuration failed for package 'SuperGauss'
+* removing '/nix/store/jxv5p85x24xmfcnifw2ibvx9jhk9f2w4-r-SuperGauss-2.0.3/library/SuperGauss'</code></pre>
+<p>
+This is essentially what we would see if we tried to install <code>{SuperGauss}</code> on Linux. The error message is quite clear here: a system-level dependency, <code>pkg-config</code> is missing. Looks like we found our first package to fix!
+</p>
+</section>
+<section id="fixing-a-package" class="level2">
+<h2 class="anchored" data-anchor-id="fixing-a-package">
+Fixing a package
+</h2>
+<p>
+The first step is to fork and clone the <code>nixpkgs</code> GitHub repository to your computer (be patient, the repository is huge so the download will take some time):
+</p>
+<pre><code>git clone git@github.com:b-rodrigues/nixpkgs.git</code></pre>
+<p>
+It’s also a good idea to add the original <code>nixpkgs</code> as an <code>upstream</code>:
+</p>
+<pre><code>git remote add upstream https://github.com/NixOS/nixpkgs</code></pre>
+<p>
+This way, you can pull changes from the original <code>nixpkgs</code> repository into your fork easily with:
+</p>
+<pre><code>git fetch upstream master
+git merge upstream/master</code></pre>
+<p>
+These two commands synchronize your local copy of the repository with upstream. So now we can create a new branch to try to fix <code>{SuperGauss}</code>:
+</p>
+<pre><code>git branch -b fix_supergauss</code></pre>
+<p>
+and then we should try to build <code>{SuperGauss}</code> locally. This is because it might have been fixed in the meantime by someone else, so let’s try to build it with (run the following command in a terminal at the root of your local copy of the <code>nixpkgs</code> repository):
+</p>
+<pre><code>nix-build -A rPackages.SuperGauss</code></pre>
+<p>
+but I often prefer to use this instead, because this will build the package and drop me into a shell where I can start R, load the package, and try it by running some of its examples:
+</p>
+<pre><code>nix-shell -I nixpkgs=/path/to/my/nixpkgs -p rPackages.SuperGauss R</code></pre>
+<p>
+If any of the commands above fail with the same error message as on Hydra, we know that it hasn’t been fixed yet. So the fix consists in opening the <code>pkgs/development/r-modules/default.nix</code> and add the following line:
+</p>
+<pre><code>SuperGauss = [ pkg-config ];</code></pre>
+<p>
+in either the lists <code>packagesWithBuildInputs</code> or <code>packagesWithNativeBuildInputs</code> (as explained above, it doesn’t really matter). Trying to rebuild <code>SuperGauss</code> again will result in a new error message. Another dependecy needs to be added:
+</p>
+<pre><code>SuperGauss = [ pkg-config fftw.dev ];</code></pre>
+<p>
+Then, building succeeds! We can now commit, push, and open a pull request. Commit messages need to be formatted in a certain way, as per <code>nixpkgs</code> <a href="https://github.com/NixOS/nixpkgs/blob/master/CONTRIBUTING.md">contributing guide</a>, so:
+</p>
+<pre><code>git add .
+git commit -m "rPackages.SuperGauss: add dependencies"</code></pre>
+<p>
+also, there should only be one commit per fix. So if in the process of fixing a package you commited several times, you will need to use <code>git rebase</code> to squash all the commits into one. Once you open the pull request, a maintainer will get pinged, and merge the PR if everything is alright (which is usually the case for these one-liners). You can see the PR for <code>{SuperGauss}</code> <a href="https://github.com/NixOS/nixpkgs/pull/287209">here</a>.
+</p>
+<p>
+The process is relatively simple once you did it once or twice, but there are some issues: there is no easy way to find out on which packages we should focus on. For example, is <code>{SuperGauss}</code> really that important? The fix was very simple, so it’s ok, but if it took more effort, should we spend the limited time we have on it, or should we focus on another package? Also, if someone has already opened a PR to fix a package, but that PR hasn’t been merged yet, if I try to also fix the same package and try to build the package, it would still fail. So I might think that no one is taking care of it, and waste time duplicating efforts instead of either focusing on another package, or reviewing the open PR to accelerate the process of merging.
+</p>
+<p>
+Discussing this with other contributors, <a href="https://fosstodon.org/deck/@kupac@functional.cafe">László Kupcsik</a> suggested we could use <code>{packageRank}</code> to find out which packages are getting a lot of downloads from CRAN, and so we could focus on fixing these packages first. This is a great idea and it gave me the idea to build some kind of report that would do this automatically for us, and also list opened and merged PRs so we wouldn’t risk duplicating efforts.
+</p>
+<p>
+This report can be found <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a> and now I’ll explain how I built it.
+</p>
+</section>
+<section id="which-packages-to-fix-and-keeping-track-of-prs" class="level2">
+<h2 class="anchored" data-anchor-id="which-packages-to-fix-and-keeping-track-of-prs">
+Which packages to fix and keeping track of PRs
+</h2>
+<p>
+So the main idea was to know on which packages to focus on. So essentially, we wanted this table:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/hydra_failing_jobs.jpg" width="80%">
+</p>
+</div>
+<p>
+but with <code>{packageRank}</code> added to it. So the first step was to scrape this table, using <code>{rvest}</code>. This is what you can find on lines 11 to 63 of this <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R">{targets} workflow</a> (alongside some basic cleaning). I won’t go too much into detail, but if something’s not clear, ping me on <a href="https://twitter.com/brodriguesco">twitter</a> or <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or even open an issue on the report’s <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/issues">repository</a>.
+</p>
+<p>
+Next I also get the reason the package failed building. So in the example from before, <code>{AIUQ}</code> failed because <code>{SuperGauss}</code> failed. On Hydra, you should be clicking to see this, but here I scrape it as well automatically, and add this information in a column called <code>fails_because_of</code>. This is what you can read on lines <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R#L65">65 to 77</a>. I use a function called <code>safe_get_failed_deps()</code>, which you can find in the <code>functions.R</code> script <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L41C1-L68C2">on here</a>. <code>safe_get_failed_deps()</code> wraps the main function, <code>get_failed_deps()</code>, with <code>tryCatch()</code>. This is because if anything goes wrong, I want my function to return <code>NULL</code> instead of an error, which would crash the whole pipeline.
+</p>
+<p>
+Next, I add the packages’ rank using a function that wraps <code>packageRank::packageRank()</code> called <code>safe_packageRank()</code> on <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/_targets.R#L97">line 97</a>.
+</p>
+<p>
+<code>safe_packageRank()</code> uses <code>tryCatch()</code> to return <code>NULL</code> in case there’s an error. This is needed because <code>packageRank()</code> will only work on CRAN packages, but Hydra also tries to build Bioconductor packages: when these packages’ names get passed to <code>packageRank()</code>, an error gets returned because these are not CRAN packages:
+</p>
+<pre class="r"><code>packageRank("haha")
+Error: haha: misspelled or not on CRAN/Archive.</code></pre>
+<p>
+but instead of an error that would stop the pipeline, I prefer it simply returns <code>NULL</code>, hence <code>tryCatch()</code>. Also, I compute the rank of the package listed under the <code>fails_because_of</code> column and not the <code>package</code> column. If we go back to our example from before, <code>{AIUQ}</code> failed because <code>{SuperGauss}</code> failed, I’m actually interested in the rank of <code>{SuperGauss}</code>, and not <code>{AIUQ}</code> (which I way I went to all the trouble to scrape the failing dependency).
+</p>
+<p>
+So, for now, when comparing to the table on Hydra, we have two further columns with the dependency that actually fails (or not, if the package fails on its own and not because of a dependency), and the rank of either the dependency that fails or the package itself.
+</p>
+<p>
+Next, I’d like to see if PRs have already been opened and merged. For this, I use the <code>gh</code> tool, which is a command line tool to interact with GitHub repositories. I wrote the <code>get_prs()</code> wrapper around <code>gh</code> to list the opened or the merged PRs of the <code>nixpkgs</code> repository. This is what it looks like (and is defined <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L8C1-L21C2">here</a>):
+</p>
+<pre><code>get_prs &lt;- function(state){
+
+  output_path &lt;- paste0(state, "_prs.json")
+
+  # Run the command
+  system(paste0(
+    "gh pr list --state=", state,
+    " --search=rPackages -R NixOS/nixpkgs --json title,updatedAt,url &gt; ",
+    output_path
+  ))
+
+  # Return path for targets
+  output_path
+}</code></pre>
+<p>
+Because the PRs follow the contributing guidelines, I can easily process the PRs titles to get the name of the package (I essentially need to go from the string “rPackages.SuperGauss: fixing build” to “SuperGauss”) using regular expressions. This is what happens in the <code>clean_prs()</code> function <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/functions.R#L23">here</a>.
+</p>
+<p>
+Most of what follows is merging the right data frames and ensuring that I have something clean to show. Finally, an <code>.Rmd</code> document gets compiled, which you can find <a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/r-updates-fails.Rmd">here</a>. This will get compiled to an <code>.html</code> file which is what you see when you click <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html">here</a>.
+</p>
+<p>
+This runs every day at midnight using GitHub actions (<a href="https://github.com/b-rodrigues/nixpkgs-r-updates-fails/blob/0fe273dd234f0d32e5fae86630173ff42cce2d9f/.github/workflows/compile_table.yaml">the workflow is here</a>) and then I use the <code>raw.githack.com</code> <a href="https://raw.githack.com/">here</a> to serve the rendered HTML file. So every time I push, or at midnight, the action runs, computes the package rank, checks if new PRs are available or have been merged, and the rendered file is immediately available. How’s that for serverless CI/CD?
+</p>
+<p>
+If you are interested in using Nix to make your analyses reproducible, check out <a href="https://b-rodrigues.github.io/blog/index.html#category=nix">the other blog posts in this series</a> and join our small but motivated community of R contributors to <code>nixpkgs</code> on <a href="https://matrix.to/#/#r:nixos.org">Matrix</a>. If you are interested in the history of Nix, checkout this super interesting <a href="https://economicsfromthetopdown.com/2024/02/17/nixing-technological-lock-in/">blog post</a> by <a href="https://mastodon.online/@blair_fix">Blair Fix</a>.
+</p>
+<p>
+If you’re interested into using project-specific, and reproducible development environments, give <code>{rix}</code> and Nix a try! Learn more about <code>{rix}</code> on its Github repository <a href="https://github.com/b-rodrigues/rix">here</a> or <a href="https://docs.ropensci.org/rix/index.html">website</a>. We wrote many vignettes that are conveniently numbered, so don’t hesitate to <a href="https://docs.ropensci.org/rix/articles/a-getting-started.html">get started</a>!
+</p>
+<p>
+<em>Thanks to the colleagues of the Matrix nixpkgs R channel for the fruitful discussions that helped shape this blog post and for proof-reading.</em>
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-04-04">
+
+<title>Reproducible data science with Nix, part 11 – build and cache binaries with Github Actions and Cachix – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Reproducible data science with Nix, part 11 – build and cache binaries with Github Actions and Cachix</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">nix</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 4, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/own_cache.jpg" width="60%">
+</p>
+</div>
+<section id="intro" class="level2">
+<h2 class="anchored" data-anchor-id="intro">
+Intro
+</h2>
+<p>
+I have this package on CRAN called <code>{chronicler}</code> and last month I got an email from CRAN telling me that building the package was failing, and I had two weeks to fix it.
+</p>
+<p>
+I immediately thought that some dependency that my package depends on got updated, and somehow broke something. But when I checked the results of the build, I was surprised, to say the least:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/chronicler_check_results.png" width="80%">
+</p>
+</div>
+<p>
+How come my package was only failing on Fedora? Now that was really weird. There was no way this was right. Also, I couldn’t reproduce this bug on my local machine… but I could reproduce it on Github Actions, on Ubuntu (but it was ok on CRAN’s Debian which is really close to Ubuntu!), but couldn’t reproduce it either on Windows! What was going on? So I started digging, and my first idea was to look at the list of packages that got released on CRAN on that day (March 12th 2024) or just before, and saw something that caught my eye: a new version of <code>{tidyselect}</code> had just been released and even though my package doesn’t directly depend on it, I knew that this package was likely a dependency of some direct dependency of <code>{chronicler}</code>. So I looked into the release notes, and there it was:
+</p>
+<pre><code>* `eval_select()` out-of-bounds errors now use the verb "select" rather than
+  "subset" in the error message for consistency with `dplyr::select()` (#271).</code></pre>
+<p>
+I knew this was what I was looking for, because the unit test that was failing to pass was a test that should error because <code>dplyr::select()</code> was being used on a column that didn’t exist. So the success of that test was defined as <em>finding the following error message in the log</em>, which contained the word <em>subset</em> but now it should be <em>select</em>.
+</p>
+<p>
+But why was this failing only on Fedora on CRAN and on Ubuntu on Github Actions (but ok on Debian on CRAN)? And why couldn’t I reproduce the bug on my OpenSuse Linux computer, even though I was building a bleeding edge development environment using Nix?
+</p>
+<p>
+And then it hit me like my older brother used to.
+</p>
+<p>
+When building packages, CRAN doesn’t seem to use pre-compiled binaries on Fedora, so packages get built from source. This means that it takes longer to test on Fedora, as packages have to be built from source, but it also means that only the very latest releases of packages get used. On other platforms, pre-compiled binaries get used if available, and because <code>{tidyselect}</code> had just come out that very day, older binaries of <code>{tidyselect}</code> were being used on these platforms, but not on Fedora. And because these older binaries didn’t include this change, the unit test was still passing successfully on there.
+</p>
+<p>
+On Github Actions, code coverage was computed using <code>covr::codecov()</code> which installs the package in a temporary directory and seems to pull its dependencies directly from CRAN. Because CRAN doesn’t offer Linux binaries packages got compiled from source, hence why the test was failing there, as the very latest version of <code>{tidyselect}</code> was being used (btw, use Dirk Eddelbuettel’s <a href="https://github.com/eddelbuettel/r2u">r2u</a> if you binaries for Ubuntu).
+</p>
+<p>
+And on my local machine, even though I was using the latest commit of <code>nixpkgs</code> to have the most bleeding edge packages for my environment, I had forgotten that the R packages on <code>nixpkgs</code> always lag behind the CRAN releases.
+</p>
+<p>
+This is because R packages on <code>nixpkgs</code> tend to get updated alongside a new release of R, and the reason is to ensure a certain level of quality. You see, the vast majority of CRAN (and Bioconductor) packages are made available through <code>nixpkgs</code> in a fully automated way. But some packages do require some manual intervention to work on Nix. And we only know this if we try to build these packages, but building packages requires quite a lot of resources. I go into more detail <a href="https://www.brodrigues.co/blog/2024-02-29-nix_for_r_part_10/">here</a>, but in summary we can’t build CRAN packages every single day to see if everything works well, so we only rebuild the whole tree whenever there’s a new release of R. Packages get built on a CI infrastructure called <em>Hydra</em>, and then get cached on <code>cache.nixos.org</code> so whenever someone wants to install a package, a pre-built binary gets pulled from the cache instead of getting installed from source. For packages that don’t need compiling this is not that big of a time save, but for packages that do need to get compiled it is huge. Depending on which packages you want to install, if you had to build everything from source, it could potentially take hours, but if you can install pre-built binaries it’s just a matter of how quick your internet connection is.
+</p>
+<p>
+Anyways, I went back to my fork of <code>nixpkgs</code> and updated the expression defining the CRAN packages myself and installed the latest versions of packages from my fork.
+</p>
+<p>
+Before the update, this was the error message I was testing against:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/cant_subset.png" width="80%">
+</p>
+</div>
+<p>
+and this was on version 1.2.0 of <code>{tidyselect}</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/tidyselect_120.png" width="50%">
+</p>
+</div>
+<p>
+but after the update, this was the error message:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/cant_select.png" width="80%">
+</p>
+</div>
+<p>
+on version 1.2.1 of <code>{tidyselect}</code>:
+</p>
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/tidyselect_121.png" width="50%">
+</p>
+</div>
+<p>
+so I found the issue, and updated my unit testing accordingly, and pushed the update to CRAN. All is well that ends well, but… this made me think. I needed to have an easy way to have bleeding edge packages on hand from Nix at all moments, and so I started working on it.
+</p>
+</section>
+<section id="github-actions-to-the-rescue" class="level2">
+<h2 class="anchored" data-anchor-id="github-actions-to-the-rescue">
+Github Actions to the rescue
+</h2>
+<p>
+As described in my <a href="../posts/2024-02-29-nix_for_r_part_10.html">previous blog post</a> updating the Nix expressions defining the R packages on <code>nixpkgs</code> involves running an R script that generates a Nix expression which then builds the R packages when needed. So what I did was create a Github actions that would run this R script every 6 hours, and push the changes to a branch of my <code>nixpkgs</code> fork. This way, I would always have the possibility to use this branch if I needed bleeding edge packages. Because this can be of interest to others, <a href="https://github.com/philipp-baumann">Philipp Baumann</a> started a Github organisation hosting this fork of <code>nixpkgs</code> that gets updated daily which you can find <a href="https://github.com/rstats-on-nix">here</a>. Because this action needs to run several times a day, it should be on a schedule, but actions on a schedule can only run from master/main. But that’s not what we wanted, so instead, we are using another action, on another repository, that pushes a random file to the target repository to get the action going. You can find this repository <a href="https://github.com/b-rodrigues/trigger-r-updates">here</a> with complete instructions. So to summarise:
+</p>
+<ul>
+<li>
+An action on schedule runs from b-rodrigues/trigger-r-updates and pushes a file to rstats-on-nix/nixpkgs on the <code>r-daily-source</code> branch
+</li>
+<li>
+This triggers an action that updates all of <code>nixpkgs</code>, including R packages, and pushes all the updates to the <code>r-daily</code> branch (you can find it <a href="https://github.com/rstats-on-nix/nixpkgs/blob/r-daily-source/.github/workflows/r-daily.yml">here</a>)
+</li>
+<li>
+We can now use the <code>r-daily</code> branch to get bleeding edge R packages on Nix!
+</li>
+</ul>
+<p>
+This happens without any form of testing though, so packages could be in a broken state (hey, that’s the definition of bleeding edge, after all!), and also, if anyone would like to use this fork to build a development environment, they’d have to rebuild a lot of packages from source. Again, this is because these packages are defined in a fork of <code>nixpkgs</code> and they don’t get built on Hydra to populate the public cache that Nix uses by default. So while this fork is interesting because it provides bleeding edges packages, using it on a day-to-day basis can be quite tedious.
+</p>
+<p>
+And this is where <a href="https://www.cachix.org/">Cachix</a> comes into play.
+</p>
+</section>
+<section id="setting-up-your-own-binary-cache-on-cachix" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-your-own-binary-cache-on-cachix">
+Setting up your own binary cache on Cachix
+</h2>
+<p>
+<a href="https://www.cachix.org/">Cachix</a> is an amazing tool that makes it incredibly easy to set up your own cache. Simply build the packages once, and push the binaries to the cache. As long as these packages don’t get updated, they’ll get pulled from the cache instead of getting rebuilt.
+</p>
+<p>
+So now, here is what I do with my packages: I define a <code>default.nix</code> file that defines a development environment that uses my fork of <code>nixpkgs</code> as the source for packages. For example, <a href="https://github.com/b-rodrigues/rix/blob/master/default.nix">here</a> is this file that defines the environment for my <code>{rix}</code> package. I can use this environment to work on my package, and make sure that anyone else that wants to contribute, contributes using the same environment. As you can see on line 2, the <code>rstats-on-nix</code> bleeding edge fork gets used:
+</p>
+<pre><code> pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz") {};</code></pre>
+<p>
+Then, still on <code>{rix}</code>’s repository, I define a new action that builds this environment periodically, but using the binary cache I set up with Cachix. You can find this action <a href="https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix-dev-env.yml">here</a>. So the <code>r-daily</code> branch of our <code>nixpkgs</code> fork gets updated every 6 hour and this environment gets updated every 12 hours, 30 minutes past the hour.
+</p>
+<p>
+Now, every time I want to work on my package, I simply use <code>nix-build</code> on my computer to update the development environment. This is what I see:
+</p>
+<pre><code>copying path '/nix/store/0l0iw4hz7xvykvhsjg8nqkvyl31js96l-r-stringr-1.5.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/cw3lc7b0zydsricl5155jbmldm1vcyvr-r-tibble-3.2.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/y32kpp09l34cdgksnr89cyvz6p5s94z8-r-tidyselect-1.2.1' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/sw24yx1jwy9xzq8ai5m2gzaamvyi5r0h-r-rematch2-2.1.2' from 'https://b-rodrigues.cachix.org'...
+copying path '/nix/store/z6b4vii7hvl9mc53ykxrwks1lkfzgmr4-r-dplyr-1.1.4' from 'https://b-rodrigues.cachix.org'...</code></pre>
+<p>
+as you can see, packages get pulled from my cache. Packages that are already available from the usual, public, <code>cache.nixos.org</code> don’t get rebuilt nor cached in mine; they simply continue getting pulled directly from there. This makes using the development environment very easy, and guarantees I’m always mirroring the state of packages released on CRAN. The other interesting thing is that I can use that cache with other actions. For example, <a href="https://github.com/b-rodrigues/rix/blob/master/.github/workflows/tests-r-via-nix.yaml">here</a> is the action that runs the unit tests included in the package in an environment that has Nix installed on it (some unit tests need Nix to be available to run). On line 25 you can see that we install Nix and set our fork as the repository to use:
+</p>
+<pre><code>nix_path: nixpkgs=https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz</code></pre>
+<p>
+and just below, we set up the cache:
+</p>
+<pre><code>- uses: cachix/cachix-action@v14
+  with:
+    name: b-rodrigues # this is the name of my cache</code></pre>
+<p>
+By using my cache, I make sure that the test runs with the freshest possible packages, and don’t run the risk of having a test succeed on an outdated environment. And you might have noticed that I am not authenticating to Cachix: to simply pull binaries, to authentication is needed!
+</p>
+<p>
+Cachix has a free plan of up to 5Gb which is more than enough to set up several development environments like this, and is really, really, easy to set up, and it works on your computer and on Github Actions, as shown. If you want to use this development environment to contribute to <code>{rix}</code>, check out the instructions on <a href="https://github.com/b-rodrigues/rix/blob/master/CONTRIBUTING.md#development-environment">Contributing.md</a> file.
+</p>
+<p>
+You can use the same approach to always have development environments ready for your different projects, and I will likely add the possibility to use this fork of <code>nixpkgs</code> with my <code>{rix}</code> package.
+</p>
+<p>
+<em>Thanks to <a href="https://github.com/philipp-baumann">Philipp Baumann</a> for nudging me into the direction of using Cachix and showing the way!</em>
+</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

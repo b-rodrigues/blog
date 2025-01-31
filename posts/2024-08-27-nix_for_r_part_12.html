@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-08-28">
+
+<title>Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">nix</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 28, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/guess_we_doin_pdfs.png" width="60%">
+</p>
+</div>
+<p>
+Nix is not only a package manager, but also a build automation tool, and you can use it to build polyglot data science pipelines in a completely reproducible way.
+</p>
+<p>
+For example, suppose that you need to mix Python, R and maybe some others tools for a project (by the way, some believe this will become the norm in the coming years, use your favourite search engine to look for “polyglot data science” and you’ll see), and suppose that you want to define your project as a nice reproducible pipeline, and not simply a series of scripts. What are the options available to you?
+</p>
+<p>
+One option would be to use the <code>{targets}</code> package for R, which allows you to do lay out your project as pipeline. But as amazing as <code>{targets}</code> is, it only works with R. If you also need Python, you would then need to also use the <code>{reticulate}</code> package to interface with it. But what do you do if you need some other command line tools? Well, you could wrap them in an R function using <code>system()</code> or <code>system2()</code>. But what if you need yet another language, like Julia? There might be a way to call Julia from R, but as you see, the more diverse tools you need, the more complex it gets. And it doesn’t really matter if you switch from <code>{targets}</code> to another such package that exists for, say, Python, you would always need to write wrappers or use packages that allow you to call the other programming languages that you need.
+</p>
+<p>
+Another possibility is to use good old <code>make</code>. <code>make</code> is a tool from the GNU project that allows you to define <em>targets</em>, which would be the outputs of a script or call to some cli tool by writing so-called <code>Makefiles</code>. For an example of a <code>Makefile</code> in research, take a look at <a href="https://github.com/grantmcdermott/skeptic-priors/blob/master/Makefile">this one</a> from a <a href="https://link.springer.com/article/10.1007/s10584-021-03089-x">paper</a> by <a href="https://mastodon.social/@gmcd">Grant McDermott</a>. You can use <code>make</code> as a to orchestrate several programming languages or cli tools, but you will need to write code to pass data from one script to the other. <code>{targets}</code> deals with that transparently by serialising all the targets’ outputs using <code>saveRDS()</code> but this only works because only R is supported. But if you’re trying to make R, Python, and whatever else work together, you will need to deal with this manually and find a common interface to pass data around.
+</p>
+<p>
+Despite this, using <code>make</code>, or some other tool on top of the required programming languages (and not tied to either one), is likely the best solution and it turns out that Nix can be used just like that! But why use Nix and not <code>make</code> then? Well, using Nix guarantees that whatever you produce will be completely reproducible. With <code>make</code>, you would need to either run it inside a Docker image or… inside a development environment built with Nix! I did something similar in <a href="https://www.brodrigues.co/blog/2023-07-19-nix_for_r_part2/">this blog post</a> where I ran a <code>{targets}</code> pipeline inside a Nix environment to make the analysis reproducible.
+</p>
+<p>
+But if I’m already defining a reproducible development environment using Nix, why not go all the way and build a complete project using Nix? After all, Nix allows you to package <em>software</em> and what is <em>software</em> but 0’s and 1’s? And what is a trained model, a paper or report in the PDF format, predictions exported into a CSV file, etc, if not 0’s and 1’s?
+</p>
+<p>
+Just like with any other build automation tool, Nix will only rebuild the project if something changes, and will only rebuild the parts that need to be rebuilt. So if you change a file somewhere, only whatever depends on this file will get rebuilt, just like with <code>{targets}</code>, or <code>make</code>.
+</p>
+<p>
+In the <a href="https://github.com/b-rodrigues/nixbat/tree/master">following repository</a> you can find an example of this.
+</p>
+<p>
+This is a very simple project: two functions are defined in the <code>python_functions.py</code> script. These functions are nothing special, and could be used interactively. One function reads a <code>.csv</code> file from the Internet and returns it, the other does some basic cleaning. Here are these two functions included in the <code>python_functions.py</code> file:
+</p>
+<pre><code>from pandas import read_csv
+
+def download_iris(iris_csv_url):
+    # Read the CSV file
+    df = read_csv(iris_csv_url)
+
+    return df
+
+def process_iris(iris_csv_path):
+    # Read the CSV file
+    df = read_csv(iris_csv_path)
+
+    # Replace the species numbers with their corresponding names
+    species_mapping = {0: "setosa", 1: "virginica", 2: "versicolor"}
+    df['species'] = df['species'].replace(species_mapping)
+
+    return df</code></pre>
+<p>
+Then, I want to use <code>{ggplot2}</code> to plot this data. You will notice the lack of R script in the repo. I did this on purpose, because I wanted to show how you could directly write R code inside of a Nix expression. But in practice, it is better to have Python code in a Python script, R code in an R script, and then use Nix to orchestrate the whole thing. But I just wanted to show you that you could, if you wanted to, have a completely self-contained Nix expression that encapsulates the business logic as well.
+</p>
+<p>
+There’s also a <code>.Qmd</code> file: this is the file that will get compiled into a PDF document, and is the output of the whole project. It could be anything else! As I stated above, this is just 0’s and 1’s so it could very well be some other output, it doesn’t really matter.
+</p>
+<p>
+Let’s now take a look at the <code>default.nix</code> that builds the whole thing. Let’s start by the top-level definitions:
+</p>
+<pre><code>let
+  pkgs =
+    import
+      (fetchTarball "https://github.com/NixOS/nixpkgs/archive/27285241da3bb285155d549a11192e9fdc3a0d04.tar.gz")
+      { };
+
+  tex = (
+    pkgs.texlive.combine {
+      inherit (pkgs.texlive) scheme-small;
+    }
+  );
+
+  # Because building happens in sandbox that cannot connect to the internet
+  # we need to download assets beforehand
+  iris_path = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/b-rodrigues/nixbat/7c319bcdbe15e7f7182e7685b8de176a40d0bde9/iris.csv";
+    hash = "sha256-2H6THCXKxIt4yxnDDY+AZRmbxqs7FndCp4MqaAR1Cpw=";
+  };
+
+  # Common python dependencies to use in my intermediary inputs
+  pythonEnv = pkgs.python312.withPackages (ps: with ps; [ pandas ]);
+
+  # Common python sources
+  python_src = pkgs.lib.fileset.toSource {
+    root = ./.;
+    fileset = ./python_functions.py;
+  };</code></pre>
+<p>
+Some variables are defined there:
+</p>
+<ul>
+<li>
+<code>pkgs</code>: this is the set of Nix packages to be used. All the dependencies of the project will get built using the Nix expressions available in the <code>nixpkgs</code> Github repository at a specific commit. This ensures that the output of this expression will always be exactly the same.
+</li>
+<li>
+<code>tex</code>: defines the set of LaTeX packages I need to compile the PDF.
+</li>
+<li>
+<code>iris_path</code>: the Python function I use to load the data takes a path, or url, to read the iris dataset. Because building a derivation happens in a sandbox, I need to download assets beforehand. This is what the <code>fetchurl</code> function does. I can then refer to the file path using <code>${iris_path}</code> later on.
+</li>
+<li>
+<code>pythonEnv</code>: This lists the dependencies I will need to run my Python functions.
+</li>
+<li>
+<code>pythonSrc</code>: Defines the path to the <code>python_functions.py</code> file.
+</li>
+</ul>
+<p>
+Then, I want to call each of my functions separately, and I want them to produce a single output. So for this, I now build a derivation, one per output. I start with the first one:
+</p>
+<pre><code>downloadCsv = pkgs.stdenv.mkDerivation {
+  name = "download-csv";
+  buildInputs =  [ pythonEnv ];
+  src = pythonSrc;
+  buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import download_iris
+
+iris_raw = download_iris('${iris_path}')
+
+iris_raw.to_csv('iris_raw.csv', index=False)
+      "
+    '';
+  installPhase = ''
+    mkdir -p $out
+    cp iris_raw.csv $out/
+  '';
+  };</code></pre>
+<p>
+At first sight, there might seem that a lot is going on, but let’s take a closer look:
+</p>
+<ul>
+<li>
+first I give it a name: <code>name = “download-csv”</code>
+</li>
+<li>
+second, I list its dependencies in <code>buildInputs</code>. This is what’s required to build the target!
+</li>
+<li>
+then, I provide the source, in this case the <code>python_functions.py</code> file
+</li>
+</ul>
+<p>
+Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><span class="math inline">\({iris_path}&lt;/code&gt; to refer to the path to the
+file defined above. Finally, in the &lt;code&gt;installPhase&lt;/code&gt; I copy the &lt;code&gt;.csv&lt;/code&gt; file to
+&lt;code&gt;\)</span>out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
+</p>
+<p>
+In the next derivation, I now use the second Python function to clean the data:
+</p>
+<pre><code>cleanCsv = pkgs.stdenv.mkDerivation {
+    name = "clean-csv";
+    buildInputs =  [ pythonEnv ];
+    src = pythonSrc;
+    buildPhase = ''
+      python -c "
+import pandas as pd
+from python_functions import process_iris
+
+iris = process_iris('${downloadCsv}/iris_raw.csv')
+
+iris.to_csv('iris.csv', index=False)
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp iris.csv $out/
+    '';
+  };</code></pre>
+<p>
+This is not very different than what I did before. Just notice how I refer to the output of the first derivation: <code>${downloadCsv}/iris_raw.csv</code>.
+</p>
+<p>
+Now comes the last intermediary derivation, the one that uses R to create a plot:
+</p>
+<pre><code>generatePlot = pkgs.stdenv.mkDerivation {
+    name = "generate-plot";
+    buildInputs = with pkgs; [
+      R
+      rPackages.ggplot2
+      rPackages.janitor
+    ];
+    dontUnpack = true;
+    buildPhase = ''
+            Rscript -e "
+
+      library(ggplot2)
+      library(janitor)
+
+      iris &lt;- read.csv('${cleanCsv}/iris.csv') |&gt;
+        clean_names() |&gt;
+        transform(species = as.character(species))
+
+      p &lt;- ggplot(iris,
+                  aes(x = sepal_length, y = sepal_width, color = species)) +
+          geom_point(size = 3) +
+          labs(title = 'Sepal Length vs Sepal Width',
+               x = 'Sepal Length',
+               y = 'Sepal Width') +
+          theme_minimal() +
+          theme(plot.title = element_text(hjust = 0.5))
+
+
+      ggsave('plot.png', plot = p, width = 6, height = 4, dpi = 300)
+
+      "
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp plot.png $out/
+    '';
+  };</code></pre>
+<p>
+As I said above, to make this better, it would need to be a function defined in its own R script, as this way there’s a nice separation of concerns. On one hand, there’s the business logic in Python and R scripts, and on the other there’s the orchestration in Nix. Putting R code in the Nix expression makes this less flexible, but I wanted to show you that this is also a possibility!
+</p>
+<p>
+Now comes the last part of the Nix expression, the actual thing I want to build, a PDF that uses the generated plot as an input:
+</p>
+<pre><code>in
+# Derivation to generate the PDF report from Markdown
+pkgs.stdenv.mkDerivation {
+  name = "generate-report";
+  buildInputs = [
+    pkgs.quarto
+    tex
+  ];
+  src = pkgs.lib.fileset.toSource {
+        root = ./.;
+        # Only include report.Qmd in the source
+        fileset = ./report.Qmd;
+  };
+  buildPhase = ''
+
+    cp ${generatePlot}/plot.png .
+
+    # Deno needs to add stuff to $HOME/.cache
+    # so we give it a home to do this
+    mkdir home
+    export HOME=$PWD/home
+    quarto render report.Qmd --to pdf
+
+  '';
+
+  installPhase = ''
+    mkdir -p $out
+    cp report.pdf $out/
+  '';
+}</code></pre>
+<p>
+Notice the dependencies of this derivation: <code>quarto</code> and <code>tex</code> (<code>tex</code> is the variable I defined right at the beginning that lists LaTeX packages). I then need to specify <code>report.Qmd</code> as the source of this derivation, and copy the plot generated before in R into the working/build directory. There’s also a idiosyncrasy where a dependency of Quarto, Deno, needs to have a directory to save some stuff in it. Nix being Nix, we need to manually define such a home directory for reproducibility purposes. If it would be using my <code>home/</code> directory on my machine, this wouldn’t be reproducible! We finish the <code>buildPhase</code> by rendering the document, and then <em>install</em> it into <code>$out/</code>. To build this project, you need to have Nix installed and then type <code>nix-build</code>, or alternatively, <code>nix-build -Q</code> which hides all the output of the build phases (so you don’t see any warnings or messages thrown by either Python or R).
+</p>
+<p>
+This will build the PDF, which you can then find in the Nix store. You’ll notice a file called <code>result</code> appear next to all your other files from the project. In a terminal, call <code>readlink result</code> and this will show you the path to the generated PDF, which you can now read!
+</p>
+<p>
+In conclusion, I think that this is a really useful way to orchestrate code written in different programming languages, but I would not use this for monolingual projects. For R, I’ll keep using <code>{targets}</code> together with a Nix shell to ensure reproducibility. Also, to really benefit from this, your code needs, ideally, to be written as a series of functions, each outputting a single object. Instead, if you write a script to orchestrate the whole thing in R or Python, and then put a Nix expression on top of it, I’m not sure it’s really worth it. Might as well just use a Nix shell then and execute your scripts in it.
+</p>
+<p>
+Also, let me state that this is my first attempt at using Nix for such a purpose, and there might be a better/more elegant way of doing it, so if you have any input, don’t hesitate!
+</p>
+<p>
+<em>Thanks to <a href="https://discourse.nixos.org/t/derivation-gets-always-rebuilt/51246/3">the amazing Nix community for helping out!</a></em>
+</p>
+
+
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
