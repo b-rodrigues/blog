@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-10-01">
+
+<title>Why and how to use JS in your Shiny app – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Why and how to use JS in your Shiny app</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">proramming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 1, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<img src="../assets/img/pointing_tags_script.png" title="The gist of this blog post" width="80%" height="auto">
+</p>
+</div>
+<section id="the-snake-biting-its-own-tail" class="level2">
+<h2 class="anchored" data-anchor-id="the-snake-biting-its-own-tail">
+The snake biting its own tail
+</h2>
+<p>
+<em>Disclaimer: I’m a beginner at JS, so don’t ask me about the many intricacies of JS.</em>
+</p>
+<p>
+I’ve been working on a Shiny app for work these past few weeks, and had to use Javascript to solve a very specific issue I encountered. Something for which, as far as I know, there is no other solution than using Javascript. The problem had to do with dynamically changing the UI of an app. The way to usually achieve this is using <code>renderUI()/uiOutput()</code>. For example, consider the following little app (if you don’t want to run it, watch the video below):
+</p>
+<pre class="r"><code>library(shiny)
+library(ggplot2)
+
+data(mtcars)
+
+ui &lt;- fluidPage(
+  selectInput("var", "Select variable:", choices = colnames(mtcars)),
+  uiOutput("welcome"),
+  plotOutput("my_plot")
+)
+
+server &lt;- function(input, output) {
+
+  output$welcome &lt;- renderUI({
+      tags$div(paste0("Welcome to my award-winning app! Currently showing variable: ", input$var))
+  })
+
+  output$my_plot &lt;- renderPlot({
+        ggplot(data = mtcars) +
+          geom_bar(aes_string(y = input$var))
+      })
+}
+
+shinyApp(ui, server)</code></pre>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_1.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+As you can see, when the user chooses a new variable, the plot gets updated of course, but the welcome message changes as well. Normally, the UI of a Shiny app gets rendered once, at startup, and stays fixed. But thanks to <code>renderUI()/uiOutput()</code>, it is possible to change UI elements on the fly, and anything can go inside of <code>renderUI()/uiOutput()</code>, it can be something much more complex than a simple message like in my example above.
+</p>
+<p>
+So, why did I need to use Javascript to basically achieve the same thing? The reason is that I am currently using <a href="https://rinterface.github.io/bs4Dash/index.html"><code>{bs4Dash}</code></a>, an amazing package to build Shiny dashboard using Bootstrap 4. <code>{bs4Dash}</code> comes with many neat features, one of them being improved <code>box()</code>es (improved when compared to the <code>box()</code>es from <code>{shinydashboard}</code>). These improved boxes allow you to do something like this (if you don’t want to run it, watch the video below):
+</p>
+<pre class="r"><code>library(shiny)
+library(ggplot2)
+library(bs4Dash)
+
+data(mtcars)
+
+shinyApp(
+  ui = dashboardPage(
+    header = dashboardHeader(
+      title = dashboardBrand(
+        title = "Welcome to my award-winning dashboard!",
+        color = "primary"
+      )
+    ),
+    sidebar = dashboardSidebar(),
+    body = dashboardBody(
+      box(
+        plotOutput("my_plot"),
+        title = "This is where I will put the title, but bear with me.",
+        width = 12,
+        sidebar = boxSidebar(
+          id = "sidebarid",
+          startOpen = TRUE,
+          selectInput("var", "Select variable:", choices = colnames(mtcars))
+          ))
+    ),
+    controlbar = dashboardControlbar(),
+    title = "DashboardPage"
+  ),
+  server = function(input, output, session) {
+
+    output$my_plot &lt;- renderPlot({
+      ggplot(data = mtcars) +
+        geom_bar(aes_string(y = input$var))
+    })
+
+  }
+)</code></pre>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_2.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+Each box can have a side bar, and these side bars can contain toggles specific to the graph. If you click outside the side bar, the side bar closes; to show the side bar, click on the little gears in the top right corner of the side bar. Ok we’re almost done with the setup: see how the box can have a title? Let’s make it change like before; for this, because the title is part of the <code>box()</code> function, I need to re-render the whole box (if you don’t want to run it, watch the video below):
+</p>
+<pre class="r"><code>library(shiny)
+library(ggplot2)
+library(bs4Dash)
+
+data(mtcars)
+
+shinyApp(
+  ui = dashboardPage(
+    header = dashboardHeader(
+      title = dashboardBrand(
+        title = "Welcome to my award-winning dashboard!",
+        color = "primary"
+      )
+    ),
+    sidebar = dashboardSidebar(),
+    body = dashboardBody(
+      uiOutput("my_dynamic_box")
+    ),
+    controlbar = dashboardControlbar(),
+    title = "DashboardPage"
+  ),
+  server = function(input, output, session) {
+
+    output$my_plot &lt;- renderPlot({
+      ggplot(data = mtcars) +
+        geom_bar(aes_string(y = input$var))
+    })
+
+    output$my_dynamic_box &lt;- renderUI({
+      box(
+        plotOutput("my_plot"),
+        title = paste0("Currently showing variable:", input$var),
+        width = 12,
+        sidebar = boxSidebar(
+          id = "sidebarid",
+          startOpen = TRUE,
+          selectInput("var", "Select variable:", choices = colnames(mtcars))
+        ))
+    })
+  }
+)</code></pre>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_3.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+Now try changing variables and see what happens… as soon as you change the value in the <code>selectInput()</code>, it goes back to selecting <code>mpg</code>! The reason is because the whole box gets re-rendered, including the <code>selectInput()</code>, and its starting, default, value (even if we did not specify one, this value is simply the first element of <code>colnames(mtcars)</code> which happens to be <code>mpg</code>). So now you see the problem; I have to re-render part of the UI, but doing so puts the <code>selectInput()</code> on its default value… so I need to be able to only to re-render the title, not the whole box (or move the <code>selectInput()</code> outside the boxes, but that was not an acceptable solution in my case).
+</p>
+<p>
+So there we have it, we’re done with the problem statement. Now on to the solution.
+</p>
+<section id="update" class="level3">
+<h3 class="anchored" data-anchor-id="update">
+<strong>UPDATE</strong>
+</h3>
+<p>
+It turns out that it’s not needed to use JS for this special use case! <code>{bs4Dash}</code> comes with a function, called <code>updateBox()</code> which updates a targeted box. You can read about it <a href="https://rinterface.github.io/bs4Dash/reference/box.html">here</a>. Thanks to <code>{bs4Dash}</code>’s author, <a href="https://twitter.com/divadnojnarg/status/1576210017497550849?s=20&amp;t=wz3NfqHB4SWtcVAUH_KPRA">David Granjon</a> for the heads-up!
+</p>
+<p>
+Well, even though my specific use case does not actually need Javascript, you can continue reading, because in case your use case does not have an happy ending like mine, the blog post is still relevant!
+</p>
+</section>
+</section></main></div>
+<section id="javascript-to-the-rescue" class="level2">
+<h2 data-anchor-id="javascript-to-the-rescue">
+Javascript to the rescue
+</h2>
+<p>
+Let me be very clear: I know almost nothing about Javascript. I just knew a couple of things: Javascript can be used for exactly what I needed to do (change part of the UI), and it does so by making use of the DOM (which I also knew a little bit about). The DOM is a tree-like representation of a webpage. So you have your webpage’s header, body, footer, and inside of the body, for example, in my case here, we have a box with a title. That title has an address, if you will, represented by one of the branches of the DOM. At least, that’s the way I understand it.
+</p>
+<p>
+In any case, it is possible to integrate JS scripts inside any Shiny app. So here’s what I thought I would do: I would create the title of my box as a reactive value inside the server part of my app, and would then pass this title to a JS script which would then, using the DOM, knock at the door of the box and give it its new title. Easier written in plain English than in R/JS though. But surprisingly enough, it didn’t turn out to be that complicated, and even someone (me) with only a very, very, shallow knowledge of JS could do it in less than an hour. First thing’s first, we need to read this documentation: <a href="https://shiny.rstudio.com/articles/communicating-with-js.html">Communicating with Shiny via JavaScript</a>, especially the second part, <em>From R to JavaScript</em>.
+</p>
+<p>
+Because we won’t re-render the whole box, let’s simply reuse the app from before, in which the box is static. The script is below, but first read the following lines, then take a look at the script:
+</p>
+<ul>
+<li>
+I have defined a JS script outside the app, called <code>box_title_js</code>;
+</li>
+<li>
+Read the title of the box;
+</li>
+<li>
+In the server, there is now an <code>observeEvent()</code>,
+</li>
+<li>
+In the UI you’ll see the following line (inside the box’s definition): <code>tags<span class="math inline">\(script(box_title_js)&lt;/code&gt;, which executes the JS script &lt;code&gt;box_title_js&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The script knows which element to change thanks to &lt;code&gt;\)</span>(“#box_plot h3”)</code>. That’s a bit of jQuery, which comes bundled with Shiny. jQuery allows you to query elements of the DOM. If you know nothing about it, like me, you should read <a href="https://book.javascript-for-r.com/shiny-tips.html#shiny-tips-jQuery">this</a>. This should give you the basic knowledge such that you’ll eventually somehow manage to select the element you actually want to change.
+<p></p>
+<pre class="r"><code>library(shiny)
+library(ggplot2)
+library(bs4Dash)
+
+# This is the bit of JS that will update the title
+# From what I could gather, $(bla bla) references the object,
+# here the title, and `.html()` is a getter/setter.
+# So $("#box_plot h3").html() means "take whatever is called #box_plot h3
+# (h3 is the class of the title, meaning, it’s a header3 bit of text)
+# and set its html to whatever string is inside `html()`"
+box_title_js &lt;- '
+  Shiny.addCustomMessageHandler("box_title", function(title) {
+    $("#box_plot h3").html(title)
+  });
+'
+
+data(mtcars)
+
+shinyApp(
+  ui = dashboardPage(
+    header = dashboardHeader(
+      title = dashboardBrand(
+        title = "Welcome to my award-winning dashboard!",
+        color = "primary"
+      )
+    ),
+    sidebar = dashboardSidebar(),
+    body = dashboardBody(
+      box(id = "box_plot", #We need to give the box an ID now, to help query it
+        plotOutput("my_plot"),
+        tags$script(box_title_js), #Integration of the JS script into the app
+        title = "This title will change dynamically. You won’t even see this sentence!",
+        width = 12,
+        sidebar = boxSidebar(
+          id = "sidebarid",
+          startOpen = TRUE,
+          selectInput("var", "Select variable:", choices = colnames(mtcars))
+        ))
+    ),
+    controlbar = dashboardControlbar(),
+    title = "DashboardPage"
+  ),
+  server = function(input, output, session) {
+
+    # The following lines put the title together, and send them to the JS script
+    observe({
+      session$sendCustomMessage(
+                "box_title",
+                paste0("Currently showing variable:", input$var)
+              )
+    })
+
+    output$my_plot &lt;- renderPlot({
+      ggplot(data = mtcars) +
+        geom_bar(aes_string(y = input$var))
+    })
+
+  }
+)</code></pre>
+<p>
+The video below shows how the app works:
+</p>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_4.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+The idea is as follows: a bit of code puts the title together in the server part of your app. This title gets sent to a JS script that you define somewhere where the UI and the server part know about it (for example, in your <code>global.R</code> file). In the UI you can now integrate the JS script using <code>tags$script()</code>. And you’re done!
+</p>
+<p>
+Just for fun, let’s have a more complex example; I’ll change the background color of the box using JS as well, but depending on the selected column, the color will be different. For this, I only need to change the JS script. Using a simple if-then-else statement, I set the background color of the box to red if the selected column is <code>mpg</code>, else I set it to blue. The way I do this, is by using jQuery again to target the element I want to change, in this case, the object with the id “box_plot” and of class “.card-body”. Take a look at the script:
+</p>
+<pre class="r"><code>library(shiny)
+library(ggplot2)
+library(bs4Dash)
+
+# This is the bit of JS that will update the title
+# From what I could gather, $(bla bla) references the object,
+# here the title, and `.html()` is a getter/setter.
+# So $("#box_plot h3").html() means "take whatever is called #box_plot h3
+# (h3 is the class of the title, meaning, it’s a header3 bit of text)
+# and set its html to whatever string is inside `html()`"
+box_title_js &lt;- '
+  Shiny.addCustomMessageHandler("box_title", function(title) {
+  if(title.includes("mpg")){
+    colour = "red"
+  } else {
+    colour = "blue"
+  }
+    $("#box_plot h3").html(title)
+    $("#box_plot .card-body").css("background-color", colour)
+  });
+'
+
+data(mtcars)
+
+shinyApp(
+  ui = dashboardPage(
+    header = dashboardHeader(
+      title = dashboardBrand(
+        title = "Welcome to my award-winning dashboard!",
+        color = "primary"
+      )
+    ),
+    sidebar = dashboardSidebar(),
+    body = dashboardBody(
+      box(id = "box_plot", #We need to give the box an ID now, to help query it
+        plotOutput("my_plot"),
+        tags$script(box_title_js), #Integration of the JS script into the app
+        title = "This title will change dynamically. You won’t even see this sentence!",
+        width = 12,
+        sidebar = boxSidebar(
+          id = "sidebarid",
+          startOpen = TRUE,
+          selectInput("var", "Select variable:", choices = colnames(mtcars))
+        ))
+    ),
+    controlbar = dashboardControlbar(),
+    title = "DashboardPage"
+  ),
+  server = function(input, output, session) {
+
+    # The following lines put the title together, and send them to the JS script
+    observe({
+      session$sendCustomMessage(
+                "box_title",
+                paste0("Currently showing variable:", input$var)
+              )
+    })
+
+    output$my_plot &lt;- renderPlot({
+      ggplot(data = mtcars) +
+        geom_bar(aes_string(y = input$var))
+    })
+
+  }
+)</code></pre>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_5.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+How did I know that I needed to target <code>card-body</code>? To find out, go to your browser, right click on the box and select <code>Inspect</code> (sometimes <code>inspect element</code>). Navigating through the source of your app in this way allows you to find the classes and ids of things you need to target, which you then can use as a query. You can even try changing stuff in real time, as the video below shows:
+</p>
+<div style="text-align:center;">
+<video width="320" height="240" controls="">
+<source src="../assets/img/why_js_shiny_6.mp4" type="video/mp4">
+</video>
+</div>
+<p>
+It’s actually scary what you can achieve with only some cursory knowledge of JS. I’m sure nothing bad ever happens because clueless beginners like me start playing around with JS.
+</p>
+
+
+
+
+
+</li></ul></section>
+
+
+
+
+
+ <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+ <!-- /content -->
+
+
+
+
+</body></html>

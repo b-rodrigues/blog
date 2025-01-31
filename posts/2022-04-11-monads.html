@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-04-11">
+
+<title>Why you should(n’t) care about Monads if you’re an R programmer – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-87d0f794bf36b87d4b3f18c9d77400ff.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Why you should(n’t) care about Monads if you’re an R programmer</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">proramming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 11, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="text-align:center;">
+<p>
+<a href="https://www.youtube.com/watch?v=I8LbkfSSR58&amp;list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_"> <img src="../assets/img/pondering.jpg" title="How it feels to implement your own monad" width="80%" height="auto"></a>
+</p>
+</div>
+<p>
+<em>Update: I also made a video out of this blog post; watch it on <a href="https://www.youtube.com/watch?v=Hlypj6-n51c">youtube</a>.</em>
+</p>
+<section id="introduction-functions" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-functions">
+Introduction: functions
+</h2>
+<p>
+To understand Monads, I think it’s useful to first think about functions; why do we use functions? Why don’t we simply write scripts with the required operations one after the other? For instance, to compute the average height by species in a data set of individuals from the famous space opera “Star Wars”, we could very well write this code:
+</p>
+<pre class="r"><code>suppressPackageStartupMessages(library(dplyr))
+
+data(starwars)
+
+sum_humans &lt;- 0
+sum_others &lt;- 0
+n_humans &lt;- 0
+n_others &lt;- 0
+
+for(i in seq_along(1:nrow(starwars))){
+
+  if(!is.na(unlist(starwars[i, "species"])) &amp;
+     unlist(starwars[i, "species"]) == "Human"){
+    if(!is.na(unlist(starwars[i, "height"]))){
+      sum_humans &lt;- sum_humans + unlist(starwars[i, "height"])
+      n_humans &lt;- n_humans + 1
+    } else {
+
+      0
+
+    }
+
+  } else {
+    if(!is.na(unlist(starwars[i, "height"]))){
+      sum_others &lt;- sum_others + unlist(starwars[i, "height"])
+      n_others &lt;- n_others + 1
+    } else {
+      0
+    }
+  }
+}
+
+mean_height_humans &lt;- sum_humans/n_humans
+mean_height_others &lt;- sum_others/n_others</code></pre>
+<p>
+Well, we <em>could</em> do it like this, but we definitely shouldn’t:
+</p>
+<ul>
+<li>
+what this code does is not immediately obvious. If the code blocks aren’t commented, readers of this code will have to read line by line to understand what is going on;
+</li>
+<li>
+this code is not reusable. If now I need the average height by species and sex, I need to copy and paste the code, and modify it, and in some cases modify it substantially;
+</li>
+<li>
+this code handles missing values in a cumbersome way, with nested <code>if…else…</code>s;
+</li>
+<li>
+this code is not easy to test;
+</li>
+<li>
+this code cannot be composed (meaning, chained) with other code without substantially altering it (to be precise, chaining and composing are two different things, strictly speaking, but for simplicity’s sake, let’s just assume it is the same. Whenever I’m talking about “composing” something, I mean “chaining” something.)
+</li>
+</ul>
+<p>
+But it’s not just shortcomings, this <em>imperative</em> code has one advantage; it uses only some very fundamental building blocks: <code>if…else…</code>, for loops and that’s almost it (it does use some functions provided by a base installation of R, namely <code>is.na()</code>, <code>!()</code>, <code>unlist()</code> and <code>[()</code>, so strictly speaking, the code above is not purely imperative, but maybe closer to being procedural?).
+</p>
+<p>
+Using functions solves all the issues from imperative programming. Here is a base solution to the problem above, using a declarative, or functional, approach:
+</p>
+<pre class="r"><code>aggregate(starwars$height,
+          by = list(starwars$species == "Human"),
+          FUN = \(x)(mean(x, na.rm = TRUE)))</code></pre>
+<pre><code>##   Group.1        x
+## 1   FALSE 172.4043
+## 2    TRUE 176.6452</code></pre>
+<p>
+This code has many advantages:
+</p>
+<ul>
+<li>
+what this code does is obvious, but only if you know what <code>aggregate()</code> does. But if you read its documentation you’ll know, and you’ll know every time you’ll see <code>aggregate()</code> unlike a loop like the loop above where you’ll have to read it each time to understand;
+</li>
+<li>
+this code is reusable. Replace the data frame by another, and that’s it;
+</li>
+<li>
+Missing values are now ignored easily using the <code>na.rm</code> argument of <code>mean()</code>;
+</li>
+<li>
+this code is easy to test (using unit tests);
+</li>
+<li>
+this code can be composed, for instance like this:
+</li>
+</ul>
+<pre class="r"><code>aggregate(starwars$height,
+          by = list(starwars$species == "Human"),
+          FUN = \(x)(mean(x, na.rm = TRUE))) |&gt;
+  setNames(c("is_human", "mean_height"))</code></pre>
+<pre><code>##   is_human mean_height
+## 1    FALSE    172.4043
+## 2     TRUE    176.6452</code></pre>
+<p>
+The issue with the functional approach (at least that’s the issue that many people I spoke to about this raise) is that… in some way people that don’t like this approach feel like they “lose” control over what’s going on. You don’t know what happens inside these functions. I remember, while working my first job, that my boss required that I don’t use any functions nor packages, but instead write all the loops explicitely, because she wanted to understand what was going on (of course, I completely ignored this request and just did as I pleased). As discussed above, the imperative approach requires minimum knowledge of the language, and almost anyone with an ounce of programming experience can understand imperative code. That’s not the case with a functional approach. Readers will have to be familiar with the individual functions like <code>aggregate()</code>, but also anonymous functions (I had to use <code>(x)(mean(x, na.rm = TRUE))</code> to set <code>na.rm = TRUE</code>, which is <code>FALSE</code> by default) and also <code>|&gt;</code> for composition/chaining.
+</p>
+<p>
+It may same more complex, and maybe it is, but the advantages far outweigh the shortcoming.
+</p>
+<p>
+For completeness, here is a <code>{dplyr}</code> version:
+</p>
+<pre class="r"><code>starwars %&gt;%
+  group_by(is_human = species == "Human") %&gt;%
+  summarise(mean_height = mean(height, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   is_human mean_height
+##   &lt;lgl&gt;          &lt;dbl&gt;
+## 1 FALSE           172.
+## 2 TRUE            177.
+## 3 NA              181.</code></pre>
+<p>
+<code>{dplyr}</code> code is even more concise than base functional code. Here again, users will have to know about the individual functions and <code>%&gt;%</code>. But personally, I think that the only hurdle is understanding what <code>%&gt;%</code> does, and once you know this, <code>{dplyr}</code> code can be understood quite easily, thanks to very explicit function names.
+</p>
+<p>
+So functions are great. They’re easy to test, easy to document, easy to package, easy to reuse, and easy to compose. Composition is really important. For example, let’s go back to the imperative code, and put the result in a neat data frame object, like the functional solutions do:
+</p>
+<pre class="r"><code>sum_humans &lt;- 0
+sum_others &lt;- 0
+n_humans &lt;- 0
+n_others &lt;- 0
+
+for(i in seq_along(1:nrow(starwars))){
+
+  if(!is.na(unlist(starwars[i, "species"])) &amp;
+     unlist(starwars[i, "species"]) == "Human"){
+    if(!is.na(unlist(starwars[i, "height"]))){
+      sum_humans &lt;- sum_humans + unlist(starwars[i, "height"])
+      n_humans &lt;- n_humans + 1
+    } else {
+
+      0
+
+    }
+
+  } else {
+    if(!is.na(unlist(starwars[i, "height"]))){
+      sum_others &lt;- sum_others + unlist(starwars[i, "height"])
+      n_others &lt;- n_others + 1
+    } else {
+      0
+    }
+  }
+}
+
+mean_height_humans &lt;- sum_humans/n_humans
+mean_height_others &lt;- sum_others/n_others
+
+# These two lines are new
+data.frame(list("is_human" = c(TRUE, FALSE),
+           "mean_height" = c(mean_height_others, mean_height_humans)))</code></pre>
+<pre><code>##   is_human mean_height
+## 1     TRUE    172.9400
+## 2    FALSE    176.6452</code></pre>
+<p>
+It’s just two lines (right at the end), but the implications are huge; because imperative code cannot be composed, I had to write separate code to put the result into a data frame. More code that I need to write, more opportunities for mistakes. I actually did a mistake, did you notice? This kind of mistake could go unnoticed for eons. But if you use functions, you don’t have this problem, and can focus on getting (even complex) things done:
+</p>
+<pre class="r"><code>starwars %&gt;%
+  filter(skin_color == "light") %&gt;%
+  select(species, sex, mass) %&gt;%
+  group_by(sex, species) %&gt;%
+  summarise(
+    total_individuals = n(),
+    min_mass = min(mass, na.rm = TRUE),
+    mean_mass = mean(mass, na.rm = TRUE),
+    sd_mass = sd(mass, na.rm = TRUE),
+    max_mass = max(mass, na.rm = TRUE)
+  ) %&gt;%
+  select(-species) %&gt;%
+  tidyr::pivot_longer(-sex, names_to = "statistic", values_to = "value")</code></pre>
+<pre><code>## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
+## argument.</code></pre>
+<pre><code>## # A tibble: 10 × 3
+## # Groups:   sex [2]
+##    sex    statistic         value
+##    &lt;chr&gt;  &lt;chr&gt;             &lt;dbl&gt;
+##  1 female total_individuals   6  
+##  2 female min_mass           45  
+##  3 female mean_mass          56.3
+##  4 female sd_mass            16.3
+##  5 female max_mass           75  
+##  6 male   total_individuals   5  
+##  7 male   min_mass           79  
+##  8 male   mean_mass          90.5
+##  9 male   sd_mass            19.8
+## 10 male   max_mass          120</code></pre>
+<p>
+Needless to say, trying to write the above code using only for loops and <code>if…else…</code> is not something I’d wish to do, especially passing the result of all the <code>{dplyr}</code> calls to <code>pivot_longer()</code>. Creating that last data frame by hand is error prone, and there would definitely be mistakes in there.
+</p>
+<p>
+I hope I don’t need to convince you any more that functions are great, and that one of the great things they offer is their ability to be chained, or composed. But strictly speaking, you don’t need them. You <em>could</em> write your code without any function whatsoever, and use the most basic building blocks there are (loops and <code>if…else…</code> and little more). However, doing this would result in much messier code. It’s the same with monads. You can live without them. But there will be situations where not using them will result in messier code.
+</p>
+<p>
+One more thing: as I was writing this blog post, I happened on this tweet:
+</p>
+<p>
+{{% tweet “1513080736785604611” %}}
+</p>
+<p>
+This is a fine example of all that I’ve been discussing until now. The person who wrote this code was very likely trying to get the diagonal elements of a matrix. That person was likely a beginner in R and used for loops to try to get the answer. We have all been there; what I’m trying to articulate is this: imperative programming can be useful, but it can get messy very quickly…
+</p>
+</section>
+<section id="when-functions-are-not-enough" class="level2">
+<h2 class="anchored" data-anchor-id="when-functions-are-not-enough">
+When functions are not enough
+</h2>
+<p>
+Functions are awesome, but there are situations which functions simply can’t easily deal with. Situations in which you would like your functions to do a little extra more, and the only way forward you see is to rewrite them to do something totally unrelated. For example, suppose you would like to time your code. Most people would to something such as:
+</p>
+<pre class="r"><code>tic &lt;- Sys.time()
+starwars %&gt;%
+  filter(skin_color == "light") %&gt;%
+  select(species, sex, mass) %&gt;%
+  group_by(sex, species) %&gt;%
+  summarise(
+    total_individuals = n(),
+    min_mass = min(mass, na.rm = TRUE),
+    mean_mass = mean(mass, na.rm = TRUE),
+    sd_mass = sd(mass, na.rm = TRUE),
+    max_mass = max(mass, na.rm = TRUE)
+  ) %&gt;%
+  select(-species) %&gt;%
+  tidyr::pivot_longer(-sex, names_to = "statistic", values_to = "value")</code></pre>
+<pre><code>## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
+## argument.</code></pre>
+<pre><code>## # A tibble: 10 × 3
+## # Groups:   sex [2]
+##    sex    statistic         value
+##    &lt;chr&gt;  &lt;chr&gt;             &lt;dbl&gt;
+##  1 female total_individuals   6  
+##  2 female min_mass           45  
+##  3 female mean_mass          56.3
+##  4 female sd_mass            16.3
+##  5 female max_mass           75  
+##  6 male   total_individuals   5  
+##  7 male   min_mass           79  
+##  8 male   mean_mass          90.5
+##  9 male   sd_mass            19.8
+## 10 male   max_mass          120</code></pre>
+<pre class="r"><code>toc &lt;- Sys.time()
+
+(running_time &lt;- toc - tic)</code></pre>
+<pre><code>## Time difference of 0.04228544 secs</code></pre>
+<p>
+You could totally do that. But now you’re back to square one. You have to deal with this tic-toc nonsense separately, have to keep track it, overburdening you mentally and polluting your code. To keep track of it, you’ll want to add the running times in a separate data frame, in which you could have all the running times of all your operations you need to run:
+</p>
+<pre class="r"><code>data.frame(list("operations" = seq(1:3),
+                "running_time" = c(running_time, running_time * 2, running_time * 3)))</code></pre>
+<pre><code>##   operations    running_time
+## 1          1 0.04228544 secs
+## 2          2 0.08457088 secs
+## 3          3 0.12685633 secs</code></pre>
+<p>
+This data frame is the consequence of this tic-toc nonsense not being composable and now you have to deal with it, but you don’t want to. So what now? You might be tempted to do something like this:
+</p>
+<pre class="r"><code>tic_filter &lt;- function(...){
+
+  tic &lt;- Sys.time()
+
+  result &lt;- filter(...)
+
+  toc &lt;- Sys.time()
+
+  message("Running time: ", toc - tic)
+
+  return(result)
+
+}
+
+starwars %&gt;%
+  tic_filter(species == "Human")</code></pre>
+<pre><code>## Running time: 0.00481176376342773</code></pre>
+<pre><code>## # A tibble: 35 × 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk…    172    77 blond      fair       blue            19   male  mascu…
+##  2 Darth V…    202   136 none       white      yellow          41.9 male  mascu…
+##  3 Leia Or…    150    49 brown      light      brown           19   fema… femin…
+##  4 Owen La…    178   120 brown, gr… light      blue            52   male  mascu…
+##  5 Beru Wh…    165    75 brown      light      blue            47   fema… femin…
+##  6 Biggs D…    183    84 black      light      brown           24   male  mascu…
+##  7 Obi-Wan…    182    77 auburn, w… fair       blue-gray       57   male  mascu…
+##  8 Anakin …    188    84 blond      fair       blue            41.9 male  mascu…
+##  9 Wilhuff…    180    NA auburn, g… fair       blue            64   male  mascu…
+## 10 Han Solo    180    80 brown      fair       brown           29   male  mascu…
+## # … with 25 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p>
+But that’s actually worse: not only do you have to change all the functions you need, and wrap them around tic-toc, but the running time is only shown as a message, so you can’t reuse it. You could then try to rewrite the function like this:
+</p>
+<pre class="r"><code>tic_filter &lt;- function(...){
+
+  tic &lt;- Sys.time()
+
+  result &lt;- filter(...)
+
+  toc &lt;- Sys.time()
+
+  running_time &lt;- toc - tic
+
+  list("result" = result,
+       "running_time" = running_time)
+
+}
+
+starwars %&gt;%
+  tic_filter(species == "Human")</code></pre>
+<pre><code>## $result
+## # A tibble: 35 × 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk…    172    77 blond      fair       blue            19   male  mascu…
+##  2 Darth V…    202   136 none       white      yellow          41.9 male  mascu…
+##  3 Leia Or…    150    49 brown      light      brown           19   fema… femin…
+##  4 Owen La…    178   120 brown, gr… light      blue            52   male  mascu…
+##  5 Beru Wh…    165    75 brown      light      blue            47   fema… femin…
+##  6 Biggs D…    183    84 black      light      brown           24   male  mascu…
+##  7 Obi-Wan…    182    77 auburn, w… fair       blue-gray       57   male  mascu…
+##  8 Anakin …    188    84 blond      fair       blue            41.9 male  mascu…
+##  9 Wilhuff…    180    NA auburn, g… fair       blue            64   male  mascu…
+## 10 Han Solo    180    80 brown      fair       brown           29   male  mascu…
+## # … with 25 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;
+## 
+## $running_time
+## Time difference of 0.004878759 secs</code></pre>
+<p>
+At least now you save the running time along with the object. But the problem of rewriting many functions remains, and these rewritten <code>{dplyr}</code> functions now return a list, and not a data frame anymore so something like this:
+</p>
+<pre class="r"><code>starwars %&gt;%
+  tic_filter(species == "Human") %&gt;%
+  tic_select(species, sex)</code></pre>
+<p>
+wouldn’t work, because <code>tic_select()</code> expects a data frame, not a list where the first element is a data frame and the second a double.
+</p>
+<p>
+So what else can be done? Perhaps you’d be tempted to use a global variable for this:
+</p>
+<pre class="r"><code>tic_filter &lt;- function(..., running_time = 0){
+
+  tic &lt;- Sys.time()
+
+  result &lt;- filter(...)
+
+  toc &lt;- Sys.time()
+
+  running_time &lt;&lt;- toc - tic + running_time
+
+  result
+
+}</code></pre>
+<p>
+Functions written like this would save the running time in a global variable called <code>running_time</code> and each of them would take turns overwriting it:
+</p>
+<pre class="r"><code>running_time &lt;- 0
+
+one &lt;- starwars %&gt;%
+  tic_filter(species == "Human", running_time = running_time)
+
+running_time</code></pre>
+<pre><code>## Time difference of 0.00490284 secs</code></pre>
+<pre class="r"><code>two &lt;- one %&gt;%
+  tic_select(species, sex, running_time = running_time)
+
+running_time</code></pre>
+<pre><code>## Time difference of 0.007258415 secs</code></pre>
+<p>
+(I defined <code>tic_select()</code> but am not showing it here.)
+</p>
+<p>
+This has the advantage that the wrapped functions now return data frames as well, and can thus be composed/chained. But these functions are not pure functions, because they change something (the global variable <code>running_time</code>) outside their scope. Impure functions can be tricky; for instance here, because the code keeps overwriting the same variable, if you run the whole script and then separate chunks to try some things, <code>running_time</code> will keep getting incremented. Once again, you have to be extra careful and keep track of it, once again overburdening you mentally.
+</p>
+</section>
+<section id="the-solution" class="level2">
+<h2 class="anchored" data-anchor-id="the-solution">
+The solution
+</h2>
+<p>
+The solution to this problem looks like one of the previous things we tried, namely:
+</p>
+<pre class="r"><code>tic_filter &lt;- function(...){
+
+  tic &lt;- Sys.time()
+
+  result &lt;- filter(...)
+
+  toc &lt;- Sys.time()
+
+  running_time &lt;- toc - tic
+
+  list("result" = result,
+       "running_time" = running_time)
+
+}</code></pre>
+<p>
+While it is true that it returns a list, this function has the yuge advantage of being pure. But still, we need to solve two problems:
+</p>
+<ul>
+<li>
+how to avoid having to rewrite every function;
+</li>
+<li>
+how to compose these functions so that the output of one function can be ingested as the input of the next.
+</li>
+</ul>
+<p>
+Solving the first problem consists in writing a new function that builds functions, what Hadley Wickham calls <a href="https://adv-r.hadley.nz/function-factories.html">function factories</a>. Let’s try:
+</p>
+<pre class="r"><code>timeit &lt;- function(.f, ..., running_time = 0){
+
+  function(..., .running_time = running_time){
+
+    tic &lt;- Sys.time()
+
+    result &lt;- .f(...)
+
+    toc &lt;- Sys.time()
+
+    list(result = result,
+         running_time = toc - tic + .running_time)
+  }
+
+
+}</code></pre>
+<p>
+<code>timeit()</code> is a function that takes a function (and its arguments as an input), and returns a new function. This function returns the result of the original function (<code>.f</code>) evaluated on its arguments (<code>…</code>) as well as the time it took to run as a list. You’ll notice as well that this function takes another argument, called <code>running_time</code> with a default value of 0. This will become useful below, for now, ignore it.
+</p>
+<pre class="r"><code>t_sqrt &lt;- timeit(sqrt)
+
+t_sqrt(10)</code></pre>
+<pre><code>## $result
+## [1] 3.162278
+## 
+## $running_time
+## Time difference of 8.34465e-06 secs</code></pre>
+<p>
+That’s great, but we can’t compose these functions. This fails:
+</p>
+<pre class="r"><code>t_log &lt;- timeit(log)
+
+10 |&gt;
+  t_sqrt() |&gt;
+  t_log()</code></pre>
+<pre class="r"><code>Error in .f(...) : non-numeric argument to mathematical function</code></pre>
+<p>
+because <code>t_log()</code> expects a number, not a list. The solution? Write another functions to help! Let’s call this function bind:
+</p>
+<pre class="r"><code>bind &lt;- function(.l, .f, ...){
+
+  .f(.l$result, ..., .running_time = .l$running_time)
+
+}</code></pre>
+<p>
+<code>bind()</code> takes a list object returned by a timed function (<code>.l</code>, with elements <code>$result</code> and <code>$running_time</code>) and applies another timed function <code>.f()</code> to the <code>$result</code> element of <code>.l</code> as well as any further arguments <code>…</code> and finally sets the <code>running_time</code> argument of <code>.f</code> equal to <code>.l$running_time</code>. <code>.l$running_time</code> is the running time of the previous timed function call, so now this running time gets added to the running time of <code>.f</code> (see the definition of the list of <code>timeit()</code>).
+</p>
+<p>
+An example might help:
+</p>
+<pre class="r"><code>t_log &lt;- timeit(log)
+
+10 |&gt;
+  t_sqrt() |&gt;
+  bind(t_log)</code></pre>
+<pre><code>## $result
+## [1] 1.151293
+## 
+## $running_time
+## Time difference of 8.368492e-05 secs</code></pre>
+<p>
+What’s nice with this solution, is that it works with any function:
+</p>
+<pre class="r"><code>t_filter &lt;- timeit(filter)
+t_select &lt;- timeit(select)
+t_group_by &lt;- timeit(group_by)
+t_summarise &lt;- timeit(summarise)
+t_p_longer &lt;- timeit(tidyr::pivot_longer)
+
+starwars %&gt;%
+  t_filter(skin_color == "light") %&gt;% # no need to use bind here
+  bind(t_select, species, sex, mass) %&gt;%
+  bind(t_group_by, sex, species) %&gt;%
+  bind(t_summarise,
+    total_individuals = n(),
+    min_mass = min(mass, na.rm = TRUE),
+    mean_mass = mean(mass, na.rm = TRUE),
+    sd_mass = sd(mass, na.rm = TRUE),
+    max_mass = max(mass, na.rm = TRUE)
+  ) %&gt;%
+  bind(t_select, -species) %&gt;%
+  bind(t_p_longer, -sex, names_to = "statistic", values_to = "value")</code></pre>
+<pre><code>## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
+## argument.</code></pre>
+<pre><code>## $result
+## # A tibble: 10 × 3
+## # Groups:   sex [2]
+##    sex    statistic         value
+##    &lt;chr&gt;  &lt;chr&gt;             &lt;dbl&gt;
+##  1 female total_individuals   6  
+##  2 female min_mass           45  
+##  3 female mean_mass          56.3
+##  4 female sd_mass            16.3
+##  5 female max_mass           75  
+##  6 male   total_individuals   5  
+##  7 male   min_mass           79  
+##  8 male   mean_mass          90.5
+##  9 male   sd_mass            19.8
+## 10 male   max_mass          120  
+## 
+## $running_time
+## Time difference of 0.09293914 secs</code></pre>
+<p>
+There is some overhead compared to the solution that simply calls <code>tic</code> at the beginning of all the <code>{dplyr}</code> calls and then <code>toc</code> at the end, but this overhead becomes negligible the longer the base operations run for. And now the advantage is that you don’t have to think about keeping track of running times. Re-running separate chunks will also not interfere with the running time of any other chunk.
+</p>
+</section>
+<section id="monads" class="level2">
+<h2 class="anchored" data-anchor-id="monads">
+Monads
+</h2>
+<p>
+So here we are, ready to learn what monads are, or rather, we’re done, because you already know what monads are. The solution described before is a monad:
+</p>
+<ul>
+<li>
+a function factory to create functions that return a special, wrapped value (here it simply was a list of elements <code>$result</code> and <code>$running_time</code>). This wrapped value is also called a monadic value.
+</li>
+<li>
+a function to compose, or chain, these special functions together.
+</li>
+</ul>
+<p>
+Some other pieces can be added to the list, and one would need to check so-called monadic laws to make extra sure we’re dealing with a monad, but that’s outside the scope of this blog post.
+</p>
+<p>
+There are many monads, for instance the so-called <code>Maybe</code> monad, available on R thanks to <a href="https://twitter.com/armcn_">Andrew McNeil</a> who implemented this monad as an R <a href="https://armcn.github.io/maybe/">package</a>. I have also developed a monad for logging (which also logs execution time), which I called <code>{chronicler}</code>, read more about it <a href="https://www.brodrigues.co/blog/2022-04-04-chron_post/">here</a>.
+</p>
+<p>
+To conclude, why did I title this post <em>why you should(n’t) care about Monads if you’re an R programmer</em>? The reason is that you can live without monads. However, certain things will be more complex if you don’t know about monads or if you don’t want to use them, just like functions. If for some reason you don’t use functions in your code, your life will be more complicated. So should you go ahead and start using monads in your code? Well, maybe (hehe) you should, especially if you’re doing the same thing over and over again, like timing your code. Maybe using a monad to time your code could be a nice solution, especially if you’ve been burned in the past by using the other, sub-optimal solutions?
+</p>
+</section>
+<section id="extra-reading" class="level2">
+<h2 class="anchored" data-anchor-id="extra-reading">
+Extra reading
+</h2>
+<p>
+If this blog post was not enough to satiate your curiosity, here are some more nice resources:
+</p>
+<ul>
+<li>
+<a href="https://twitter.com/kupac">Laszlo Kupcsik</a> great <a href="https://kupac.gitlab.io/biofunctor/2019/05/25/maybe-monad-in-r/">blog post</a> on the maybe monad,
+</li>
+<li>
+<a href="https://twitter.com/armcn_">Andrew McNeil</a> implementation of the <code>Maybe</code> monad as a <a href="https://armcn.github.io/maybe/">package</a>
+</li>
+<li>
+this nice <a href="https://www.youtube.com/watch?v=C2w45qRc3aU">video</a> by <a href="https://www.youtube.com/channel/UCUdkjbeIFea0qUSgwR1CUOg">Studying With Alex</a>
+</li>
+<li>
+and of course, the GOAT, <a href="https://twitter.com/BartoszMilewski">Bartosz Milewski’s</a> Category Theory For Programmers on <a href="https://www.youtube.com/watch?v=I8LbkfSSR58&amp;list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_">YouTube</a> if you really want to go into the nitty-gritty theoretical details of functional programming.
+</li>
+<li>
+There’s also this very accessible and nice blog post, <a href="https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Functors, applicatives and monads in pictures</a> which I highly recommend.
+</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
