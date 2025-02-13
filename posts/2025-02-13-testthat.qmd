@@ -1,0 +1,140 @@
+---
+date: 2025-02-13
+title: Using options() to inject a function's internal variable for reproducible testing
+categories:
+  - R
+  - data-science
+toc: true
+execute:
+  freeze: auto
+---
+
+*No image this time*
+
+Imagine you have a function that does something complicated, and in the middle
+of its definition it generates a variable. Now suppose that you want to save
+this variable and then re-use it for tests, what I mean is that you want your
+function to always reproduce this intermediary variable, regardless of what you
+give it as inputs. This can be useful for testing, if computing this
+intermediate variable is costly.
+
+In my `{rix}` package, the `rix()` function generates valid Nix expressions
+from R input and these Nix expressions can then be used to build reproducible
+development environments that include R, R packages, development libraries, and so on.
+If you want a 5-minute intro to `{rix}`, click
+[here](https://www.youtube.com/watch?v=OOu6gjQ310c).
+
+Anyways, sometimes, computing these expressions can take some time, especially
+if the users wants to include remote dependencies that have themselves remote
+dependencies. `rix()` will try to look for suitable GitHub commits to pin all
+the packages for reproducibility purposes, and this can imply quite a lot of api
+calls. Now for my tests, I wanted to use an already generated `default.nix` file
+(which contains the generated Nix expression) but I didn't want to have to
+recompute it every time I ran the test and I couldn't simply use it as is for
+the test either. You see, that `default.nix` was in an intermediary state,
+before `rix()` is supposed to do some post-processing to it, which is what I
+actually want to test (I want to actually test the argument that makes `rix()`
+skip this post-processing step).
+
+So suppose `rix()` looks like this:
+
+```{r}
+#| eval: false
+#| code-line-numbers: true
+rix <- function(a,b,c){
+  ... # lots of code
+  ... # lots of code
+  default.nix_file <- ... # it's generated here
+  # Then a bunch of things happen to it
+  out <- f(default.nix_file)
+  writeLines(out, path) # this is what's written
+}
+```
+
+Now what I want is to be able to "overwrite" the `default.nix_file` variable on
+line 4 when testing, to provide want I want. This way, I can call `rix()` with
+some "easy" parameters that make the computations up to that point very quick.
+My goal is essentially to test `f()` (line 6), which begs the question, why not
+write `f()` as a separate function and test it? This would be the best practice,
+however, I don't really have such an `f()`, rather it's a series of complicated
+steps that follow and rewriting everything to make it easily testable would just
+take too much time.
+
+Instead, I opted for the following:
+
+```{r}
+#| eval: false
+#| code-line-numbers: true
+rix <- function(a,b,c){
+  ... # lots of code
+  ... # lots of code
+
+  stub_default.nix <- getOption("TESTTHAT_DEFAULT.NIX", default = NULL)
+
+  if(!is.null(stub_default.nix)){
+    default.nix_file <- readLines(stub_default.nix)
+  } else {
+    default.nix_file <- ... # it's generated here if not being tested
+  }
+  out <- f(default.nix_file)
+  # Then a bunch of things happen to it
+  writeLines(out, path) # this is what's written
+}
+```
+
+On line 5, I get the option `"TESTTHAT_DEFAULT.NIX"` and if it doesn't exist,
+`stub_default.nix` will be set to `NULL`. So if it's `NULL` it's business as
+usual, if not, then that `default.nix` file dedicated for testing gets passed
+further down. In a sense, I injected the variable I needed in the spot I needed.
+
+Then, my tests looks like this:
+
+```{r}
+#| eval: false
+#| code-line-numbers: true
+testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip", {
+
+
+  dups_entries_default.nix <- paste0(
+    testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix")
+
+  tmpdir <- tempdir()
+
+  # This copies the file I need in the right path
+  destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
+  file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
+
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  removed_dups <- function(destination_file) {
+
+    # Set the option to the file path and clean the option afterwards
+    op <- options("TESTTHAT_DEFAULT.NIX" = destination_file)
+    on.exit(options(op), add = TRUE, after = FALSE)
+
+    out <- rix(
+      date = "2025-02-10",
+      project_path = tmpdir,
+      overwrite = TRUE,
+      skip_post_processing = TRUE) # <- this is actually want I wanted to test
+    file.path(destination_file)
+  }
+
+
+  testthat::expect_snapshot_file(
+    path = removed_dups(destination_file),
+    name = "skip-dups-entries_default.nix",
+  )
+})
+```
+
+On line 22, I set the option and on line 23 I write code to remove that option
+once the test is done, to not mess up subsequent tests. This is a snapshot test,
+so now I can take a look at the resulting file, and indeed make sure that
+post-processing was skipped, as expected.
+
+How would you have done this?
