@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2018-01-19">
+<meta name="dcterms.date" content="2025-02-13">
 
-<title>Mapping a list of functions to a list of datasets with a list of columns as arguments – Econometrics and Free Software</title>
+<title>Using options() to inject a function’s internal variable for reproducible testing – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -100,10 +134,10 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Mapping a list of functions to a list of datasets with a list of columns as arguments</h1>
+<h1 class="title">Using options() to inject a function’s internal variable for reproducible testing</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
-    <div class="quarto-category">programming</div>
+    <div class="quarto-category">data-science</div>
   </div>
   </div>
 
@@ -115,7 +149,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 19, 2018</p>
+      <p class="date">February 13, 2025</p>
     </div>
   </div>
   
@@ -127,98 +161,84 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>
-This week I had the opportunity to teach R at my workplace, again. This course was the “advanced R” course, and unlike the one I taught at the end of last year, I had one more day (so 3 days in total) where I could show my colleagues the joys of the <code>tidyverse</code> and R.
-</p>
-<p>
-To finish the section on programming with R, which was the very last section of the whole 3 day course I wanted to blow their minds; I had already shown them packages from the <code>tidyverse</code> in the previous days, such as <code>dplyr</code>, <code>purrr</code> and <code>stringr</code>, among others. I taught them how to use <code>ggplot2</code>, <code>broom</code> and <code>modelr</code>. They also liked <code>janitor</code> and <code>rio</code> very much. I noticed that it took them a bit more time and effort for them to digest <code>purrr::map()</code> and <code>purrr::reduce()</code>, but they all seemed to see how powerful these functions were. To finish on a very high note, I showed them the ultimate <code>purrr::map()</code> use case.
-</p>
-<p>
-Consider the following; imagine you have a situation where you are working on a list of datasets. These datasets might be the same, but for different years, or for different countries, or they might be completely different datasets entirely. If you used <code>rio::import_list()</code> to read them into R, you will have them in a nice list. Let’s consider the following list as an example:
-</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre class="r"><code>data(mtcars)
-data(iris)
-
-data_list = list(mtcars, iris)</code></pre>
-<p>
-I made the choice to have completely different datasets. Now, I would like to map some functions to the columns of these datasets. If I only worked on one, for example on <code>mtcars</code>, I would do something like:
-</p>
-<pre class="r"><code>my_summarise_f = function(dataset, cols, funcs){
-  dataset %&gt;%
-    summarise_at(vars(!!!cols), funs(!!!funcs))
-}</code></pre>
-<p>
-And then I would use my function like so:
-</p>
-<pre class="r"><code>mtcars %&gt;%
-  my_summarise_f(quos(mpg, drat, hp), quos(mean, sd, max))</code></pre>
-<pre><code>##   mpg_mean drat_mean  hp_mean   mpg_sd   drat_sd    hp_sd mpg_max drat_max
-## 1 20.09062  3.596563 146.6875 6.026948 0.5346787 68.56287    33.9     4.93
-##   hp_max
-## 1    335</code></pre>
-<p>
-<code>my_summarise_f()</code> takes a dataset, a list of columns and a list of functions as arguments and uses tidy evaluation to apply <code>mean()</code>, <code>sd()</code>, and <code>max()</code> to the columns <code>mpg</code>, <code>drat</code> and <code>hp</code> of <code>mtcars</code>. That’s pretty useful, but not useful enough! Now I want to apply this to the list of datasets I defined above. For this, let’s define the list of columns I want to work on:
-</p>
-<pre class="r"><code>cols_mtcars = quos(mpg, drat, hp)
-cols_iris = quos(Sepal.Length, Sepal.Width)
-
-cols_list = list(cols_mtcars, cols_iris)</code></pre>
-<p>
-Now, let’s use some <code>purrr</code> magic to apply the functions I want to the columns I have defined in <code>list_cols</code>:
-</p>
-<pre class="r"><code>map2(data_list,
-     cols_list,
-     my_summarise_f, funcs = quos(mean, sd, max))</code></pre>
-<pre><code>## [[1]]
-##   mpg_mean drat_mean  hp_mean   mpg_sd   drat_sd    hp_sd mpg_max drat_max
-## 1 20.09062  3.596563 146.6875 6.026948 0.5346787 68.56287    33.9     4.93
-##   hp_max
-## 1    335
-## 
-## [[2]]
-##   Sepal.Length_mean Sepal.Width_mean Sepal.Length_sd Sepal.Width_sd
-## 1          5.843333         3.057333       0.8280661      0.4358663
-##   Sepal.Length_max Sepal.Width_max
-## 1              7.9             4.4</code></pre>
-<p>
-That’s pretty useful, but not useful enough! I want to also use different functions to different datasets!
-</p>
-<p>
-Well, let’s define a list of functions then:
-</p>
-<pre class="r"><code>funcs_mtcars = quos(mean, sd, max)
-funcs_iris = quos(median, min)
-
-funcs_list = list(funcs_mtcars, funcs_iris)</code></pre>
-<p>
-Because there is no <code>map3()</code>, we need to use <code>pmap()</code>:
-</p>
-<pre class="r"><code>pmap(
-  list(
-    dataset = data_list,
-    cols = cols_list,
-    funcs = funcs_list
-  ),
-  my_summarise_f)</code></pre>
-<pre><code>## [[1]]
-##   mpg_mean drat_mean  hp_mean   mpg_sd   drat_sd    hp_sd mpg_max drat_max
-## 1 20.09062  3.596563 146.6875 6.026948 0.5346787 68.56287    33.9     4.93
-##   hp_max
-## 1    335
-## 
-## [[2]]
-##   Sepal.Length_median Sepal.Width_median Sepal.Length_min Sepal.Width_min
-## 1                 5.8                  3              4.3               2</code></pre>
-<p>
-Now I’m satisfied! Let me tell you, this blew their minds 😄!
-</p>
-<p>
-To be able to use things like that, I told them to always solve a problem for a single example, and from there, try to generalize their solution using functional programming tools found in <code>purrr</code>.
-</p>
-<p>
-If you found this blog post useful, you might want to follow me on <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates.
-</p>
+<p><em>No image this time</em></p>
+<p>Imagine you have a function that does something complicated, and in the middle of its definition it generates a variable. Now suppose that you want to save this variable and then re-use it for tests, what I mean is that you want your function to always reproduce this intermediary variable, regardless of what you give it as inputs. This can be useful for testing, if computing this intermediate variable is costly.</p>
+<p>In my <code>{rix}</code> package, the <code>rix()</code> function generates valid Nix expressions from R input and these Nix expressions can then be used to build reproducible development environments that include R, R packages, development libraries, and so on. If you want a 5-minute intro to <code>{rix}</code>, click <a href="https://www.youtube.com/watch?v=OOu6gjQ310c">here</a>.</p>
+<p>Anyways, sometimes, computing these expressions can take some time, especially if the users wants to include remote dependencies that have themselves remote dependencies. <code>rix()</code> will try to look for suitable GitHub commits to pin all the packages for reproducibility purposes, and this can imply quite a lot of api calls. Now for my tests, I wanted to use an already generated <code>default.nix</code> file (which contains the generated Nix expression) but I didn’t want to have to recompute it every time I ran the test and I couldn’t simply use it as is for the test either. You see, that <code>default.nix</code> was in an intermediary state, before <code>rix()</code> is supposed to do some post-processing to it, which is what I actually want to test (I want to actually test the argument that makes <code>rix()</code> skip this post-processing step).</p>
+<p>So suppose <code>rix()</code> looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>rix <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b,c){</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  ... <span class="co"># lots of code</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>  ... <span class="co"># lots of code</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>  default.nix_file <span class="ot">&lt;-</span> ... <span class="co"># it's generated here</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="co"># Then a bunch of things happen to it</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  out <span class="ot">&lt;-</span> <span class="fu">f</span>(default.nix_file)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  <span class="fu">writeLines</span>(out, path) <span class="co"># this is what's written</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now what I want is to be able to “overwrite” the <code>default.nix_file</code> variable on line 4 when testing, to provide want I want. This way, I can call <code>rix()</code> with some “easy” parameters that make the computations up to that point very quick. My goal is essentially to test <code>f()</code> (line 6), which begs the question, why not write <code>f()</code> as a separate function and test it? This would be the best practice, however, I don’t really have such an <code>f()</code>, rather it’s a series of complicated steps that follow and rewriting everything to make it easily testable would just take too much time.</p>
+<p>Instead, I opted for the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>rix <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b,c){</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  ... <span class="co"># lots of code</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  ... <span class="co"># lots of code</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  stub_default.nix <span class="ot">&lt;-</span> <span class="fu">getOption</span>(<span class="st">"TESTTHAT_DEFAULT.NIX"</span>, <span class="at">default =</span> <span class="cn">NULL</span>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(stub_default.nix)){</span>
+<span id="cb2-8"><a href="#cb2-8"></a>    default.nix_file <span class="ot">&lt;-</span> <span class="fu">readLines</span>(stub_default.nix)</span>
+<span id="cb2-9"><a href="#cb2-9"></a>  } <span class="cf">else</span> {</span>
+<span id="cb2-10"><a href="#cb2-10"></a>    default.nix_file <span class="ot">&lt;-</span> ... <span class="co"># it's generated here if not being tested</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  }</span>
+<span id="cb2-12"><a href="#cb2-12"></a>  out <span class="ot">&lt;-</span> <span class="fu">f</span>(default.nix_file)</span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="co"># Then a bunch of things happen to it</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  <span class="fu">writeLines</span>(out, path) <span class="co"># this is what's written</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On line 5, I get the option <code>"TESTTHAT_DEFAULT.NIX"</code> and if it doesn’t exist, <code>stub_default.nix</code> will be set to <code>NULL</code>. So if it’s <code>NULL</code> it’s business as usual, if not, then that <code>default.nix</code> file dedicated for testing gets passed further down. In a sense, I injected the variable I needed in the spot I needed.</p>
+<p>Then, my tests looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">"remove_duplicate_entries(), don't remove duplicates if skip"</span>, {</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  dups_entries_default.nix <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    testthat<span class="sc">::</span><span class="fu">test_path</span>(),</span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="st">"/testdata/default-nix_samples/dups-entries_default.nix"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a>  tmpdir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>  <span class="co"># This copies the file I need in the right path</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>  destination_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="fu">basename</span>(dups_entries_default.nix))</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="fu">file.copy</span>(dups_entries_default.nix, destination_file, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">on.exit</span>(</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="fu">unlink</span>(tmpdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">force =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="at">add =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>  )</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a>  removed_dups <span class="ot">&lt;-</span> <span class="cf">function</span>(destination_file) {</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a>    <span class="co"># Set the option to the file path and clean the option afterwards</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>    op <span class="ot">&lt;-</span> <span class="fu">options</span>(<span class="st">"TESTTHAT_DEFAULT.NIX"</span> <span class="ot">=</span> destination_file)</span>
+<span id="cb3-23"><a href="#cb3-23"></a>    <span class="fu">on.exit</span>(<span class="fu">options</span>(op), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">after =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-24"><a href="#cb3-24"></a></span>
+<span id="cb3-25"><a href="#cb3-25"></a>    out <span class="ot">&lt;-</span> <span class="fu">rix</span>(</span>
+<span id="cb3-26"><a href="#cb3-26"></a>      <span class="at">date =</span> <span class="st">"2025-02-10"</span>,</span>
+<span id="cb3-27"><a href="#cb3-27"></a>      <span class="at">project_path =</span> tmpdir,</span>
+<span id="cb3-28"><a href="#cb3-28"></a>      <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-29"><a href="#cb3-29"></a>      <span class="at">skip_post_processing =</span> <span class="cn">TRUE</span>) <span class="co"># &lt;- this is actually want I wanted to test</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a>    <span class="fu">file.path</span>(destination_file)</span>
+<span id="cb3-31"><a href="#cb3-31"></a>  }</span>
+<span id="cb3-32"><a href="#cb3-32"></a></span>
+<span id="cb3-33"><a href="#cb3-33"></a></span>
+<span id="cb3-34"><a href="#cb3-34"></a>  testthat<span class="sc">::</span><span class="fu">expect_snapshot_file</span>(</span>
+<span id="cb3-35"><a href="#cb3-35"></a>    <span class="at">path =</span> <span class="fu">removed_dups</span>(destination_file),</span>
+<span id="cb3-36"><a href="#cb3-36"></a>    <span class="at">name =</span> <span class="st">"skip-dups-entries_default.nix"</span>,</span>
+<span id="cb3-37"><a href="#cb3-37"></a>  )</span>
+<span id="cb3-38"><a href="#cb3-38"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On line 22, I set the option and on line 23 I write code to remove that option once the test is done, to not mess up subsequent tests. This is a snapshot test, so now I can take a look at the resulting file, and indeed make sure that post-processing was skipped, as expected.</p>
+<p>How would you have done this?</p>
 
 
 
