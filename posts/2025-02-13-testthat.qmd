@@ -52,7 +52,7 @@ rix <- function(a,b,c){
 ```
 
 Now what I want is to be able to "overwrite" the `default.nix_file` variable on
-line 4 when testing, to provide want I want. This way, I can call `rix()` with
+line 4 when testing, to provide what I want. This way, I can call `rix()` with
 some "easy" parameters that make the computations up to that point very quick.
 My goal is essentially to test `f()` (line 6), which begs the question, why not
 write `f()` as a separate function and test it? This would be the best practice,
