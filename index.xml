@@ -10,7 +10,62 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Thu, 13 Feb 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 17 Feb 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Why we forked nixpkgs</title>
+  <link>https://b-rodrigues.github.io/posts/2025-02-17-rstats-on-nix.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/fork.webp" style="width: 50%; height: auto;"> </a>
+</p>
+</div>
+<section id="heres-why" class="level2">
+<h2 class="anchored" data-anchor-id="heres-why">Here’s why</h2>
+<p><code>nixpkgs</code> is a GitHub repository that contains tens of thousands of Nix expressions used by the Nix package manager to install software. By default, the nix package manager will pull expressions from <code>NixOS/nixpkgs</code>, but when using <code>{rix}</code> our fork <code>rstats-on-nix/nixpkgs</code> is used instead.</p>
+<p>Because forks can sometimes be a bit controversial, we decided a blog post was in order.</p>
+<p>First of all, let’s make something clear: this doesn’t mean that we don’t contribute to upstream anymore, quite the contrary. But Nix is first and foremost the package manager of a Linux distribution, NixOS, and as such, the way it does certain things only make sense in that context. For our needs, having a fork gives us more flexibility. Let me explain.</p>
+<p>As you’ll know, if you’ve been using <code>{rix}</code> and thus Nix, it is possible to use a commit of the <code>nixpkgs</code> GitHub repository as the source for your packages. For example, the <code>6a9bda32519e710a0c0ab8ecfabe9307ab90ef0c</code> commit of <code>nixpkgs</code> will provide <code>{dplyr}</code> version 1.1.4 while this commit <code>407f8825b321617a38b86a4d9be11fd76d513da2</code> will provide version 1.0.7.</p>
+<p>While it is technically possible for Nix to provide many versions of the same package (for example, you can install the latest Emacs by installing the <code>emacs</code> package, or Emacs 28 by installing <code>emacs28</code>) this ultimately depends on whether the maintainer wishes to do so, or whether it is practical. As you can imagine, with more than 20’000 CRAN and Bioconductor packages, that is not possible for us (by “us”, I mean the maintainers of the R ecosystem for Nix). So for a given <code>nixpkgs</code> commit, you won’t be able to <em>easily</em> install a specific version of <code>{dplyr}</code> that is not included in that particular <code>nixpkgs</code> commit. Instead, you can install it from source, and this is possible with <code>{rix}</code> by writing something like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rix</span>(..., <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r_pkgs =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dplyr@1.0.7"</span>, ...)</span></code></pre></div>
+</div>
+<p>but because this attempts to install the package from source, it can fail if that package needs Nix-specific fixes to work.</p>
+<p>Also, it isn’t practical to update the whole of the R packages set on Nix every day: so while CRAN and Bioconductor get updates daily, the R packages set on Nix gets updated only around new releases of R. Again, this is a consequence of Nix being first and foremost the package manager of a Linux distribution with its own governance and way of doing things.</p>
+<p>This is where the <code>rstats-on-nix</code> fork of <code>nixpkgs</code> is interesting: because it is a fork, we can afford to do things in a way that could not be possible or practical for upstream.</p>
+<p>The first thing this fork allows us to do is offer a daily snapshot of CRAN. Every day, thanks to Github Actions, the R packages set gets updated, and the result commited to a dated branch. This has been going on since the 14th of December 2024 (see <a href="https://github.com/rstats-on-nix/nixpkgs/tree/2024-12-14">here</a>). So when you set a date as in <code>rix(date = "2024-12-14", ...)</code> this the fork that is going to get used. But this doesn’t mean that we recommend you use any date from the <code>rstats-on-nix/nixpkgs</code> fork: instead, each Monday, another action uses this fork and tries to build a set of popular packages on Linux and macOS, and only if this succeeds is the date added through a PR to the list of available dates on <code>{rix}</code>!</p>
+<p>The reason this is done like this is to manage another <em>risk</em> of the upstream <code>nixpkgs</code>. As you know, <code>nixpkgs</code> is huge, and though the utmost care is taken by contributors and the PR review process is very strict, it can happen that updating packages breaks other packages. For example recently RStudio was in a broken state due to an issue in one its dependencies, <code>boost</code>. This is not the fault of anyone in particular: it’s just that packages get updated and packages that depend on them should get updated as well: but if that doesn’t happen quickly enough, the <code>nixpkgs</code> maintainer faces a conundrum. Either he or she doesn’t update the package because it breaks others, but not updating a package could be a security vulnerability, or he or she updates the package, but now others, perhaps less critical packages are broken and need to be fixed, either by their upstream developers, or by the <code>nixpkgs</code> maintainer of said packages. In the case of RStudio a fix was proposed and promptly merged, but if you wanted to install RStudio during the time it took to fix it, you would have faced an error message, which isn’t great if all you want is use Nix shells as development environments.</p>
+<p>So for us, having a fork allows us to backport these fixes and so if you try to install RStudio using the latest available date, which is <code>"2025-02-10"</code>, it’s going to work, whereas if you tried to build it on that date using upstream <code>nixpkgs</code> you’d be facing an error!</p>
+<p>We spent quite some time backporting fixes: we went back all the way to 2019. The way this works, is that we start by checking out a <code>nixpkgs</code> commit on selected dates, then we “update” the R packages set by using the Posit CRAN and Bioconductor daily snapshots. Then, we backport as many fixes as possible, and ensure that a selection of popular packages work on both x86-linux (which includes Windows, through WSL) and aarch64-darwin (the M-series of Macs). Then we commit everything to a dated branch of the <code>rstats-on-nix/nixpkgs</code> fork. You can check out all the available dates by running: <code>rix::available_dates()</code>. We’re pretty confindent that you should not face any issues when using Nix to build reproducible environments for R. However, should you face a problem, don’t hesitate to open an issue!</p>
+<p>We have now packages and R versions working on Linux and macOS from March 2019 to now. See <a href="https://github.com/rstats-on-nix/daily_cran/blob/master/readme.md">this repository</a> that contains the scripts that allowed us to do it. Backporting fixes was especially important for Apple Silicon computers, as it took some time for this platform to work correctly on Nix. By backporting fixes, we can now provide olders versions of these packages for Apple Silicon as well!</p>
+<p>Using this approach, our fork now contains many more versions of working R packages than upstream. <code>{rix}</code> will thus likely keep pointing towards our fork in the future, and not upstream anymore. This should provide a much better user experience. An issue with our fork though, is that by backporting fixes, we essentially create new Nix packages that are not included in upstream, and thus, these are not built by Hydra, Nix’s CI platform which builds binary packages. In practice this means that anyone using our fork will have to compile many packages from source. Now this is pretty bad, as building packages from source takes quite some time. But fear not, because thanks to <a href="https://www.cachix.org/">Cachix</a> we now also have a dedicated binary cache of packages that complements the default, public Nix cache! We provide instructions on how to use Cachix, it’s very easy, it’s just running 2 additional commands after installing Nix. Using Cachix speeds up the installation process of packages tremendously. I want to give my heartfelt thanks to <a href="https://www.cachix.org/about">Domen Kožar</a> for sponsoring the cache!</p>
+<p>Another thing we do with our fork is run an action every day at midnight, that monitors the <em>health</em> of the R packages set. Of course, we don’t build every CRAN package, merely a handful, but these are among the most popular or the most <em>at-risk</em> of being in a broken state. See <a href="https://github.com/rstats-on-nix/monitor_health/actions">here</a>.</p>
+</section>
+<section id="also-theres-a-new-rix-release-on-cran" class="level2">
+<h2 class="anchored" data-anchor-id="also-theres-a-new-rix-release-on-cran">Also, there’s a new rix release on CRAN</h2>
+<p><code>{rix}</code> now handles remote packages that have remote dependencies (themselves with remote dependencies) much better thanks to code by <a href="https://github.com/mihem">Michael Heming</a>.</p>
+<p>We also spent quite some time making <code>{rix}</code> work better with IDEs and have also documented that in a <a href="https://docs.ropensci.org/rix/articles/e-configuring-ide.html">new vignette</a>. The difference with previous releases of <code>{rix}</code>, is that now when a user supplies an IDE name to the <code>ide</code> argument of the <code>rix()</code> function, that IDE will get installed by Nix, which was previously not the case. This only really affects VS Code, as before, setting <code>ide = "code"</code> would only add the <code>{languageserver}</code> server package to the list of R packages to install. That was confusing, because if <code>ide = "rstudio"</code>, then RStudio would be installed. So we decided that if <code>ide = "some editor"</code>, then that editor should be installed by Nix. The vignette linked above explains in great detail how you can configure your editor to work with Nix shells.</p>
+<p>If you decide to give <code>{rix}</code> a try, please let us know how it goes!</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-02-17-rstats-on-nix.html</guid>
+  <pubDate>Mon, 17 Feb 2025 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Using options() to inject a function’s internal variable for reproducible testing</title>
   <link>https://b-rodrigues.github.io/posts/2025-02-13-testthat.html</link>
@@ -4155,85 +4210,6 @@ I’ll be using this dockerized image for some time, and see how it feels. For n
   <category>proramming</category>
   <guid>https://b-rodrigues.github.io/posts/2023-05-08-dock_dev_env.html</guid>
   <pubDate>Mon, 08 May 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>I’ve been blogging for 10 years</title>
-  <link>https://b-rodrigues.github.io/posts/2023-04-25-10_years.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/10_years.jpg">
-</p>
-</div>
-<p>
-I’ve been blogging for 10 years, actually even a bit more than that, my very first blog is not online anymore and if I remember correctly was in French. I think it was around 2010 when I was a Master’s student.
-</p>
-<p>
-Anyways, here are my thoughts on why I think blogging is a very nice activity if you’re interested in technology or science.
-</p>
-<p>
-The primary reason I started my blog was to have a repository of code snippets that I could re-use. Anytime I had to do something for my thesis or for work, I would write instructions around the code that I’ve used to explain how and why things worked out. But I needed a spot to save these scripts, and it turns out that a blog was the best solution for this: it doesn’t require any subscription to a (very often proprietary) service to store my notes for me, and I need 0 discipline to maintain a blog. Simply write a post, push to Github, website gets updated. If I would store the notes myself on my computer instead, this would mean a lot of work, and I would need to think about how to make them available across devices.
-</p>
-<p>
-The other reason is that I thought that this would be a good way for me to contribute to the wider free software and open source ecosystem. I’m not a programmer, so contributing code would be quite difficult for me. I’ve recently published a <a href="https://b-rodrigues.github.io/chronicler/">package</a>, so in the end I ended up contributing code, but that was more due to “luck” finding an actual problem that hadn’t been solved (well, that’s not really the case, logging in R had been solved, but not using a monad and for some reason I had become obsessed with monads in 2022) and also thanks to the help of much better programmers than myself. So writing and posting these blog posts would be my way to contribute to the community. I think that this was the right decision, as I’ve had many people throughout the years thank me for some of my blog posts that helped them with some of their tasks.
-</p>
-<p>
-Now, not all blog posts were about problems that I encountered throughout my career. There were also some blog posts about topics that piqued my interest, but purely out of curiosity. For example the ones about NLP, like this <a href="../posts/2019-04-07-historical_newspaper_scraping_tesseract.html">one</a>, among others. I’m lucky enough that I find enjoyment in programming and exploring data for fun, so I do write a lot of code. But how did I manage to consistently write blog posts for 10 years+?
-</p>
-<p>
-I think that part of the reason is that I have literally 0 commitment to this blog. I don’t force myself to write on a schedule and sometimes don’t write for months like in 2020 where I didn’t write for 5 months because I was busy renovating my home and taking care of my baby daughter. I didn’t even miss writing. I think that one of the reasons this works is also because I have absolutely 0 trackers on this website. For all I know, this post will get read by 3 people, me, you and my mom. The only clue I have that one particular post was successful is if people reshare the announcement I make on social media, or if they contact me with questions or praise, or if it gets picked up for the R weekly highlights. By not having any trackers and not having really a clue of what people like, I avoid falling into the “recommendation engine” or “SEO” trap. If I did use trackers and knew exactly what my <em>audience</em> wanted, I’d be very incentivized to just continue writing what would generate the most traffic. And the issue with that, is that it would feel like a job, and I very likely would have abandoned this endeavour a long time ago. What generates a lot of traffic are posts mostly aimed at beginners, tutorials that explain how to do a t-test or make a bar graph with two y-axes, but sorry, I’m not interested. I don’t <em>hate</em> beginners, but I don’t only want to write tutorials to serve ads to my readers and tell them to subscribe to newsletters, bla bla bla. I have no qualms with people doing this, but that’s simply not my thing. Not interested (and don’t get me wrong, I have nothing against tutorial blog post, quite the contrary, especially when they present some lesser-known features of a package).
-</p>
-<p>
-Also, the first thing I install on my web-browser is an ad-blocker, and I would be a huge hypocrite if I tracked my blog’s visits. To be fully transparent, I do use Goatcounter for my latest book <a href="https://raps-with-r.dev/">here</a>, but I don’t adjust the book’s content to the audience. It’s just to know if people read it, because writing a book takes some effort and I was curious. I might remove it in the future though. Again, nothing against people trying to live off the internet, I myself accept <a href="https://www.buymeacoffee.com/brodriguesco">donations</a>, but if I started to look into what drives people to click and donate, I’d turn this into a job, and that would be the fastest way for me to hate blogging.
-</p>
-<p>
-So the reason this has been working is simply because I avoided considering this as an obligation, a duty or a job, and in order to do this, I avoid collecting data.
-</p>
-<p>
-So blogging is a nice way to store code snippets and quickly find them. These code snippets can in turn help other people facing similar issues. But what are some other benefits of blogging? First, by turning your code into a full-fledged blog post, it also forces you to think more carefully about the solution you found. Very often, while writing the blog post to a problem I’ve solved, I often find a simpler, more elegant solution, and then use that solution instead to solve my problem. It’s a similar idea to rubber duck debugging, or writing a Minimal Reproducible Example when opening an issue because (you think) you found a nasty bug somewhere in that package you use daily and never bothered reading the documentation for carefully. Blogging is also a way to get some feedback by other people, and sometimes people show me other ways of doing things, like <a href="2021-09-05-speedrunning_rows.qmd/">here</a>. Blogging also helped me meet people in the real world, and discuss with them about certain of the topics I’ve blogged about. I think that’s really neat.
-</p>
-Blogging also helps (at least it helped me) realize what I really enjoy about statistics, programming, and data science, and once you have a nice collection of blog posts, you could turn them easily into a book. That’s another way of contributing to the community. I’ve written two books, the latest one seems to really interest people:
-<blockquote class="twitter-tweet blockquote">
-<p lang="en" dir="ltr">
-My book is done. I need to write a conclusion to the last chapter and will likely rewrite some paragraphs, but I won’t make major changes anymore. So if you’re interested in building reproducible analytical pipelines with <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a>, take a look it’s free: <a href="https://t.co/Vx8LGpddwR">https://t.co/Vx8LGpddwR</a> <a href="https://t.co/PKFb2P4pJK">pic.twitter.com/PKFb2P4pJK</a>
-</p>
-— Bruno Rodrigues (<span class="citation"><span class="citation" data-cites="brodriguesco">@brodriguesco</span></span><span class="citation"><span class="citation" data-cites="fosstodon.org">@fosstodon.org</span></span>) (<span class="citation"><span class="citation" data-cites="brodriguesco">@brodriguesco</span></span>) <a href="https://twitter.com/brodriguesco/status/1650229398988095489?ref_src=twsrc%5Etfw">April 23, 2023</a>
-</blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-That’s my most “viral” tweet! Before it was this classic:
-</p>
-<blockquote class="twitter-tweet blockquote">
-<p lang="en" dir="ltr">
-“doing science” <a href="https://t.co/T0TJQ6vY6q">pic.twitter.com/T0TJQ6vY6q</a>
-</p>
-— Bruno Rodrigues (<span class="citation"><span class="citation" data-cites="brodriguesco">@brodriguesco</span></span><span class="citation"><span class="citation" data-cites="fosstodon.org">@fosstodon.org</span></span>) (<span class="citation"><span class="citation" data-cites="brodriguesco">@brodriguesco</span></span>) <a href="https://twitter.com/brodriguesco/status/1443538925474222080?ref_src=twsrc%5Etfw">September 30, 2021</a>
-</blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-I’m sure that many people, maybe even you!, work in an industry that tackles many interesting problems, and could share that with the world either through blog posts or books, or videos (yes, I also do that <a href="https://www.youtube.com/channel/UCTZXht1RTL2Duc3eU8MYGzQ">sometimes</a>), and many people would find that interesting. I’ve had people tell me that they have nothing interesting to write about, so they don’t even want to start. Who cares, just write.
-</p>
-<p>
-So it’d be cool if you blogged. I like it, so maybe you will as well?
-</p>
-<p>
-Anyways, thanks for reading, especially if you’ve been reading my blog for years.
-</p>
-<p>
-Here’s to 10 more years!
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-04-25-10_years.html</guid>
-  <pubDate>Tue, 25 Apr 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
