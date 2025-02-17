@@ -1,0 +1,166 @@
+---
+date: 2025-02-17
+title: Why we forked nixpkgs
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/fork.webp" style="width: 50%; height: auto;">
+    </a>
+  </p>
+</div>
+
+## Here's why
+
+`nixpkgs` is a GitHub repository that contains tens of thousands of Nix
+expressions used by the Nix package manager to install software. By default, the
+nix package manager will pull expressions from `NixOS/nixpkgs`, but when using
+`{rix}` our fork `rstats-on-nix/nixpkgs` is used instead.
+
+Because forks can sometimes be a bit controversial, we decided a blog post was
+in order.
+
+First of all, let's make something clear: this doesn't mean that we don't
+contribute to upstream anymore, quite the contrary. But Nix is first and
+foremost the package manager of a Linux distribution, NixOS, and as such, the
+way it does certain things only make sense in that context. For our needs,
+having a fork gives us more flexibility. Let me explain.
+
+As you’ll know, if you’ve been using `{rix}` and thus Nix, it is possible to use
+a commit of the `nixpkgs` GitHub repository as the source for your packages.
+For example, the
+`6a9bda32519e710a0c0ab8ecfabe9307ab90ef0c` commit of `nixpkgs` will provide
+`{dplyr}` version 1.1.4 while this commit
+`407f8825b321617a38b86a4d9be11fd76d513da2` will provide version 1.0.7.
+
+While it is technically possible for Nix to provide many versions of the same
+package (for example, you can install the latest Emacs by installing the `emacs`
+package, or Emacs 28 by installing `emacs28`) this ultimately depends on whether
+the maintainer wishes to do so, or whether it is practical. As you can imagine,
+with more than 20'000 CRAN and Bioconductor packages, that is not possible for
+us (by "us", I mean the maintainers of the R ecosystem for Nix). So for a given
+`nixpkgs` commit, you won't be able to *easily* install a specific version of
+`{dplyr}` that is not included in that particular `nixpkgs` commit. Instead, you
+can install it from source, and this is possible with `{rix}` by writing
+something like:
+
+```{r, eval = FALSE}
+rix(..., r_pkgs = "dplyr@1.0.7", ...)
+```
+
+but because this attempts to install the package from source, it can fail if
+that package needs Nix-specific fixes to work.
+
+Also, it isn't practical to update the whole of the R packages set on Nix every
+day: so while CRAN and Bioconductor get updates daily, the R packages set on Nix
+gets updated only around new releases of R. Again, this is a consequence of Nix
+being first and foremost the package manager of a Linux distribution with its
+own governance and way of doing things.
+
+This is where the `rstats-on-nix` fork of `nixpkgs` is interesting: because it
+is a fork, we can afford to do things in a way that could not be possible or
+practical for upstream.
+
+The first thing this fork allows us to do is offer a daily snapshot of CRAN.
+Every day, thanks to Github Actions, the R packages set gets updated, and the
+result commited to a dated branch. This has been going on since the 14th of
+December 2024 (see
+[here](https://github.com/rstats-on-nix/nixpkgs/tree/2024-12-14)). So when you
+set a date as in `rix(date = "2024-12-14", ...)` this the fork that is going to
+get used. But this doesn’t mean that we recommend you use any date from the
+`rstats-on-nix/nixpkgs` fork: instead, each Monday, another action uses this
+fork and tries to build a set of popular packages on Linux and macOS, and only
+if this succeeds is the date added through a PR to the list of available
+dates on `{rix}`!
+
+The reason this is done like this is to manage another *risk* of the upstream
+`nixpkgs`. As you know, `nixpkgs` is huge, and though the utmost care is taken
+by contributors and the PR review process is very strict, it can happen that
+updating packages breaks other packages. For example recently RStudio was in a
+broken state due to an issue in one its dependencies, `boost`. This is not the
+fault of anyone in particular: it's just that packages get updated and packages
+that depend on them should get updated as well: but if that doesn't happen
+quickly enough, the `nixpkgs` maintainer faces a conundrum. Either he or she
+doesn't update the package because it breaks others, but not updating a package
+could be a security vulnerability, or he or she updates the package, but now
+others, perhaps less critical packages are broken and need to be fixed, either
+by their upstream developers, or by the `nixpkgs` maintainer of said packages.
+In the case of RStudio a fix was proposed and promptly merged, but if you wanted
+to install RStudio during the time it took to fix it, you would have faced
+an error message, which isn't great if all you want is use Nix shells as
+development environments.
+
+So for us, having a fork allows us to backport these fixes and so if you try to
+install RStudio using the latest available date, which is `"2025-02-10"`, it’s
+going to work, whereas if you tried to build it on that date using upstream
+`nixpkgs` you'd be facing an error!
+
+We spent quite some time backporting fixes: we went back all the way to
+2019. The way this works, is that we start by checking out a `nixpkgs` commit on
+selected dates, then we "update" the R packages set by using the Posit CRAN and
+Bioconductor daily snapshots. Then, we backport as many fixes as possible, and
+ensure that a selection of popular packages work on both x86-linux (which
+includes Windows, through WSL) and aarch64-darwin (the M-series of Macs). Then
+we commit everything to a dated branch of the `rstats-on-nix/nixpkgs` fork. You
+can check out all the available dates by running: `rix::available_dates()`.
+We're pretty confindent that you should not face any issues when using Nix to
+build reproducible environments for R. However, should you face a problem, don't
+hesitate to open an issue!
+
+We have now packages and R versions working on Linux and macOS from March 2019
+to now. See [this
+repository](https://github.com/rstats-on-nix/daily_cran/blob/master/readme.md)
+that contains the scripts that allowed us to do it. Backporting fixes was
+especially important for Apple Silicon computers, as it took some time for this
+platform to work correctly on Nix. By backporting fixes, we can now provide
+olders versions of these packages for Apple Silicon as well!
+
+Using this approach, our fork now contains many more versions of working R
+packages than upstream. `{rix}` will thus likely keep pointing towards our fork
+in the future, and not upstream anymore. This should provide a much better user
+experience. An issue with our fork though, is that by backporting fixes, we
+essentially create new Nix packages that are not included in upstream, and thus,
+these are not built by Hydra, Nix's CI platform which builds binary packages. In
+practice this means that anyone using our fork will have to compile many
+packages from source. Now this is pretty bad, as building packages from source
+takes quite some time. But fear not, because thanks to
+[Cachix](https://www.cachix.org/) we now also have a dedicated binary cache of
+packages that complements the default, public Nix cache! We provide instructions
+on how to use Cachix, it's very easy, it's just running 2 additional commands
+after installing Nix. Using Cachix speeds up the installation process of
+packages tremendously. I want to give my heartfelt thanks to
+[Domen Kožar](https://www.cachix.org/about) for sponsoring the cache!
+
+Another thing we do with our fork is run an action every day at midnight, that
+monitors the *health* of the R packages set. Of course, we don't build every
+CRAN package, merely a handful, but these are among the most popular or the most
+*at-risk* of being in a broken state. See
+[here](https://github.com/rstats-on-nix/monitor_health/actions).
+
+## Also, there's a new rix release on CRAN
+
+`{rix}` now handles remote packages that have remote dependencies (themselves
+with remote dependencies) much better thanks to code by
+[Michael Heming](https://github.com/mihem).
+
+We also spent quite some time making `{rix}` work better with IDEs and have also
+documented that in a
+[new vignette](https://docs.ropensci.org/rix/articles/e-configuring-ide.html).
+The difference with previous releases of `{rix}`, is that now when a user
+supplies an IDE name to the `ide` argument of the `rix()` function, that IDE
+will get installed by Nix, which was previously not the case. This only really
+affects VS Code, as before, setting `ide = "code"` would only add the
+`{languageserver}` server package to the list of R packages to install. That was
+confusing, because if `ide = "rstudio"`, then RStudio would be installed. So we
+decided that if `ide = "some editor"`, then that editor should be installed by
+Nix. The vignette linked above explains in great detail how you can configure
+your editor to work with Nix shells.
+
+If you decide to give `{rix}` a try, please let us know how it goes!
