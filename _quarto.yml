@@ -7,6 +7,7 @@ project:
 website:
   title: "Econometrics and Free Software"
   site-url: https://b-rodrigues.github.io/
+  favicon: assets/img/favicon-32x32.png
 
 format:
   html:
