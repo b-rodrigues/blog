@@ -803,8 +803,8 @@ then, I provide the source, in this case the <code>python_functions.py</code> fi
 </li>
 </ul>
 <p>
-Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><img src="https://latex.codecogs.com/png.latex?%7Biris_path%7D%3C/code%3E%20to%20refer%20to%20the%20path%20to%20the%0Afile%20defined%20above.%20Finally,%20in%20the%20%3Ccode%3EinstallPhase%3C/code%3E%20I%20copy%20the%20%3Ccode%3E.csv%3C/code%3E%20file%20to%0A%3Ccode%3E">out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
-</p>
+Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><img src="https://latex.codecogs.com/png.latex?%7Biris_path%7D%3C/code%3E%20to%20refer%20to%20the%20path%20to%20the%0Afile%20defined%20above.%20Finally,%20in%20the%20%3Ccode%3EinstallPhase%3C/code%3E%20I%20copy%20the%20%3Ccode%3E.csv%3C/code%3E%20file%20to%0A%60">out/`, which essentially copies the file into the Nix store, making it available for the next derivations.
+</code></p><code>
 <p>
 In the next derivation, I now use the second Python function to clean the data:
 </p>
@@ -924,7 +924,7 @@ Also, let me state that this is my first attempt at using Nix for such a purpose
 
 
 
- ]]></description>
+</code> ]]></description>
   <category>R</category>
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2024-08-28-nix_for_r_part_12.html</guid>

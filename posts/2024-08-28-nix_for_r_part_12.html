@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5355bb7e035af7aae7eae1754fed37aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-4d8bc8792aaca1724876db735330692e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -301,8 +301,8 @@ then, I provide the source, in this case the <code>python_functions.py</code> fi
 <p>
 Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><span class="math inline">\({iris_path}&lt;/code&gt; to refer to the path to the
 file defined above. Finally, in the &lt;code&gt;installPhase&lt;/code&gt; I copy the &lt;code&gt;.csv&lt;/code&gt; file to
-&lt;code&gt;\)</span>out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
-</p>
+`\)</span>out/`, which essentially copies the file into the Nix store, making it available for the next derivations.
+</code></p><code>
 <p>
 In the next derivation, I now use the second Python function to clean the data:
 </p>
@@ -422,7 +422,7 @@ Also, let me state that this is my first attempt at using Nix for such a purpose
 
 
 
-</main> <!-- /main -->
+</code></main><code> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
@@ -863,9 +863,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> <!-- /content -->
+</code></div><code> <!-- /content -->
 
 
 
 
-</body></html>
+</code></body></html>
