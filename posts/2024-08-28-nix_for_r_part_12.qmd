@@ -177,7 +177,7 @@ build the target!</li>
 is exactly the code you would write if you were using a script to glue your
 functions together. See how I use <code>${iris_path}</code> to refer to the path to the
 file defined above. Finally, in the <code>installPhase</code> I copy the <code>.csv</code> file to
-<code>$out/</code>, which essentially copies the file into the Nix store, making it
+`$out/`, which essentially copies the file into the Nix store, making it
 available for the next derivations.</p>
 <p>In the next derivation, I now use the second Python function to clean the data:</p>
 <pre><code>cleanCsv = pkgs.stdenv.mkDerivation {
