@@ -138,7 +138,7 @@ of this expression will always be exactly the same.</li>
 <li><code>iris_path</code>: the Python function I use to load the data takes a path, or url,
 to read the iris dataset. Because building a derivation happens in a sandbox,
 I need to download assets beforehand. This is what the <code>fetchurl</code> function
-does. I can then refer to the file path using <code>${iris_path}</code> later on.</li>
+does. I can then refer to the file path using `${iris_path}` later on.</li>
 <li><code>pythonEnv</code>: This lists the dependencies I will need to run my Python
 functions.</li>
 <li><code>pythonSrc</code>: Defines the path to the <code>python_functions.py</code> file.</li>
@@ -175,7 +175,7 @@ build the target!</li>
 </ul>
 <p>Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This
 is exactly the code you would write if you were using a script to glue your
-functions together. See how I use <code>${iris_path}</code> to refer to the path to the
+functions together. See how I use `${iris_path}` to refer to the path to the
 file defined above. Finally, in the <code>installPhase</code> I copy the <code>.csv</code> file to
 `$out/`, which essentially copies the file into the Nix store, making it
 available for the next derivations.</p>
@@ -285,7 +285,7 @@ idiosyncrasy where a dependency of Quarto, Deno, needs to have a directory to
 save some stuff in it. Nix being Nix, we need to manually define such a home
 directory for reproducibility purposes. If it would be using my <code>home/</code>
 directory on my machine, this wouldn’t be reproducible! We finish the
-<code>buildPhase</code> by rendering the document, and then <em>install</em> it into <code>$out/</code>. To
+<code>buildPhase</code> by rendering the document, and then <em>install</em> it into `$out/`. To
 build this project, you need to have Nix installed and then type <code>nix-build</code>,
 or alternatively, <code>nix-build -Q</code> which hides all the output of the build phases
 (so you don’t see any warnings or messages thrown by either Python or R).</p>
