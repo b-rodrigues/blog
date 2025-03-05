@@ -82,35 +82,6 @@ ul.task-list li input[type="checkbox"] {
     </td>
 </tr></tbody></table>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 
@@ -299,10 +270,8 @@ then, I provide the source, in this case the <code>python_functions.py</code> fi
 </li>
 </ul>
 <p>
-Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code><span class="math inline">\({iris_path}&lt;/code&gt; to refer to the path to the
-file defined above. Finally, in the &lt;code&gt;installPhase&lt;/code&gt; I copy the &lt;code&gt;.csv&lt;/code&gt; file to
-`\)</span>out/`, which essentially copies the file into the Nix store, making it available for the next derivations.
-</code></p><code>
+Then, I need to run the code, and this is what happens in the <code>buildPhase</code>. This is exactly the code you would write if you were using a script to glue your functions together. See how I use <code>${iris_path}</code> to refer to the path to the file defined above. Finally, in the <code>installPhase</code> I copy the <code>.csv</code> file to <code>$out/</code>, which essentially copies the file into the Nix store, making it available for the next derivations.
+</p>
 <p>
 In the next derivation, I now use the second Python function to clean the data:
 </p>
@@ -422,7 +391,7 @@ Also, let me state that this is my first attempt at using Nix for such a purpose
 
 
 
-</code></main><code> <!-- /main -->
+</main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
@@ -863,9 +832,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</code></div><code> <!-- /content -->
+</div> <!-- /content -->
 
 
 
 
-</code></body></html>
+</body></html>
