@@ -1,0 +1,115 @@
+---
+date: 2025-03-20
+title: Announcing rixpress
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/fork.webp" style="width: 50%; height: auto;">
+    </a>
+  </p>
+</div>
+
+## The targets package, my source of inspiration for rixpress
+
+I’m a huge fan of the `{targets}` package and think that it’s truly one
+of the best packages ever made. No other build/pipeline automation tool comes close
+in my opinion. Most of these tools require you to define your pipeline in another 
+language (such as yaml) or force you to use some very specific syntax where you explicitely
+need to define the objects to compute, their inputs and outputs. But `{targets}` allows
+you to define your pipeline as a series of R calls:
+
+```{r, eval = FALSE}
+# _targets.R file
+library(targets)
+library(tarchetypes)
+tar_source()
+tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
+list(
+  tar_target(file, "data.csv", format = "file"),
+  tar_target(data, get_data(file)),
+  tar_target(model, fit_model(data)),
+  tar_target(plot, plot_model(model, data))
+)
+```
+
+This may look foreign to many R users, but if you look closely, you’ll realise that most
+of this code is boilerplate:
+
+```{r, eval = FALSE}
+# _targets.R file
+library(targets)
+library(tarchetypes)
+tar_source()
+tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
+list(
+  tar_target(....),
+  tar_target(....),
+  tar_target(....),
+  tar_target(....)
+)
+```
+
+and what matters is defined inside the `tar_target()` functions. Remove the boilerplate, and you
+end up with essentially correct R code, after a few adjustments:
+
+```{r, eval = FALSE}
+file <- "data.csv"
+data <- get_data(file)
+model <- fit_model(data)
+plot <- plot_model(model, data)
+```
+
+but why go through the trouble of using `{targets}`? Well, the biggest reason is that `{targets}` figures out the dependencies between the
+objects you want to compute, and caches them. So in the example above, if you only change the code of
+the `fit_model()` function, only `model` and `plot` are re-computed. But if you change `file` and point
+the path to an updated `data.csv` file, then everything gets computed anew. Watch the 
+[intro video](https://books.ropensci.org/targets/walkthrough.html) from the official walkthrough
+for a visual explanation: but trust me, `{targets}` is in this class of tools that make you wonder
+how you could possibly have gotten anything done before using it.
+
+## targets and rix, a match made in heaven
+
+As I’ve already discussed in 
+<a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">this vignette of my {rix} package</a>, 
+it is very easy to run a `{targets}` pipeline inside of a Nix environment for increased reproduciblity. 
+The main drawback of `{targets}` though, is that it is not possible to compute one particular object
+in one particular environment, and another object in another environment. It is also not possible to 
+compute a target using Python for instance, or only by using `{reticulate}` for this.
+
+But we can go a step further: you see, Nix is a very versatile tool, and the Nix programming language is
+a domain-specific language made to package software. If you assume that, say, a statistical or machine learning
+model is just software, then why not use Nix to build it?
+
+## rixpress, a package to define reproducible analytical pipelines
+
+The Nix programming language is used to define recipes to build software, and I mean, any kind of software. As I
+explored in <a href="2024-08-28-nix_for_r_part_12.qmd">this blog post</a>, Nix (the programming language) can
+be used to define a polyglot pipeline to build, for example, a Quarto report using R and Python. I have now
+built a package called `{rixpress}` which is very inspired by `{targets}` to generate such pipelines and build
+them using Nix. Below is a complete example which starts by using Python and the Polars library to load
+a dataset, then transforms it a bit, then passes it to R to create a `{ggplot2}` plot finally a PDF is compiled using
+Quarto:
+
+```{r, eval = FALSE}
+
+```
+
+Steps that require Python are executed in a Python shell, no `{reticulate}` involved. `{reticulate}` is only used
+to convert the polars data frame into a standard R data frame when it’s needed by `{ggplot2}`. Executing this
+code generates [this pipeline.nix]() file. It is possible to take a look at the DAG using `plot_dag()`:
+
+```
+
+```
+
+and it’s also possible to retrieve objects in an interactive sessions using `rxp_read()` (to read them) or `rxp_load()`
+(to load them in the global environment). When reading or loading Python objects, this will get converted using 
+`{reticulate}` on the fly.
