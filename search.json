@@ -1320,7 +1320,7 @@
     "href": "posts/2025-03-20-announcing_rixpress.html#conclusion",
     "title": "Announcing rixpress",
     "section": "Conclusion",
-    "text": "Conclusion\nI think that {rixpress} can become quite an useful package, so I will likely submit it for rOpenSci peer review in due time."
+    "text": "Conclusion\nI think that {rixpress} can become quite an useful package, so I will likely submit it for rOpenSci peer review in due time.\nAnd thanks to Grant McDermott for suggesting the name “rixpress”!"
   },
   {
     "objectID": "posts/2023-12-19-nix_for_r_part_8.html",
