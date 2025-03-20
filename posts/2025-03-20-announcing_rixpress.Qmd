@@ -285,3 +285,7 @@ walkthrough for a visual explanation: but trust me, `{targets}` is in this class
 of tools that make you wonder how you could possibly have gotten anything done
 before using it.
 
+## Conclusion
+
+I think that `{rixpress}` can become quite an useful package, so I will likely
+submit it for rOpenSci peer review in due time.
