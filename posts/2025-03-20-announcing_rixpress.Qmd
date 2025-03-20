@@ -289,3 +289,5 @@ before using it.
 
 I think that `{rixpress}` can become quite an useful package, so I will likely
 submit it for rOpenSci peer review in due time.
+
+And thanks to [Grant McDermott](https://grantmcdermott.com/) for suggesting the name "rixpress"!
