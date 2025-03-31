@@ -4,7 +4,7 @@ title: "Talks, presentations, workshops..."
 
 ## Talks
 
-- *Reproducible Data Science Environments with {rix}*: a webinar for R Medicine on the 13th of March 2025, [Repository with code](https://github.com/b-rodrigues/r-medicine-rix) and [slides](https://b-rodrigues.github.io/r-medicine-rix/#/title-slide)
+- *Reproducible Data Science Environments with {rix}*: a webinar for R Medicine on the 13th of March 2025, [video of presentation](https://www.youtube.com/watch?v=jhiRNQHbEXo), [repository with code](https://github.com/b-rodrigues/r-medicine-rix) and [slides](https://b-rodrigues.github.io/r-medicine-rix/#/title-slide)
 
 - *What’s up with reproducibility in R?*: talk I gave for the Data and Analytics Learning seminars from the Bank of England 
   on the 29th of January 2025. [Repository with code](https://github.com/b-rodrigues/repro_boe) and [slides](https://b-rodrigues.github.io/repro_boe/#/title-slide).
