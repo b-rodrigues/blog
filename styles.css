@@ -1,0 +1,9 @@
+body {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 20px; /* or whatever size you want */
+}
+
+code, pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+}

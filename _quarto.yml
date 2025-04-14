@@ -11,7 +11,6 @@ website:
 
 format:
   html:
-    page-footer: "2025, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the WTFPL. Built with Quarto, Nix and hosted on GitHub Pages."
     theme: solar
     css: styles.css
     mainfont: "IBM Plex Serif"
