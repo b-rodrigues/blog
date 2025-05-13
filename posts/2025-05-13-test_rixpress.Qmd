@@ -1,0 +1,135 @@
+---
+date: 2025-05-13
+title: Multi-language pipelines with rixpress
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/polyglot_dag.png" style="width: 50%; height: auto;">
+    </a>
+  </p>
+</div>
+
+
+<p>
+If you want to watch a 2-Minute video introduction to `{rixpress}`, click the image
+below:
+</p>
+
+<a href="https://www.youtube.com/watch?v=a1eNG9TFZ_o" target="_blank" rel="noopener noreferrer">
+<img src="https://raw.githubusercontent.com/b-rodrigues/rixpress/refs/heads/main/video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;">
+</a>
+
+In [August last
+year](https://brodrigues.co/posts/2024-08-28-nix_for_r_part_12.html) I tried to
+see how one could use Nix as a built automation tool for data science pipelines,
+and in March this year, I’ve started working on an R package that would make
+setting up such pipelines easy, which I already discussed in my [previous
+post](https://brodrigues.co/posts/2025-03-20-announcing_rixpress.html).
+
+After some weeks of work, I think that `{rixpress}` is at stage where it can
+already be quite useful to a lot of people. `{rixpress}` helps you set up your
+projects as a pipeline of completely reproducible steps. `{rixpress}` is a
+sister package to `{rix}` and together they make true computational
+reproducibility easier to achieve. `{rix}` makes it easy to capture and rebuild
+the exact computational environment in which the code was executed, and
+`{rixpress}` helps you move away from script-based workflows that can be
+difficult to execute and may require manual intervention.
+
+When I first introduced `{rixpress}`, it was essentially a proof of concept. It
+could manage some basic R and Python interplay, but it was clearly in its early
+stages. I’ve since then added some features that I think really show why using
+Nix as the underlying build engine is a good idea.
+
+Just like for its sister package `{rix}`, I've taken the step to submit
+`{rixpress}` for peer review by rOpenSci. `{rix}` really benefitted from
+rOpenSci’s peer review and I believe that it’ll be the same for `{rixpress}`.
+
+## Current Capabilities of {rixpress}
+
+Here are the features currently available in `{rixpress}`:
+
+- A key motivation was to simplify building pipelines where different steps
+  might require different language environments. With `{rixpress}`, this is a
+  central feature:
+ *   Define steps in R (`rxp_r()`, `rxp_r_file()`) or Python (`rxp_py()`,
+     `rxp_py_file()`).
+ *   Importantly, each step can be configured to run in its own Nix-defined
+     environment (for example, use `nix_env = "my-python-env.nix"` for a Python
+     step, or `nix_env = "my-r-env.nix"` for an R step). These environments can
+     be generated using my other package, `{rix}`.
+ *   Pass data between R and Python steps. `{rixpress}` manages the
+     serialization, using `reticulate` by default for R/Python object
+     conversion, and also allows custom functions for other formats like JSON or
+     model-specific files.
+
+- Build Quarto (or R Markdown) documents using `rxp_quarto()` (and `rxp_rmd()`).
+  These documents can access any artifact (`rxp_read("my_artifact")`) from
+  preceding steps, regardless of the language used to generate it. Quarto
+  rendering can also occur within its own dedicated Nix environment.
+
+- Every step in a `{rixpress}` pipeline is treated as a Nix derivation. This
+  means hermetic builds, sandboxed execution, and content-addressable caching,
+  leading to a high degree of reproducibility (as expected with Nix).
+
+- As pipelines grow, visualization is helpful. `rxp_ggdag()` (using `{ggdag}`)
+  and `rxp_visnetwork()` (using `{visNetwork}`) provide a visual overview of
+  dependencies. `dag_for_ci()` exports the DAG as an `{igraph}` dot file format,
+  which can then be used for text-based visualisation on CI.
+
+- For CI, `rxp_ga()` can generate a GitHub Actions workflow to run the pipeline
+  on each push. This workflow includes caching of Nix store paths between runs
+  (using `export_nix_archive()` and `import_nix_archive()`) to avoid unnecessary
+  rebuilds.
+
+- There is ample documentation, and even a vignette detailling how to use
+  `{cmdstanr}` within a `{rixpress}` pipeline. `{cmdstanr}` works in a specific
+  way, by compiling Stan models to C++, and so this requires careful management
+  of Stan model compilation and sampling within the Nix sandbox, demonstrating
+  that complex tools can be integrated.
+
+- It is possible to retrieve outputs from previous pipeline executions.
+  `{rixpress}` maintains timestamped build logs. Functions like
+  `rxp_list_logs()`, `rxp_inspect(which_log = "...")`, and
+  `rxp_read("derivation_name", which_log = "...")` allow you to access the
+  history of your pipeline's execution and retrieve specific artifacts.
+
+## An Invitation for Feedback
+
+Considerable effort has gone into making `{rixpress}` robust and useful. A
+collection of examples is available at the [rixpress_demos GitHub
+repository](https://github.com/b-rodrigues/rixpress_demos) to illustrate various
+use cases (R-only, Python-only, R/Python, Quarto, `{cmdstanr}`, and an XGBoost
+example).
+
+I'm now looking for feedback from users:
+*   I encourage you to try it out. I recommend watching this [tutorial
+    video](https://youtu.be/IXKd5ySzzSU?si=D-AbU0JYdMP-iKvB) to get started
+    quickly.
+*   Install it, explore the examples, and perhaps apply it to one of your
+    projects.
+*   Any observations on what works well, what might be confusing, or any issues
+    encountered would be helpful.
+*   Your feedback would be very valuable. Please feel free to open an issue on
+    the [{rixpress} GitHub repository](https://github.com/b-rodrigues/rixpress)
+    with bug reports, feature suggestions, or questions.
+
+## Why use {rixpress} instead of {targets}?
+
+`{targets}` is a fantastic package, and the main source of inspiration of
+`{rixpress}`. If you have no need for multilanguage pipelines, then running
+`{targets}` inside of a Nix environment, as described
+[here](https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html)
+is perfectly valid. But I think that `{rixpress}` has its place if:
+
+- you need to use multiple languages, as you don’t need adapt Python code to
+  work with `{reticulate}`,
+- you’re already convinced by Nix and use `{rix}`,
+- want to use a simple pipeline-tool, with a smaller scope.
