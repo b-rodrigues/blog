@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2019-03-31">
+<meta name="dcterms.date" content="2025-05-13">
 
-<title>Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick} – Econometrics and Free Software</title>
+<title>Multi-language pipelines with rixpress – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,22 +24,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../assets/img/favicon-32x32.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-05d373f05c5d69f703950177dd9c153b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/img/favicon-32x32.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-05d373f05c5d69f703950177dd9c153b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -83,7 +83,7 @@ ul.task-list li input[type="checkbox"] {
 </tr></tbody></table>
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../styles.css">
 
 
 
@@ -93,18 +93,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#current-capabilities-of-rixpress" id="toc-current-capabilities-of-rixpress" class="nav-link active" data-scroll-target="#current-capabilities-of-rixpress">Current Capabilities of {rixpress}</a></li>
+  <li><a href="#an-invitation-for-feedback" id="toc-an-invitation-for-feedback" class="nav-link" data-scroll-target="#an-invitation-for-feedback">An Invitation for Feedback</a></li>
+  <li><a href="#why-use-rixpress-instead-of-targets" id="toc-why-use-rixpress-instead-of-targets" class="nav-link" data-scroll-target="#why-use-rixpress-instead-of-targets">Why use {rixpress} instead of {targets}?</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Get text from pdfs or images using OCR: a tutorial with {tesseract} and {magick}</h1>
+<h1 class="title">Multi-language pipelines with rixpress</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
-    <div class="quarto-category">data-science</div>
+    <div class="quarto-category">nix</div>
   </div>
   </div>
 
@@ -116,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 31, 2019</p>
+      <p class="date">May 13, 2025</p>
     </div>
   </div>
   
@@ -128,16 +136,58 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="../../posts/2019-03-31-tesseract.html">Permanently moved.</a></p>
+<div style="text-align: center;">
+<p>
+<a> <img src="../assets/img/polyglot_dag.png" style="width: 50%; height: auto;"> </a>
+</p>
+</div>
+<p>
+If you want to watch a 2-Minute video introduction to <code>{rixpress}</code>, click the image below:
+</p>
+<p><a href="https://www.youtube.com/watch?v=a1eNG9TFZ_o" target="_blank" rel="noopener noreferrer"> <img src="https://raw.githubusercontent.com/b-rodrigues/rixpress/refs/heads/main/video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;"> </a></p>
+<p>In <a href="https://brodrigues.co/posts/2024-08-28-nix_for_r_part_12.html">August last year</a> I tried to see how one could use Nix as a built automation tool for data science pipelines, and in March this year, I’ve started working on an R package that would make setting up such pipelines easy, which I already discussed in my <a href="https://brodrigues.co/posts/2025-03-20-announcing_rixpress.html">previous post</a>.</p>
+<p>After some weeks of work, I think that <code>{rixpress}</code> is at stage where it can already be quite useful to a lot of people. <code>{rixpress}</code> helps you set up your projects as a pipeline of completely reproducible steps. <code>{rixpress}</code> is a sister package to <code>{rix}</code> and together they make true computational reproducibility easier to achieve. <code>{rix}</code> makes it easy to capture and rebuild the exact computational environment in which the code was executed, and <code>{rixpress}</code> helps you move away from script-based workflows that can be difficult to execute and may require manual intervention.</p>
+<p>When I first introduced <code>{rixpress}</code>, it was essentially a proof of concept. It could manage some basic R and Python interplay, but it was clearly in its early stages. I’ve since then added some features that I think really show why using Nix as the underlying build engine is a good idea.</p>
+<p>Just like for its sister package <code>{rix}</code>, I’ve taken the step to submit <code>{rixpress}</code> for peer review by rOpenSci. <code>{rix}</code> really benefitted from rOpenSci’s peer review and I believe that it’ll be the same for <code>{rixpress}</code>.</p>
+<section id="current-capabilities-of-rixpress" class="level2">
+<h2 class="anchored" data-anchor-id="current-capabilities-of-rixpress">Current Capabilities of {rixpress}</h2>
+<p>Here are the features currently available in <code>{rixpress}</code>:</p>
+<ul>
+<li><p>A key motivation was to simplify building pipelines where different steps might require different language environments. With <code>{rixpress}</code>, this is a central feature:</p></li>
+<li><p>Define steps in R (<code>rxp_r()</code>, <code>rxp_r_file()</code>) or Python (<code>rxp_py()</code>, <code>rxp_py_file()</code>).</p></li>
+<li><p>Importantly, each step can be configured to run in its own Nix-defined environment (for example, use <code>nix_env = "my-python-env.nix"</code> for a Python step, or <code>nix_env = "my-r-env.nix"</code> for an R step). These environments can be generated using my other package, <code>{rix}</code>.</p></li>
+<li><p>Pass data between R and Python steps. <code>{rixpress}</code> manages the serialization, using <code>reticulate</code> by default for R/Python object conversion, and also allows custom functions for other formats like JSON or model-specific files.</p></li>
+<li><p>Build Quarto (or R Markdown) documents using <code>rxp_quarto()</code> (and <code>rxp_rmd()</code>). These documents can access any artifact (<code>rxp_read("my_artifact")</code>) from preceding steps, regardless of the language used to generate it. Quarto rendering can also occur within its own dedicated Nix environment.</p></li>
+<li><p>Every step in a <code>{rixpress}</code> pipeline is treated as a Nix derivation. This means hermetic builds, sandboxed execution, and content-addressable caching, leading to a high degree of reproducibility (as expected with Nix).</p></li>
+<li><p>As pipelines grow, visualization is helpful. <code>rxp_ggdag()</code> (using <code>{ggdag}</code>) and <code>rxp_visnetwork()</code> (using <code>{visNetwork}</code>) provide a visual overview of dependencies. <code>dag_for_ci()</code> exports the DAG as an <code>{igraph}</code> dot file format, which can then be used for text-based visualisation on CI.</p></li>
+<li><p>For CI, <code>rxp_ga()</code> can generate a GitHub Actions workflow to run the pipeline on each push. This workflow includes caching of Nix store paths between runs (using <code>export_nix_archive()</code> and <code>import_nix_archive()</code>) to avoid unnecessary rebuilds.</p></li>
+<li><p>There is ample documentation, and even a vignette detailling how to use <code>{cmdstanr}</code> within a <code>{rixpress}</code> pipeline. <code>{cmdstanr}</code> works in a specific way, by compiling Stan models to C++, and so this requires careful management of Stan model compilation and sampling within the Nix sandbox, demonstrating that complex tools can be integrated.</p></li>
+<li><p>It is possible to retrieve outputs from previous pipeline executions. <code>{rixpress}</code> maintains timestamped build logs. Functions like <code>rxp_list_logs()</code>, <code>rxp_inspect(which_log = "...")</code>, and <code>rxp_read("derivation_name", which_log = "...")</code> allow you to access the history of your pipeline’s execution and retrieve specific artifacts.</p></li>
+</ul>
+</section>
+<section id="an-invitation-for-feedback" class="level2">
+<h2 class="anchored" data-anchor-id="an-invitation-for-feedback">An Invitation for Feedback</h2>
+<p>Considerable effort has gone into making <code>{rixpress}</code> robust and useful. A collection of examples is available at the <a href="https://github.com/b-rodrigues/rixpress_demos">rixpress_demos GitHub repository</a> to illustrate various use cases (R-only, Python-only, R/Python, Quarto, <code>{cmdstanr}</code>, and an XGBoost example).</p>
+<p>I’m now looking for feedback from users: * I encourage you to try it out. I recommend watching this <a href="https://youtu.be/IXKd5ySzzSU?si=D-AbU0JYdMP-iKvB">tutorial video</a> to get started quickly. * Install it, explore the examples, and perhaps apply it to one of your projects. * Any observations on what works well, what might be confusing, or any issues encountered would be helpful. * Your feedback would be very valuable. Please feel free to open an issue on the <a href="https://github.com/b-rodrigues/rixpress">{rixpress} GitHub repository</a> with bug reports, feature suggestions, or questions.</p>
+</section>
+<section id="why-use-rixpress-instead-of-targets" class="level2">
+<h2 class="anchored" data-anchor-id="why-use-rixpress-instead-of-targets">Why use {rixpress} instead of {targets}?</h2>
+<p><code>{targets}</code> is a fantastic package, and the main source of inspiration of <code>{rixpress}</code>. If you have no need for multilanguage pipelines, then running <code>{targets}</code> inside of a Nix environment, as described <a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">here</a> is perfectly valid. But I think that <code>{rixpress}</code> has its place if:</p>
+<ul>
+<li>you need to use multiple languages, as you don’t need adapt Python code to work with <code>{reticulate}</code>,</li>
+<li>you’re already convinced by Nix and use <code>{rix}</code>,</li>
+<li>want to use a simple pipeline-tool, with a smaller scope.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
 <footer>
 If you find the content in this blog useful, you might want to follow
 me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
-<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../../books.html">ebooks</a>.
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../books.html">ebooks</a>.
 You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
 So much content for you to consoom!
 <p></p>
@@ -149,7 +199,7 @@ So much content for you to consoom!
     <div class="col-lg-12">
         <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
         <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-      <p><a href="../../index.html">Back to main page.</a></p>
+      <p><a href="../index.html">Back to main page.</a></p>
     </div>
   </div>
 </footer>

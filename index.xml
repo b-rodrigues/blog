@@ -10,7 +10,67 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Thu, 20 Mar 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 13 May 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Multi-language pipelines with rixpress</title>
+  <link>https://b-rodrigues.github.io/posts/2025-05-13-test_rixpress.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/polyglot_dag.png" style="width: 50%; height: auto;"> </a>
+</p>
+</div>
+<p>
+If you want to watch a 2-Minute video introduction to <code>{rixpress}</code>, click the image below:
+</p>
+<p><a href="https://www.youtube.com/watch?v=a1eNG9TFZ_o" target="_blank" rel="noopener noreferrer"> <img src="https://raw.githubusercontent.com/b-rodrigues/rixpress/refs/heads/main/video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;"> </a></p>
+<p>In <a href="https://brodrigues.co/posts/2024-08-28-nix_for_r_part_12.html">August last year</a> I tried to see how one could use Nix as a built automation tool for data science pipelines, and in March this year, I’ve started working on an R package that would make setting up such pipelines easy, which I already discussed in my <a href="https://brodrigues.co/posts/2025-03-20-announcing_rixpress.html">previous post</a>.</p>
+<p>After some weeks of work, I think that <code>{rixpress}</code> is at stage where it can already be quite useful to a lot of people. <code>{rixpress}</code> helps you set up your projects as a pipeline of completely reproducible steps. <code>{rixpress}</code> is a sister package to <code>{rix}</code> and together they make true computational reproducibility easier to achieve. <code>{rix}</code> makes it easy to capture and rebuild the exact computational environment in which the code was executed, and <code>{rixpress}</code> helps you move away from script-based workflows that can be difficult to execute and may require manual intervention.</p>
+<p>When I first introduced <code>{rixpress}</code>, it was essentially a proof of concept. It could manage some basic R and Python interplay, but it was clearly in its early stages. I’ve since then added some features that I think really show why using Nix as the underlying build engine is a good idea.</p>
+<p>Just like for its sister package <code>{rix}</code>, I’ve taken the step to submit <code>{rixpress}</code> for peer review by rOpenSci. <code>{rix}</code> really benefitted from rOpenSci’s peer review and I believe that it’ll be the same for <code>{rixpress}</code>.</p>
+<section id="current-capabilities-of-rixpress" class="level2">
+<h2 class="anchored" data-anchor-id="current-capabilities-of-rixpress">Current Capabilities of {rixpress}</h2>
+<p>Here are the features currently available in <code>{rixpress}</code>:</p>
+<ul>
+<li><p>A key motivation was to simplify building pipelines where different steps might require different language environments. With <code>{rixpress}</code>, this is a central feature:</p></li>
+<li><p>Define steps in R (<code>rxp_r()</code>, <code>rxp_r_file()</code>) or Python (<code>rxp_py()</code>, <code>rxp_py_file()</code>).</p></li>
+<li><p>Importantly, each step can be configured to run in its own Nix-defined environment (for example, use <code>nix_env = "my-python-env.nix"</code> for a Python step, or <code>nix_env = "my-r-env.nix"</code> for an R step). These environments can be generated using my other package, <code>{rix}</code>.</p></li>
+<li><p>Pass data between R and Python steps. <code>{rixpress}</code> manages the serialization, using <code>reticulate</code> by default for R/Python object conversion, and also allows custom functions for other formats like JSON or model-specific files.</p></li>
+<li><p>Build Quarto (or R Markdown) documents using <code>rxp_quarto()</code> (and <code>rxp_rmd()</code>). These documents can access any artifact (<code>rxp_read("my_artifact")</code>) from preceding steps, regardless of the language used to generate it. Quarto rendering can also occur within its own dedicated Nix environment.</p></li>
+<li><p>Every step in a <code>{rixpress}</code> pipeline is treated as a Nix derivation. This means hermetic builds, sandboxed execution, and content-addressable caching, leading to a high degree of reproducibility (as expected with Nix).</p></li>
+<li><p>As pipelines grow, visualization is helpful. <code>rxp_ggdag()</code> (using <code>{ggdag}</code>) and <code>rxp_visnetwork()</code> (using <code>{visNetwork}</code>) provide a visual overview of dependencies. <code>dag_for_ci()</code> exports the DAG as an <code>{igraph}</code> dot file format, which can then be used for text-based visualisation on CI.</p></li>
+<li><p>For CI, <code>rxp_ga()</code> can generate a GitHub Actions workflow to run the pipeline on each push. This workflow includes caching of Nix store paths between runs (using <code>export_nix_archive()</code> and <code>import_nix_archive()</code>) to avoid unnecessary rebuilds.</p></li>
+<li><p>There is ample documentation, and even a vignette detailling how to use <code>{cmdstanr}</code> within a <code>{rixpress}</code> pipeline. <code>{cmdstanr}</code> works in a specific way, by compiling Stan models to C++, and so this requires careful management of Stan model compilation and sampling within the Nix sandbox, demonstrating that complex tools can be integrated.</p></li>
+<li><p>It is possible to retrieve outputs from previous pipeline executions. <code>{rixpress}</code> maintains timestamped build logs. Functions like <code>rxp_list_logs()</code>, <code>rxp_inspect(which_log = "...")</code>, and <code>rxp_read("derivation_name", which_log = "...")</code> allow you to access the history of your pipeline’s execution and retrieve specific artifacts.</p></li>
+</ul>
+</section>
+<section id="an-invitation-for-feedback" class="level2">
+<h2 class="anchored" data-anchor-id="an-invitation-for-feedback">An Invitation for Feedback</h2>
+<p>Considerable effort has gone into making <code>{rixpress}</code> robust and useful. A collection of examples is available at the <a href="https://github.com/b-rodrigues/rixpress_demos">rixpress_demos GitHub repository</a> to illustrate various use cases (R-only, Python-only, R/Python, Quarto, <code>{cmdstanr}</code>, and an XGBoost example).</p>
+<p>I’m now looking for feedback from users: * I encourage you to try it out. I recommend watching this <a href="https://youtu.be/IXKd5ySzzSU?si=D-AbU0JYdMP-iKvB">tutorial video</a> to get started quickly. * Install it, explore the examples, and perhaps apply it to one of your projects. * Any observations on what works well, what might be confusing, or any issues encountered would be helpful. * Your feedback would be very valuable. Please feel free to open an issue on the <a href="https://github.com/b-rodrigues/rixpress">{rixpress} GitHub repository</a> with bug reports, feature suggestions, or questions.</p>
+</section>
+<section id="why-use-rixpress-instead-of-targets" class="level2">
+<h2 class="anchored" data-anchor-id="why-use-rixpress-instead-of-targets">Why use {rixpress} instead of {targets}?</h2>
+<p><code>{targets}</code> is a fantastic package, and the main source of inspiration of <code>{rixpress}</code>. If you have no need for multilanguage pipelines, then running <code>{targets}</code> inside of a Nix environment, as described <a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">here</a> is perfectly valid. But I think that <code>{rixpress}</code> has its place if:</p>
+<ul>
+<li>you need to use multiple languages, as you don’t need adapt Python code to work with <code>{reticulate}</code>,</li>
+<li>you’re already convinced by Nix and use <code>{rix}</code>,</li>
+<li>want to use a simple pipeline-tool, with a smaller scope.</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-05-13-test_rixpress.html</guid>
+  <pubDate>Tue, 13 May 2025 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Announcing rixpress</title>
   <link>https://b-rodrigues.github.io/posts/2025-03-20-announcing_rixpress.html</link>
@@ -4342,179 +4402,6 @@ Many thanks to <a href="https://github.com/jbedo">Justin Bedő</a>, maintainer o
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2023-07-13-nix_for_r_part1.html</guid>
   <pubDate>Thu, 13 Jul 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>How to self-publish a technical book on Leanpub and Amazon using Quarto</title>
-  <link>https://b-rodrigues.github.io/posts/2023-06-29-book_quarto.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/gosling.jpg" width="100%">
-</p>
-</div>
-<p>
-UPDATE: I’ve update this blog post on the 30 of June 2023. I corrected a statement where I said that the <code>_quarto.yml</code> file is where you can choose the version of R to compile the book. That’s wrong, choosing the version of R to compile the book is done on the Github Actions workflow. I’ve also added some answers to questions I got on social media.
-</p>
-<p>
-So I’ve recently self-published a book on both <a href="https://leanpub.com/raps-with-r/">Leanpub</a> as an Ebook and <a href="https://www.amazon.com/dp/B0C87H6MGF">Amazon</a> as a <em>physical</em> book and thought that it would be worth it to write down how to do it. I’ve wasted some time getting everything to work flawlessly so if you’re looking for a guide on how to create both an ebook and a print-ready PDF for Amazon’s Kindle Direct Publishing service using Quarto, you’ve come to the right place.
-</p>
-<p>
-If you don’t want to waste time reading, <a href="https://github.com/b-rodrigues/kdp_quarto">just fork this repo</a> and use that as a starting point. Each time you push a change to the repo, a website, Epub and PDF get generated using Github Actions. If you want to understand the details, read on.
-</p>
-<section id="your-books-dependencies" class="level2">
-<h2 class="anchored" data-anchor-id="your-books-dependencies">
-Your book’s dependencies
-</h2>
-<p>
-You should start by creating an <code>renv.lock</code> file. This file will list all the dependencies of your book. For example, if you’re using <code>{ggplot2}</code> to make graphs or <code>{flextable}</code> for tables, the <code>renv.lock</code> file will list them and then this file will be used to download the required packages by Github Actions (more on Github Actions later) to create the book. The template comes with one such <code>renv.lock</code> file, but you should generate one specific to your project. Simply install <code>{renv}</code> and run:
-</p>
-<pre class="r"><code>renv::init()</code></pre>
-<p>
-Answer “Y” to the question and wait a little. The <code>renv.lock</code> file should appear alongside the source of your book now. If you need to install more packages to keep writing your book, install them as usual (using <code>install.packages(“package”)</code>) but then don’t forget to create a new <code>renv.lock</code> file using <code>renv::snapshot()</code>.
-</p>
-</section>
-<section id="quarto.yml" class="level2">
-<h2 class="anchored" data-anchor-id="quarto.yml">
-_quarto.yml
-</h2>
-<p>
-Whatever output format, everything gets defined in the <code>_quarto.yml</code> file in the root directory of your book. This file is where you can choose which themes to use for your website for example, which output formats you want to compile your book into, etc. I’ll discuss each option for each format below.
-</p>
-</section>
-<section id="generating-the-website" class="level2">
-<h2 class="anchored" data-anchor-id="generating-the-website">
-Generating the website
-</h2>
-<p>
-I’m using Github Actions to generate each format of the book. Github Actions is essentially a computer hosted by Github that you can use to run arbitrary commands. These commands must be written in a specific file which must be put in a specific place in your repository. <a href="https://github.com/b-rodrigues/kdp_quarto/blob/main/.github/workflows/build_book.yml">Here</a> is that file for the repo I linked above. I won’t go into details because I’ve explained how Github Actions works <a href="../posts/2022-11-19-raps.html">here</a> already, but you’ll notice that you can choose a version of R to compile your document and also a different version of Quarto. This can be useful for reproducibility.
-</p>
-<p>
-Create a new branch called <code>gh-pages</code> and then go to settings, then on the side-bar on the left choose “Actions”, and scroll down. Then, in “Workflow persmissions”, check “Read and Write permissions” and “Allow Github Actions to create and approve pull requests”. Then go to “Pages” which you can find on the side-bar on the left, and choose “Deploy from a branch” under “Build and deployment” and choose “gh-pages” and “root”:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/github_pages.png" width="100%">
-</p>
-</div>
-<p>
-Each time you push, the website to your book will get updated. Here are the options I chose for my website, which you can find in the <code>_quarto.yml</code> file:
-</p>
-<pre><code>html:
-   theme:
-     light: flatly
-     dark: solar
-   css:
-     epub.css</code></pre>
-<p>
-So my website is available in two themes, a dark and light one. I highly recommend you also provide two themes. You can also provide a <code>.css</code> file to customize the appearance of you website, and of your ebook (that’s because an Epub is actually a bunch of html files). The <code>.css</code> I’m using is quite simple, the only thing it’s doing is making sure that images won’t be wider than the web-page. You can view the website of this template book <a href="https://b-rodrigues.github.io/kdp_quarto/">here</a>.
-</p>
-</section>
-<section id="generating-an-ebook" class="level2">
-<h2 class="anchored" data-anchor-id="generating-an-ebook">
-Generating an Ebook
-</h2>
-<p>
-Let’s continue with the <code>.epub</code> format. This is an Ebook format that can be read on E-readers such as the Kindle from Amazon. If you want to sell an Ebook on Leanpub (or send it to your Kindle), it needs to pass a tool called <code>epubcheck</code>.
-</p>
-<p>
-I’ve already written about generating ebooks in the past (<a href="../posts/2023-03-03-quarto_books.html">here</a>). However, the advice in that blog post was only valid because there were bugs in the version of Quarto that was current at the time and so I showed some workarounds. With the current version, no workarounds are needed anymore, Epubs generated by Quarto now pass <code>epubcheck</code>. Check the source, specifically <code>index.qmd</code> to see how I include graphics.
-</p>
-</section>
-<section id="generating-a-print-ready-pdf" class="level2">
-<h2 class="anchored" data-anchor-id="generating-a-print-ready-pdf">
-Generating a print-ready PDF
-</h2>
-<p>
-This was the hardest part: I’m using Amazon’s KDP service to sell physical copies of the book and the PDF needs to be in a specific format. I’m using the 6 x 9 format without bleed, which seems to be the most common. If you look again at the <code>_quarto.yml</code> file, you should see this:
-</p>
-<pre><code>  pdf:
-    keep-tex: true
-    documentclass: scrbook
-    classoption: [paper=6in:9in,pagesize=pdftex,headinclude=on,footinclude=on,12pt]
-    include-in-header:
-      text: |
-        \usepackage{fvextra}
-        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
-        \areaset[0.50in]{4.5in}{8in}
-    include-before-body:
-      text: |
-        \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
-           showspaces = false,
-           showtabs = false,
-           breaksymbolleft={},
-           breaklines
-           % Note: setting commandchars=\\\{\} here will cause an error 
-        }
-    fig-pos: 'H'</code></pre>
-<p>
-What’s important is ‘classoption’:
-</p>
-<pre><code>classoption: [paper=6in:9in,pagesize=pdftex,headinclude=on,footinclude=on,12pt]</code></pre>
-<p>
-This is where I can choose the dimensions of the book (6 x 9) and the size of the font (12pt). Then:
-</p>
-<pre><code>include-in-header:
-  text: |
-    \usepackage{fvextra}
-    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
-    \areaset[0.50in]{4.5in}{8in}</code></pre>
-<p>
-With <code>fvextra</code> and the call to <code></code> I make sure that long lines of code get wrapped in the PDF. Without this, long lines of code would simply continue outside the margins of the PDF, and Amazon’s KDP doesn’t accept a PDF like this.
-</p>
-<p>
-<code></code>: this is the area that well be used for writing. These are the correct dimensions for a 6 by 9 book without bleed. Then, I keep customizing the <code>verbatim</code> environment:
-</p>
-<pre><code>include-before-body:
-  text: |
-    \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
-       showspaces = false,
-       showtabs = false,
-       breaksymbolleft={},
-       breaklines
-       % Note: setting commandchars=\\\{\} here will cause an error 
-    }</code></pre>
-<p>
-Finally, the last option:
-</p>
-<pre><code>fig-pos: 'H'</code></pre>
-<p>
-This ensures that the figures are placed EXACTLY where you say they should be in the final PDF. For those of you that use LaTeX, you know that LaTeX sometimes takes some liberties with figure placement. I’ve been told the lie that LaTeX knows where to place the figures perfectly well many times but I don’t buy it. So use <code>fig-pos: ‘H’</code> to avoid lots of frustration.
-</p>
-<p>
-That’s it! You should now be able to generate a book that is print-ready, and an Epub that passes <code>epubcheck</code> as well as website. You can now just focus on writing. Also check the source of <code>index.qmd</code> for to see how to include text in the PDF only (or not show text in the PDF).
-</p>
-</section>
-<section id="my-personal-experience-and-some-faq" class="level2">
-<h2 class="anchored" data-anchor-id="my-personal-experience-and-some-faq">
-My personal experience and some FAQ
-</h2>
-<p>
-Overall, I enjoyed using both Leanpub and Amazon to publish my book. Leanpub is really nice, because they really offer a very nice deal: you get 80% of the sales price as royalties, which is the highest share I’ve seen. Also the people working there are really nice, I’ve had the chance to discuss with Len Epp, Leanpub’s cofounder, in his <a href="https://youtu.be/aXfjhf2cDo0">Frontmatter podcast</a> and would definitely continue using their platform in the future. Regarding Amazon I must say that the experience was quite good as well; the only friction I had was getting the PDF in the right format for printing, but that’s hardly something that Amazon can be blamed for. After all if the PDF’s formatting is bad, the books will look like crap as well. One thing you should know though is that you need to get a VAT number to sell books on Amazon. I live in Luxembourg and getting one is trivial, but in other countries this may be more complex. You should know as well that Leanpub can sell the physical copies of your book, through Amazon, for you. They essentially act as a publisher then. This way, you don’t need to get a VAT number, if that’s difficult for you. But you’ll need to share the Amazon royalties with Leanpub.
-</p>
-<p>
-When publishing a book through Amazon’s KDP service, you also get access to a basic book cover editor that you can use to create a cover for your book. You can provide an image and then use the editor to create the cover, but you can also provide a ready-made cover if you have the talent to make one using an image editing software. Once you’re done, and click “Publish” on Amazon, the book will get reviewed by a human. This process can take up to three days, but in my case it took only 4 to 6 hours. However, my book was rejected, twice. One time was because one of the images I used in the book had colour bars in the bottom right corner, that I needed to remove, and the other time was because the “g” in my name, “Rodrigues” was cut by the cover editor and it was hard to tell if it was a “g” or a “q”. Once I corrected both issues, the book was available for order on Amazon.com within the day. The other marketplaces, like France and Germany took one day more, and the UK marketplace took 4 days.
-</p>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">
-References
-</h3>
-<p>
-I’m sorry, I have no idea where I found all of this stuff. I looked for it for some time, and if memory serves most of this came from stackoverflow.
-</p>
-
-
-</section>
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-06-29-book_quarto.html</guid>
-  <pubDate>Thu, 29 Jun 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
