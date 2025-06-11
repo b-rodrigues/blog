@@ -4,6 +4,8 @@ title: "Talks, presentations, workshops..."
 
 ## Talks
 
+- *Reproducible environments and pipelines with `{rix}` and `{rixpress}`*: workshop I did for R Medicine 2025 on the 11th of June 2025, [code repo here](https://github.com/b-rodrigues/r-medicine-nix-workshop) and slides [here](https://b-rodrigues.github.io/r-medicine-nix-workshop/#/title-slide).
+
 - For the 11th *rencontres R* (French-speaking R users and developers conference) in Mons, Belgium, from the 19th to the 21st of May, I presented a poster explaining
   the basics of `{rix}`. Download it [here](https://raw.githubusercontent.com/b-rodrigues/blog/refs/heads/master/assets/files/rix-poster-fr.pdf)!
 
