@@ -4,17 +4,23 @@ title: "Talks, presentations, workshops..."
 
 ## Talks
 
-- *Reproducible environments and pipelines with `{rix}` and `{rixpress}`*: workshop I did for R Medicine 2025 on the 11th of June 2025, [code repo here](https://github.com/b-rodrigues/r-medicine-nix-workshop) and slides [here](https://b-rodrigues.github.io/r-medicine-nix-workshop/#/title-slide).
+### 2025
+
+- *Environnements reproductibles pour la science des données avec {rix}*: in French, a webinar for the French Network of Reproducibility, 13th of June 2025, [repository with code](https://github.com/b-rodrigues/repro_rrr) and [slides](https://b-rodrigues.github.io/repro_rrr/)Add commentMore actions
+
+- *Reproducible environments and pipelines with `{rix}` and `{rixpress}`*: workshop I did for R Medicine 2025 on the 11th of June 2025, [youtube video](https://youtu.be/odC3soY2qnk), [code repo here](https://github.com/b-rodrigues/r-medicine-nix-workshop) and slides [here](https://b-rodrigues.github.io/r-medicine-nix-workshop/#/title-slide).
 
 - For the 11th *rencontres R* (French-speaking R users and developers conference) in Mons, Belgium, from the 19th to the 21st of May, I presented a poster explaining
   the basics of `{rix}`. Download it [here](https://raw.githubusercontent.com/b-rodrigues/blog/refs/heads/master/assets/files/rix-poster-fr.pdf)!
 
 - *Building fully reproducible data science environments for R and Python with ease using nix, rix, and Docker*: a talk for the BASF data science community I gave on the 5th of May, [repository with code](https://github.com/b-rodrigues/repro_basf) and [slides](https://b-rodrigues.github.io/repro_basf/#/title-slide)
 
-- *Reproducible Data Science Environments with {rix}*: a webinar for R Medicine on the 13th of March 2025, [video of presentation](https://www.youtube.com/watch?v=jhiRNQHbEXo), [repository with code](https://github.com/b-rodrigues/r-medicine-rix) and [slides](https://b-rodrigues.github.io/r-medicine-rix/#/title-slide)
+- *Reproducible Data Science Environments with {rix}*: a webinar for R Medicine on the 13th of March 2025, [youtube video](https://www.youtube.com/watch?v=jhiRNQHbEXo), [repository with code](https://github.com/b-rodrigues/r-medicine-rix) and [slides](https://b-rodrigues.github.io/r-medicine-rix/#/title-slide)
 
 - *What’s up with reproducibility in R?*: talk I gave for the Data and Analytics Learning seminars from the Bank of England 
   on the 29th of January 2025. [Repository with code](https://github.com/b-rodrigues/repro_boe) and [slides](https://b-rodrigues.github.io/repro_boe/#/title-slide).
+
+### 2024
 
 - *BUILDING REPRODUCIBLE ANALYTICAL PIPELINES WITH R, DOCKER AND NIX*: online talk for RLadies Rome, on the 29th of June 2024. [Repository](https://github.com/b-rodrigues/rladies_rome_repro_2024/tree/main), [Slides](https://raw.githack.com/b-rodrigues/rladies_rome_repro_2024/targets-runs/rendered_slides/pres.html#/title-slide) and [video](https://www.youtube.com/watch?v=0bPMKYi7XRE).
 
@@ -27,6 +33,8 @@ title: "Talks, presentations, workshops..."
 - *Reproducible research with Nix and rix*, a talk I gave at the DIPF, Leibniz Institute for Research and Information in Education, in LOS! (Leibniz Open Science!), the event series of the Leibniz Strategy Forum on Open Science. The workshop was held online, on May 16, 2024. [Repository](https://github.com/b-rodrigues/dipf_workshop), [Slides](https://github.com/b-rodrigues/dipf_workshop) and [video of the talk](https://zpid.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=864361e7-d573-457b-95fc-b1a30073651e)
 
 - *"rix: An R package for reproducible dev environments with Nix (FOSDEM 2024)"*, a talk I gave at FOSDEM 2024 on the 4th of February 2024 in the Nix and NixOS dev room. Video [here](https://www.youtube.com/watch?v=eWt1oXatxw8).
+
+### 2023
 
 - *"Building reproducible analytical pipelines"*, Workshop I gave for the ["R User Group Tunis"](https://www.meetup.com/tunis-r-user-group/) on December 9th, 2023. Video [here](https://www.youtube.com/watch?v=1jVJSPsC4Yo). Slides and code [here](https://github.com/b-rodrigues/raps_rug_tunis/tree/master/raps_rug_tunis).
 
