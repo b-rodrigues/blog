@@ -6,7 +6,8 @@ title: "Talks, presentations, workshops..."
 
 ### 2025
 
-- *Environnements reproductibles pour la science des données avec {rix}*: in French, a webinar for the French Network of Reproducibility, 13th of June 2025, [repository with code](https://github.com/b-rodrigues/repro_rrr) and [slides](https://b-rodrigues.github.io/repro_rrr/)Add commentMore actions
+- *Environnements reproductibles pour la science des données avec {rix}*: in French, a webinar for the French Network of Reproducibility, 13th of June 2025, 
+[repository with code](https://github.com/b-rodrigues/repro_rrr) and [slides](https://b-rodrigues.github.io/repro_rrr/)
 
 - *Reproducible environments and pipelines with `{rix}` and `{rixpress}`*: workshop I did for R Medicine 2025 on the 11th of June 2025, [youtube video](https://youtu.be/odC3soY2qnk), [code repo here](https://github.com/b-rodrigues/r-medicine-nix-workshop) and slides [here](https://b-rodrigues.github.io/r-medicine-nix-workshop/#/title-slide).
 
