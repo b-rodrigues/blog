@@ -1,0 +1,51 @@
+---
+date: 2025-06-21
+title: ggplot2 4.0.0 is coming and why ultimately it's on YOU to ensure your environments are reproducible
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/midnight.jpg" style="width: 50%; height: auto;">
+    </a>
+  </p>
+</div>
+
+
+It looks like a major update to `{ggplot2}` is coming (version 4.0.0), where
+Posit is switching the internals from S3 to S7. This will break many reverse
+dependencies of `{ggplot2}` (a reverse dependency is a package that depends on
+`{ggplot2}`), and so Posit is following the recommendation of the CRAN policies,
+which state that they should give a heads-up to devs of reverse dependencies and
+give them enough time to fix their packages. Posit even goes beyond that and is
+opening PRs to offer fixes themselves, which I think is really great.
+
+However, this seems to be a bit trickier in the case of R packages hosted on
+Bioconductor: my understanding of Bioconductor is that they have two releases
+per year, and packages cannot be updated in between releases. Now I'm not
+entirely sure if that is exactly the case, or if some exceptions can be made and
+packages can perhaps be fixed in between releases. That being said, it seems
+like this upgrade will cause some issues, and there is apparently quite a heated
+discussion on Bioconductor's community chat (which I don't have access to).
+
+Whatever is going to happen, and whatever is going on in this discussion, and
+whatever you think of Posit, CRAN, or Bioconductor, as an end-user, there are
+not a million things that you can do to make sure that upgrading to the latest
+`{ggplot2}` (or whichever packages) won't break projects you're currently
+working on:
+
+- only use dependency-free packages like those from the
+  [tinyverse](https://www.tinyverse.org/) or even just base R
+- use something like `{renv}` or `{groundhog}` to snapshot package versions, or
+  better yet, Nix using my `{rix}` package
+- just don't care and hope for the best.
+
+Ultimately, it is on YOU to ensure that your projects are reproducible, and that
+you can work with stable environments. Relying on infrastructure or upstream
+developers you don't control is not a valid strategy.
