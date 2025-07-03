@@ -1,0 +1,59 @@
+---
+date: 2025-07-03
+title: You can outsource the grunt work to an LLM, not expertise
+categories:
+  - R
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/llm_nope_lmao.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+The more I use LLMs for programming, the more it seems to me that they can only
+be used successfully if you ask them to do things that you could do yourself.
+
+This seems to be the case because:
+
+- you know exactly what you want/need and thus can exactly describe it;
+- you know exactly if the LLM is actually delivering quality code or not;
+- you know exactly if something the LLM suggests that you hadn’t thought about
+  actually makes sense;
+
+This reminds me of my consulting years, where it was quite easy to predict if a
+consulting project would be successful. If the client could do it themselves *if
+they had time*, the project would always be successful. They knew exactly what
+they needed and could describe it to us, and most importantly, there was a very
+tight feedback loop between our intermediary outputs and their review. But when
+we were brought in and clients didn’t even understand what their problem was
+(but thought they knew), this is where things were difficult.
+
+It seems to me that as long as people cannot communicate their needs clearly,
+developers will keep their jobs.
+
+Now, this doesn’t mean that you cannot do things outside of your expertise with
+LLMs, but you must then use the LLM to teach you enough (alongside more
+traditional methods), or you must do something so trivial and done a billion
+times before and low stakes enough that you can blindly trust the output.
+
+I’ve used an LLM recently to write code to parse json and XML files, which is
+something I’ve done in the past and which I’m quite happy to likely never have
+to do myself again. The output was quite good, and only required minor
+correction before working. To help the LLM generate a correct output, I gave it
+one XML file as context.
+
+Another thing I ask the LLM to do is to write code to get data from the Openalex
+api using the `{openalexR}` package. To help it, I gave it the package’s and
+api’s documentation. Here again, the code worked flawlessly, and again, this is
+something I *could* have done myself, so my prompt was quite precise and I knew
+I had to give the LLM *something* to ensure it generated valid code.
+
+Btw, I’ve been using Claude Sonnet 4 and it works quite well for R. But I also like
+Gemini because of its very large context window.
+
