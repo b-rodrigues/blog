@@ -1,0 +1,198 @@
+---
+date: 2025-08-22
+title: Python needs its CRAN
+categories:
+  - R
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/pkg_soyjak.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+How is it that in the year 2025 of our Lord installing a Python package is still
+such a gamble?
+
+This post comes from someone that rarely uses Python, but consider the following:
+
+- the rare times I need to use it, I'm often confronted to dependency hell (and
+  if you think it's a skill issue, hold that thought and keep reading);
+- I'm one of the maintainers of the R ecosystem for Nix, but also package some
+  Python packages every once in a while for Nix.
+
+This last point is quite important, which I believe gives me a good perspective
+on the issue this blog post is about. When it comes to R packages, we know we
+can simply mirror CRAN and Bioconductor, as the upstream CRAN team already did a
+lot of curation efforts: we know packages work with each other. However, the
+same cannot be done for Python: the curation is on us.
+
+If you use Python to analyse data (I'm sorry for you) you've probably
+hit this issue: you install one package that requires `numpy < 2`, and another
+that requires `numpy >= 2`. You're *cooked*, as the youths say. The resolver
+can't help you, because the requirements are literally incompatible. No one nor
+anything can help you. No amount of Rust-written package managers can help you.
+The problem is PyPI.
+
+## CRAN doesn't tolerate this nonsense
+
+In R, this situation simply doesn't happen. Why? Because CRAN enforces a system
+where packages are tested not only in isolation, but against their reverse
+dependencies. If `{ggplot2}` or `{dplyr}` changes in a way that breaks others,
+CRAN catches it. Package authors get a warning, and if they don't fix things
+(within 2 weeks!), their package gets archived, which means that when users try
+to install it with `install.packages("foo")`, it won't work. Which means that if
+a package is on CRAN, `install.packages("foo")` will work. Not "works if you're
+lucky." Not "works if you pin the right versions." It just works (of course, as
+long as the right system-level dependencies are available if you need to compile
+it, which isn't an issue if you're installing binaries though). Actually, you
+can't even publish a package that has constraints on the version of its
+dependencies. Your package has to work with all packages on CRAN forever and
+ever. Honestly, quite impressive for something that's not even a real
+programming language, right? (this is sarcastic btw)
+
+And CRAN manages this consistency across **27000 packages**. PyPI is much
+bigger, granted, but I doubt that many more than 30k packages get actually used
+frequently. In fact, probably a couple thousand, maybe even a couple hundred do
+(especially for data analysis).
+
+## PyPI is a warehouse, not an ecosystem
+
+PyPI doesn't do this. It's a dumping ground for tarballs and wheels. No global
+checks, no compatibility guarantees, no consistency across the ecosystem. If
+package A and package B declare mutually exclusive requirements, PyPI shrugs and
+hosts them both.
+
+We then spend enormous effort building tools to try to deal with this mess:
+Conda, Poetry, Hatch, uv, pipx and Nix (well Nix was not specifically made for
+Python, but it can also be used to set up virtual environments). They're all
+great tools, but they can't solve the core problem: if the constraints
+themselves are impossible, no resolver can save you. At best, these tools give
+you a way to freeze a working mess before it collapses. Just pray to whichever
+deity you fancy that adding a new package down the line doesn't explode your
+environment.
+
+This is not an ecosystem. It's chaos with good packaging tools.
+
+But Nix does help a bit more; at least with Nix, you can patch a package's
+`pyproject.toml` to try to relax imcompatible dependencies, like I did
+for `saiph`:
+
+```nix
+postPatch = ''
+  # Remove these constraints
+  substituteInPlace pyproject.toml \
+    --replace 'numpy = "^1"' 'numpy = ">=1"' \
+    --replace 'msgspec = "^0.18.5"' 'msgspec = ">=0.18.5"'
+'';
+```
+
+This step relaxed the constraints directly in the `pyproject.toml`, but that
+might not be a good idea: these constraints might have been there for a good
+reason. Unit tests did pass though (more than 150 of them) so in this particular
+case I think I'm good. If PyPI was managed like CRAN, `saiph`'s authors would
+have had 2 weeks to make sure that `saiph` worked well with Numpy 2, which seems
+to be the case here. But patching packages is certainly not a solution for
+everything.
+
+## The scale myth
+
+"But Python is too big and diverse for CRAN-style governance!" I hear you yell.
+This is simply false. CRAN manages 27000 packages across domains as varied as
+bioinformatics, finance, web scraping, geospatial analysis, and machine
+learning, and this is without counting old packages that have been archived
+through the years. The R ecosystem isn't small or homogeneous. It is smaller
+than PyPI in absolute numbers, yes, but honestly, I doubt there are more data
+analytics packages on PyPI than on CRAN, and if older unmaintained Python
+packages would get removed, the number of PyPI packages would also be much
+smaller. If anyone has hard statistics on it, I'd be happy to read them.
+
+The difference isn't technical capacity or ecosystem size. It's **governance
+philosophy**. CRAN chose consistency over permissiveness. PyPI chose the
+opposite.
+
+## And no, conda-forge isn't enough
+
+Conda-forge is curated in that its builds are consistent, compilers are pinned,
+migrations are coordinated. That's great, and it proves Python packaging can
+work at scale.
+
+But if package A wants `numpy < 2` and package B wants `numpy >= 2`, conda-forge
+will host them both, and you're still stuck. There's no enforcement mechanism
+that forces the ecosystem to resolve contradictions. CRAN has that. Conda-forge
+doesn't.
+
+Conda-forge is a step in the right direction, but a tighter governance is
+needed.
+
+## What Python actually needs: PyPAN
+
+Python needs a curated layer on top of PyPI that enforces consistency. Call it
+PyPAN: the Python Package Archive Network.
+
+Here's what PyPAN would do:
+
+- Mirror packages from PyPI, but only those that pass ecosystem-wide checks
+- Test every package against its reverse dependencies, not just itself
+- Coordinate migrations for major breaking changes (e.g. `numpy 2.0`)
+- Archive packages that refuse to adapt
+- Publish consistent, installable snapshots of the entire ecosystem
+
+In other words: CRAN, but for Python.
+
+If CRAN can maintain consistency across 27’000 packages (by such a [small
+team](https://cran.r-project.org/CRAN_team.htm) by the way), Python can too. The
+question isn't whether it's technically possible but whether the Python
+community is willing to prioritize ecosystem stability over individual package
+autonomy.
+
+## Why developers would submit to PyPAN
+
+Why would a package author bother? Simple:
+
+- **Visibility**: users will prefer packages on PyPAN because they actually
+    install and work
+- **Less support burden**: fewer bug reports about broken installs or dependency hell
+- **Shared responsibility**: migration effort spread across the ecosystem, not
+    left to individual maintainers
+- **Credibility**: "on PyPAN" becomes a mark of quality and stability —
+    especially for scientific and industry projects
+
+If you don't opt in, fine. But eventually, users will prefer packages that are
+part of the curated, consistent set. Just like people prefer CRAN packages in R and avoid
+installing from GitHub if possible.
+
+## Maybe let's start small
+
+CRAN's model proves that ecosystem-wide consistency is achievable, and I'm of
+the opinion that it could be also achievable at at Python's scale. Conda-forge
+proves that curated Python packaging works.
+
+Until Python has something like PyPAN, nothing changes. Dependency hell will
+keep developers up at night.
+
+But we could start small. PyPAN could begin by focusing on data science, analysis, and
+statistics packages - the core scientific Python ecosystem. This subset is:
+
+- **More manageable**: ~500-1000 packages (I made up this range, could be more
+  could be less, point is, it's not the 300000 PyPi packages) instead of the
+  entire PyPI
+- **Highly interconnected**: numpy, pandas, scikit-learn, matplotlib, scipy form a natural dependency graph
+- **Stability-focused**: data scientists prioritize reproducible results over bleeding-edge features
+- **Community-minded**: scientific Python already coordinates major migrations (Python 2→3, NumPy 2.0)
+- **Proven demand**: these users already gravitate toward conda-forge for stability
+
+A PyPAN-DS (Data Science) could demonstrate the model works, build trust, and
+create momentum for broader adoption. Once people see that `pip install pandas`
+(or `uv` if you prefer) can work as reliably as `install.packages('dplyr')`,
+expanding to web frameworks and other domains becomes much easier to sell.
+
+The scientific Python community has the cohesion, the need, and the precedent
+for this kind of coordination. They could be Python's CRAN pilot program.
+
+Soooo... who's building this?
