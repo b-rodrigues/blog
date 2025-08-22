@@ -10,7 +10,119 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Thu, 03 Jul 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 22 Aug 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Python needs its CRAN</title>
+  <link>https://b-rodrigues.github.io/posts/2025-08-22-pypan.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/pkg_soyjak.png" style="width: 100%; height: auto;"> </a>
+</p>
+</div>
+<p>How is it that in the year 2025 of our Lord installing a Python package is still such a gamble?</p>
+<p>This post comes from someone that rarely uses Python, but consider the following:</p>
+<ul>
+<li>the rare times I need to use it, I’m often confronted to dependency hell (and if you think it’s a skill issue, hold that thought and keep reading);</li>
+<li>I’m one of the maintainers of the R ecosystem for Nix, but also package some Python packages every once in a while for Nix.</li>
+</ul>
+<p>This last point is quite important, which I believe gives me a good perspective on the issue this blog post is about. When it comes to R packages, we know we can simply mirror CRAN and Bioconductor, as the upstream CRAN team already did a lot of curation efforts: we know packages work with each other. However, the same cannot be done for Python: the curation is on us.</p>
+<p>If you use Python to analyse data (I’m sorry for you) you’ve probably hit this issue: you install one package that requires <code>numpy &lt; 2</code>, and another that requires <code>numpy &gt;= 2</code>. You’re <em>cooked</em>, as the youths say. The resolver can’t help you, because the requirements are literally incompatible. No one nor anything can help you. No amount of Rust-written package managers can help you. The problem is PyPI.</p>
+<section id="cran-doesnt-tolerate-this-nonsense" class="level2">
+<h2 class="anchored" data-anchor-id="cran-doesnt-tolerate-this-nonsense">CRAN doesn’t tolerate this nonsense</h2>
+<p>In R, this situation simply doesn’t happen. Why? Because CRAN enforces a system where packages are tested not only in isolation, but against their reverse dependencies. If <code>{ggplot2}</code> or <code>{dplyr}</code> changes in a way that breaks others, CRAN catches it. Package authors get a warning, and if they don’t fix things (within 2 weeks!), their package gets archived, which means that when users try to install it with <code>install.packages("foo")</code>, it won’t work. Which means that if a package is on CRAN, <code>install.packages("foo")</code> will work. Not “works if you’re lucky.” Not “works if you pin the right versions.” It just works (of course, as long as the right system-level dependencies are available if you need to compile it, which isn’t an issue if you’re installing binaries though). Actually, you can’t even publish a package that has constraints on the version of its dependencies. Your package has to work with all packages on CRAN forever and ever. Honestly, quite impressive for something that’s not even a real programming language, right? (this is sarcastic btw)</p>
+<p>And CRAN manages this consistency across <strong>27000 packages</strong>. PyPI is much bigger, granted, but I doubt that many more than 30k packages get actually used frequently. In fact, probably a couple thousand, maybe even a couple hundred do (especially for data analysis).</p>
+</section>
+<section id="pypi-is-a-warehouse-not-an-ecosystem" class="level2">
+<h2 class="anchored" data-anchor-id="pypi-is-a-warehouse-not-an-ecosystem">PyPI is a warehouse, not an ecosystem</h2>
+<p>PyPI doesn’t do this. It’s a dumping ground for tarballs and wheels. No global checks, no compatibility guarantees, no consistency across the ecosystem. If package A and package B declare mutually exclusive requirements, PyPI shrugs and hosts them both.</p>
+<p>We then spend enormous effort building tools to try to deal with this mess: Conda, Poetry, Hatch, uv, pipx and Nix (well Nix was not specifically made for Python, but it can also be used to set up virtual environments). They’re all great tools, but they can’t solve the core problem: if the constraints themselves are impossible, no resolver can save you. At best, these tools give you a way to freeze a working mess before it collapses. Just pray to whichever deity you fancy that adding a new package down the line doesn’t explode your environment.</p>
+<p>This is not an ecosystem. It’s chaos with good packaging tools.</p>
+<p>But Nix does help a bit more; at least with Nix, you can patch a package’s <code>pyproject.toml</code> to try to relax imcompatible dependencies, like I did for <code>saiph</code>:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode nix code-with-copy"><code class="sourceCode nix"><span id="cb1-1">postPatch = <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span></span>
+<span id="cb1-2"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  # Remove these constraints</span></span>
+<span id="cb1-3"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  substituteInPlace pyproject.toml \</span></span>
+<span id="cb1-4"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    --replace 'numpy = "^1"' 'numpy = "&gt;=1"' \</span></span>
+<span id="cb1-5"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    --replace 'msgspec = "^0.18.5"' 'msgspec = "&gt;=0.18.5"'</span></span>
+<span id="cb1-6"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>;</span></code></pre></div>
+<p>This step relaxed the constraints directly in the <code>pyproject.toml</code>, but that might not be a good idea: these constraints might have been there for a good reason. Unit tests did pass though (more than 150 of them) so in this particular case I think I’m good. If PyPI was managed like CRAN, <code>saiph</code>’s authors would have had 2 weeks to make sure that <code>saiph</code> worked well with Numpy 2, which seems to be the case here. But patching packages is certainly not a solution for everything.</p>
+</section>
+<section id="the-scale-myth" class="level2">
+<h2 class="anchored" data-anchor-id="the-scale-myth">The scale myth</h2>
+<p>“But Python is too big and diverse for CRAN-style governance!” I hear you yell. This is simply false. CRAN manages 27000 packages across domains as varied as bioinformatics, finance, web scraping, geospatial analysis, and machine learning, and this is without counting old packages that have been archived through the years. The R ecosystem isn’t small or homogeneous. It is smaller than PyPI in absolute numbers, yes, but honestly, I doubt there are more data analytics packages on PyPI than on CRAN, and if older unmaintained Python packages would get removed, the number of PyPI packages would also be much smaller. If anyone has hard statistics on it, I’d be happy to read them.</p>
+<p>The difference isn’t technical capacity or ecosystem size. It’s <strong>governance philosophy</strong>. CRAN chose consistency over permissiveness. PyPI chose the opposite.</p>
+</section>
+<section id="and-no-conda-forge-isnt-enough" class="level2">
+<h2 class="anchored" data-anchor-id="and-no-conda-forge-isnt-enough">And no, conda-forge isn’t enough</h2>
+<p>Conda-forge is curated in that its builds are consistent, compilers are pinned, migrations are coordinated. That’s great, and it proves Python packaging can work at scale.</p>
+<p>But if package A wants <code>numpy &lt; 2</code> and package B wants <code>numpy &gt;= 2</code>, conda-forge will host them both, and you’re still stuck. There’s no enforcement mechanism that forces the ecosystem to resolve contradictions. CRAN has that. Conda-forge doesn’t.</p>
+<p>Conda-forge is a step in the right direction, but a tighter governance is needed.</p>
+</section>
+<section id="what-python-actually-needs-pypan" class="level2">
+<h2 class="anchored" data-anchor-id="what-python-actually-needs-pypan">What Python actually needs: PyPAN</h2>
+<p>Python needs a curated layer on top of PyPI that enforces consistency. Call it PyPAN: the Python Package Archive Network.</p>
+<p>Here’s what PyPAN would do:</p>
+<ul>
+<li>Mirror packages from PyPI, but only those that pass ecosystem-wide checks</li>
+<li>Test every package against its reverse dependencies, not just itself</li>
+<li>Coordinate migrations for major breaking changes (e.g.&nbsp;<code>numpy 2.0</code>)</li>
+<li>Archive packages that refuse to adapt</li>
+<li>Publish consistent, installable snapshots of the entire ecosystem</li>
+</ul>
+<p>In other words: CRAN, but for Python.</p>
+<p>If CRAN can maintain consistency across 27’000 packages (by such a <a href="https://cran.r-project.org/CRAN_team.htm">small team</a> by the way), Python can too. The question isn’t whether it’s technically possible but whether the Python community is willing to prioritize ecosystem stability over individual package autonomy.</p>
+</section>
+<section id="why-developers-would-submit-to-pypan" class="level2">
+<h2 class="anchored" data-anchor-id="why-developers-would-submit-to-pypan">Why developers would submit to PyPAN</h2>
+<p>Why would a package author bother? Simple:</p>
+<ul>
+<li><strong>Visibility</strong>: users will prefer packages on PyPAN because they actually install and work</li>
+<li><strong>Less support burden</strong>: fewer bug reports about broken installs or dependency hell</li>
+<li><strong>Shared responsibility</strong>: migration effort spread across the ecosystem, not left to individual maintainers</li>
+<li><strong>Credibility</strong>: “on PyPAN” becomes a mark of quality and stability — especially for scientific and industry projects</li>
+</ul>
+<p>If you don’t opt in, fine. But eventually, users will prefer packages that are part of the curated, consistent set. Just like people prefer CRAN packages in R and avoid installing from GitHub if possible.</p>
+</section>
+<section id="maybe-lets-start-small" class="level2">
+<h2 class="anchored" data-anchor-id="maybe-lets-start-small">Maybe let’s start small</h2>
+<p>CRAN’s model proves that ecosystem-wide consistency is achievable, and I’m of the opinion that it could be also achievable at at Python’s scale. Conda-forge proves that curated Python packaging works.</p>
+<p>Until Python has something like PyPAN, nothing changes. Dependency hell will keep developers up at night.</p>
+<p>But we could start small. PyPAN could begin by focusing on data science, analysis, and statistics packages - the core scientific Python ecosystem. This subset is:</p>
+<ul>
+<li><strong>More manageable</strong>: ~500-1000 packages (I made up this range, could be more could be less, point is, it’s not the 300000 PyPi packages) instead of the entire PyPI</li>
+<li><strong>Highly interconnected</strong>: numpy, pandas, scikit-learn, matplotlib, scipy form a natural dependency graph</li>
+<li><strong>Stability-focused</strong>: data scientists prioritize reproducible results over bleeding-edge features</li>
+<li><strong>Community-minded</strong>: scientific Python already coordinates major migrations (Python 2→3, NumPy 2.0)</li>
+<li><strong>Proven demand</strong>: these users already gravitate toward conda-forge for stability</li>
+</ul>
+<p>A PyPAN-DS (Data Science) could demonstrate the model works, build trust, and create momentum for broader adoption. Once people see that <code>pip install pandas</code> (or <code>uv</code> if you prefer) can work as reliably as <code>install.packages('dplyr')</code>, expanding to web frameworks and other domains becomes much easier to sell.</p>
+<p>The scientific Python community has the cohesion, the need, and the precedent for this kind of coordination. They could be Python’s CRAN pilot program.</p>
+<p>Soooo… who’s building this?</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-08-22-pypan.html</guid>
+  <pubDate>Fri, 22 Aug 2025 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>You can outsource the grunt work to an LLM, not expertise</title>
   <link>https://b-rodrigues.github.io/posts/2025-07-03-llm_time.html</link>
@@ -3721,308 +3833,6 @@ So if you have read up until this point, let me first thank you, and secondly hu
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2023-08-12-nix_for_r_part4.html</guid>
   <pubDate>Sat, 12 Aug 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Reproducible data science with Nix, part 3 – frictionless {plumber} api deployments with Nix</title>
-  <link>https://b-rodrigues.github.io/posts/2023-07-30-nix_for_r_part3.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/i_use_nix_for_all_my_package_management_needs.png" width="60%">
-</p>
-</div>
-<p>
-This is the third post in a series of posts about Nix. Disclaimer: I’m a super beginner with Nix. So this series of blog posts is more akin to notes that I’m taking while learning than a super detailed tutorial. So if you’re a Nix expert and read something stupid in here, that’s normal. This post is going to focus on R (obviously) but the ideas are applicable to any programming language.
-</p>
-<p>
-This blog post is part tutorial on creating an api using the <code>{plumber}</code> R package, part an illustration of how Nix makes developing and deploying a breeze.
-</p>
-<section id="part-1-getting-it-to-work-locally" class="level2">
-<h2 class="anchored" data-anchor-id="part-1-getting-it-to-work-locally">
-Part 1: getting it to work locally
-</h2>
-<p>
-So in <a href="../posts/2023-07-13-nix_for_r_part1.html">part 1</a> I explained what Nix was and how you could use it to build reproducible development environments. In <a href="../posts/2023-07-19-nix_for_r_part2.html">part 2</a> I talked about running a <code>{targets}</code> pipeline in a reproducible environment set up with Nix, and in this blog post I’ll talk about how I made an api using {plumber} and how Nix made going from my development environment to the production environment (on Digital Ocean) the simplest ever. Originally I wanted to focus on interactive work using Nix, but that’ll be very likely for part 4, maybe even part 5 (yes, I really have a lot to write about).
-</p>
-<p>
-Let me just first explain what <code>{plumber}</code> is before continuing. I already talked about <code>{plumber}</code> <a href="../posts/2021-06-04-own_knit_server.html">here</a>, but in summary, <code>{plumber}</code> allows you to build an api. What is an api? Essentially a service that you can call in different ways and which returns something to you. For example, you could send a Word document to this api and get back the same document converted in PDF. Or you could send some English text and get back a translation. Or you could send some data and get a prediction from a machine learning model. It doesn’t matter: what’s important is that apis completely abstract the programming language that is being used to compute whatever should be computed. With <code>{plumber}</code>, you can create such services using R. This is pretty awesome, because it means that whatever it is you can make with R, you could build a service around it and make it available to anyone. Of course you need a server that actually has R installed and that gets and processes the requests it receives, and this is where the problems start. And by problems I mean THE single biggest problem that you have to deal with whenever you develop something on your computer, and then have to make it work somewhere else: deployment. If you’ve had to deal with deployments you might not understand why it’s so hard. I certainly didn’t really get it until I’ve wanted to deploy my first Shiny app, many moons ago. And this is especially true whenever you don’t want to use any “off the shelf” services like <em>shinyapps.io</em>. In the <a href="../posts/2021-06-04-own_knit_server.html">blog post I mentioned above</a>, I used Docker to deploy the api. But Docker, while an amazing tool, is also quite heavy to deal with. Nix offers an alternative to Docker which I think you should know and think about. Let me try to convince you.
-</p>
-<p>
-So let’s make a little <code>{plumber}</code> api and deploy that in the cloud. For this, I’m using Digital Ocean, but any other service that allows you to spin a virtual machine (VM) with Ubuntu on it will do. If you don’t have a Digital Ocean account, you can use my <a href="https://m.do.co/c/b68adc727710">referral link</a> to get 200$ in credit for 60 days, more than enough to experiment. A VM&nbsp;serving a <code>{plumber}</code> api needs at least 1 gig of RAM, and the cheapest one with 1 gig of ram is 6$ a month (if you spend 25$ of that credit, I’ll get 25$ too, so don’t hesitate to experiment, you’ll be doing me a solid as well).
-</p>
-<p>
-I won’t explain what my api does, this doesn’t really matter for this blog post. But I’ll have to explain it in a future blog post, because it’s related to a package I’m working on, called <a href="https://github.com/b-rodrigues/rix">{rix}</a> which I’m writing to ease the process of building reproducible environments for R using Nix. So for this blog post, let’s make something very simple: let’s take the classic machine learning task of predicting survival of the passengers of the Titanic (which was not that long ago in the news again…) and make a service out of it.
-</p>
-<p>
-What’s going to happen is this: users will make a request to the api giving some basic info about themselves: a simple ML model (I’ll go with logistic regression and call it “machine learning” just to make the statisticians reading this seethe lmao), the machine learning model is going to use this to compute a prediction and the result will be returned to the user. Now to answer a question that comes up often when I explain this stuff: <em>why not use Shiny? Users can enter their data and get a prediction and there’s a nice UI and everything?!</em>. Well yes, but it depends on what it is you actually want to do. An api is useful mostly in situations where you need that request to be made by another machine and then that machine will do something else with that prediction it got back. It could be as simple as showing it in a nice interface, or maybe the machine that made the request will then use that prediction and insert it somewhere for archiving for example. So think of it this way: use an api when machines need to interact with other machines, a Shiny app for when humans need to interact with a machine.
-</p>
-<p>
-Ok so first, because I’m using Nix, I’ll create an environment that will contain everything I need to build this api. I’m doing that in the most simple way possible, simply by specifying an R version and the packages I need inside a file called <code>default.nix</code>. Writing this file if you’re not familiar with Nix can be daunting, so I’ve developed a package, called <code>{rix}</code> to write these files for you. Calling this:
-</p>
-<pre class="r"><code>rix::rix(r_ver = "4.2.2",
-         r_pkgs = c("plumber", "tidymodels"),
-         other_pkgs = NULL,
-         git_pkgs = NULL,
-         ide = "other",
-         path = "titanic_api/", # you might need to create this folder
-         overwrite = TRUE)</code></pre>
-<p>
-generates this file for me:
-</p>
-<pre><code># This file was generated by the {rix} R package on Sat Jul 29 15:50:41 2023
-# It uses nixpkgs' revision 8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8 for reproducibility purposes
-# which will install R version 4.2.2
-# Report any issues to https://github.com/b-rodrigues/rix
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {} }:
-
-  with pkgs;
-
-  let
-  my-r = rWrapper.override {
-    packages = with rPackages; [
-      plumber tidymodels
-    ];
-  };
-  in
-  mkShell {
-    buildInputs = [
-      my-r
-      ];
-  }</code></pre>
-<p>
-(for posterity’s sake: this is using <a href="https://github.com/b-rodrigues/rix/tree/935fb194b38adfb085a5bda9ebe5dc5bb504f2cb">this version of {rix}</a>. Also, if you want to learn more about <code>{rix}</code> take a look at its <a href="https://b-rodrigues.github.io/rix/">website</a>. It’s still in very early development, comments and PR more than welcome!)
-</p>
-<p>
-To build my api I’ll have to have <code>{plumber}</code> installed. I also install the <code>{tidymodels}</code> package. I actually don’t need <code>{tidymodels}</code> for what I’m doing (base R can fit logistic regressions just fine), but the reason I’m installing it is to mimic a “real-word example” as closely as possible (a project with some dependencies).
-</p>
-<p>
-When I called <code>rix::rix()</code> to generate the <code>default.nix</code> file, I specified that I wanted R version 4.2.2 (because let’s say that this is the version I need. It’s also possible to get the current version of R by passing “current” to <code>r_ver</code>). You don’t see any reference to this version of R in the <code>default.nix</code> file, but this is the version that will get installed because it’s the version that comes with that particular revision of the <code>nixpkgs</code> repository:
-</p>
-<pre><code>"https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz"</code></pre>
-<p>
-This url downloads that particular revision on <code>nixpkgs</code> containing R version 4.2.2. <code>{rix}</code> finds the right revision for you (using <a href="https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&amp;package=r">this handy service</a>).
-</p>
-<p>
-While <code>{rix}</code> doesn’t require your system to have Nix installed, if you want to continue you’ll have to install Nix. To install Nix, I recommend you don’t use the official installer, even if it’s quite simple to use. Instead, the <a href="https://zero-to-nix.com/start/install">Determinate Systems</a> installer seems better to me. On Windows, you will need to enable WSL2. An alternative is to run all of this inside a Docker container (but more on this later if you’re thinking something along the lines of <em>isn’t the purpose of Nix to not have to use Docker?</em> then see you in the conclusion). Once you have Nix up and running, go inside the <code>titanic_api/</code> folder (which contains the <code>default.nix</code> file above) and run the following command inside a terminal:
-</p>
-<pre><code>nix-build</code></pre>
-<p>
-This will build the environment according to the instructions in the <code>default.nix</code> file. Depending on what you want/need, this can take some time. Once the environment is done building, you can “enter” into it by typing:
-</p>
-<pre><code>nix-shell</code></pre>
-<p>
-Now this is where you would use this environment to work on your api. As I stated above, I’ll discuss interactive work using a Nix environment in a future blog post. Leave the terminal with this Nix shell open and create an empty text wile next to <code>default.nix</code> and call it <code>titanic_api.R</code> and put this in there using any text editor of your choice:
-</p>
-<pre class="r"><code>#* Would you have survived the Titanic sinking?
-#* @param sex Character. "male" or "female"
-#* @param age Integer. Your age.
-#* @get /prediction
-function(sex, age) {
-
-  trained_logreg &lt;- readRDS("trained_logreg.rds")
-
-  dataset &lt;- data.frame(sex = sex, age = as.numeric(age))
-
-  parsnip::predict.model_fit(trained_logreg,
-                             new_data = dataset)
-
-}</code></pre>
-<p>
-This script is a <code>{plumber}</code> api. It’s a simple function that uses an already <em>trained</em> logistic regression (lol) by loading it into its scope using the <code>readRDS()</code> function. It then returns a prediction. The script that I wrote to train the model is this one:
-</p>
-<pre class="r"><code>library(parsnip)
-
-titanic_raw &lt;- read.csv("https://web.stanford.edu/class/archive/cs/cs109/cs109.1166/stuff/titanic.csv")
-
-titanic &lt;- titanic_raw |&gt;
-  subset(select = c(Survived,
-                    Sex,
-                    Age))
-
-names(titanic) &lt;- c("survived", "sex", "age")
-
-titanic$survived = as.factor(titanic$survived)
-
-logreg_spec &lt;- logistic_reg() |&gt;
-  set_engine("glm")
-
-trained_logreg &lt;- logreg_spec |&gt;
-  fit(survived ~ ., data = titanic)
-
-saveRDS(trained_logreg, "trained_logreg.rds")</code></pre>
-<p>
-If you’re familiar with this Titanic prediction task, you will have noticed that the script above is completely stupid. I only kept two variables to fit the logistic regression. But the reason I did this is because this blog post is not about fitting models, but about apis. So bear with me. Anyways, once you’re run the script above to generate the file <code>trained_logreg.rds</code> containing the trained model, you can locally test the api using <code>{plumber}</code>. Go back to the terminal that is running your Nix shell, and now type <code>R</code> to start R in that session. You can then run your api inside that session using:
-</p>
-<pre class="r"><code>plumber::pr("titanic_api.R") |&gt;
-  plumber::pr_run(port = "8000")</code></pre>
-<p>
-Open your web browser and visit <a href="http://localhost:8000/__docs__/">http://localhost:8000/<strong>docs</strong>/</a> to see the Swagger interface to your api (Swagger is a nice little tool that makes testing your apis way easier).
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/swagger_plumber.png" width="60%">
-</p>
-</div>
-<p>
-Using Swagger you can try out your api, click on (1) then on (2). You can enter some mock data in (3) and (4) and then run the computation by clicking on “Execute” (5). You’ll see the result in (7). (6) gives you a <code>curl</code> command to run exactly this example from a terminal. Congrats, your <code>{plumber}</code> api is running on your computer! Now we need to deploy it online and make it available to the world.
-</p>
-</section>
-<section id="deploying-your-api" class="level2">
-<h2 class="anchored" data-anchor-id="deploying-your-api">
-Deploying your api
-</h2>
-<p>
-So if you have a Digital Ocean account log in (and if you don’t, use my <a href="https://m.do.co/c/b68adc727710">referral link</a> to get 200$ to test things out) and click on the top-right corner on the “Create” button, and then select “Droplet” (a fancy name for a VM):
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/digital_ocean_1.png" width="60%">
-</p>
-</div>
-<p>
-In the next screen, select the region closest to you and then select Ubuntu as the operating system, “Regular” for the CPU options, and then the 4$ (or the 6<img src="https://latex.codecogs.com/png.latex?(,%20it%20doesn't%20matter%20at%20this%20stage)%20a%20month%20Droplet.%20We%20will%20need%20to%20upgrade%20it%20immediately%20after%20having%20created%20it%20in%20order%20to%20actually%20build%20the%20environment.%20This%20is%20because%20building%20the%20environment%20requires%20some%20more%20RAM%20than%20what%20the%206)"> option offers, but starting from the cheapest option ensures that we will then be able to downsize back to it, after the build process is done.
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/digital_ocean_2.png" width="60%">
-</p>
-</div>
-<p>
-Next comes how you want to authenticate to your VM. There are two options, one using an SSH key, another using a password. If you’re already using Git, you can use the same SSH key. Click on “New SSH Key” and paste the public key in the box (you should find the key under <code>~/.ssh/id_rsa.pub</code> if you’re using Linux). If you’re not using Git and have no idea what SSH keys are, my first piece of advice is to start using Git and then to generate an SSH key and login using it. This is much more secure than a password. Finally, click on “Create Droplet”. This will start building your VM. Once the Droplet is done building, you can check out its IP address:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/digital_ocean_3.png" width="100%">
-</p>
-</div>
-<p>
-Let’s immediately resize the Droplet to a larger size. As I said before, this is only required to build our production environment using Nix. Once the build is done, we can downsize again to the cheapest Droplet:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/digital_ocean_4.png" width="100%">
-</p>
-</div>
-<p>
-Choose a Droplet with 2 gigs of RAM to be on the safe side, and also enable the reserved IP option (this is a static IP that will never change):
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/digital_ocean_5.png" width="80%">
-</p>
-</div>
-<p>
-Finally, turn on your Droplet, it’s time to log in to it using SSH.
-</p>
-<p>
-Open a terminal on your computer and connect to your Droplet using SSH (starting now, <code>user@local_computer</code> refers to a terminal opened on your computer and <code>root@droplet</code> to an active ssh session inside your Droplet):
-</p>
-<pre><code>user@local_computer &gt; ssh root@IP_ADDRESS_OF_YOUR_DROPLET</code></pre>
-<p>
-and add a folder that will contain the project’s files:
-</p>
-<pre><code>root@droplet &gt; mkdir titanic_api</code></pre>
-<p>
-Great, let’s now copy our files to the Droplet using <code>scp</code>. Open a terminal on your computer, and navigate to where the <code>default.nix</code> file is. If you prefer doing this graphically, you can use Filezilla. Run the following command to copy the <code>default.nix</code> file to the Droplet:
-</p>
-<pre><code>user@local_computer &gt; scp default.nix root@IP_ADDRESS_OF_YOUR_DROPLET:/root/titanic_api/</code></pre>
-<p>
-Now go back to the terminal that is logged into your Droplet. We now need to install Nix. For this, follow the instructions from the <a href="https://zero-to-nix.com/start/install">Determinate Systems</a> installer, and run this line in the Droplet:
-</p>
-<pre><code>root@droplet &gt; curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install</code></pre>
-<p>
-Pay attention to the final message once the installation is done:
-</p>
-<pre><code>Nix was installed successfully!
-To get started using Nix, open a new shell or run `. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh`</code></pre>
-<p>
-So run <code>. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh</code> to start the Nix daemon. Ok so now comes the magic of Nix. You can now build the exact same environment that you used to build the pipeline on your computer in this Droplet. Simply run <code>nix-build</code> for the build process to start. I don’t really know how to describe how easy and awesome this is. You may be thinking <em>well installing R and a couple of packages is not that hard</em>, but let me remind you that we are using a Droplet that is running Ubuntu, which is likely NOT the operating system that you are running. Maybe you are on Windows, maybe you are on macOS, or maybe you’re running another Linux distribution. Whatever it is you’re using, it will be different from that Droplet. Even if you’re running Ubuntu on your computer, chances are that you’ve changed the CRAN repositories from the default Ubuntu ones to the Posit ones, or maybe you’re using <a href="https://github.com/eddelbuettel/r2u">r2u</a>. Basically, the chances that you will have the exact same environment in that Droplet than the one running on your computer is basically 0. And if you’re already familiar with Docker, I think that you will admit that this is much, much easier than dockerizing your <code>{plumber}</code> api. If you don’t agree, please shoot me an <a href="mailto:bruno@brodrigues.co">email</a> and tell me why, I’m honestly curious. Also, let me stress again that if you needed to install a package like <code>{xlsx}</code> that requires Java to be installed, Nix would install the right version of Java for you.
-</p>
-<p>
-Once the environment is done building, you can downsize your Droplet. Go back to your Digital Ocean account, select that Droplet and choose “Resize Droplet”, and go back to the 6$ a month plan.
-</p>
-<p>
-SSH back into the Droplet and copy the trained model <code>trained_logreg.rds</code> and the api file, <code>titanic_api.R</code> to the Droplet using <code>scp</code> or Filezilla. It’s time to run the api. To do so, the obvious way would be simply to start an R session and to execute the code to run the api. However, if something happens and the R session dies, the api won’t restart. Instead, I’m using a CRON job and an utility called <code>run-one</code>. This utility, pre-installed in Ubuntu, runs one (1) script at a time, and ensures that only one instance of said script is running. So by putting this in a CRON job (CRON is a scheduler, so it executes a script as often as you specify), <code>run-one</code> will try to run the script. If it’s still running, nothing happens, if the script is not running, it runs it.
-</p>
-<p>
-So go back to your local computer, and create a new text file, call it <code>run_api.sh</code> and write the following text in it:
-</p>
-<pre><code>#!/bin/bash
-while true
-do
-nix-shell /root/titanic_api/default.nix --run "Rscript -e 'plumber::pr_run(plumber::pr(\"/root/titanic_api/titanic_api.R\"), host = \"0.0.0.0\", port=80)'"
- sleep 10
-done</code></pre>
-<p>
-then copy this to your VM using <code>scp</code> or Filezilla, to <code>/root/titanic_api/run_api.sh</code>. Then SSH back into your Droplet, go to where the script is using <code>cd</code>:
-</p>
-<pre><code>root@droplet &gt; cd /root/titanic_api/</code></pre>
-<p>
-and make the script executable:
-</p>
-<pre><code>root@droplet &gt; chmod +x run_api.sh</code></pre>
-<p>
-We’re almost done. Now, let’s edit the <code>crontab</code>, to specify that we want this script to be executed every hour using <code>run-one</code> (so if it’s running, nothing happens, if it died, it gets restarted). To edit the <code>crontab</code>, type <code>crontab -e</code> and select the editor you’re most comfortable with. If you have no idea, select the first option, <code>nano</code>. Using your keyboard keys, navigate all the way down and type:
-</p>
-<pre><code>*/60 * * * * run-one /root/titanic_api/run_api.sh</code></pre>
-<p>
-save the file by typing <code>CTRL-X</code>, and then type <code>Y</code> when asked <code>Save modified buffer?</code>, and then type the <code>ENTER</code> key when prompted for <code>File name to write</code>.
-</p>
-<p>
-We are now ready to start the api. Make sure CRON restarts by running:
-</p>
-<pre><code>root@droplet &gt; service cron reload</code></pre>
-<p>
-and then run the script using <code>nohup</code> followed by <code>run-one</code>:
-</p>
-<pre><code>root@droplet &gt; nohup run-one /root/titanic_api/run_api.sh &amp;</code></pre>
-<p>
-<code>run-one</code> will now run the script and will ensure that only one instance of the script is running (the <code>&amp;</code> character at the end means “run this in the background” an <code>nohup</code>, which stands for “no hang-up”, ensures the command will continue running even when you close the terminal). If for any reason the process dies, CRON will restart an instance of the script. We can now call our api using this <code>curl</code> command:
-</p>
-<pre><code>user@local_computer &gt; curl -X GET "http://IP_ADDRESS_OF_YOUR_DROPLET/prediction?sex=female&amp;age=45" -H "accept: */*"</code></pre>
-<p>
-If you don’t have <code>curl</code> installed, you can use <a href="https://reqbin.com/curl">this webservice</a>. You should see this answer:
-</p>
-<pre><code>[{
-    ".pred_class": "1"
-}]</code></pre>
-<p>
-I’ll leave my Droplet running for a few days after I post this, so if you want you can try it out run this:
-</p>
-<pre><code>curl -X GET "http://142.93.164.182/prediction?sex=female&amp;age=45" -H "accept: */*"</code></pre>
-<p>
-The answer is in the JSON format, and can now be ingested by some other script which can now process it further.
-</p>
-</section>
-<section id="conclusion" class="level1">
-<h1>
-Conclusion
-</h1>
-<p>
-This was a long blog post. While it is part of my Nix series of blog posts, I almost didn’t talk about it, and this is actually the neat part. Nix made something that is usually difficult to solve trivially simple. Without Nix, the alternative would be to bundle the api with all its dependencies and an R interpreter using Docker or install everything by hand on the server. But the issue with Docker is that it’s not necessarily much easier than Nix, and you still have to make sure building the image is reproducible. So you have to make sure to use an image that ships with the right version of R and use <code>{renv}</code> to restore your packages. If you have system-level dependencies that are required, you also have to deal with those. Nix takes care of all of this for you, so that you can focus on all the other aspects of deployment, which take the bulk of the effort and time.
-</p>
-<p>
-In the post I mentioned that you could also run Nix inside a Docker container. If you are already invested in Docker, Nix is still useful because you can use base NixOS images (NixOS is a Linux distribution that uses Nix as its package manager) or you could install Nix inside an Ubuntu image and then benefit from the reproducibility offered by Nix. Simply add <code>RUN nix-build</code> to your Dockerfile, and everything you need gets installed. You can even use Nix to build Docker images instead of writing a Dockerfile. The possibilities are endless!
-</p>
-<p>
-Now, before you start building apis using R, you may want to read this blog post <a href="https://matthewrkaye.com/posts/2023-06-29-lessons-learned-from-running-r-in-production/lessons-learned-from-running-r-in-production.html">here</a> as well. I found it quite interesting: it discusses the shortcomings of using R to build apis like I showed you here, which I think you need to know. If you have needs like the author of this blog post, then maybe R and <code>{plumber}</code> is not the right solution for you.
-</p>
-<p>
-Next time, in part 4, I’ll either finally discuss how to do interactive work using a Nix environment, or I’ll discuss my package, <code>{rix}</code> in more detail. We’ll see!
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-07-30-nix_for_r_part3.html</guid>
-  <pubDate>Sun, 30 Jul 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
