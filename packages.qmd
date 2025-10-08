@@ -2,28 +2,55 @@
 title: "Packages"
 ---
 
-## rix: Reproducible Data Science environments with Nix
+## R packages
+
+### rix: Reproducible Data Science environments with Nix
 
 <a href = "https://docs.ropensci.org/rix/"><img
 src="https://docs.ropensci.org/rix/logo.png" align="left" style="display:
 inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180" /></a><p>
 Simplifies the creation of reproducible data science environments using the
 'Nix' package manager, as described in Dolstra (2006) <ISBN 90-393-4130-3>. The
-included ‘rix()' function generates a complete description of the environment as
+included 'rix()' function generates a complete description of the environment as
 a 'default.nix' file, which can then be built using ’Nix'. This results in
 project specific software environments with pinned versions of R, packages,
 linked system dependencies, and other tools. Additional helpers make it easy to
-run R code in 'Nix' software environments for testing and production. </p>
+run R code in 'Nix' software environments for testing and production.</p>
 
+### rixpress: Build Reproducible Analytical Pipelines with Nix
 
-## chronicler: Add Logging to Functions
+<a href = "https://docs.ropensci.org/rixpress/"><img
+src="https://docs.ropensci.org/rixpress/logo.png" align="left" style="display:
+inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180" /></a><p>
+Streamlines the creation of reproducible analytical pipelines using
+'default.nix' expressions generated via the 'rix' package for reproducibility. Define
+derivations in 'R', 'Python' or 'Julia', chain them into a composition of pure
+functions and build the resulting pipeline using 'Nix' as the underlying
+end-to-end build tool. Functions to plot the pipeline as a directed acyclic
+graph are included, as well as functions to load and inspect intermediary results
+for interactive analysis. User experience heavily inspired by the 'targets' package.</p>
+
+### chronicler: Add Logging to Functions
 
 <a href = "https://b-rodrigues.github.io/chronicler/"><img
-src="https://b-rodrigues.github.io/chronicler/reference/figures/hex.png" align="left" style="display: inline;
-margin: 10px 50px 10px 10px; border-width: 0px;" width="180" /></a><p> Decorate
-functions to make them return enhanced output. The enhanced output consists in
+src="https://b-rodrigues.github.io/chronicler/reference/figures/hex.png" align="left" style="display:
+inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180" /></a><p> 
+Decorate functions to make them return enhanced output. The enhanced output consists in
 an object of type 'chronicle' containing the result of the function applied to
 its arguments, as well as a log detailing when the function was run, what were
 its inputs, what were the errors (if the function failed to run) and other
 useful information. Tools to handle decorated functions are included, such as a
-forward pipe operator that makes chaining decorated functions possible. </p>
+forward pipe operator that makes chaining decorated functions possible.</p>
+
+## Python packages
+
+### ryxpress
+
+[ryxpress](https://pypi.org/project/ryxpress/) is a Python reimplementation/port of 
+the R package {rixpress}. It provides helpers and a small framework to build and 
+work with reproducible, polyglot analytical pipelines that are built with Nix.
+
+### talvez
+
+[talvez](https://pypi.org/project/talvez/) is a lightweight Python implementation of 
+a Maybe monad (Just / Nothing) inspired by the R package `{maybe}`.
