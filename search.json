@@ -1999,7 +1999,7 @@
     "href": "packages.html#python-packages",
     "title": "Packages",
     "section": "Python packages",
-    "text": "Python packages\n\nryxpress\nryxpress is a Python reimplementation/port of the R package {rixpress}. It provides helpers and a small framework to build and work with reproducible, polyglot analytical pipelines that are built with Nix.\n\n\ntalvez\ntalvez is a lightweight Python implementation of a Maybe monad (Just / Nothing) inspired by the R package {maybe}."
+    "text": "Python packages\n\nryxpress\nryxpress is a Python reimplementation/port of the R package {rixpress}. It provides helpers and a small framework to build and work with reproducible, polyglot analytical pipelines that are built with Nix.\n\n\ntalvez\ntalvez is a lightweight Python implementation of a Maybe monad (Just / Nothing) inspired by the R package {maybe}.\n\n\ncronista\ncronista is a Python port of my R package {chronicler}."
   },
   {
     "objectID": "index.html",
