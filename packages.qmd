@@ -54,3 +54,7 @@ work with reproducible, polyglot analytical pipelines that are built with Nix.
 
 [talvez](https://pypi.org/project/talvez/) is a lightweight Python implementation of 
 a Maybe monad (Just / Nothing) inspired by the R package `{maybe}`.
+
+### cronista
+
+[cronista](https://github.com/b-rodrigues/cronista/) is a Python port of my R package `{chronicler}`.
