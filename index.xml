@@ -10,7 +10,689 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Fri, 22 Aug 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 23 Oct 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Orchestrating Polyglot, Reproducible Data Science with Nix and {rixpress}</title>
+  <link>https://b-rodrigues.github.io/posts/2025-10-23-rixpress_cran.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/polyglot-dag.png" style="width: 100%; height: auto;"> </a>
+</p>
+</div>
+<p><em>TL;DR: <code>{rixpress}</code> lets you build multi-language data pipelines (R, Python, Julia) where each step runs in its own reproducible environment. Uses Nix under the hood. Now on CRAN, and there’s even a Python port on PyPI!</em></p>
+<p><code>{rixpress}</code> is now on CRAN! As discussed in previous blog posts, <code>{rixpress}</code> is a package heavily inspired by <code>{targets}</code> that uses Nix as the underlying build automation tool to build reproducible data science pipelines.</p>
+<p>But I also wanted <code>{rixpress}</code> to be a language-agnostic build automation tool: pipelines do get defined as an R list, but they can include R, Julia and Python <em>derivations</em> (think of a derivation as a build step).</p>
+<p><code>{rixpress}</code> allows you to define and execute complex, multi-language pipelines where each step runs in its own perfectly reproducible, hermetically sealed environment.</p>
+<p>Because installing stuff is so easy with Nix, the cost of using Python or Julia for a project is really low. Before Nix, I’d try my hardest to find equivalent R packages, just to avoid having to setup a Python environment, but now, if I really have to use Python, I don’t mind that much (also because since I can delegate writing Python to an LLM).</p>
+<p>Suppose you have a project that uses Julia, Python and R: without Nix, <code>{rix}</code> and <code>{rixpress}</code>, setting everything up and executing the code is going to be quite annoying. But with the aforementioned tools? Easy as pie.</p>
+<p>Let’s consider an example from economics, where Julia is used to define a structural Real Business Cycle model (and simulate data from it), Python (with its package <code>xgboost</code>) is used to make predictions from the simulated data, and R to visualise, using <code>{ggplot2}</code>. In truth, one could have use just one of these three languages, but for the sake of argument, let’s use them all.</p>
+<p>With <code>{rixpress}</code>, this entire polyglot workflow is defined declaratively in a single R script. Each step is a function call, making the pipeline easy to read and manage.</p>
+<p>Start the project with <code>rixpress::rxp_init()</code>, which generates two files, <code>gen-env.R</code> and <code>gen-pipeline.R</code>. In <code>gen-env.R</code>, you’ll define the environment you need:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rix)</span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rix</span>(</span>
+<span id="cb1-4">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pin the environment to a specific date to ensure that all package</span></span>
+<span id="cb1-5">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># versions are resolved as they were on this day.</span></span>
+<span id="cb1-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-10-14"</span>,</span>
+<span id="cb1-7"></span>
+<span id="cb1-8">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1. R Packages</span></span>
+<span id="cb1-9">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We need packages for plotting, data manipulation, and reading arrow files.</span></span>
+<span id="cb1-10">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We also include reticulate as it can be useful for rixpress internals.</span></span>
+<span id="cb1-11">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb1-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggplot2"</span>,</span>
+<span id="cb1-13">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggdag"</span>,</span>
+<span id="cb1-14">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dplyr"</span>,</span>
+<span id="cb1-15">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arrow"</span>,</span>
+<span id="cb1-16">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rix"</span>,</span>
+<span id="cb1-17">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rixpress"</span>,</span>
+<span id="cb1-18">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"quarto"</span></span>
+<span id="cb1-19">  ),</span>
+<span id="cb1-20"></span>
+<span id="cb1-21">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 2. Julia Configuration</span></span>
+<span id="cb1-22">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We specify the Julia version and the list of packages needed</span></span>
+<span id="cb1-23">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># for our manual RBC model simulation.</span></span>
+<span id="cb1-24">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">jl_conf =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb1-25">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">jl_version =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lts"</span>,</span>
+<span id="cb1-26">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">jl_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb1-27">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distributions"</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For creating random shocks</span></span>
+<span id="cb1-28">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DataFrames"</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For structuring the output</span></span>
+<span id="cb1-29">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Arrow"</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For saving the data in a cross-language format</span></span>
+<span id="cb1-30">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Random"</span></span>
+<span id="cb1-31">    )</span>
+<span id="cb1-32">  ),</span>
+<span id="cb1-33"></span>
+<span id="cb1-34">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 3. Python Configuration</span></span>
+<span id="cb1-35">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We specify the Python version and the packages needed for the</span></span>
+<span id="cb1-36">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># machine learning step.</span></span>
+<span id="cb1-37">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_conf =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb1-38">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_version =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"3.13"</span>,</span>
+<span id="cb1-39">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb1-40">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pandas"</span>,</span>
+<span id="cb1-41">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"scikit-learn"</span>,</span>
+<span id="cb1-42">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xgboost"</span>,</span>
+<span id="cb1-43">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pyarrow"</span>,</span>
+<span id="cb1-44">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ryxpress"</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Python port of rixpress</span></span>
+<span id="cb1-45">    )</span>
+<span id="cb1-46">  ),</span>
+<span id="cb1-47"></span>
+<span id="cb1-48">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We set the IDE to 'none' for a minimal environment. You could change</span></span>
+<span id="cb1-49">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># this to "rstudio" if you prefer to work interactively in RStudio.</span></span>
+<span id="cb1-50">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ide =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>,</span>
+<span id="cb1-51"></span>
+<span id="cb1-52">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the project path and allow overwriting the default.nix file.</span></span>
+<span id="cb1-53">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">project_path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span>,</span>
+<span id="cb1-54">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">overwrite =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span></span>
+<span id="cb1-55">)</span></code></pre></div>
+<p>If you are on a system where Nix is available, you can drop into a temporary shell with R and <code>{rix}</code> available to generate the required <code>default.nix</code> (which is the Nix expression that once built, provides the environment):</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">nix-shell</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-I</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb2-2">  nixpkgs=https://github.com/rstats-on-nix/nixpkgs/tarball/2025-10-20 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb2-3">  R rPackages.rix</span></code></pre></div>
+<p>then simply start R, and then <code>source("gen-env.R")</code>. This will generate the <code>default.nix</code>. Then leave R, leave the temporary shell (by typing <code>exit</code> or using <code>CTRL-D</code>) and build the environment with <code>nix-build</code>. Wait for it to finish. Then we can tackle the pipeline. I show the full script below, but you won’t be writing this in one go. Instead, you would add a derivation, build the pipeline, load the artefact into memory by using <code>rxp_load("artefact_name")</code>, look at it, play with it, and then continue. If you’re familiar with <code>{targets}</code> you should feel at ease.</p>
+<p>Here’s the full script:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This script defines and orchestrates the entire reproducible analytical</span></span>
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># pipeline using the {rixpress} package.</span></span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rixpress)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb3-7">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 0: Define RBC Model Parameters as Derivations</span></span>
+<span id="cb3-8">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This makes the parameters an explicit part of the pipeline.</span></span>
+<span id="cb3-9">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Changing a parameter will cause downstream steps to rebuild.</span></span>
+<span id="cb3-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(alpha, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Capital's share of income</span></span>
+<span id="cb3-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(beta, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.01</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Discount factor</span></span>
+<span id="cb3-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(delta, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.025</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Depreciation rate</span></span>
+<span id="cb3-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(rho, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.95</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Technology shock persistence</span></span>
+<span id="cb3-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(sigma, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Risk aversion (log-utility)</span></span>
+<span id="cb3-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(sigma_z, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Technology shock standard deviation</span></span>
+<span id="cb3-16"></span>
+<span id="cb3-17">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 1: Julia - Simulate a Real Business Cycle (RBC) model.</span></span>
+<span id="cb3-18">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This derivation runs our Julia script to generate the source data.</span></span>
+<span id="cb3-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(</span>
+<span id="cb3-20">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> simulated_rbc_data,</span>
+<span id="cb3-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"simulate_rbc_model(alpha, beta, delta, rho, sigma, sigma_z)"</span>,</span>
+<span id="cb3-22">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.jl"</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The file containing the function</span></span>
+<span id="cb3-23">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">encoder =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arrow_write"</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The function to use for saving the output</span></span>
+<span id="cb3-24">  ),</span>
+<span id="cb3-25"></span>
+<span id="cb3-26">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 2.1: Python - Prepare features (lagging data)</span></span>
+<span id="cb3-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-28">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> processed_data,</span>
+<span id="cb3-29">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prepare_features(simulated_rbc_data)"</span>,</span>
+<span id="cb3-30">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span>,</span>
+<span id="cb3-31">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Decode the Arrow file from Julia into a pandas DataFrame</span></span>
+<span id="cb3-32">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">decoder =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"feather.read_feather"</span></span>
+<span id="cb3-33">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Note: No encoder needed here. {rixpress} will use pickle by default</span></span>
+<span id="cb3-34">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to pass the DataFrame between Python steps.</span></span>
+<span id="cb3-35">  ),</span>
+<span id="cb3-36"></span>
+<span id="cb3-37">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 2.2: Python - Split data into training and testing sets</span></span>
+<span id="cb3-38">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-39">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> X_train,</span>
+<span id="cb3-40">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"get_X_train(processed_data)"</span>,</span>
+<span id="cb3-41">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-42">  ),</span>
+<span id="cb3-43"></span>
+<span id="cb3-44">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-45">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> y_train,</span>
+<span id="cb3-46">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"get_y_train(processed_data)"</span>,</span>
+<span id="cb3-47">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-48">  ),</span>
+<span id="cb3-49"></span>
+<span id="cb3-50">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-51">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> X_test,</span>
+<span id="cb3-52">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"get_X_test(processed_data)"</span>,</span>
+<span id="cb3-53">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-54">  ),</span>
+<span id="cb3-55"></span>
+<span id="cb3-56">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-57">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> y_test,</span>
+<span id="cb3-58">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"get_y_test(processed_data)"</span>,</span>
+<span id="cb3-59">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-60">  ),</span>
+<span id="cb3-61"></span>
+<span id="cb3-62">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 2.3: Python - Train the model</span></span>
+<span id="cb3-63">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-64">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> trained_model,</span>
+<span id="cb3-65">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"train_model(X_train, y_train)"</span>,</span>
+<span id="cb3-66">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-67">  ),</span>
+<span id="cb3-68"></span>
+<span id="cb3-69">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 2.4: Python - Make predictions</span></span>
+<span id="cb3-70">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-71">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> model_predictions,</span>
+<span id="cb3-72">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"make_predictions(trained_model, X_test)"</span>,</span>
+<span id="cb3-73">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span></span>
+<span id="cb3-74">  ),</span>
+<span id="cb3-75"></span>
+<span id="cb3-76">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 2.5: Python - Format final results for R</span></span>
+<span id="cb3-77">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(</span>
+<span id="cb3-78">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> predictions,</span>
+<span id="cb3-79">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"format_results(y_test, model_predictions)"</span>,</span>
+<span id="cb3-80">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.py"</span>,</span>
+<span id="cb3-81">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We need an encoder here to save the final DataFrame as an Arrow file</span></span>
+<span id="cb3-82">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># so the R step can read it.</span></span>
+<span id="cb3-83">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">encoder =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"save_arrow"</span></span>
+<span id="cb3-84">  ),</span>
+<span id="cb3-85"></span>
+<span id="cb3-86">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 3: R - Visualize the predictions from the Python model.</span></span>
+<span id="cb3-87">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This final derivation depends on the output of the Python step.</span></span>
+<span id="cb3-88">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_r</span>(</span>
+<span id="cb3-89">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> output_plot,</span>
+<span id="cb3-90">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_predictions</span>(predictions), <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The function to call from functions.R</span></span>
+<span id="cb3-91">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">user_functions =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"functions/functions.R"</span>,</span>
+<span id="cb3-92">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Specify how to load the upstream data (from Python) into R.</span></span>
+<span id="cb3-93">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">decoder =</span> arrow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span>read_feather</span>
+<span id="cb3-94">  ),</span>
+<span id="cb3-95"></span>
+<span id="cb3-96">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># STEP 4: Quarto - Compile the final report.</span></span>
+<span id="cb3-97">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_qmd</span>(</span>
+<span id="cb3-98">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> final_report,</span>
+<span id="cb3-99">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">additional_files =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"_rixpress"</span>,</span>
+<span id="cb3-100">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">qmd_file =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"readme.qmd"</span></span>
+<span id="cb3-101">  )</span>
+<span id="cb3-102">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb3-103">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_populate</span>(</span>
+<span id="cb3-104">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_imports =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb3-105">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pandas =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"import pandas as pd"</span>,</span>
+<span id="cb3-106">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pyarrow =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"import pyarrow.feather as feather"</span>,</span>
+<span id="cb3-107">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sklearn =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"from sklearn.model_selection import train_test_split"</span>,</span>
+<span id="cb3-108">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xgboost =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"import xgboost as xgb"</span></span>
+<span id="cb3-109">    ),</span>
+<span id="cb3-110">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">project_path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The root of our project</span></span>
+<span id="cb3-111">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">build =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set to TRUE to execute the pipeline immediately</span></span>
+<span id="cb3-112">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">verbose =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb3-113">  )</span></code></pre></div>
+<p><em>(helper functions are defined in separate scripts, inside the <code>functions/</code> folder which I don’t show here)</em></p>
+<p>The magic here is twofold. First, <code>{rixpress}</code> seamlessly handles passing data between language environments, using efficient formats like Apache Arrow via <code>encoder</code> and <code>decoder</code> functions. Second, because each step is a Nix derivation, it runs in its own isolated environment. The Julia simulation can have its own dependencies, completely separate from the Python and R steps, eliminating “dependency hell” forever. Also, the artefacts built by the pipeline are actually children of the environment. Meaning, that if you change the environment (for example, by adding a package), this invalidates everything, and the whole pipeline gets rebuilt. This is quite useful, because sometimes changing the environment could break the downstream artefacts in subtle ways, but with classical build automation tools, the artefacts and the environment are not tied, and so a rebuild would not be triggered.</p>
+<p>Once built, you can interactively explore artifacts:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># From R</span></span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_load</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"simulated_rbc_data"</span>)</span>
+<span id="cb4-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_load</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"output_plot"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Or from Python (using ryxpress)</span></span>
+<span id="cb5-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> ryxpress <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> rxp_make, rxp_load</span>
+<span id="cb5-3">rxp_load(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"predictions"</span>)</span></code></pre></div>
+<p>The pipeline automatically caches results, so changing one step only rebuilds what’s affected. <code>{rixpress}</code> (and <code>ryxpress</code>) will try its best to show you to convert objects seamlessly from R to Python and vice-versa. If you try to load an object built inside a Python environment, <code>{rixpress}</code> will use <code>{reticulate}</code> (if you’ve added it to the list of R packages) to convert it to an equivalent R object. From a Python session, if you added the <code>rds2py</code> Python package, the same will happen, but converting an R object into the equivalent Python object (since Python doesn’t have a native data frame implementation, use <code>biocframe</code> to convert from R data frames into Python <em>bioc</em>frames, which come with a method to convert to <code>pandas</code> or <code>polars</code> data frames).</p>
+<p>You can find the code for this example <a href="https://github.com/b-rodrigues/rixpress_demos/blob/master/rbc/">here</a>.</p>
+<p>If you’re primary a Python user, I think that you could still find <code>{rixpress}</code> useful. Defining the pipeline as an R list shouldn’t be too much of an issue, and you can explore the pipeline and artefacts with the Python port, <code>ryxpress</code>. This Python port makes it easy to build the pipeline and load and explore artefacts from a Python session.</p>
+<p>Another Python-related caveat is that while Nix’s package repository, <code>nixpkgs</code>, is vast, the Python ecosystem (PyPI) is famously heterogeneous. Not every Python package or specific version you might need is available directly in <code>nixpkgs</code>.</p>
+<p>To solve this, it is possible to install <code>uv</code>, a modern and fast Python package manager, with Nix, and let <code>uv</code> handle the Python packages and Python interpreter, but let Nix handle everything else:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-10-20"</span>,</span>
+<span id="cb6-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rix"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dplyr"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"chronicler"</span>),</span>
+<span id="cb6-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">system_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"uv"</span>),</span>
+<span id="cb6-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">project_path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span>,</span>
+<span id="cb6-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">overwrite =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+<p>This approach gives you the best of both worlds: you use <code>{rix}</code> to define the core, reproducible environment. This includes, critical system libraries (like GDAL or HDF5), and all your R and Julia dependencies. This part of your environment is bit-for-bit reproducible. Then, within this Nix-managed environment, you use standard <code>uv</code> commands (e.g., <code>uv pip install pandas</code>) to manage your Python packages. <code>uv</code> creates a <code>uv.lock</code> file that pins the exact versions and hashes of your Python dependencies, ensuring a reproducible Python package set.</p>
+<p>While this hybrid model trades the full build-time determinism of a pure-Nix approach for Python packages, it offers immense flexibility and solves the issue of <code>nixpkgs</code> not mirrorring PyPI.</p>
+<p>I think that the biggest hurdle for <code>{rix}</code> and <code>{rixpress}</code> adoption for Python data scientists is their love of Jupyter Notebooks.</p>
+<p>By the way, it’s possible to use an IDE alongside Nix and <code>{rix}</code> and <code>{rixpress}</code>. I think I’ll make a video for that, though, but for those of you that prefer reading, <a href="https://docs.ropensci.org/rix/articles/e-configuring-ide.html">read this</a>.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>Nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-10-23-rixpress_cran.html</guid>
+  <pubDate>Thu, 23 Oct 2025 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Python needs its CRAN</title>
   <link>https://b-rodrigues.github.io/posts/2025-08-22-pypan.html</link>
@@ -3399,440 +4081,6 @@ This vignette showed two approaches, both have their merits: the first approach 
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2023-09-15-nix_for_r_part5.html</guid>
   <pubDate>Fri, 15 Sep 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Reproducible data science with Nix, part 4 – So long, {renv} and Docker, and thanks for all the fish</title>
-  <link>https://b-rodrigues.github.io/posts/2023-08-12-nix_for_r_part4.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/friendship ended with docker.png" width="100%">
-</p>
-</div>
-<p>
-For this blog post, I also made a youtube video that goes over roughly the same ideas, but the blog post is more detailed as I explain the contents of <code>default.nix</code> files, which I don’t do in the video. Watch the video <a href="https://www.youtube.com/watch?v=c1LhgeTTxaI">here</a>.
-</p>
-<p>
-This is the fourth post in a series of posts about Nix. <em>Disclaimer:</em> I’m a super beginner with Nix. So this series of blog posts is more akin to notes that I’m taking while learning than a super detailed Nix tutorial. So if you’re a Nix expert and read something stupid in here, that’s normal. This post is going to focus on R (obviously) but the ideas are applicable to any programming language.
-</p>
-<p>
-If you’ve never heard of Nix, take a look at <a href="../posts/2023-07-13-nix_for_r_part1.html">part 1</a>.
-</p>
-<p>
-In this blog post I will go over many, nitty-gritty details and explain, line by line, what a Nix expression you can use to build an environment for your projects contains. In practice, building such an environment allows you to essentially replace <code>{renv}</code>+Docker, but writing the right expressions to achieve it is not easy. So this blog post will also go over the features of <code>{rix}</code>, an <a href="https://docs.ropensci.org/rix/">R package</a> by <a href="https://github.com/philipp-baumann">Philipp Baumann</a> and myself.
-</p>
-<p>
-Let me also address the click-bait title directly. Yes, the title is click-bait and I got you. I don’t believe that <code>{renv}</code> and Docker are going away any time soon and you should not hesitate to invest the required time to get to know and use these tools (I wrote <a href="https://raps-with-r.dev/">something by the way</a>). But I am more and more convinced that Nix is an amazing alternative that offers many possibilities, albeit with a high entry cost. By writing <code>{rix}</code>, we aimed at decreasing this entry cost as much as possible. However, more documentation, examples, etc., need to be written and more testing is required. This series of blog posts is a first step to get the word out and get people interested in the package and more broadly in Nix. So if you’re interested or intrigued, don’t hesitate to get in touch!
-</p>
-<p>
-This will be a long and boring post. Unless you really want to know how all of this works go watch the Youtube video, which is more practical instead. I needed to write this down, as it will likely serve as documentation. I’m essentially beta testing it with you, so if you do take the time to read, and even better, to try out the code, please let us know how it went! Was it clear, was it simple, was it useful? Many thanks in advance.
-</p>
-<section id="part-1-starting-a-new-project-with-nix" class="level2">
-<h2 class="anchored" data-anchor-id="part-1-starting-a-new-project-with-nix">
-Part 1: starting a new project with Nix
-</h2>
-<p>
-Let’s suppose that you don’t even have R installed on your computer yet. Maybe you bought a new computer, or changed operating system, whatever. Maybe you even have R already, which you installed from the installer that you can download from the R project website. It doesn’t matter, as we are going to install a (somewhat) isolated version of R using Nix for the purposes of this blog post. If you don’t know where to start, it’s simple: first, use the <a href="https://zero-to-nix.com/start/install">installer from Determinate Systems</a>. This installer will make it easy to install Nix on Linux, macOS or Windows (with WSL2). Once you have Nix installed, you can use it to install R and <code>{rix}</code> to start building reproducible development environments. To help you get started, you can run this line here (as documented in <code>{rix}</code>’s Readme), which will <em>drop you into a Nix shell</em> with R and <code>{rix}</code> available. Run the line inside a terminal (if you’re running Windows, run this in a Linux distribution that you installed for WSL2):
-</p>
-<pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</code></pre>
-<p>
-This will take a bit to run, and then you will be inside an R session. This environment is not suited for development, but is only provided as an easy way for you to start using <code>{rix}</code>. Using <code>{rix}</code>, you can now use it to create a more complex environment suited for a project that you would like to start. Let’s start by loading <code>{rix}</code>:
-</p>
-<pre class="r"><code>library(rix)</code></pre>
-<p>
-Now you can run the following command to create an environment with the latest version of R and some packages (change the R version and list of packages to suit your needs):
-</p>
-<pre class="r"><code>path_default_nix &lt;- "path/to/my/project"
-
-rix(r_ver = "current",
-    r_pkgs = c("dplyr", "ggplot2"),
-    other_pkgs = NULL,
-    git_pkgs = list(package_name = "housing",
-                    repo_url = "https://github.com/rap4all/housing",
-                    branch_name = "fusen",
-                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-    ide = "rstudio",
-    project_path = path_default_nix,
-    overwrite = TRUE)</code></pre>
-<p>
-Running the code above will create the following <code>default.nix</code> file in <code>path/to/my/project</code>:
-</p>
-<pre><code># This file was generated by the {rix} R package on Sat Aug 12 22:18:55 2023
-# with following call:
-# &gt;rix(r_ver = "cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd",
-#  &gt; r_pkgs = c("dplyr",
-#  &gt; "ggplot2"),
-#  &gt; other_pkgs = NULL,
-#  &gt; git_pkgs = list(package_name = "housing",
-#  &gt; repo_url = "https://github.com/rap4all/housing",
-#  &gt; branch_name = "fusen",
-#  &gt; commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-#  &gt; ide = "rstudio",
-#  &gt; project_path = path_default_nix,
-#  &gt; overwrite = TRUE)
-# It uses nixpkgs' revision cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd for reproducibility purposes
-# which will install R as it was as of nixpkgs revision: cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd
-# Report any issues to https://github.com/b-rodrigues/rix
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd.tar.gz") {} }:
-
-with pkgs;
-
-let
-  my-r = rWrapper.override {
-    packages = with rPackages; [
-        dplyr
-        ggplot2
-        (buildRPackage {
-          name = "housing";
-          src = fetchgit {
-          url = "https://github.com/rap4all/housing";
-          branchName = "fusen";
-          rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-          sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
-          };
-          propagatedBuildInputs = [
-            dplyr
-            ggplot2
-            janitor
-            purrr
-            readxl
-            rlang
-            rvest
-            stringr
-            tidyr
-            ];
-          })
-        ];
-    };
-  my-rstudio = rstudioWrapper.override {
-    packages = with rPackages; [
-        dplyr
-        ggplot2
-        (buildRPackage {
-          name = "housing";
-          src = fetchgit {
-          url = "https://github.com/rap4all/housing";
-          branchName = "fusen";
-          rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-          sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
-          };
-          propagatedBuildInputs = [
-            dplyr
-            ggplot2
-            janitor
-            purrr
-            readxl
-            rlang
-            rvest
-            stringr
-            tidyr
-            ];
-          })
-        ];
-    };
-in
- mkShell {
-   LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-     buildInputs = [
-        my-r
-        my-rstudio
-      ];
- }</code></pre>
-<p>
-Let’s go through it. The first thing you will notice is that this file is written in a language that you might not know: this language is called Nix as well! So <em>Nix</em> can both refer to the package manager, but also to the programming language. The Nix programming language was designed for creating and composing <em>derivations</em>. A derivation is Nix jargon for a package (not necessarily an R package; any piece of software that you can install through Nix is a package). To know more about the language itself, you can <a href="https://nixos.org/manual/nix/stable/language/index.html">RTFM</a>.
-</p>
-<p>
-Let’s go back to our <code>default.nix</code> file. The first lines state the revision of <code>nixpkgs</code> used that is being used in this expression, as well as which version of R gets installed through it. <code>nixpkgs</code> is Nix’s repository which contains all the software that we will be installing. This is important to understand: since all the expressions that build all the software available through <code>nixpkgs</code> are versioned on <a href="https://github.com/NixOS/nixpkgs/tree/master/pkgs">Github</a>, it is possible to choose a particular commit, or revision, and use that particular release of <code>nixpkgs</code>. So by judiciously choosing the right commit, it’s possible to install any version of R (well any version until 3.0.2). <code>{rix}</code> takes care of this for you: state the version of R that is needed, and the right revision will be returned (the list of R versions and revisions can be found <a href="https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&amp;package=r">here</a>).
-</p>
-<p>
-The call that was used to generate the <code>default.nix</code> file is also saved, but if you look at the argument <code>r_ver</code>, the <code>nixpkgs</code> revision is specified instead of <code>“current”</code>. This is because if you re-run this call but keep <code>r_ver = “current”</code>, another, more recent <code>nixpkgs</code> revision will get used instead, which will break reproducibility. To avoid this, the expression gets changed, so if you re-run it, you’re sure to find the exact same environment.
-</p>
-<p>
-Then comes this line:
-</p>
-<pre><code>{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd.tar.gz") {} }:</code></pre>
-<p>
-This actually defines a function with argument <code>pkgs</code> that is optional (hence the <code>?</code>). All that follows, <code>import (fetchTarball … ) {}</code> is the default value for <code>pkgs</code> if no argument is provided when you run this (which will always be the case). So here, if I call this function without providing any <code>pkgs</code> argument, the release of <code>nixpkgs</code> at that commit will be used. Then comes:
-</p>
-<pre><code>with pkgs;
-
-let
-  my-pkgs = rWrapper.override {
-    packages = with rPackages; [
-      dplyr
-      ggplot2</code></pre>
-<p>
-The <code>with pkgs</code> statement makes all the imported packages available in the scope of the function. So I can write <code>quarto</code> if I want to install Quarto (the program that compiles <code>.qmd</code> files, not the <code>{quarto}</code> R package that provides bindings to it) instead of <code>nixpkgs.quarto</code>. Actually, R also has <code>with()</code>, so you can write this:
-</p>
-<pre class="r"><code>with(mtcars, plot(mpg ~ hp))</code></pre>
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/nix_for_r_part4-3-1.png" width="672">
-</p>
-<p>
-instead of this:
-</p>
-<pre class="r"><code>plot(mtcars$mpg ~ mtcars$hp)</code></pre>
-<p>
-Then follows a <code>let … in</code>. This is how a variable gets defined locally, for example, this is a valid Nix statement:
-</p>
-<pre><code>let x = 1; y = 2; in x + y</code></pre>
-<p>
-which will obviously return <code>3</code>. So here we are defining a series of packages that will ultimately be available in our environment. These packages are named <code>my-pkgs</code> and are a list of R packages. You can see that I use a wrapper called <code>rWrapper</code> which changes certain options to make R installed through Nix work well. This wrapper has a <code>packages</code> attribute which I override using its <code>.override</code> method, and then I redefine <code>packages</code> as a list of R packages. Just like before, I use <code>with rPackages</code> before listing them, which allows me to write <code>dplyr</code> instead of <code>rPackages.dplyr</code> to refer to the <code>{dplyr}</code> packages. R packages that have a <code>.</code> character in their name must be written using <code>_</code>, so if you need <code>{data.table}</code> you’ll need to write <code>data_table</code> (but <code>{rix}</code> does this for you as well, so don’t worry). Then follows the list of R packages available through <code>nixpkgs</code> (which is the entirety of CRAN:
-</p>
-<pre><code>packages = with rPackages; [
-          dplyr
-          ggplot2</code></pre>
-<p>
-Each time you need to add a package, add it here, and rebuild your environment, do not run <code>install.packages(blabla)</code> to install the <code>{blabla}</code> package, because it’s likely not going to work anyways, and it’s not reproducible. Your projects need to be entirely defined as code. This also means that packages that have helper functions that install something, for example <code>tinytex::install_tinytex()</code>, cannot be used anymore. Instead, you will need to install <code>texlive</code> (by putting it in <code>other_pkgs</code>) and rebuild the expression. We plan to write vignettes documenting all these use-cases. For example, my blog is still built using Hugo (and will likely stay like this forever). I’m using a very old version of Hugo to generate it (I don’t want to upgrade and have to deal with potential issues), so I install the right version I need using Nix, instead of using <code>blogdown::install_hugo()</code>.
-</p>
-<p>
-Then comes the expression that installs a package from Github:
-</p>
-<pre><code>(buildRPackage {
-  name = "housing";
-  src = fetchgit {
-  url = "https://github.com/rap4all/housing";
-  branchName = "fusen";
-  rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-  sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
-  };
-  propagatedBuildInputs = [
-    dplyr
-    ggplot2
-    janitor
-    purrr
-    readxl
-    rlang
-    rvest
-    stringr
-    tidyr
-    ];
-})</code></pre>
-<p>
-As you can see it’s quite a mouthful, but it was generated from this R code only:
-</p>
-<pre class="r"><code>git_pkgs = list(package_name = "housing",
-                repo_url = "https://github.com/rap4all/housing",
-                branch_name = "fusen",
-                commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),</code></pre>
-<p>
-If you want to install more than one package, you can also provide a list of lists, for example:
-</p>
-<pre class="r"><code>git_pkgs = list(
-  list(package_name = "housing",
-       repo_url = "https://github.com/rap4all/housing/",
-       branch_name = "fusen",
-       commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-  list(package_name = "fusen",
-       repo_url = "https://github.com/ThinkR-open/fusen",
-       branch_name = "main",
-       commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
-),
-...</code></pre>
-<p>
-and the right expressions will be generated. There’s actually a lot going on here, so let me explain. The first thing is the <code>sha256</code> field. This field contains a hash that gets generated by Nix, and that must be provided by the user. But users rarely, if ever, know this value, so instead what they do is they try to build the expression without providing it. An error message like this one gets returned:
-</p>
-<pre><code>error: hash mismatch in fixed-output derivation '/nix/store/449zx4p6x0yijym14q3jslg55kihzw66-housing-1c86095.drv':
-         specified: sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-            got:    sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=</code></pre>
-<p>
-The <code>sha256</code> can now get copy-and-pasted into the expression. This approach is called “Trust On First Use”, or TOFU for short. Because this is quite annoying, <code>{rix}</code> provides a “private” function, called <code>get_sri_hash_deps()</code> that generates this hash for you. The issue is that this hash cannot be computed easily if you don’t have Nix installed, and since I don’t want to force users to install Nix to use <code>{rix}</code>, what I did is that I set up a server with Nix installed and a <code>{plumber}</code> api. <code>get_sri_hash_deps()</code> makes a call to that api and gets back the <code>sha256</code>, and also a list of packages (more on this later).
-</p>
-<p>
-You can try making a call to the api if you have <code>curl</code> installed on your system:
-</p>
-<pre><code>curl -X GET "http://git2nixsha.dev:1506/hash?repo_url=https://github.com/rap4all/housing/&amp;branchName=fusen&amp;commit=1c860959310b80e67c41f7bbdc3e84cef00df18e" -H "accept: */*"</code></pre>
-<p>
-This is what you will get back:
-</p>
-<pre><code>{
-  "sri_hash" : ["sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4="],
-  "deps"     : ["dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"]
-}</code></pre>
-<p>
-The reason computing <code>sri_hash</code> is not easy is because it gets computed on the folder containing the source code (after having deleted the <code>.git</code> folder in the case of a Github repo) after it was <em>serialised</em>. You are certainly familiar with serialisations such as the ZIP or TAR serialisation (in other words, zipping a folder is “serialising” it). But these serialisation algorithms come with certain shortcomings that I won’t discuss here, but if you’re interested check out section <em>5.2. The Nix store</em> from Eelco Dolstra’s Phd thesis which you can find <a href="https://archive.is/S9meY">here</a>. Instead, a Nix-specific serialisation algorithm was developed, called NAR. So to compute this hash, I either had to implement this serialisation algorithm in R, or write an api that does that for me by using the implementation that ships with Nix. Since I’m not talented enough to implement such an algorithm in R, I went for the api. But who knows, maybe in the future this could be done. There are implementation of this algorithm in other programming languages like Rust, so maybe packaging the Rust binary could be an option.
-</p>
-<p>
-This gets then further processed by <code>rix()</code>. The second thing that gets returned is a list of packages. These get scraped from the <code>Imports</code> and <code>LinkingTo</code> sections of the <code>DESCRIPTION</code> file from the package and are then provided as the <code>propagatedBuildInputs</code> in the Nix expression. These packages are dependencies that must be available to your package at build and run-time.
-</p>
-<p>
-You should know that as of today (<code>{rix}</code> commit <code>15cadf7f</code>) GitHub packages that use the <code>Remotes</code> field (so that have dependencies that are also on Github) are not handled by <code>{rix}</code>, but supporting this is planned. What <code>{rix}</code> supports though is installing packages from the CRAN archives, so you can specify a version of a package and have that installed. For example:
-</p>
-<pre class="r"><code>rix(r_ver = "current",
-    r_pkgs = c("dplyr@0.8.0", "ggplot2@3.1.1"),
-    other_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "other",
-    path = path_default_nix,
-    overwrite = TRUE)</code></pre>
-<p>
-The difference with the <code>default.nix</code> file from before is that these packages get downloaded off the CRAN archives, so <code>fetchzip()</code> is used to download them instead of <code>fetchgit()</code> (both Nix functions). Here is what the generated Nix code looks like:
-</p>
-<pre><code>(buildRPackage {
-  name = "dplyr";
-  src = fetchzip {
-  url = "https://cran.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz";
-  sha256 = "sha256-f30raalLd9KoZKZSxeTN71PG6BczXRIiP6g7EZeH09U=";
-  };
-  propagatedBuildInputs = [
-    assertthat
-    glue
-    magrittr
-    pkgconfig
-    R6
-    Rcpp
-    rlang
-    tibble
-    tidyselect
-    BH
-    plogr
-    Rcpp
-    ];
-})
-(buildRPackage {
-  name = "ggplot2";
-  src = fetchzip {
-  url = "https://cran.r-project.org/src/contrib/Archive/ggplot2/ggplot2_3.1.1.tar.gz";
-  sha256 = "sha256-0Qv/5V/XMsFBcGEFy+3IAaBJIscRMTwGong6fiP5Op0=";
-  };
-  propagatedBuildInputs = [
-    digest
-    gtable
-    lazyeval
-    MASS
-    mgcv
-    plyr
-    reshape2
-    rlang
-    scales
-    tibble
-    viridisLite
-    withr
-    ];
-})</code></pre>
-<p>
-Here’s what this looks like:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/new_r_old_pkgs.png" width="100%">
-</p>
-</div>
-<p>
-This feature should ideally be used sparingly. If you want to reconstruct an environment as it was around a specific date (for example to run an old project), use the version of R that was current at that time. This will ensure that every package that gets installed is at a version compatible with that version of R, which might not be the case if you need to install a very old version of one particular package. But this feature is quite useful if you want to install a package that is not available on CRAN anymore, but that is archived, like <a href="https://cran.r-project.org/web/packages/ZeligChoice/index.html">{ZeligChoice}</a>.
-</p>
-<p>
-Then a second list of packages gets defined, this time using the <code>rstudioWrapper</code> wrapper. This is because I specified that I wanted to use RStudio, but RStudio is a bit peculiar. It redefines many paths and so if you have RStudio installed in your system, it won’t be able to “see” the R installed through Nix. So you have to install RStudio through Nix as well (this is not necessary for VS Code nor Emacs, and likely not for other editors as well). However, it is still necessary to provide each package, again, to the <code>rstudioWrapper</code>. This is because the RStudio installed through Nix is also not able to “see” the R installed through Nix as well. But don’t worry, this does not take twice the space, since the packages simply get symlinked.
-</p>
-<p>
-The last part of the expression uses <code>mkShell</code> which builds a shell with the provided <code>buildInputs</code> (our list of packages). There is also a line to define the location of the locale archive, which should properly configure the locale of the shell (so language, time zone and units):
-</p>
-<pre><code>in
- mkShell {
-   LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-     buildInputs = [
-        my-r
-        my-rstudio
-      ];
- }</code></pre>
-<p>
-With this file in hand, we can now build the environment and use it.
-</p>
-</section>
-<section id="part-2-using-your-environment" class="level2">
-<h2 class="anchored" data-anchor-id="part-2-using-your-environment">
-Part 2: using your environment
-</h2>
-<p>
-So let’s suppose that you have a <code>default.nix</code> file and you wish to build the environment. To do so, you need to have Nix installed, and, thanks to the contributions of <a href="https://github.com/philipp-baumann">Philipp Baumann</a>, you can use <code>rix::nix_build()</code> to build the environment as well:
-</p>
-<pre class="r"><code>nix_build(project_path = path_default_nix, exec_mode = "blocking")</code></pre>
-<p>
-If you prefer, you can use Nix directly as well; navigate to the project folder containing the <code>default.nix</code> file and run the command line tool <code>nix-build</code> that gets installed with Nix:
-</p>
-<pre><code>nix-build</code></pre>
-<p>
-This will take some time to run, depending on whether cached binary packages can be pulled from <a href="https://cache.nixos.org/" class="uri">https://cache.nixos.org/</a> or not. Once the build process is done, you should see a file called <code>result</code> next to the <code>default.nix</code> file. You can now <em>drop</em> into the Nix shell by typing this into your operating system’s terminal (after you navigated to the folder containing the <code>default.nix</code> and <code>result</code> files):
-</p>
-<pre><code>nix-shell</code></pre>
-<p>
-(this time, you really have to leave your current R session! But Philipp and myself are thinking about how we could also streamline this part as well…).
-</p>
-<p>
-The environment that you just built is not an entirely isolated environment: you can still interact with your computer, unlike with Docker. For example, you can still use programs that are installed on your computer. This means that you can run your usual editor as well, but starting it from the Nix shell will make your editor be able to “see” the R installed in that environment. You need to be careful with this, because sometimes this can lead to surprising behavior. For example, if you already have R installed with some packages, these packages could interfere with your Nix environment. There are two ways of dealing with this: you either only use Nix-based environments to work (which would be my primary recommendation, as there can be no interference between different Nix environments), or you call <code>nix-shell –pure</code> instead of just <code>nix-shell</code>. This will ensure that only whatever is available in the environment gets used, but be warned that Nix environments are very, very lean, so you might need to add some tools to have something completely functional.
-</p>
-<p>
-We can take advantage of the fact that environments are not completely isolated to use our IDEs. For example, if you use VS Code or Emacs, you can use the one that is installed directly on your system, as explained before. As already explained, but to drive the point home, if you’re an RStudio user, you need to specify the <code>ide = “rstudio”</code> argument to <code>rix()</code>, because in the case of RStudio, it needs to be installed by Nix as well (the current available RStudio version installed by Nix is now out of date, but efforts are ongoing to update it). This is because RStudio looks for R runtimes in very specific paths, and these need to be patched to see Nix-provided R versions. Hence the version that gets installed by Nix gets patched so that RStudio is able to find the correct runtimes.
-</p>
-<p>
-Once you dropped into the shell, simply type <code>rstudio</code> to launch RStudio in that environment (or <code>code</code> if you use VS Code or <code>other</code> if you use Emacs, or any other editor). On Linux, RStudio may fail to launch with this error message:
-</p>
-<pre><code>Could not initialize GLX
-Aborted (core dumped)</code></pre>
-<p>
-change your <code>default.nix</code> file from this:
-</p>
-<pre><code>mkShell {
-  LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-    buildInputs = [
-       my-r
-       my-rstudio
-     ];
-}</code></pre>
-<p>
-to this:
-</p>
-<pre><code>mkShell {
-  LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-    buildInputs = [
-       my-r
-       my-rstudio
-     ];
-  shellHook = ''
-    export QT_XCB_GL_INTEGRATION=none
-  '';
-}</code></pre>
-<p>
-which should solve the issue, which is related to hardware acceleration as far as I can tell.
-</p>
-<p>
-<code>shellHook</code>s are a nice feature which I haven’t discussed a lot yet (I did so in part 2 of this series, to run a <code>{targets}</code> pipeline each time I dropped into the shell). Whatever goes into the <code>shellHook</code> gets executed as soon as one drops into the Nix shell. I personally have to add the <code>export QT_XCB_GL_INTEGRATION=none</code> line in on virtual machines and on my desktop computer as well, but I’ve had problems in the past with my graphics drivers, and I think it’s related. I’m planning also to add an option to <code>rix()</code> to add this automatically.
-</p>
-<p>
-If you need to add packages, best is to call <code>rix::rix()</code> again, but this time, provide the <code>nixpkgs</code> revision as the argument to <code>r_ver</code>. Copy and paste the call from the generated <code>default.nix</code> to an R console and rerun it:
-</p>
-<pre class="r"><code>rix(r_ver = "cf73a86c35a84de0e2f3ba494327cf6fb51c0dfd",
-    r_pkgs = c("dplyr", "ggplot2", "tidyr", "quarto"),
-    other_pkgs = "quarto",
-    git_pkgs = list(package_name = "housing",
-                    repo_url = "https://github.com/rap4all/housing",
-                    branch_name = "fusen",
-                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-    ide = "rstudio",
-    path = path_default_nix,
-    overwrite = TRUE)</code></pre>
-<p>
-In the call above I’ve added the <code>{tidyr}</code> and <code>{quarto}</code> packages, as well as the <code>quarto</code> command line utility to generate <code>.qmd</code> files. For <code>r_ver</code> I’m this time using the <code>nixpkgs</code> revision from my original <code>default.nix</code> file. This will ensure that my environment stays the same.
-</p>
-<p>
-So if you have read up until this point, let me first thank you, and secondly humbly ask you to test <code>{rix}</code>! I’m looking for testers, especially on Windows and macOS, and would be really grateful if you could provide some feedback on the package. To report anything, simply open issue <a href="https://github.com/b-rodrigues/rix/issues">here</a>.
-</p>
-<p>
-<em>Thanks to Philipp for proof-reading this post.</em>
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-08-12-nix_for_r_part4.html</guid>
-  <pubDate>Sat, 12 Aug 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
