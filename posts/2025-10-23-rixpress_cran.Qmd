@@ -1,0 +1,340 @@
+---
+date: 2025-10-23
+title: Orchestrating Polyglot, Reproducible Data Science with Nix and `{rixpress}`
+categories:
+  - R
+  - Nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/polyglot-dag.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+*TL;DR: `{rixpress}` lets you build multi-language data pipelines (R, Python,
+Julia) where each step runs in its own reproducible environment. Uses Nix under
+the hood. Now on CRAN, and there’s even a Python port on PyPI!*
+
+`{rixpress}` is now on CRAN! As discussed in previous blog posts, `{rixpress}`
+is a package heavily inspired by `{targets}` that uses Nix as the underlying
+build automation tool to build reproducible data science pipelines.
+
+But I also wanted `{rixpress}` to be a language-agnostic build automation tool:
+pipelines do get defined as an R list, but they can include R, Julia and Python
+*derivations* (think of a derivation as a build step).
+
+`{rixpress}` allows you to define and execute complex, multi-language pipelines
+where each step runs in its own perfectly reproducible, hermetically sealed
+environment.
+
+Because installing stuff is so easy with Nix, the cost of using Python or Julia
+for a project is really low. Before Nix, I’d try my hardest to find equivalent R
+packages, just to avoid having to setup a Python environment, but now, if I
+really have to use Python, I don’t mind that much (also because since I can
+delegate writing Python to an LLM).
+
+Suppose you have a project that uses Julia, Python and R: without Nix, `{rix}`
+and `{rixpress}`, setting everything up and executing the code is going to be
+quite annoying. But with the aforementioned tools? Easy as pie.
+
+Let’s consider an example from economics, where Julia is used to define a
+structural Real Business Cycle model (and simulate data from it), Python (with
+its package `xgboost`) is used to make predictions from the simulated data, and
+R to visualise, using `{ggplot2}`. In truth, one could have use just one of
+these three languages, but for the sake of argument, let’s use them all.
+
+With `{rixpress}`, this entire polyglot workflow is defined declaratively
+in a single R script. Each step is a function call, making the pipeline easy to
+read and manage.
+
+Start the project with `rixpress::rxp_init()`, which generates two files,
+`gen-env.R` and `gen-pipeline.R`. In `gen-env.R`, you’ll define the environment
+you need:
+
+```r
+library(rix)
+
+rix(
+  # Pin the environment to a specific date to ensure that all package
+  # versions are resolved as they were on this day.
+  date = "2025-10-14",
+
+  # 1. R Packages
+  # We need packages for plotting, data manipulation, and reading arrow files.
+  # We also include reticulate as it can be useful for rixpress internals.
+  r_pkgs = c(
+    "ggplot2",
+    "ggdag",
+    "dplyr",
+    "arrow",
+    "rix",
+    "rixpress",
+    "quarto"
+  ),
+
+  # 2. Julia Configuration
+  # We specify the Julia version and the list of packages needed
+  # for our manual RBC model simulation.
+  jl_conf = list(
+    jl_version = "lts",
+    jl_pkgs = c(
+      "Distributions", # For creating random shocks
+      "DataFrames", # For structuring the output
+      "Arrow", # For saving the data in a cross-language format
+      "Random"
+    )
+  ),
+
+  # 3. Python Configuration
+  # We specify the Python version and the packages needed for the
+  # machine learning step.
+  py_conf = list(
+    py_version = "3.13",
+    py_pkgs = c(
+      "pandas",
+      "scikit-learn",
+      "xgboost",
+      "pyarrow",
+      "ryxpress" # Python port of rixpress
+    )
+  ),
+
+  # We set the IDE to 'none' for a minimal environment. You could change
+  # this to "rstudio" if you prefer to work interactively in RStudio.
+  ide = "none",
+
+  # Define the project path and allow overwriting the default.nix file.
+  project_path = ".",
+  overwrite = TRUE
+)
+
+```
+
+If you are on a system where Nix is available, you can drop into a temporary
+shell with R and `{rix}` available to generate the required `default.nix`
+(which is the Nix expression that once built, provides the environment):
+
+```bash
+nix-shell -I \
+  nixpkgs=https://github.com/rstats-on-nix/nixpkgs/tarball/2025-10-20 -p \
+  R rPackages.rix
+```
+
+then simply start R, and then `source("gen-env.R")`. This will generate the
+`default.nix`. Then leave R, leave the temporary shell (by typing `exit` or
+using `CTRL-D`) and build the environment with `nix-build`. Wait for it to
+finish. Then we can tackle the pipeline. I show the full script below, but you
+won’t be writing this in one go. Instead, you would add a derivation, build the
+pipeline, load the artefact into memory by using `rxp_load("artefact_name")`,
+look at it, play with it, and then continue. If you’re familiar with `{targets}`
+you should feel at ease.
+
+Here’s the full script:
+
+```r
+# This script defines and orchestrates the entire reproducible analytical
+# pipeline using the {rixpress} package.
+
+library(rixpress)
+
+list(
+  # STEP 0: Define RBC Model Parameters as Derivations
+  # This makes the parameters an explicit part of the pipeline.
+  # Changing a parameter will cause downstream steps to rebuild.
+  rxp_jl(alpha, 0.3), # Capital's share of income
+  rxp_jl(beta, 1 / 1.01), # Discount factor
+  rxp_jl(delta, 0.025), # Depreciation rate
+  rxp_jl(rho, 0.95), # Technology shock persistence
+  rxp_jl(sigma, 1.0), # Risk aversion (log-utility)
+  rxp_jl(sigma_z, 0.01), # Technology shock standard deviation
+
+  # STEP 1: Julia - Simulate a Real Business Cycle (RBC) model.
+  # This derivation runs our Julia script to generate the source data.
+  rxp_jl(
+    name = simulated_rbc_data,
+    expr = "simulate_rbc_model(alpha, beta, delta, rho, sigma, sigma_z)",
+    user_functions = "functions/functions.jl", # The file containing the function
+    encoder = "arrow_write" # The function to use for saving the output
+  ),
+
+  # STEP 2.1: Python - Prepare features (lagging data)
+  rxp_py(
+    name = processed_data,
+    expr = "prepare_features(simulated_rbc_data)",
+    user_functions = "functions/functions.py",
+    # Decode the Arrow file from Julia into a pandas DataFrame
+    decoder = "feather.read_feather"
+    # Note: No encoder needed here. {rixpress} will use pickle by default
+    # to pass the DataFrame between Python steps.
+  ),
+
+  # STEP 2.2: Python - Split data into training and testing sets
+  rxp_py(
+    name = X_train,
+    expr = "get_X_train(processed_data)",
+    user_functions = "functions/functions.py"
+  ),
+
+  rxp_py(
+    name = y_train,
+    expr = "get_y_train(processed_data)",
+    user_functions = "functions/functions.py"
+  ),
+
+  rxp_py(
+    name = X_test,
+    expr = "get_X_test(processed_data)",
+    user_functions = "functions/functions.py"
+  ),
+
+  rxp_py(
+    name = y_test,
+    expr = "get_y_test(processed_data)",
+    user_functions = "functions/functions.py"
+  ),
+
+  # STEP 2.3: Python - Train the model
+  rxp_py(
+    name = trained_model,
+    expr = "train_model(X_train, y_train)",
+    user_functions = "functions/functions.py"
+  ),
+
+  # STEP 2.4: Python - Make predictions
+  rxp_py(
+    name = model_predictions,
+    expr = "make_predictions(trained_model, X_test)",
+    user_functions = "functions/functions.py"
+  ),
+
+  # STEP 2.5: Python - Format final results for R
+  rxp_py(
+    name = predictions,
+    expr = "format_results(y_test, model_predictions)",
+    user_functions = "functions/functions.py",
+    # We need an encoder here to save the final DataFrame as an Arrow file
+    # so the R step can read it.
+    encoder = "save_arrow"
+  ),
+
+  # STEP 3: R - Visualize the predictions from the Python model.
+  # This final derivation depends on the output of the Python step.
+  rxp_r(
+    name = output_plot,
+    expr = plot_predictions(predictions), # The function to call from functions.R
+    user_functions = "functions/functions.R",
+    # Specify how to load the upstream data (from Python) into R.
+    decoder = arrow::read_feather
+  ),
+
+  # STEP 4: Quarto - Compile the final report.
+  rxp_qmd(
+    name = final_report,
+    additional_files = "_rixpress",
+    qmd_file = "readme.qmd"
+  )
+) |>
+  rxp_populate(
+    py_imports = c(
+      pandas = "import pandas as pd",
+      pyarrow = "import pyarrow.feather as feather",
+      sklearn = "from sklearn.model_selection import train_test_split",
+      xgboost = "import xgboost as xgb"
+    ),
+    project_path = ".", # The root of our project
+    build = TRUE, # Set to TRUE to execute the pipeline immediately
+    verbose = 1
+  )
+
+```
+
+*(helper functions are defined in separate scripts, inside the `functions/` folder
+which I don't show here)*
+
+The magic here is twofold. First, `{rixpress}` seamlessly handles passing data
+between language environments, using efficient formats like Apache Arrow via
+`encoder` and `decoder` functions. Second, because each step is a Nix
+derivation, it runs in its own isolated environment. The Julia simulation can
+have its own dependencies, completely separate from the Python and R steps,
+eliminating "dependency hell" forever. Also, the artefacts built by the pipeline
+are actually children of the environment. Meaning, that if you change the
+environment (for example, by adding a package), this invalidates everything, and
+the whole pipeline gets rebuilt. This is quite useful, because sometimes
+changing the environment could break the downstream artefacts in subtle ways,
+but with classical build automation tools, the artefacts and the environment are
+not tied, and so a rebuild would not be triggered.
+
+Once built, you can interactively explore artifacts:
+
+```r
+# From R
+rxp_load("simulated_rbc_data")
+rxp_load("output_plot")
+```
+
+```python
+# Or from Python (using ryxpress)
+from ryxpress import rxp_make, rxp_load
+rxp_load("predictions")
+```
+
+The pipeline automatically caches results, so changing one step only rebuilds
+what's affected. `{rixpress}` (and `ryxpress`) will try its best to show you to
+convert objects seamlessly from R to Python and vice-versa. If you try to load
+an object built inside a Python environment, `{rixpress}` will use
+`{reticulate}` (if you've added it to the list of R packages) to convert it to
+an equivalent R object. From a Python session, if you added the `rds2py` Python
+package, the same will happen, but converting an R object into the equivalent
+Python object (since Python doesn't have a native data frame implementation, use
+`biocframe` to convert from R data frames into Python *bioc*frames, which come
+with a method to convert to `pandas` or `polars` data frames).
+
+You can find the code for this example [here](https://github.com/b-rodrigues/rixpress_demos/blob/master/rbc/).
+
+If you’re primary a Python user, I think that you could still find `{rixpress}`
+useful. Defining the pipeline as an R list shouldn’t be too much of an issue,
+and you can explore the pipeline and artefacts with the Python port, `ryxpress`.
+This Python port makes it easy to build the pipeline and load and explore
+artefacts from a Python session.
+
+Another Python-related caveat is that while Nix's package repository, `nixpkgs`,
+is vast, the Python ecosystem (PyPI) is famously heterogeneous. Not every Python
+package or specific version you might need is available directly in `nixpkgs`.
+
+To solve this, it is possible to install `uv`, a modern and fast Python
+package manager, with Nix, and let `uv` handle the Python packages and Python
+interpreter, but let Nix handle everything else:
+
+```r
+rix(date = "2025-10-20",
+  r_pkgs = c("rix", "dplyr", "chronicler"),
+  system_pkgs = c("uv"),
+  project_path = ".",
+  overwrite = TRUE)
+```
+
+This approach gives you the best of both worlds: you use `{rix}` to define the
+core, reproducible environment. This includes, critical system libraries
+(like GDAL or HDF5), and all your R and Julia dependencies. This part of
+your environment is bit-for-bit reproducible. Then, within this Nix-managed
+environment, you use standard `uv` commands (e.g., `uv pip install pandas`)
+to manage your Python packages. `uv` creates a `uv.lock` file that pins the
+exact versions and hashes of your Python dependencies, ensuring a
+reproducible Python package set.
+
+While this hybrid model trades the full build-time determinism of a pure-Nix
+approach for Python packages, it offers immense flexibility and solves the issue
+of `nixpkgs` not mirrorring PyPI.
+
+I think that the biggest hurdle for `{rix}` and `{rixpress}` adoption for
+Python data scientists is their love of Jupyter Notebooks.
+
+By the way, it’s possible to use an IDE alongside Nix and `{rix}` and
+`{rixpress}`. I think I’ll make a video for that, though, but for those of
+you that prefer reading, [read this](https://docs.ropensci.org/rix/articles/e-configuring-ide.html).
