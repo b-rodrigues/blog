@@ -10,7 +10,572 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Thu, 23 Oct 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 29 Oct 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Of course, someone has to write imperative code to build reproducible data science pipelines. It doesn’t have to be you.</title>
+  <link>https://b-rodrigues.github.io/posts/2025-10-29-imperative-vs-function.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/xkcd-nix.png" style="width: 100%; height: auto;"> </a>
+</p>
+</div>
+<p><a href="https://brodrigues.co/posts/2025-10-23-rixpress_cran.html">Last time</a> I quickly introduced my latest package, <code>{rixpress}</code>, but I think that to really understand what <code>{rixpress}</code> brings to the table, one needs to solve the same problem without it. And incidentally, I think that this exercise also show what makes Nix actually so good.</p>
+<p>The goal is to build a data science pipeline. The example here is purely illustrative, and compare a Nix-based approach to a non Nix-based approach. So, I built the same polyglot Real Business Cycle model pipeline twice. First, I did it without <code>{rixpress}</code> (nor <code>{rix}</code>), using a combination of Docker, Make, and a bunch of wrapper scripts. Then, I did it with <code>{rix}</code> and <code>{rixpress}</code>.</p>
+<p>Both pipelines produce the exact same result. But the way to get there is fundamentally different.</p>
+<section id="juggling-imperative-tools" class="level2">
+<h2 class="anchored" data-anchor-id="juggling-imperative-tools">Juggling imperative tools</h2>
+<p>Without Nix, you have to use language-specific package managers and tooling to first set up the environment. So for Python I’ve used <code>uv</code> (which is fantastic to be honest), then to install the right version of R I’ve used <code>rig</code> and a Posit CRAN snapshot for packages and for Julia I’ve simply downloaded a pre-compiled package of the version I needed, and used its built-in package manager to install specific versions of packages as well.</p>
+<p>Also, to deal with system level dependencies, I’ve bundled everything inside a Docker image. This is a sketch of the <code>Dockerfile</code>:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add R repository and install specific version</span></span>
+<span id="cb1-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">apt-get</span> update <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;&amp;</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">apt-get</span> install <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-y</span> software-properties-common</span>
+<span id="cb1-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">add-apt-repository</span> ppa:...</span>
+<span id="cb1-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">curl</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-L</span> https://rig.r-pkg.org/... <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sh</span></span>
+<span id="cb1-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">rig</span> add 4.5.1</span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install Python with uv</span></span>
+<span id="cb1-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">curl</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sh</span></span>
+<span id="cb1-9"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> python install 3.13</span>
+<span id="cb1-10"></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Download and extract Julia</span></span>
+<span id="cb1-12"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">curl</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-fsSL</span> https://julialang-s3.julialang.org/... <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-o</span> julia.tar.gz</span>
+<span id="cb1-13"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tar</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-xzf</span> julia.tar.gz <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-C</span> /opt/</span>
+<span id="cb1-14"></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install packages for each language separately</span></span>
+<span id="cb1-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">echo</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'options(repos = c(CRAN = ...))'</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> /root/.Rprofile</span>
+<span id="cb1-17"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Rscript</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-e</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'install.packages(...)'</span></span>
+<span id="cb1-18"></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install Python packages using uv with specific versions for reproducibility.</span></span>
+<span id="cb1-20"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">echo</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pandas==2.3.3"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> /tmp/requirements.txt <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;&amp;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-21">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">echo</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"scikit-learn==1.7.2"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;&gt;</span> /tmp/requirements.txt <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;&amp;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-22">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ... more packages ...</span></span>
+<span id="cb1-23"></span>
+<span id="cb1-24"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> pip install <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--no-cache</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-r</span> /tmp/requirements.txt <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;&amp;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-25">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rm</span> /tmp/requirements.txt</span>
+<span id="cb1-26"></span>
+<span id="cb1-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install specific versions of Julia packages for reproducibility</span></span>
+<span id="cb1-28"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">julia</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-e</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'using Pkg; \</span></span>
+<span id="cb1-29"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    Pkg.add(name="Arrow", version="2.8.0"); \</span></span></code></pre></div>
+<p>This <em>traditional</em> approach feels like you’re a sysadmin first and a data scientist second. The <code>Dockerfile</code> is a long, step-by-step, imperative script of shell commands. You have to write <em>how</em> stuff needs to be installed, and this of course varies for each language. Each language needs its own special treatment, its own package installation command, and its own set of dependencies. For example, for Python, I actually even needed more configuration than what I’ve shown above:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Ensure the installed binary is on the `PATH`</span></span>
+<span id="cb2-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">ENV</span> PATH=<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"/root/.local/bin/:$PATH"</span></span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install the specified Python version using uv.</span></span>
+<span id="cb2-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> python install <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">${PYTHON_VERSION}</span></span>
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Setup default virtual env</span></span>
+<span id="cb2-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">RUN</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> venv /opt/venv</span>
+<span id="cb2-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Use the virtual environment automatically</span></span>
+<span id="cb2-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">ENV</span> VIRTUAL_ENV=/opt/venv</span>
+<span id="cb2-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Place entry points in the environment at the front of the path</span></span>
+<span id="cb2-12"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">ENV</span> PATH=<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"/opt/venv/bin:$PATH"</span></span></code></pre></div>
+<p>This is because I needed to set the virtual environment installed by <code>uv</code> as the one to be used by default. This is ok inside Docker, but that’s not something you’d likely want to do on a real machine. The final <code>Dockerfile</code> for our “simple” example was over 100 lines long (including comments).</p>
+<p>Now that the environment is said, we actually need to orchestrate the workflow. I’ve used <code>Make</code> for this, which means writing a <code>Makefile</code>. Honestly, nowadays, thanks to LLMs that’s not so much of an issue. But before LLMs, it would be quite annoying, because you need to manually define which file depends on which other file. Here’s what it looks like:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode makefile code-with-copy"><code class="sourceCode makefile"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ==============================================================================</span></span>
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Makefile for the Polyglot RBC Model Pipeline</span></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ==============================================================================</span></span>
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the interpreters for each language.</span></span>
+<span id="cb3-6"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">JULIA</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> julia</span></span>
+<span id="cb3-7"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">PYTHON</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> python</span></span>
+<span id="cb3-8"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">RSCRIPT</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> Rscript</span></span>
+<span id="cb3-9"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">QUARTO</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> quarto</span></span>
+<span id="cb3-10"></span>
+<span id="cb3-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define directory variables for better organization.</span></span>
+<span id="cb3-12"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">DATA_DIR</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> data</span></span>
+<span id="cb3-13"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">PLOTS_DIR</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> plots</span></span>
+<span id="cb3-14"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">REPORT_DIR</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> report</span></span>
+<span id="cb3-15"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">FUNCTIONS_DIR</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> functions</span></span>
+<span id="cb3-16"></span>
+<span id="cb3-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the final and intermediate data files.</span></span>
+<span id="cb3-18"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">SIMULATED_DATA</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">DATA_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/simulated_rbc_data.arrow</span></span>
+<span id="cb3-19"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">PREDICTIONS</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">DATA_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/predictions.arrow</span></span>
+<span id="cb3-20"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">FINAL_PLOT</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">PLOTS_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/output_plot.png</span></span>
+<span id="cb3-21"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">FINAL_REPORT</span> <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">REPORT_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/readme.html</span></span>
+<span id="cb3-22"></span>
+<span id="cb3-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># --- Main Rules ---</span></span>
+<span id="cb3-24"></span>
+<span id="cb3-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The default 'all' rule now points to the final compiled HTML report.</span></span>
+<span id="cb3-26"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">all:</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;"> </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">FINAL_REPORT</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb3-27"></span>
+<span id="cb3-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Rule to render the final Quarto report.</span></span>
+<span id="cb3-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Depends on the Quarto source file and the plot from the R step.</span></span>
+<span id="cb3-30"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">$(FINAL_REPORT):</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;"> readme.qmd </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">FINAL_PLOT</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;"> | </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">REPORT_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb3-31"><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">    </span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">@</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">echo </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--- [Quarto] Compiling final report ---"</span></span>
+<span id="cb3-32">    <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">QUARTO</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span> render <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$&lt;</span> --to html --output-dir <span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$(</span><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">REPORT_DIR</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb3-33"></span>
+<span id="cb3-34">... and so on ...</span></code></pre></div>
+<p>That’s another 65 lines for the orchestration.</p>
+<p>Finally, and probably worst of all, is that you end up writing tons of “glue code.” Because <code>make</code> just runs scripts, every step of your analysis (the Julia simulation, the Python training) needs to be wrapped in a script that does nothing but parse command-line arguments, read an input file, call your <em>actual</em> analysis function, and write an output file. That’s a lot of code just to get things talking to each other.</p>
+<p>The final tally for the traditional, imperative, approach? <strong>Nine separate files</strong> just to manage the environment and run the pipeline. It’s a fragile, complicated house of cards, but it takes only 3 minutes to run on a standard Ubuntu GitHub Actions runner.</p>
+</section>
+<section id="nix-declarative-simple-and-clean" class="level2">
+<h2 class="anchored" data-anchor-id="nix-declarative-simple-and-clean">Nix: Declarative, Simple, and Clean</h2>
+<p>Nix makes this whole process so much easier, it’s actually not even fair. Instead of telling the computer <em>how</em> to do everything, you just declare <em>what</em> you want. You describe your requirements, and Nix figures the rest out. But because Nix is not that easy to get into, I wrotk the <code>{rix}</code> and <code>{rixpress}</code> packages as high-level interfaces to Nix’s power.</p>
+<p>For example, to set up the environment, you just list the R, Python, and Julia packages you need, and <code>{rix}</code> handles everything else. It figures out how to install them, resolves all the system-level dependencies, and generates the complex Nix expression for you. You don’t need to be a sysadmin; you just need to know what packages your analysis requires. This is because all the <em>sysadminy</em> work was handled upstream by Nix package maintainers (real MVPs); Nix maintainers encode the build recipes, dependency graphs, and patches needed for each package, so you don’t have to. (Reminds me of this quote from <a href="https://speakerdeck.com/jennybc/row-oriented-workflows-in-r-with-the-tidyverse?slide=16">Jenny Bryan</a>: <em>Of course, someone has to write for loops. It doesn’t have to be you</em>, but here it’s unglamorous Nix code to make packages work well instead of loops.)</p>
+<p>Here’s what the <code>gen-env.R</code> script looks like:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rix</span>(</span>
+<span id="cb4-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-10-14"</span>,</span>
+<span id="cb4-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r_pkgs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggplot2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dplyr"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arrow"</span>),</span>
+<span id="cb4-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">jl_conf =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">jl_version =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lts"</span>, ...),</span>
+<span id="cb4-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_conf =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">py_version =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"3.13"</span>, ...),</span>
+<span id="cb4-6">  ...</span>
+<span id="cb4-7">)</span></code></pre></div>
+<p>Then, for the pipeline, it’s the same story. You just write what you need, not how it’s done. Nix can handle this. Here’s what the <code>gen-pipeline.R</code> script looks like:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">/</span> gen<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>pipeline.R <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> a small part</span>
+<span id="cb5-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_jl</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> simulated_rbc_data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"simulate_rbc_model(...)"</span>),</span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_py</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> predictions, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"train_model(simulated_rbc_data)"</span>),</span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rxp_r</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> output_plot, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expr =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"plot_predictions(predictions)"</span>),</span>
+<span id="cb5-6">  ...</span>
+<span id="cb5-7">)</span></code></pre></div>
+<p>Dependencies are inferred automatically. <code>{rixpress}</code> sees that <code>predictions</code> uses the <code>simulated_rbc_data</code> object and knows to run the Julia step first. It handles all the I/O for you as well. Objects get serialised and unserialised transparently for you.</p>
+<p>Your scientific code now lives in pure functions, free of any command-line parsing or file I/O. You can focus entirely on the analysis.</p>
+<p>The final tally for the Nix-based approach? <strong>Six files</strong>, and four of them (<code>gen-env.R</code>, <code>gen-pipeline.R</code>, and the two <code>functions</code> files) are simple, clean declarations of what you need and what you want to do. The whole set up of the environment and execution of the pipeline takes 5 minutes on a standard GitHub Actions runner. That’s 2 minutes longer that the imperative approach, but I think it’s a small price to pay. Plus, you’re not setting up the environment from scratch each time you execute the pipeline, so subsequent executions will only take seconds.</p>
+<p>The biggest difference isn’t just the simplicity; it’s the guarantee. The Docker approach gives you reproducibility <em>today</em>. But a year from now, if you rebuild the <code>Dockerfile</code>, mutable base images and shifting package dependencies mean you might get a subtly different environment. The underlying base Docker image will change, and in some years, will completely stop functioning (Ubuntu 24.04, which is quite often used as the base image, will reach of end of life in 2029).</p>
+<p>The Nix approach, by pinning everything to a specific date, gives you <strong>temporal reproducibility</strong>. Your environment will build the exact same way today, next year, or five years from now, for as long as the <code>nixpkgs</code> GitHub repository will stay online (we can hope for a 1000 years if Microsoft doesn’t fuck it up). It’s a level of long-term stability that the traditional stack simply can’t match without a heroic amount of manual effort. But also, it’s just so much <em>simpler</em>!</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>Nix</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-10-29-imperative-vs-function.html</guid>
+  <pubDate>Wed, 29 Oct 2025 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Orchestrating Polyglot, Reproducible Data Science with Nix and {rixpress}</title>
   <link>https://b-rodrigues.github.io/posts/2025-10-23-rixpress_cran.html</link>
@@ -3687,400 +4252,6 @@ Nix is an incredibly powerful tool. I’ve been exploring and using it for 3 mon
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2023-09-20-nix_for_r_part6.html</guid>
   <pubDate>Wed, 20 Sep 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Reproducible data science with Nix, part 5 – Reproducible literate programming with Nix and Quarto</title>
-  <link>https://b-rodrigues.github.io/posts/2023-09-15-nix_for_r_part5.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/ayylmao.png" max-width="100%">
-</p>
-</div>
-<p>
-<em>This blog post is a copy-paste from <a href="https://b-rodrigues.github.io/rix/articles/building-an-environment-for-literate-programming.html">this vignette</a></em>
-</p>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">
-Introduction
-</h2>
-<p>
-This vignette will walk you through setting up a development environment with <code>{rix}</code> that can be used to compile Quarto documents into PDFs. We are going to use the <a href="https://github.com/quarto-journals/jss">Quarto template for the JSS</a> to illustrate the process. The first section will show a simple way of achieving this, which will also be ideal for interactive development (writing the doc). The second section will discuss a way to build the document in a completely reproducible manner once it’s done.
-</p>
-</section>
-<section id="starting-with-the-basics-simple-but-not-entirely-reproducible" class="level2">
-<h2 class="anchored" data-anchor-id="starting-with-the-basics-simple-but-not-entirely-reproducible">
-Starting with the basics (simple but not entirely reproducible)
-</h2>
-<p>
-This approach will not be the most optimal, but it will be the simplest. We will start by building a development environment with all our dependencies, and we can then use it to compile our document interactively. But this approach is not quite reproducible and requires manual actions. In the next section we will show you to build a 100% reproducible document in a single command.
-</p>
-<p>
-Since we need both the <code>{quarto}</code> R package as well as the <code>quarto</code> engine, we add both of them to the <code>r_pkgs</code> and <code>system_pkgs</code> of arguments of <code>{rix}</code>. Because we want to compile a PDF, we also need to have <code>texlive</code> installed, as well as some LaTeX packages. For this, we use the <code>tex_pkgs</code> argument:
-</p>
-<pre class="r"><code>library(rix)
-
-path_default_nix &lt;- tempdir()
-
-rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto"),
-    system_pkgs = "quarto",
-    tex_pkgs = c("amsmath"),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)</code></pre>
-<pre><code>## # This file was generated by the {rix} R package v0.4.1 on 2023-12-19
-## # with following call:
-## # &gt;rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
-## #  &gt; r_pkgs = c("quarto"),
-## #  &gt; system_pkgs = "quarto",
-## #  &gt; tex_pkgs = c("amsmath"),
-## #  &gt; ide = "other",
-## #  &gt; project_path = path_default_nix,
-## #  &gt; overwrite = TRUE,
-## #  &gt; print = TRUE,
-## #  &gt; shell_hook = "")
-## # It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes
-## # which will install R version 4.3.1
-## # Report any issues to https://github.com/b-rodrigues/rix
-## let
-##  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
-##  rpkgs = builtins.attrValues {
-##   inherit (pkgs.rPackages) quarto;
-## };
-##   tex = (pkgs.texlive.combine {
-##   inherit (pkgs.texlive) scheme-small amsmath;
-## });
-##  system_packages = builtins.attrValues {
-##   inherit (pkgs) R glibcLocalesUtf8 quarto;
-## };
-##   in
-##   pkgs.mkShell {
-##     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";
-##     LANG = "en_US.UTF-8";
-##     LC_ALL = "en_US.UTF-8";
-##     LC_TIME = "en_US.UTF-8";
-##     LC_MONETARY = "en_US.UTF-8";
-##     LC_PAPER = "en_US.UTF-8";
-##     LC_MEASUREMENT = "en_US.UTF-8";
-## 
-##     buildInputs = [  rpkgs tex system_packages  ];
-##       
-##   }</code></pre>
-<p>
-(Save these lines into a script called <code>build_env.R</code> for instance, and run the script into a new folder made for this project.)
-</p>
-<p>
-By default, <code>{rix}</code> will install the “small” version of the <code>texlive</code> distribution available on Nix. To see which <code>texlive</code> packages get installed with this small version, you can click <a href="https://search.nixos.org/packages?channel=unstable&amp;show=texlive.combined.scheme-small&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=scheme-small">here</a>. We start by adding the <code>amsmath</code> package then build the environment using:
-</p>
-<pre class="r"><code>nix_build()</code></pre>
-<p>
-Then, drop into the Nix shell with <code>nix-shell</code>, and run <code>quarto add quarto-journals/jss</code>. This will install the template linked above. Then, in the folder that contains <code>build_env.R</code>, the generated <code>default.nix</code> and <code>result</code> download the following files from <a href="https://github.com/quarto-journals/jss/">here</a>:
-</p>
-<ul>
-<li>
-article-visualization.pdf
-</li>
-<li>
-bibliography.bib
-</li>
-<li>
-template.qmd
-</li>
-</ul>
-<p>
-and try to compile <code>template.qmd</code> by running:
-</p>
-<pre><code>quarto render template.qmd --to jss-pdf</code></pre>
-<p>
-You should get the following error message:
-</p>
-<pre><code>Quitting from lines 99-101 [unnamed-chunk-1] (template.qmd)
-Error in `find.package()`:
-! there is no package called 'MASS'
-Backtrace:
- 1. utils::data("quine", package = "MASS")
- 2. base::find.package(package, lib.loc, verbose = verbose)
-Execution halted
-</code></pre>
-<p>
-So there’s an R chunk in <code>template.qmd</code> that uses the <code>{MASS}</code> package. Change <code>build_env.R</code> to generate a new <code>default.nix</code> file that will now add <code>{MASS}</code> to the environment when built:
-</p>
-<pre class="r"><code>rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto", "MASS"),
-    system_pkgs = "quarto",
-    tex_pkgs = c("amsmath"),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)</code></pre>
-<pre><code>## # This file was generated by the {rix} R package v0.4.1 on 2023-12-19
-## # with following call:
-## # &gt;rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
-## #  &gt; r_pkgs = c("quarto",
-## #  &gt; "MASS"),
-## #  &gt; system_pkgs = "quarto",
-## #  &gt; tex_pkgs = c("amsmath"),
-## #  &gt; ide = "other",
-## #  &gt; project_path = path_default_nix,
-## #  &gt; overwrite = TRUE,
-## #  &gt; print = TRUE,
-## #  &gt; shell_hook = "")
-## # It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes
-## # which will install R version 4.3.1
-## # Report any issues to https://github.com/b-rodrigues/rix
-## let
-##  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
-##  rpkgs = builtins.attrValues {
-##   inherit (pkgs.rPackages) quarto MASS;
-## };
-##   tex = (pkgs.texlive.combine {
-##   inherit (pkgs.texlive) scheme-small amsmath;
-## });
-##  system_packages = builtins.attrValues {
-##   inherit (pkgs) R glibcLocalesUtf8 quarto;
-## };
-##   in
-##   pkgs.mkShell {
-##     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";
-##     LANG = "en_US.UTF-8";
-##     LC_ALL = "en_US.UTF-8";
-##     LC_TIME = "en_US.UTF-8";
-##     LC_MONETARY = "en_US.UTF-8";
-##     LC_PAPER = "en_US.UTF-8";
-##     LC_MEASUREMENT = "en_US.UTF-8";
-## 
-##     buildInputs = [  rpkgs tex system_packages  ];
-##       
-##   }</code></pre>
-<p>
-Trying to compile the document results now in another error message:
-</p>
-<pre><code>compilation failed- no matching packages
-LaTeX Error: File `orcidlink.sty' not found</code></pre>
-<p>
-This means that the LaTeX <code>orcidlink</code> package is missing, and we can solve the problem by adding <code>“orcidlink”</code> to the list of <code>tex_pkgs</code>. Rebuild the environment and try again to compile the template. Trying again yields a new error:
-</p>
-<pre><code>compilation failed- no matching packages
-LaTeX Error: File `tcolorbox.sty' not found.</code></pre>
-<p>
-Just as before, add the <code>tcolorbox</code> package to the list of <code>tex_pkgs</code>. You will need to do this several times for some other packages. There is unfortunately no easier way to list the dependencies and requirements of a LaTeX document.
-</p>
-<p>
-This is what the final script to build the environment looks like:
-</p>
-<pre class="r"><code>rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto", "MASS"),
-    system_pkgs = "quarto",
-    tex_pkgs = c(
-      "amsmath",
-      "environ",
-      "fontawesome5",
-      "orcidlink",
-      "pdfcol",
-      "tcolorbox",
-      "tikzfill"
-    ),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)</code></pre>
-<pre><code>## # This file was generated by the {rix} R package v0.4.1 on 2023-12-19
-## # with following call:
-## # &gt;rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
-## #  &gt; r_pkgs = c("quarto",
-## #  &gt; "MASS"),
-## #  &gt; system_pkgs = "quarto",
-## #  &gt; tex_pkgs = c("amsmath",
-## #  &gt; "environ",
-## #  &gt; "fontawesome5",
-## #  &gt; "orcidlink",
-## #  &gt; "pdfcol",
-## #  &gt; "tcolorbox",
-## #  &gt; "tikzfill"),
-## #  &gt; ide = "other",
-## #  &gt; project_path = path_default_nix,
-## #  &gt; overwrite = TRUE,
-## #  &gt; print = TRUE,
-## #  &gt; shell_hook = "")
-## # It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes
-## # which will install R version 4.3.1
-## # Report any issues to https://github.com/b-rodrigues/rix
-## let
-##  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
-##  rpkgs = builtins.attrValues {
-##   inherit (pkgs.rPackages) quarto MASS;
-## };
-##   tex = (pkgs.texlive.combine {
-##   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
-## });
-##  system_packages = builtins.attrValues {
-##   inherit (pkgs) R glibcLocalesUtf8 quarto;
-## };
-##   in
-##   pkgs.mkShell {
-##     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";
-##     LANG = "en_US.UTF-8";
-##     LC_ALL = "en_US.UTF-8";
-##     LC_TIME = "en_US.UTF-8";
-##     LC_MONETARY = "en_US.UTF-8";
-##     LC_PAPER = "en_US.UTF-8";
-##     LC_MEASUREMENT = "en_US.UTF-8";
-## 
-##     buildInputs = [  rpkgs tex system_packages  ];
-##       
-##   }</code></pre>
-<p>
-The template will now compile with this environment. To look for a LaTeX package, you can use the <a href="https://ctan.org/pkg/orcidlink?lang=en">search engine on CTAN</a>.
-</p>
-<p>
-As stated in the beginning of this section, this approach is not the most optimal, but it has its merits, especially if you’re still working on the document. Once the environment is set up, you can simply work on the doc and compile it as needed using <code>quarto render</code>. In the next section, we will explain how to build a 100% reproducible document.
-</p>
-</section>
-<section id="reproducible-literate-programming" class="level2">
-<h2 class="anchored" data-anchor-id="reproducible-literate-programming">
-100% reproducible literate programming
-</h2>
-<p>
-Let’s not forget that Nix is not just a package manager, but also a programming language. The <code>default.nix</code> files that <code>{rix}</code> generates are written in this language, which was made entirely for the purpose of building software. If you are not a developer, you may not realise it but the process of compiling a Quarto or LaTeX document is very similar to the process of building any piece of software. So we can use Nix to compile a document in a completely reproducible environment.
-</p>
-<p>
-First, let’s fork the repo that contains the Quarto template we need. We will fork <a href="https://github.com/quarto-journals/jss">this repo</a>. This repo contains the <code>template.qmd</code> file that we can change (which is why we fork it, in practice we would replace this <code>template.qmd</code> by our own, finished, source <code>.qmd</code> file). Now we need to change our <code>default.nix</code>:
-</p>
-<pre><code>let
- pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
- rpkgs = builtins.attrValues {
-   inherit (pkgs.rPackages) quarto MASS;
- };
- tex = (pkgs.texlive.combine {
-   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
- });
- system_packages = builtins.attrValues {
-   inherit (pkgs) R quarto;
- };
- in
- pkgs.mkShell {
-   buildInputs = [  rpkgs tex system_packages  ];
- }</code></pre>
-<p>
-to the following:
-</p>
-<pre><code>let
- pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
- rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) quarto MASS;
- };
- tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
- });
- system_packages = builtins.attrValues {
-  inherit (pkgs) R quarto;
- };
- in
- pkgs.stdenv.mkDerivation {
-   name = "my-paper";
-   src = pkgs.fetchgit {
-       url = "https://github.com/b-rodrigues/my_paper/";
-       branchName = "main";
-       rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
-       sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
-     };
-   buildInputs = [  rpkgs tex system_packages  ];
-   buildPhase =
-     ''
-     # Deno needs to add stuff to $HOME/.cache
-     # so we give it a home to do this
-     mkdir home
-     export HOME=$PWD/home
-     quarto add --no-prompt $src
-     quarto render $PWD/template.qmd --to jss-pdf
-     '';
-   installPhase =
-     ''
-     mkdir -p $out
-     cp template.pdf $out/
-     '';
- }</code></pre>
-<p>
-So we changed the second part of the file, we’re not building a shell anymore using <code>mkShell</code>, but a <em>derivation</em>. <em>Derivation</em> is Nix jargon for package, or software. So what is our derivation? First, we clone the repo we forked just before (I forked the repository and called it <code>my_paper</code>):
-</p>
-<pre><code>pkgs.stdenv.mkDerivation {
-  name = "my-paper";
-  src = pkgs.fetchgit {
-      url = "https://github.com/b-rodrigues/my_paper/";
-      branchName = "main";
-      rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
-      sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
-    };</code></pre>
-<p>
-This repo contains our quarto template, and because we’re using a specific commit, we will always use exactly this release of the template for our document. This is in contrast to before where we used <code>quarto add quarto-journals/jss</code> to install the template. Doing this interactively makes our project not reproducible because if we compile our Quarto doc today, we would be using the template as it is today, but if we compile the document in 6 months, then we would be using the template as it would be in 6 months (I should say that it is possible to install specific releases of Quarto templates using following notation: <code>quarto add quarto-journals/jss@v0.9.2</code> so this problem can be mitigated).
-</p>
-<p>
-The next part of the file contains following lines:
-</p>
-<pre><code>buildInputs = [  rpkgs tex system_packages  ];
-buildPhase =
-  ''
-  # Deno needs to add stuff to $HOME/.cache
-  # so we give it a home to do this
-  mkdir home
-  export HOME=$PWD/home
-  quarto add --no-prompt $src
-  quarto render $PWD/template.qmd --to jss-pdf
-  '';</code></pre>
-<p>
-The <code>buildInputs</code> are the same as before. What’s new is the <code>buildPhase</code>. This is actually the part in which the document gets compiled. The first step is to create a <code>home</code> directory. This is because Quarto needs to save the template we want to use in <code>/home/.cache/deno</code>. If you’re using <code>quarto</code> interactively, that’s not an issue, since your home directory will be used. But with Nix, things are different, so we need to create an empty directory and specify this as the home. This is what these two lines do:
-</p>
-<pre><code>mkdir home
-export HOME=$PWD/home</code></pre>
-<p>
-(<code>$PWD</code> —Print Working Directory— is a shell variable referring to the current working directory.)
-</p>
-<p>
-Now, we need to install the template that we cloned from Github. For this we can use <code>quarto add</code> just as before, but instead of installing it directly from Github, we install it from the repository that we cloned. We also add the <code>–no-prompt</code> flag so that the template gets installed without asking us for confirmation. This is similar to how when building a Docker image, we don’t want any interactive prompt to show up, or else the process will get stuck. <code>$src</code> refers to the path of our downloaded Github repository. Finally we can compile the document:
-</p>
-<pre><code>quarto render $PWD/template.qmd --to jss-pdf</code></pre>
-<p>
-This will compile the <code>template.qmd</code> (our finished paper). Finally, there’s the <code>installPhase</code>:
-</p>
-<pre><code>installPhase =
-  ''
-  mkdir -p $out
-  cp template.pdf $out/
-  '';</code></pre>
-<p>
-<code>$out</code> is a shell variable defined inside the build environment and refers to the path, so we can use it to create a directory that will contain our output (the compiled PDF file). So we use <code>mkdir -p</code> to recursively create all the directory structure, and then copy the compiled document to <code>$out/</code>. We can now build our document by running <code>nix_build()</code>. Now, you may be confused by the fact that you won’t see the PDF in your working directory. But remember that software built by Nix will always be stored in the Nix store, so our PDF is also in the store, since this is what we built. To find it, run:
-</p>
-<pre><code>readlink result</code></pre>
-<p>
-which will show the path to the PDF. You could use this to open the PDF in your PDF viewer application (on Linux at least):
-</p>
-<pre><code>xdg-open $(readlink result)/template.pdf</code></pre>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">
-Conclusion
-</h2>
-<p>
-This vignette showed two approaches, both have their merits: the first approach that is more interactive is useful while writing the document. You get access to a shell and can work on the document and compile it quickly. The second approach is more useful once the document is ready and you want to have a way of quickly rebuilding it for reproducibility purposes. This approach should also be quite useful in a CI/CD environment.
-</p>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-09-15-nix_for_r_part5.html</guid>
-  <pubDate>Fri, 15 Sep 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
