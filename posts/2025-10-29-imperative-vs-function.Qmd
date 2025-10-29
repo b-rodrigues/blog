@@ -1,0 +1,238 @@
+---
+date: 2025-10-29
+title: Of course, someone has to write imperative code to build reproducible data science pipelines. It doesn’t have to be you.
+categories:
+  - R
+  - Nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/xkcd-nix.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+
+[Last time](https://brodrigues.co/posts/2025-10-23-rixpress_cran.html) I quickly
+introduced my latest package, `{rixpress}`, but I think that to really
+understand what `{rixpress}` brings to the table, one needs to solve the same problem
+without it. And incidentally, I think that this exercise also show what makes
+Nix actually so good.
+
+The goal is to build a data science pipeline. The example here is purely 
+illustrative, and compare a Nix-based approach to a non Nix-based approach. 
+So, I built the same polyglot Real Business Cycle model pipeline twice. 
+First, I did it without `{rixpress}` (nor `{rix}`), using a combination of Docker, 
+Make, and a bunch of wrapper scripts. Then, I did it with `{rix}` and `{rixpress}`.
+
+Both pipelines produce the exact same result. But the way to get there is
+fundamentally different.
+
+## Juggling imperative tools
+
+Without Nix, you have to use language-specific package managers and tooling to
+first set up the environment. So for Python I’ve used `uv` (which is fantastic
+to be honest), then to install the right version of R I’ve used `rig` and a
+Posit CRAN snapshot for packages and for Julia I’ve simply downloaded a
+pre-compiled package of the version I needed, and used its built-in package
+manager to install specific versions of packages as well.
+
+Also, to deal with system level dependencies, I’ve bundled everything inside a
+Docker image. This is a sketch of the `Dockerfile`:
+
+```dockerfile
+# Add R repository and install specific version
+RUN apt-get update && apt-get install -y software-properties-common
+RUN add-apt-repository ppa:...
+RUN curl -L https://rig.r-pkg.org/... | sh
+RUN rig add 4.5.1
+
+# Install Python with uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN uv python install 3.13
+
+# Download and extract Julia
+RUN curl -fsSL https://julialang-s3.julialang.org/... -o julia.tar.gz
+RUN tar -xzf julia.tar.gz -C /opt/
+
+# Install packages for each language separately
+RUN echo 'options(repos = c(CRAN = ...))' > /root/.Rprofile
+RUN Rscript -e 'install.packages(...)'
+
+# Install Python packages using uv with specific versions for reproducibility.
+RUN echo "pandas==2.3.3" > /tmp/requirements.txt && \
+    echo "scikit-learn==1.7.2" >> /tmp/requirements.txt && \
+    # ... more packages ...
+
+RUN uv pip install --no-cache -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
+
+# Install specific versions of Julia packages for reproducibility
+RUN julia -e 'using Pkg; \
+    Pkg.add(name="Arrow", version="2.8.0"); \
+```
+
+This *traditional* approach feels like you're a sysadmin first and a data
+scientist second. The `Dockerfile` is a long, step-by-step, imperative script of
+shell commands. You have to write *how* stuff needs to be installed, and this of
+course varies for each language. Each language needs its own special treatment,
+its own package installation command, and its own set of dependencies. For example,
+for Python, I actually even needed more configuration than what I’ve shown above:
+
+```dockerfile
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
+
+# Install the specified Python version using uv.
+RUN uv python install ${PYTHON_VERSION}
+
+# Setup default virtual env
+RUN uv venv /opt/venv
+# Use the virtual environment automatically
+ENV VIRTUAL_ENV=/opt/venv
+# Place entry points in the environment at the front of the path
+ENV PATH="/opt/venv/bin:$PATH"
+```
+
+This is because I needed to set the virtual environment installed by `uv` as the
+one to be used by default. This is ok inside Docker, but that’s not something
+you’d likely want to do on a real machine. The final `Dockerfile` for our
+"simple" example was over 100 lines long (including comments).
+
+Now that the environment is said, we actually need to orchestrate the workflow.
+I’ve used `Make` for this, which means writing a `Makefile`. Honestly, nowadays,
+thanks to LLMs that’s not so much of an issue. But before LLMs, it would be
+quite annoying, because you need to manually define which file depends on which
+other file. Here’s what it looks like:
+
+```makefile
+# ==============================================================================
+# Makefile for the Polyglot RBC Model Pipeline
+# ==============================================================================
+
+# Define the interpreters for each language.
+JULIA := julia
+PYTHON := python
+RSCRIPT := Rscript
+QUARTO := quarto
+
+# Define directory variables for better organization.
+DATA_DIR := data
+PLOTS_DIR := plots
+REPORT_DIR := report
+FUNCTIONS_DIR := functions
+
+# Define the final and intermediate data files.
+SIMULATED_DATA := $(DATA_DIR)/simulated_rbc_data.arrow
+PREDICTIONS := $(DATA_DIR)/predictions.arrow
+FINAL_PLOT := $(PLOTS_DIR)/output_plot.png
+FINAL_REPORT := $(REPORT_DIR)/readme.html
+
+# --- Main Rules ---
+
+# The default 'all' rule now points to the final compiled HTML report.
+all: $(FINAL_REPORT)
+
+# Rule to render the final Quarto report.
+# Depends on the Quarto source file and the plot from the R step.
+$(FINAL_REPORT): readme.qmd $(FINAL_PLOT) | $(REPORT_DIR)
+	@echo "--- [Quarto] Compiling final report ---"
+	$(QUARTO) render $< --to html --output-dir $(REPORT_DIR)
+
+... and so on ...
+```
+
+That’s another 65 lines for the orchestration.
+
+Finally, and probably worst of all, is that you end up writing tons of "glue
+code." Because `make` just runs scripts, every step of your analysis (the Julia
+simulation, the Python training) needs to be wrapped in a script that does
+nothing but parse command-line arguments, read an input file, call your *actual*
+analysis function, and write an output file. That’s a lot of code just to get
+things talking to each other.
+
+The final tally for the traditional, imperative, approach? **Nine separate
+files** just to manage the environment and run the pipeline. It's a fragile,
+complicated house of cards, but it takes only 3 minutes to run on a standard
+Ubuntu GitHub Actions runner.
+
+## Nix: Declarative, Simple, and Clean
+
+Nix makes this whole process so much easier, it’s actually not even fair. Instead of
+telling the computer *how* to do everything, you just declare *what* you want. You
+describe your requirements, and Nix figures the rest out. But because Nix 
+is not that easy to get into, I wrotk the `{rix}` and `{rixpress}` packages
+as high-level interfaces to Nix’s power.
+
+For example, to set up the environment, you just list the R, Python, and Julia
+packages you need, and `{rix}` handles everything else. It figures out how to
+install them, resolves all the system-level dependencies, and generates the
+complex Nix expression for you. You don't need to be a sysadmin; you just need
+to know what packages your analysis requires. This is because all the
+*sysadminy* work was handled upstream by Nix package maintainers (real MVPs); Nix
+maintainers encode the build recipes, dependency graphs, and patches needed for
+each package, so you don’t have to. (Reminds me of this quote from [Jenny
+Bryan](https://speakerdeck.com/jennybc/row-oriented-workflows-in-r-with-the-tidyverse?slide=16):
+*Of course, someone has to write for loops. It doesn’t have to be you*, but here it’s
+unglamorous Nix code to make packages work well instead of loops.)
+
+Here’s what the `gen-env.R` script looks like:
+
+```r
+rix(
+  date = "2025-10-14",
+  r_pkgs = c("ggplot2", "dplyr", "arrow"),
+  jl_conf = list(jl_version = "lts", ...),
+  py_conf = list(py_version = "3.13", ...),
+  ...
+)
+```
+
+Then, for the pipeline, it’s the same story. You just write what you need, not
+how it’s done. Nix can handle this. Here’s what the `gen-pipeline.R` script looks like:
+
+```r
+// gen-pipeline.R - a small part
+list(
+  rxp_jl(name = simulated_rbc_data, expr = "simulate_rbc_model(...)"),
+  rxp_py(name = predictions, expr = "train_model(simulated_rbc_data)"),
+  rxp_r(name = output_plot, expr = "plot_predictions(predictions)"),
+  ...
+)
+```
+
+Dependencies are inferred automatically. `{rixpress}` sees that `predictions`
+uses the `simulated_rbc_data` object and knows to run the Julia step first. It
+handles all the I/O for you as well. Objects get serialised and unserialised
+transparently for you.
+
+Your scientific code now lives in pure functions, free of any command-line
+parsing or file I/O. You can focus entirely on the analysis.
+
+The final tally for the Nix-based approach? **Six files**, and four of them
+(`gen-env.R`, `gen-pipeline.R`, and the two `functions` files) are simple, clean
+declarations of what you need and what you want to do. The whole set up of the
+environment and execution of the pipeline takes 5 minutes on a standard GitHub
+Actions runner. That’s 2 minutes longer that the imperative approach, but I
+think it’s a small price to pay. Plus, you’re not setting up the environment
+from scratch each time you execute the pipeline, so subsequent executions will
+only take seconds.
+
+The biggest difference isn't just the simplicity; it's the guarantee. The Docker
+approach gives you reproducibility *today*. But a year from now, if you rebuild
+the `Dockerfile`, mutable base images and shifting package dependencies mean you
+might get a subtly different environment. The underlying base Docker image will
+change, and in some years, will completely stop functioning (Ubuntu 24.04, which
+is quite often used as the base image, will reach of end of life in 2029).
+
+The Nix approach, by pinning everything to a specific date, gives you **temporal
+reproducibility**. Your environment will build the exact same way today, next
+year, or five years from now, for as long as the `nixpkgs` GitHub repository
+will stay online (we can hope for a 1000 years if Microsoft doesn’t fuck it up).
+It's a level of long-term stability that the traditional stack simply can't
+match without a heroic amount of manual effort. But also, it’s just so much *simpler*!
