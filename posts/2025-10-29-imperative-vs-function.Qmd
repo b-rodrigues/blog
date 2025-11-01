@@ -197,7 +197,7 @@ Then, for the pipeline, it’s the same story. You just write what you need, not
 how it’s done. Nix can handle this. Here’s what the `gen-pipeline.R` script looks like:
 
 ```r
-// gen-pipeline.R - a small part
+# gen-pipeline.R - a small part
 list(
   rxp_jl(name = simulated_rbc_data, expr = "simulate_rbc_model(...)"),
   rxp_py(name = predictions, expr = "train_model(simulated_rbc_data)"),
