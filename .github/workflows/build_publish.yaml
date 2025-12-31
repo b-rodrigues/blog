@@ -20,9 +20,16 @@ jobs:
           uses: cachix/cachix-action@v15
           with:
             name: rstats-on-nix
-  
-        - name: Set up environment
-          run: nix-build
+
+        - name: Render posts with specific Nix dependencies
+          run: |
+            for nix_file in posts/*.nix; do
+              if [[ -f "$nix_file" && "$nix_file" != "posts/default.nix" ]]; then
+                post_name=$(basename "${nix_file%.nix}")
+                echo "Rendering $post_name with specific dependencies..."
+                ./render-post.sh "$post_name"
+              fi
+            done
 
         - name: Publish to GitHub Pages (and render)
           uses: rstats-on-nix/quarto-nix-actions/publish@main
@@ -30,4 +37,5 @@ jobs:
             render: true
             target: gh-pages
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

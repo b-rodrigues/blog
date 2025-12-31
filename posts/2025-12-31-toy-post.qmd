@@ -1,0 +1,22 @@
+---
+title: "Toy Post: Per-Post Nix Dependencies"
+author: "Bruno Rodrigues"
+date: "2025-12-31"
+categories: [nix]
+---
+
+This is a toy post demonstrating per-post Nix dependencies.
+
+This post has a corresponding `2025-12-31-toy-post.nix` file that adds
+the `purrr` package to the environment.
+
+```{r}
+library(purrr)
+
+# Use purrr to demonstrate it's available
+result <- map_dbl(1:5, ~ .x^2)
+print(result)
+```
+
+The `purrr` package is not in the base `posts/default.nix`, but it's
+available here because of the post-specific `.nix` file!

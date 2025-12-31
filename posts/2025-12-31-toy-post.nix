@@ -1,0 +1,4 @@
+{ pkgs }:
+[
+  pkgs.rPackages.purrr
+]
