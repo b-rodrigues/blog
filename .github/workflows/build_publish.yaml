@@ -26,6 +26,8 @@ jobs:
 
         - name: Render posts with specific Nix dependencies
           run: |
+            # Render each post that has a specific .nix file
+            # Quarto's freeze:auto will skip if source unchanged
             for nix_file in posts/*.nix; do
               if [[ -f "$nix_file" && "$nix_file" != "posts/default.nix" ]]; then
                 post_name=$(basename "${nix_file%.nix}")
@@ -36,7 +38,8 @@ jobs:
 
         - name: Render remaining posts with base environment
           run: |
-            # Render each .qmd file that doesn't have a specific .nix file
+            # Render posts without specific .nix files
+            # Quarto's freeze:auto will skip if source unchanged
             nix-shell --run '
               for qmd_file in posts/*.qmd posts/*.Qmd; do
                 [[ -f "$qmd_file" ]] || continue
@@ -44,13 +47,12 @@ jobs:
                 if [[ ! -f "posts/${base}.nix" ]]; then
                   echo "Rendering $qmd_file with base environment..."
                   quarto render "$qmd_file"
-                else
-                  echo "Skipping $qmd_file (has specific .nix file, already rendered)"
                 fi
               done
-              # Render the site structure (index, about, etc) without re-rendering posts
-              quarto render --no-execute
             '
+
+        - name: Build site
+          run: nix-shell --run "quarto render"
 
         - name: Publish to GitHub Pages
           uses: rstats-on-nix/quarto-nix-actions/publish@main

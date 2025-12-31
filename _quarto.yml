@@ -4,6 +4,9 @@ project:
     - "assets/*"
   post-render: order_posts.R
 
+execute:
+  freeze: auto  # Only re-execute code when source changes
+
 website:
   title: "Econometrics and Free Software"
   site-url: https://b-rodrigues.github.io/
