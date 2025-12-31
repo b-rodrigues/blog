@@ -240,7 +240,7 @@ This likelihood is then maximized:
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(res <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fl">0.1</span>, denssim, <span class="at">method =</span> <span class="st">"BFGS"</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> simreps)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  1.835   0.172   2.008 </code></pre>
+  5.720   0.031   5.759 </code></pre>
 </div>
 </div>
 <p>
@@ -250,14 +250,14 @@ Convergence is achieved pretty rapidly, to
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$par
-[1] 0.09994887
+[1] 1.110314
 
 $value
-[1] 2.140327
+[1] 1.920263
 
 $counts
 function gradient 
-      47        3 
+      89       12 
 
 $convergence
 [1] 0
@@ -294,7 +294,7 @@ which can then be maximized:
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(res2 <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fl">0.1</span>, denssim2, <span class="at">method =</span> <span class="st">"BFGS"</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> simreps)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  1.574   0.072   1.646 </code></pre>
+ 10.295   0.052  10.370 </code></pre>
 </div>
 </div>
 <p>
@@ -304,14 +304,14 @@ The value that maximizes the likelihood is:
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>res2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$par
-[1] 0.1103165
+[1] 2.729807
 
 $value
-[1] 3.001921
+[1] 1.921853
 
 $counts
 function gradient 
-      36        5 
+     167       19 
 
 $convergence
 [1] 0
