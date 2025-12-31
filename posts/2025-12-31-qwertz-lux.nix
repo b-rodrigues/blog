@@ -4,7 +4,7 @@ let
     name = "ggkeyboard";
     src = pkgs.fetchgit {
       url = "https://github.com/b-rodrigues/ggkeyboard";
-      rev = "main";
+      rev = "e7d2e63e672be95830f2ae89bf33b8c34185e1f8";
       sha256 = "sha256-Bd3QYtVC4dDdk4/EccCmxgL2QegmwvAhHWATuZVGM/I=";
     };
     propagatedBuildInputs = with pkgs.rPackages; [
@@ -22,7 +22,7 @@ let
     name = "lbkeyboard";
     src = pkgs.fetchgit {
       url = "https://github.com/b-rodrigues/lbkeyboard";
-      rev = "main";
+      rev = "d728eb0a46b4c7ea26cfee4367b8c74f67265348";
       sha256 = "sha256-LaJBLzdfxyjeZLmQP0m38z8ZY3QJHSqnDIbSMmrhhQk=";
     };
     propagatedBuildInputs = with pkgs.rPackages; [
