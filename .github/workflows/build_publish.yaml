@@ -21,6 +21,9 @@ jobs:
           with:
             name: rstats-on-nix
 
+        - name: Build Nix environment
+          run: nix-build
+
         - name: Render posts with specific Nix dependencies
           run: |
             for nix_file in posts/*.nix; do
