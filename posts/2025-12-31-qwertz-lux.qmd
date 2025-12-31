@@ -174,7 +174,7 @@ used English and French. Now I also use Luxembourgish more often, and I know
 people who only write French. Either way, a national keyboard layout should be
 able to be comfortable for any of these languages.
 
-```{r load-corpus, echo=FALSE}
+```{r load-corpus, include=FALSE}
 # Load sample texts and create weighted corpus
 data("french")
 data("german")

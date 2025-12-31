@@ -12,6 +12,8 @@ jobs:
       steps:
         - name: Check out repository
           uses: actions/checkout@v4
+          with:
+            fetch-depth: 2
 
         - name: Install Nix
           uses: DeterminateSystems/nix-installer-action@main
@@ -24,34 +26,25 @@ jobs:
         - name: Build Nix environment
           run: nix-build
 
-        - name: Render posts with specific Nix dependencies
+        - name: Render posts with specific Nix dependencies (only if changed)
           run: |
-            # Render each post that has a specific .nix file
-            # Quarto's freeze:auto will skip if source unchanged
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+            
             for nix_file in posts/*.nix; do
               if [[ -f "$nix_file" && "$nix_file" != "posts/default.nix" ]]; then
                 post_name=$(basename "${nix_file%.nix}")
-                echo "Rendering $post_name with specific dependencies..."
-                ./render-post.sh "$post_name"
+                qmd_file="posts/${post_name}.qmd"
+                
+                if echo "$CHANGED_FILES" | grep -q "^${qmd_file}$" || [[ ! -d "_freeze/posts/${post_name}" ]]; then
+                  echo "Rendering $post_name with specific dependencies..."
+                  ./render-post.sh "$post_name"
+                else
+                  echo "Skipping $post_name (unchanged)"
+                fi
               fi
             done
 
-        - name: Render remaining posts with base environment
-          run: |
-            # Render posts without specific .nix files
-            # Quarto's freeze:auto will skip if source unchanged
-            nix-shell --run '
-              for qmd_file in posts/*.qmd posts/*.Qmd; do
-                [[ -f "$qmd_file" ]] || continue
-                base=$(basename "${qmd_file%.*}")
-                if [[ ! -f "posts/${base}.nix" ]]; then
-                  echo "Rendering $qmd_file with base environment..."
-                  quarto render "$qmd_file"
-                fi
-              done
-            '
-
-        - name: Build site
+        - name: Render site
           run: nix-shell --run "quarto render"
 
         - name: Publish to GitHub Pages
