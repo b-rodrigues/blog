@@ -50,6 +50,9 @@ font-style: inherit;">2</span>)</span>
 <span id="cb1-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print</span>(result)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  4  9 16 25</code></pre>
+</div>
 </div>
 <p>The <code>purrr</code> package is not in the base <code>posts/default.nix</code>, but it’s available here because of the post-specific <code>.nix</code> file!</p>
 
@@ -78,6 +81,15 @@ font-style: inherit;">print</span>(result)</span></code></pre></div>
 <h2 class="anchored" data-anchor-id="an-optimised-layout-for-a-polyglot-country">An optimised layout for a polyglot country</h2>
 <p><a href="https://brodrigues.co/posts/2020-03-26-bepo_lu.html">5 years ago</a> I discussed what features a keyboard optimised for Luxembourg should have. I’m talking about Luxembourg the country, and not Luxembourgish the language, because in Luxembourg no one types only Luxembourgish. The most commonly typed language is probably French, and English a close second. German follows in third and then Luxembourgish (some people might argue that, in their own experience, German is more widely typed than French, but I seriously doubt it). Whatever the actual ranking, an optimised keyboard for Luxembourg should be a keyboard in which typing these 4 languages is comfortable. That blog post from 5 years ago dug into that (letter frequency and so on), but until today, I left it on the back burner.</p>
 <p>Now, with LLMs it was trivial to continue working on this, implement an effort model, and use an optimisation algorithm to minimise said effort. Today, I can present the layout I’ve obtained:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux_files/figure-html/heatmap-qwertz-lux-intro-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>(there is an error in the layout shown here, there are two “G”s; the one on the right of E should not be there, and instead should be a “,”. This is a bug in the function that creates the heatmap, not in the layout itself.)</p>
 <blockquote class="blockquote">
 <p>⚠️ <strong>This is a work in progress!</strong> The layout, the name, and even the methodology are all open for discussion. I’m sharing this early because I’d love to hear from the community, especially those who type in multiple languages daily. Your feedback will shape the final version.</p>
@@ -122,6 +134,1050 @@ font-style: inherit;">print</span>(result)</span></code></pre></div>
 <li><strong>20% Luxembourgish</strong> — Daily life and national identity</li>
 </ul>
 <p>Again, your mileage may vary. When I first started working in Luxembourg, I only used English and French. Now I also use Luxembourgish more often, and I know people who only write French. Either way, a national keyboard layout should be able to be comfortable for any of these languages.</p>
+<div class="cell">
+<pre><code>#&gt; Warning: input string 'Au commencement, Dieu créa les cieux et la terre.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'La terre était informe et vide: il y avait des ténèbres
+#&gt; à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu dit: Que la lumière soit! Et la lumière fut.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu vit que la lumière était bonne; et Dieu sépara la
+#&gt; lumière d'avec les ténèbres.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu appela la lumière jour, et il appela les ténèbres
+#&gt; nuit. Ainsi, il y eut un soir, et il y eut un matin: ce fut le premier jour.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu dit: Qu'il y ait une étendue entre les eaux, et
+#&gt; qu'elle sépare les eaux d'avec les eaux.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Et Dieu fit l'étendue, et il sépara les eaux qui sont
+#&gt; au-dessous de l'étendue d'avec les eaux qui sont au-dessus de l'étendue. Et
+#&gt; cela fut ainsi.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Dieu appela l'étendue ciel. Ainsi, il y eut un soir, et
+#&gt; il y eut un matin: ce fut le second jour.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu appela le sec terre, et il appela l'amas des eaux
+#&gt; mers. Dieu vit que cela était bon.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Puis Dieu dit: Que la terre produise de la verdure, de
+#&gt; l'herbe portant de la semence, des arbres fruitiers donnant du fruit selon leur
+#&gt; espèce et ayant en eux leur semence sur la terre. Et cela fut ainsi.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'La terre produisit de la verdure, de l'herbe portant de
+#&gt; la semence selon son espèce, et des arbres donnant du fruit et ayant en eux
+#&gt; leur semence selon leur espèce. Dieu vit que cela était bon.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Ainsi, il y eut un soir, et il y eut un matin: ce fut le
+#&gt; troisième jour.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Dieu dit: Qu'il y ait des luminaires dans l'étendue du
+#&gt; ciel, pour séparer le jour d'avec la nuit; que ce soient des signes pour
+#&gt; marquer les époques, les jours et les années;' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'et qu'ils servent de luminaires dans l'étendue du ciel,
+#&gt; pour éclairer la terre. Et cela fut ainsi.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu fit les deux grands luminaires, le plus grand
+#&gt; luminaire pour présider au jour, et le plus petit luminaire pour présider à la
+#&gt; nuit; il fit aussi les étoiles.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu les plaça dans l'étendue du ciel, pour éclairer la
+#&gt; terre,' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'pour présider au jour et à la nuit, et pour séparer la
+#&gt; lumière d'avec les ténèbres. Dieu vit que cela était bon.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Ainsi, il y eut un soir, et il y eut un matin: ce fut le
+#&gt; quatrième jour.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Dieu dit: Que les eaux produisent en abondance des
+#&gt; animaux vivants, et que des oiseaux volent sur la terre vers l'étendue du
+#&gt; ciel.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu créa les grands poissons et tous les animaux
+#&gt; vivants qui se meuvent, et que les eaux produisirent en abondance selon leur
+#&gt; espèce; il créa aussi tout oiseau ailé selon son espèce. Dieu vit que cela
+#&gt; était bon.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Dieu les bénit, en disant: Soyez féconds, multipliez, et
+#&gt; remplissez les eaux des mers; et que les oiseaux multiplient sur la terre.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Ainsi, il y eut un soir, et il y eut un matin: ce fut le
+#&gt; cinquième jour.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Dieu dit: Que la terre produise des animaux vivants
+#&gt; selon leur espèce, du bétail, des reptiles et des animaux terrestres, selon
+#&gt; leur espèce. Et cela fut ainsi.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu fit les animaux de la terre selon leur espèce, le
+#&gt; bétail selon son espèce, et tous les reptiles de la terre selon leur espèce.
+#&gt; Dieu vit que cela était bon.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Puis Dieu dit: Faisons l'homme à notre image, selon
+#&gt; notre ressemblance, et qu'il domine sur les poissons de la mer, sur les oiseaux
+#&gt; du ciel, sur le bétail, sur toute la terre, et sur tous les reptiles qui
+#&gt; rampent sur la terre.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string 'Dieu créa l'homme à son image, il le créa à l'image de
+#&gt; Dieu, il créa l'homme et la femme.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu les bénit, et Dieu leur dit: Soyez féconds,
+#&gt; multipliez, remplissez la terre, et l'assujettissez; et dominez sur les
+#&gt; poissons de la mer, sur les oiseaux du ciel, et sur tout animal qui se meut sur
+#&gt; la terre.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Et Dieu dit: Voici, je vous donne toute herbe portant de
+#&gt; la semence et qui est à la surface de toute la terre, et tout arbre ayant en
+#&gt; lui du fruit d'arbre et portant de la semence: ce sera votre nourriture.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Et à tout animal de la terre, à tout oiseau du ciel, et
+#&gt; à tout ce qui se meut sur la terre, ayant en soi un souffle de vie, je donne
+#&gt; toute herbe verte pour nourriture. Et cela fut ainsi.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Dieu vit tout ce qu'il avait fait et voici, cela était
+#&gt; très bon. Ainsi, il y eut un soir, et il y eut un matin: ce fut le sixième
+#&gt; jour.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Joe Paterno, né le 21 décembre 1926 à Brooklyn et mort
+#&gt; le 22 janvier 2012 à State College, est un joueur et entraîneur américain de
+#&gt; football américain universitaire. Figure historique et emblématique des Nittany
+#&gt; Lions de Penn State entre 1966 et 2011, il est l'entraîneur le plus victorieux
+#&gt; de l'histoire du football américain universitaire avec 409 succès en Division
+#&gt; I. Son image est toutefois ternie en fin de carrière à cause de soupçons de
+#&gt; négligence dans une affaire d'agressions sexuelles sur mineurs.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Lors de ses brillantes études de droit à l'université
+#&gt; Brown, Joe Paterno joue au football américain et est entraîné par Rip Engle. Ce
+#&gt; dernier, embauché par l'université de Penn State, le recrute comme entraîneur
+#&gt; assistant en 1950. Pendant quinze saisons, l'assistant fait ses preuves avant
+#&gt; de devenir entraîneur principal des Nittany Lions en 1965. Surnommé JoePa, il
+#&gt; connaît rapidement le succès. Invaincu en 1968 et 1969, il est désiré par
+#&gt; plusieurs franchises de la National Football League (NFL), mais refuse pour
+#&gt; conserver son rôle d'éducateur. Entraîneur de l'équipe universitaire championne
+#&gt; en 1982 et 1986, vainqueur des quatre principaux Bowls universitaires, il
+#&gt; intègre le College Football Hall of Fame en 2007 alors qu'il est encore en
+#&gt; activité, un accomplissement rare.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Reconnu pour ses succès sportifs, académiques et son
+#&gt; exemplarité, JoePa est adulé comme une icône populaire dans la région de State
+#&gt; College. Onze jours après avoir célébré sa 409e victoire avec les Lions, il est
+#&gt; démis de ses fonctions à la suite du scandale des agressions sexuelles de
+#&gt; l'Université d'État de Pennsylvanie. Accusé d'avoir couvert les abus sexuels de
+#&gt; Jerry Sandusky, son image est ternie par cette affaire au retentissement
+#&gt; international. Il meurt deux mois plus tard des suites d'un cancer du poumon.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Chacun peut publier immédiatement du contenu en ligne, à
+#&gt; condition de respecter les règles essentielles établies par la Fondation
+#&gt; Wikimedia et par la communauté ; par exemple, la vérifiabilité du contenu,
+#&gt; l'admissibilité des articles et garder une attitude cordiale.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'De nombreuses pages d’aide sont à votre disposition,
+#&gt; notamment pour créer un article, modifier un article ou insérer une image.
+#&gt; N’hésitez pas à poser une question pour être aidé dans vos premiers pas,
+#&gt; notamment dans un des projets thématiques ou dans divers espaces de
+#&gt; discussion.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Les pages de discussion servent à centraliser les
+#&gt; réflexions et les remarques permettant d’améliorer les articles.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'En 1894, l’explorateur Gustav Adolf von Götzen suivait
+#&gt; les traces d’un missionnaire en provenance de la cote orientale d’Afrique.
+#&gt; Pendant qu’il se rendait au Rwanda, il découvre un petit village des pécheurs
+#&gt; appelé Ngoma qui traduit signifie tam tam, par déformation il écrivit Goma.
+#&gt; Ngoma devint un poste belge en face de celui de Rubavu (au Rwanda) habité par
+#&gt; les Allemands. Au début, la cohabitation entre ces deux postes n’était pas
+#&gt; facile. À un certain moment, les chefs coutumiers du Rwanda, en complicité avec
+#&gt; les Allemands attaquent les Belges de Goma. Ces derniers se réfugient à Bukavu
+#&gt; et laissent les envahisseurs occuper la ville. Après des négociations, les
+#&gt; Allemands replient vers le Rwanda et les Belges reprennent leur position
+#&gt; initiale comme poste colonial. L’afflux des colonisateurs dans ce village joue
+#&gt; un rôle important dans son évolution pour devenir une grande agglomération. Les
+#&gt; colonisateurs venaient d’installer le chef lieu du [... truncated]
+#&gt; Warning: input string 'En ce moment, Goma reste un poste de transaction
+#&gt; lacustre avec Bukavu qui était une ville minière. Plus tard, Rutshuru, Masisi,
+#&gt; Kalehe, Gisenyi, etc. déverseront leurs populations dans Goma, à la rechercher
+#&gt; de l’emploi au près des colonisateurs. C’est en cette période que vu le jour le
+#&gt; quartier Birere (un bidonville de Goma) autour des entrepôts, bureaux et
+#&gt; habitations des colons. Le nom Birere (littéralement feuilles de bananier)
+#&gt; vient du fait qu’à l’époque, les gens y construisaient en feuilles des
+#&gt; bananiers.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'La ville est la base arrière de l'opération Turquoise
+#&gt; organisée en 1994 à la fin du génocide rwandais.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'La ville et ses environs abriteront dans des camps
+#&gt; autour de 650 000 réfugiés hutus de 1994 jusqu'à la chute du Zaïre, dont
+#&gt; certains supposés anciens génocidaires. Selon des ONG, l'AFDL procède à des
+#&gt; massacres dans les camps entre 1996 et 19971.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'De 1998 à 2002/2003, la ville, sous contrôle du
+#&gt; Rassemblement congolais pour la démocratie (RCD) pro-rwandais échappe au
+#&gt; contrôle du gouvernement congolais.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'De nombreux viols, massacres et crimes de guerre y ont
+#&gt; été perpétrés entre 1996 et 2006 par les troupes des généraux rebelles du RCD,
+#&gt; essentiellement sous les généraux Nkundabatware et Mutebusi.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'En 2002, le Nyiragongo entra en éruption, et une coulée
+#&gt; de lave atteignit le centre de la ville. La lave n'a pas atteint le lac Kivu
+#&gt; fort heureusement, en effet ce lac est un lac méromictique et un changement
+#&gt; brutal de chaleur aurait des conséquences graves : Éruption limnique.' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Débordant de populations fuyant les violences, Goma
+#&gt; compte en 2012 plus de 400 000 habitants. Ceux qui ne peuvent pas trouver
+#&gt; d'abri remplissent les camps de réfugiés, où l'ONU et les ONG se débattent pour
+#&gt; leur fournir nourriture, eau et combustible.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'In 1996, Wales and two partners founded Bomis, a web
+#&gt; portal primarily known for featuring adult content. Bomis provided the initial
+#&gt; funding for the free peer-reviewed encyclopedia Nupedia (2000–2003). On January
+#&gt; 15, 2001, with Larry Sanger and others, Wales launched Wikipedia, a free
+#&gt; open-content encyclopedia that enjoyed rapid growth and popularity. As its
+#&gt; public profile grew, Wales became its promoter and spokesman. Though he is
+#&gt; historically credited as co-founder, he has disputed this, declaring himself
+#&gt; the sole founder.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Jesus is also revered in other religions. In Islam,
+#&gt; Jesus (often referred to by his Quranic name ʿĪsā) is considered the
+#&gt; penultimate prophet of God and the messiah, who will return before the Day of
+#&gt; Judgement. Muslims believe Jesus was born of the virgin Mary (another figure
+#&gt; revered in Islam), but was neither God nor a son of God; In contrast, Judaism
+#&gt; rejects the belief that Jesus was the awaited messiah, arguing that he did not
+#&gt; fulfill messianic prophecies, and was neither divine nor resurrected.' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Formal unification of Germany into the modern
+#&gt; nation-state was commenced on 18 August 1866 with the North German
+#&gt; Confederation Treaty establishing the Prussia-led North German Confederation
+#&gt; later transformed in 1871 into the German Empire. After World War I and the
+#&gt; German Revolution of 1918–1919, the Empire was in turn transformed into the
+#&gt; semi-presidential Weimar Republic. The Nazi seizure of power in 1933 led to the
+#&gt; establishment of a totalitarian dictatorship, World War II, and the Holocaust.
+#&gt; After the end of World War II in Europe and a period of Allied occupation, in
+#&gt; 1949, Germany as a whole was organized into two separate polities with limited
+#&gt; sovereignity: the Federal Republic of Germany, generally known as West Germany,
+#&gt; and the German Democratic Republic, East Germany, while Berlin de jure
+#&gt; continued its Four Power status. The Federal Republic of Germany was a founding
+#&gt; member of the European Economic Community and the European Union, while the
+#&gt; German Democratic R [... truncated]
+#&gt; Warning: input string 'Over the centuries, the City and Fortress of
+#&gt; Luxembourg—of great strategic importance due to its location between the
+#&gt; Kingdom of France and the Habsburg territories—was gradually built up to be one
+#&gt; of the most reputed fortifications in Europe. ' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Geometrically, this is seen as the sum of the squared
+#&gt; distances, parallel to the axis of the dependent variable, between each data
+#&gt; point in the set and the corresponding point on the regression surface—the
+#&gt; smaller the differences, the better the model fits the data. The resulting
+#&gt; estimator can be expressed by a simple formula, especially in the case of a
+#&gt; simple linear regression, in which there is a single regressor on the right
+#&gt; side of the regression equation.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'The OLS estimator is consistent for the level-one fixed
+#&gt; effects when the regressors are exogenous and forms perfect colinearity (rank
+#&gt; condition), consistent for the variance estimate of the residuals when
+#&gt; regressors have finite fourth moments and—by the Gauss–Markov theorem—optimal
+#&gt; in the class of linear unbiased estimators when the errors are homoscedastic
+#&gt; and serially uncorrelated. Under these conditions, the method of OLS provides
+#&gt; minimum-variance mean-unbiased estimation when the errors have finite
+#&gt; variances. Under the additional assumption that the errors are normally
+#&gt; distributed with zero mean, OLS is the maximum likelihood estimator that
+#&gt; outperforms any non-linear unbiased estimator.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und die Erde war wüst und leer, und es war finster auf
+#&gt; der Tiefe; und der Geist Gottes schwebte auf dem Wasser.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sah, daß das Licht gut war. Da schied Gott das
+#&gt; Licht von der Finsternis' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string 'Da machte Gott die Feste und schied das Wasser unter der
+#&gt; Feste von dem Wasser über der Feste. Und es geschah also.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Es sammle sich das Wasser unter dem
+#&gt; Himmel an besondere Örter, daß man das Trockene sehe. Und es geschah also.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott nannte das Trockene Erde, und die Sammlung der
+#&gt; Wasser nannte er Meer. Und Gott sah, daß es gut war.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Es lasse die Erde aufgehen Gras und
+#&gt; Kraut, das sich besame, und fruchtbare Bäume, da ein jeglicher nach seiner Art
+#&gt; Frucht trage und habe seinen eigenen Samen bei sich selbst auf Erden. Und es
+#&gt; geschah also.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Und die Erde ließ aufgehen Gras und Kraut, das sich
+#&gt; besamte, ein jegliches nach seiner Art, und Bäume, die da Frucht trugen und
+#&gt; ihren eigenen Samen bei sich selbst hatten, ein jeglicher nach seiner Art. Und
+#&gt; Gott sah, daß es gut war.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string 'und seien Lichter an der Feste des Himmels, daß sie
+#&gt; scheinen auf Erden. Und es geschah also.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott machte zwei große Lichter: ein großes Licht,
+#&gt; das den Tag regiere, und ein kleines Licht, das die Nacht regiere, dazu auch
+#&gt; Sterne.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Und Gott setzte sie an die Feste des Himmels, daß sie
+#&gt; schienen auf die Erde' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string 'und den Tag und die Nacht regierten und schieden Licht
+#&gt; und Finsternis. Und Gott sah, daß es gut war.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Es errege sich das Wasser mit webenden
+#&gt; und lebendigen Tieren, und Gevögel fliege auf Erden unter der Feste des
+#&gt; Himmels.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Und Gott schuf große Walfische und allerlei Getier, daß
+#&gt; da lebt und webt, davon das Wasser sich erregte, ein jegliches nach seiner Art,
+#&gt; und allerlei gefiedertes Gevögel, ein jegliches nach seiner Art. Und Gott sah,
+#&gt; daß es gut war.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string 'Und Gott segnete sie und sprach: Seid fruchtbar und
+#&gt; mehrt euch und erfüllt das Wasser im Meer; und das Gefieder mehre sich auf
+#&gt; Erden.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Da ward aus Abend und Morgen der fünfte Tag.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Die Erde bringe hervor lebendige Tiere,
+#&gt; ein jegliches nach seiner Art: Vieh, Gewürm und Tiere auf Erden, ein jegliches
+#&gt; nach seiner Art. Und es geschah also.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott machte die Tiere auf Erden, ein jegliches nach
+#&gt; seiner Art, und das Vieh nach seiner Art, und allerlei Gewürm auf Erden nach
+#&gt; seiner Art. Und Gott sah, daß es gut war.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Laßt uns Menschen machen, ein Bild, das
+#&gt; uns gleich sei, die da herrschen über die Fische im Meer und über die Vögel
+#&gt; unter dem Himmel und über das Vieh und über die ganze Erde und über alles
+#&gt; Gewürm, das auf Erden kriecht.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Und Gott segnete sie und sprach zu ihnen: Seid fruchtbar
+#&gt; und mehrt euch und füllt die Erde und macht sie euch untertan und herrscht über
+#&gt; die Fische im Meer und über die Vögel unter dem Himmel und über alles Getier,
+#&gt; das auf Erden kriecht.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string 'Und Gott sprach: Seht da, ich habe euch gegeben allerlei
+#&gt; Kraut, das sich besamt, auf der ganzen Erde und allerlei fruchtbare Bäume, die
+#&gt; sich besamen, zu eurer Speise,' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'und allem Getier auf Erden und allen Vögeln unter dem
+#&gt; Himmel und allem Gewürm, das da lebt auf Erden, daß sie allerlei grünes Kraut
+#&gt; essen. Und es geschah also.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Während des Bürgerkrieges und Völkermords im nahe
+#&gt; angrenzenden Ruanda 1994 war Goma eines der Hauptziele für Flüchtlinge. Unter
+#&gt; diesen waren nebst Zivilisten auch Mittäter des Genozids. Nachdem über eine
+#&gt; Million Flüchtlinge die Stadt erreicht hatten, brach in den Lagern eine
+#&gt; Cholera-Epidemie aus, die mehrere Tausend Opfer forderte. In den Jahren 1997
+#&gt; und 1998, als der Bürgerkrieg im Kongo nach dem Sturz von Präsident Mobutu Sese
+#&gt; Seko eskalierte, eroberten ruandische Regierungstruppen Goma. Im Zuge der
+#&gt; Verfolgung von Hutu, die in der Stadt Zuflucht gesucht hatten, töteten sie auch
+#&gt; Hunderte Unbeteiligte.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string 'Im Jahre 2002 wurde die Stadt von einem Lavastrom aus
+#&gt; dem etwa 14 km entfernten Nyiragongo im Norden zu großen Teilen zerstört. Viele
+#&gt; Gebäude gerade im Stadtzentrum sowie der Flughafen Goma waren betroffen. Von
+#&gt; den 3.000 Metern der Start- und Landebahn sind bis heute noch fast 1.000 Meter
+#&gt; unter einer Lavaschicht begraben, so dass der internationale Verkehr ihn
+#&gt; meidet. Rund 250.000 Einwohner der Stadt mussten flüchten. Es gab 147
+#&gt; Todesopfer, viele Flüchtlinge blieben obdachlos oder haben sich am Rande der
+#&gt; Lavafelder Notunterkünfte gebaut. Seit April 2009 wird unter Führung der
+#&gt; Welthungerhilfe das Rollfeld des Flughafens von der Lava befreit. Die
+#&gt; Bedrohung, dass sich bei einer erneuten Eruption Lavamassen aus dem innerhalb
+#&gt; des Vulkankraters befindlichen Lavasee erneut ins Tal und auf die Stadt
+#&gt; ergießen, besteht nach wie vor.[3]' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Am 15. April 2008 raste nach dem Start vom Flughafen
+#&gt; Goma eine Douglas DC-9 mit 79 Passagieren und 6 Besatzungsmitgliedern über das
+#&gt; südliche Startbahnende hinaus in das Wohn- und Marktgebiet Birere. Etwa 40
+#&gt; Personen aus dem angrenzenden Siedlungsgebiet kamen ums Leben, mindestens 53
+#&gt; Passagiere und die 6 Besatzungsmitglieder überlebten jedoch. Das Feuer aus dem
+#&gt; brennenden Wrack konnte sich aufgrund des starken Regens nicht ausbreiten,
+#&gt; Anwohner konnten das Feuer zusätzlich eindämmen.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Am 21. November 2012 wurden große Teile der Stadt von
+#&gt; der gegen die Zentralregierung unter Präsident Joseph Kabila kämpfenden
+#&gt; Rebellenbewegung M23 eingenommen. Dort stationierte UNO-Friedens-Truppen
+#&gt; griffen im Gegensatz zu früheren Aktivitäten nicht mehr ein.[5] Am 1. Dezember
+#&gt; begannen sie nach Überschreitung eines Ultimatums der Internationalen Konferenz
+#&gt; der Großen Seen Afrikas und zwei Resolutionen des UN-Sicherheitsrats, sich aus
+#&gt; der Stadt zurückzuziehen.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string 'Im Jahre 2019 wurden mehrere Einzelfälle von Ebola in
+#&gt; der Stadt registriert, nachdem die Ebola Epidemie bereits zuvor im Ostkongo
+#&gt; ausgebrochen war.[6]' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string 'Seit 1959 ist Goma Sitz des römisch-katholischen Bistums
+#&gt; Goma.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Die Transporteure werden Frachtführer (in Österreich
+#&gt; Frächter) genannt. Sie organisieren nicht den Transport, sondern führen diesen
+#&gt; aus, meistens im Auftrag eines Spediteurs. Die Höhe der Fracht wird im
+#&gt; Frachtvertrag vereinbart und in der Regel im Frachtbrief festgehalten. Seit mit
+#&gt; der Transportrechtsreform 1998 in Deutschland die Erstellung eines
+#&gt; Frachtbriefes für nationale Transporte nicht mehr zwingend erforderlich ist,
+#&gt; sondern auch Lieferscheine, Ladelisten oder vergleichbare Papiere als
+#&gt; Warenbegleitdokument verwendet werden können, wird zunehmend kein Frachtbrief
+#&gt; mehr ausgestellt. Beim Frachtbrief gibt es drei Originalausfertigungen. Eine
+#&gt; Ausfertigung verbleibt beim Absender, nachdem ihm darauf der Frachtführer die
+#&gt; Übernahme des Frachtguts bestätigt hat. Die zweite verbleibt nach Ablieferung
+#&gt; des Frachtguts als Ablieferbestätigung beim Frachtführer und die dritte erhält
+#&gt; der Empfänger.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF [... truncated]
+#&gt; Warning: input string 'Für die Verladung des Frachtguts ist der Absender
+#&gt; zuständig. Er ist dabei gem. § 412 HGB für eine beförderungssichere Verladung
+#&gt; des Frachtguts verantwortlich, wohingegen der Frachtführer für die
+#&gt; verkehrssichere Verladung (z. B. Gewichtsverteilung, Einhaltung der zulässigen
+#&gt; Achslasten), als auch für die Ladungssicherung zu sorgen hat.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Bei Kontrollen muss der Frachtbrief den Zoll- und
+#&gt; Polizeibehörden, sowie dem Bundesamt für Güterverkehr (BAG) ausgehändigt
+#&gt; werden.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string 'Es gibt anmeldepflichtige Frachtgüter, für deren
+#&gt; Transport es einer ausdrücklichen behördlichen Genehmigung bedarf.
+#&gt; Schwertransporte erfordern eine behördliche Ausnahmegenehmigung und bei
+#&gt; Überschreiten bestimmter Abmessungen sind gemäß § 29 Absatz. 3 StVO (Übermäßige
+#&gt; Straßennutzung) definitiv Begleitfahrzeuge und/oder eine Begleitung durch die
+#&gt; Polizei vorgeschrieben, um Sicherungsmaßnahmen einzuleiten und für einen
+#&gt; reibungslosen Ablauf zu sorgen. Fällt das zu befördernde Frachtgut unter die
+#&gt; Gefahrgutverordnung, muss das Transportfahrzeug neben der Einhaltung
+#&gt; gefahrgutrelevanter Vorschriften auch mit entsprechenden Warntafeln
+#&gt; gekennzeichnet sein. Darüber hinaus benötigt dann der Fahrzeugführer und ein
+#&gt; eventueller Beifahrer auch eine ADR-Bescheinigung.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string 'Die Aufteilung der Frachtkosten zwischen Absender und
+#&gt; Empfänger wird über die im Kaufvertrag festgehaltenen Lieferbedingungen
+#&gt; geregelt, im internationalen Warenverkehr durch die Incoterms.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '26 De Jesus sot zu sengen Apostelen: "Fäert d’Mënschen
+#&gt; net! Et ass nämlech näischt zougedeckt, wat net géif opgedeckt ginn, an et ass
+#&gt; näischt verbuergen, wat net géif bekannt ginn.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 Wat ech iech an der däischterer Nuecht soen, dat
+#&gt; verzielt am hellen Do! A wat dir an d’Ouer gepëspert kritt, dat verkënnegt op
+#&gt; den Diech!' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '28 Fäert net déi, déi zwar de Kierper doutmaachen, ma
+#&gt; déi d’Séil net doutmaache kënnen! Fäert villméi deen, deen esouwuel d’Séil wéi
+#&gt; och de Kierper an der Häll zerstéiere kann!' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 Ginn net zwéi Spatze fir een Zantimm verkaaft? An
+#&gt; dach, ouni äre Papp fällt net een eenzege vun hinnen op de Buedem erof.' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Bei iech awer sinn esouguer d’Hoer um Kapp alleguer
+#&gt; gezielt.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '31 Fäert also net! Dir sidd méi wäert wéi déi sëllege
+#&gt; Spatzen.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '32 Wien zu mir hält bei de Mënschen, zu deem halen och
+#&gt; ech bei mengem Papp am Himmel.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '33 Wie mech awer verleegent virun de Mënschen, dee
+#&gt; verleegenen och ech viru mengem Papp am Himmel."' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '38 De Jesus sot zu senge Jünger: "Dir hutt héieren, datt
+#&gt; gesot ginn ass: A fir A, an Zant fir Zant.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '39 Ech awer soen iech: Leescht deem Béise kee
+#&gt; Widderstand! Am Géigendeel: Wann een dir eng op dee rietse Bak gëtt, dann hal
+#&gt; him och deen aneren duer!' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '40 A wann een dir de Prozess maachen an däin Hiem huele
+#&gt; wëllt, da looss him och de Mantel!' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '41 A wann een dech zwéngt, eng Meil mat him ze goen, da
+#&gt; géi der zwou mat him!' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string '42 A wann een dech fir eppes freet, da gëff him et, a
+#&gt; wann een eppes vun dir léine wëllt, dann dréi him net de Réck!' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '43 Dir hutt héieren, datt gesot ginn ass: Du solls däin
+#&gt; Nächste gär hunn, an du solls däi Feind haassen!' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '44 Ech awer soen iech: Hutt är Feinde gär a biet fir
+#&gt; déi, déi iech verfollegen,' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '45 fir datt dir Kanner vun ärem Papp am Himmel gitt! Hie
+#&gt; léisst nämlech seng Sonn opgoen iwwer deene Béise grad ewéi iwwer deene Gudden,
+#&gt; an hie léisst et reenen op déi Gerecht grad ewéi op déi Ongerecht.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '46 Wann dir nëmmen déi gär hutt, déi iech gär hunn, wat
+#&gt; fir e Loun sollt dir duerfir kréien? Maachen net och d’Steierandreiwer dat?'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '47 A wann dir nëmmen är Gesëschter gréisst, wat maacht
+#&gt; dir dann Extraes? Maachen net och d’Heeden dat?' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '48 Dir sollt also vollkomme sinn, esou wéi äre Papp am
+#&gt; Himmel vollkommen ass."' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '13 Wéi de Jesus aus Galiläa erof un de Jordan bei de
+#&gt; Johannes komm ass, fir sech vun him deefen ze loossen,' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '14 wollt de Johannes hien dovun ofhalen a sot zu him:
+#&gt; “Ech hätt et néideg, fir mech vun dir deefen ze loossen, an du kënns bei
+#&gt; mech?”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '15 De Jesus huet him geäntwert: “Looss gewäerden! Et ass
+#&gt; nämlech un äis, déi ganz Gerechtegkeet z’erfëllen.” Dunn huet de Johannes de
+#&gt; Jesus gewäerde gelooss.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '16 Soubal wéi de Jesus gedeeft war, ass hien aus dem
+#&gt; Waasser eropkomm. A kuck, den Himmel ass opgemaach ginn, an de Jesus huet dem
+#&gt; Herrgott säi Geescht gesinn op sech erofkomme wéi eng Dauf.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '17 An eng Stëmm aus dem Himmel sot: “Dat hei ass mäi
+#&gt; Jong, an ech hunn hie gär; hie steet a menger Gonscht!”' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '1 Wéi et deen éischten Dag vun der Woch, also den Dag
+#&gt; nom Sabbat, hell ginn ass, sinn d’Maria vu Magdala an déi aner Maria nom Graf
+#&gt; kucke gaang.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '2 An hei, op eemol huet de Buedem ugefaang, ferm ze
+#&gt; zidderen: Dem Här säin Engel ass nämlech vum Himmel erofkomm, hien ass dohi
+#&gt; gaang, huet de Steen ewechgerullt an huet sech dropgesat.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '3 Hien huet ausgesi wéi e Blëtz, an säi Kleed war wäiss
+#&gt; wéi Schnéi.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '4 D’Wiechter hu geziddert, esou eng Angscht haten si
+#&gt; virun him, an si ware wéi dout.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '5 Dunn huet den Engel zu de Frae gesot: "Fäert net! Ech
+#&gt; weess, dir sicht de Jesus, dee Gekräizegten.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '6 Hien ass net hei: Hien ass aus dem Doud erwächt ginn,
+#&gt; esou wéi hie gesot hat. Kommt heihinner, kuckt d’Plaz, wou hie louch!' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '7 An da gitt séier a sot senge Jünger: ’Hien ass aus dem
+#&gt; Doud erwächt ginn! Hie geet iech viraus a Galiläa; do kritt dir hien ze
+#&gt; gesinn.’ Kuckt, ech hunn iech et gesot!"' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '8 Huerteg sinn si vum Graf fortgaang, voller Angscht, ma
+#&gt; och mat grousser Freed, an si si gelaf, fir de Jünger et ze verzielen.' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '9 A kuck, de Jesus ass hinne begéint a sot: “Freet
+#&gt; iech!” Si sinn op hien duergaang, hunn sech virun him niddergehäit an hunn hien
+#&gt; ugebiet.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '10 Du sot de Jesus zu hinnen: “Fäert net! Gitt a sot
+#&gt; menge Bridder, datt si a Galiläa goe sollen; do kréien si mech ze gesinn.”'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '5 De Jesus ass bis bei eng Stad a Samaria komm, déi
+#&gt; Sychar heescht an déi no bei deem Stéck läit, dat de Jakob sengem Jong Jouseph
+#&gt; ginn hat.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '6 Do war de Jakobsbur. Well de Jesus midd war vun der
+#&gt; Rees, huet hien sech bei de Bur gesat; et war ëm déi sechst Stonn.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '7 Du koum eng Fra aus Samaria, fir Waasser ze schäffen.
+#&gt; De Jesus sot zu hir: “Gëff mir ze drénken!”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '8 Seng Jünger waren nämlech fort an d’Stad gaang, fir
+#&gt; eppes z’iessen ze kafen.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '9 Du sot déi samaritesch Fra zu him: “Wéi kënnt et, datt
+#&gt; s du, e Judd, mech, eng samaritesch Fra, fir eppes ze drénke frees?” – D’Judden
+#&gt; halen sech nämlech net mat de Samariter op. –' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '10 De Jesus huet hir geäntwert: “Wann s du dem Herrgott
+#&gt; seng Gof kenne géifs a wann s du wéisst, wien et ass, deen zu dir seet: ’Gëff
+#&gt; mir ze drénken!’, da géifs du hie froen, an hie géif dir liewegt Waasser
+#&gt; ginn!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '11 D’Fra sot zu him: "Här, du hues näischt fir ze
+#&gt; schäffen, an de Pëtz ass déif. Wou hues du dann dat liewegt Waasser hier?'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '12 Bass du éire méi dichteg wéi eise Papp, de Jakob,
+#&gt; deen äis de Pëtz ginn huet a selwer draus gedronk huet, grad ewéi seng Jongen
+#&gt; an all säi Véi?”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '13 De Jesus huet hir geäntwert: "Jiddereen, dee vun
+#&gt; dësem Waasser drénkt, gëtt nees duuschtereg.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '14 Wien awer vun deem Waasser drénkt, dat ech him ginn,
+#&gt; dee gëtt an all Éiwegkeet net méi duuschtereg, ma dat Waasser, dat ech him
+#&gt; ginn, gëtt an him eng Quell mat spruddelegem Waasser, dat éiwegt Liewe
+#&gt; schenkt.”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '15 D’Fra sot zu him: "Här, gëff mir däers Waasser, fir
+#&gt; datt ech net méi duuschtereg ginn an net méi heihinner ze komme brauch, fir
+#&gt; Waasser ze schäffen!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string '16 Hie sot zu hir: "Géi, ruff däi Mann a komm nees
+#&gt; zréck!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '17 D’Fra huet him geäntwert: “Ech hu kee Mann.” De Jesus
+#&gt; sot zu hir: "Dat hues du gutt gesot: ’E Mann hunn ech net.’' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '18 Fënnef Männer hues du nämlech gehat, an deejéinegen,
+#&gt; deen s du elo hues, ass net däi Mann. Dat, wat s du gesot hues, ass wouer.”'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '19 D’Fra sot zu him: "Här, ech gesinn, datt s du e
+#&gt; Prophéit bass.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '20 Eis Pappen hunn op dësem Bierg ugebiet. Dir awer sot,
+#&gt; datt Jerusalem déi Plaz ass, wou een ubiede muss.”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '21 De Jesus sot zu hir: "Gleef mir es, Fra, d’Stonn
+#&gt; kënnt, wou dir de Papp weder op dësem Bierg nach zu Jerusalem ubiet!' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '22 Dir biet un, wat dir net kennt; mir bieden un, wat
+#&gt; mir kennen. D’Rettung kënnt nämlech vun de Judden.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '23 Ma et kënnt eng Stonn – an se ass elo schonn do –,
+#&gt; wou déijéineg, déi wierklech ubieden, de Papp am Geescht an an der Wourecht
+#&gt; ubieden, well där Mënschen, déi hien esou ubieden, sicht de Papp.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '24 Den Herrgott ass Geescht, an déijéineg, déi hien
+#&gt; ubieden, mussen am Geescht an an der Wourecht ubieden.”' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '25 Du sot d’Fra zu him: “Ech weess, datt de Messias
+#&gt; kënnt, dee Christus genannt gëtt. Wann hie kënnt, da verkënnegt hien äis
+#&gt; alles.”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '26 De Jesus sot zu hir: “Ech sinn et, ech, dee mat dir
+#&gt; schwätzt.”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '27 Iwwerdeems waren dem Jesus seng Jünger zréckkomm. Si
+#&gt; hunn sech gewonnert, datt hie mat enger Fra geschwat huet. Trotzdem huet kee
+#&gt; gefrot: “Wat sichs du?” oder “Wat schwätz du mat hir?”' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '28 D’Fra awer huet hire Waasserkrou stoe gelooss an ass
+#&gt; fortgaang, hannescht an d’Stad. Do sot si zu de Leit:' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 “Kommt kucken! Do ass e Mënsch, dee mir alles gesot
+#&gt; huet, wat ech gemaach hunn! Soll hien éiren de Christus sinn?”' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Dueropshi sinn d’Leit aus der Stad erausgaang a bei
+#&gt; de Jesus komm.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '31 An der Tëschenzäit hunn dem Jesus seng Jünger him
+#&gt; gefléift: “Rabbi, iess eppes!”' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '32 Hien awer sot zu hinnen: “Ech hunn e Kascht, deen dir
+#&gt; net kennt.”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '33 Dunn hunn d’Jünger een deen anere gefrot: “Soll éiren
+#&gt; een him eppes z’iesse bruecht hunn?”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '34 De Jesus sot zu hinnen: "Mäi Kascht ass et, dat ze
+#&gt; maachen, wat deejéinege wëllt, dee mech geschéckt huet, an säi Wierk fäerdeg ze
+#&gt; maachen.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '35 Sot dir net: ’Et sinn nach véier Méint, an da kënnt
+#&gt; d’Rekolt’? Ech awer soen iech: Hieft äre Bléck a kuckt d’Felder, wéi se zeideg
+#&gt; si fir d’Rekolt!' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '36 Scho kritt deen, deen d’Rekolt eranhëlt, säi Loun a
+#&gt; sammelt Fruucht fir d’éiwegt Liewen, esou datt si sech allebéid freeën: deen,
+#&gt; dee séit, an deen, deen d’Rekolt eranhëlt.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '37 An dësem Sënn ass d’Spréchwuert wouer: Deen ee séit,
+#&gt; an deen aneren hëlt d’Rekolt eran.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '38 Ech hunn iech geschéckt, fir eng Rekolt eranzehuelen,
+#&gt; fir déi dir iech net midd gemaach hutt. Anerer hunn sech midd gemaach, an dir
+#&gt; profitéiert vun hirer Méi.”' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '39 Vill vun de Samariter aus där Stad hunn un de Jesus
+#&gt; gegleeft wéinst der Fra hirem Wuert. Si hat jo bezeit: “Hien huet mir alles
+#&gt; gesot, wat ech gemaach hunn.”' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '40 Wéi d’Samariter elo bei hie koumen, hunn si hie
+#&gt; gebieden, bei hinnen ze bleiwen, an hien ass zwéin Deeg do bliwwen.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '41 An et hunn der nach vill méi gegleeft wéinst sengem
+#&gt; eegene Wuert,' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '42 an zu der Fra soten si: “Et ass net méi wéinst denger
+#&gt; Ausso, wou mir gleewen – mir hu jo selwer héieren a mir wëssen, datt deen heite
+#&gt; wierklech de Retter vun der Welt ass.”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '9 Där Deeg een huet de Jesus e Mann, dee Matthäus
+#&gt; geheescht huet, beim Oktroishaische sëtze gesinn, an hie sot zu him: “Komm mir
+#&gt; no!” Dunn ass de Mann opgestan an ass him nogaang.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '10 A wéi de Jesus am Haus bei Dësch war, kuck, du si
+#&gt; vill Steierandreiwer a Sënner komm an hunn sech mat him an senge Jünger un den
+#&gt; Dësch gesat.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '11 D’Pharisäer, déi dat gesinn hunn, soten zu de Jünger:
+#&gt; “Firwat ësst äre Meeschter mat de Steierandreiwer an de Sënner?”' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '12 De Jesus awer huet et héieren a sot: "Et sinn net déi
+#&gt; Gesond, déi en Dokter brauchen, ma déi Krank.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '13 Dir awer gitt a léiert, wat et heescht:
+#&gt; Baarmhäerzegkeet wëll ech, an net Affer! Ech sinn nämlech net komm, fir déi
+#&gt; Gerecht ze ruffen, ma d’Sënner."' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '19 Um Owend vun deem éischten Dag vun der Woch, wéi
+#&gt; d’Jünger sech aus Angscht virun de Judden hanner zouenen Dieren opgehal hunn,
+#&gt; ass de Jesus komm an huet sech an hir Mëtt gestallt. Hie sot zu hinnen: “Fridde
+#&gt; sief mat iech!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '20 Nodeems hien dat gesot hat, huet hien hinnen seng
+#&gt; Hänn an seng Säit gewisen. D’Jünger hunn sech gefreet, wéi si den Här gesinn
+#&gt; hunn.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '21 Du sot de Jesus nach eng Kéier zu hinnen: “Fridde
+#&gt; sief mat iech! Wéi de Papp mech geschéckt huet, esou schécken ech iech.”'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '22 Nodeems hien dat gesot hat, huet hien si ugehaucht a
+#&gt; sot zu hinnen: "Emfänkt hellege Geescht!' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '23 Wiem dir d’Sënnen noloosst, deem sinn se nogelooss;
+#&gt; wiem dir se net noloosst, deem sinn se net nogelooss."' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '24 Den Thomas, ee vun deenen Zwielef, deen Zwilling
+#&gt; genannt gouf, war net bei hinnen, wéi de Jesus komm ass.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '25 Déi aner Jünger soten zu him: “Mir hunn den Här
+#&gt; gesinn!” Hien awer sot zu hinnen: “Wann ech net un sengen Hänn d’Wonn vun den
+#&gt; Neel gesinn, a wann ech net mäi Fanger an d’Wonn vun den Neel leeë kann, a wann
+#&gt; ech net meng Hand an seng Säit leeë kann, da gleewen ech net!”' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '26 Aacht Deeg drop waren d’Jünger nees dobannen
+#&gt; zesummen, an den Thomas war bei hinnen. Obschonns d’Dieren zougespaart waren,
+#&gt; ass de Jesus komm, huet sech an hir Mëtt gestallt a sot: “Fridde sief mat
+#&gt; iech!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 Du sot hien zum Thomas: “Komm hier mat dengem Fanger,
+#&gt; kuck meng Hänn; komm hier mat denger Hand, lee se a meng Säit – a sief net méi
+#&gt; ongleeweg, ma gleeweg!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '28 Den Thomas huet him geäntwert: “Mäin Här a mäi
+#&gt; Gott!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 De Jesus sot zu him: “Well s du mech gesinn hues,
+#&gt; gleefs du. Glécklech déi, déi net gesinn an dach gleewen!”' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Nach vill aner Zeechen, déi net an dësem Buch
+#&gt; opgeschriwwe sinn, huet de Jesus bei senge Jünger zou gemaach.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '31 Déi hei awer sinn opgeschriwwen, fir datt dir gleeft,
+#&gt; datt de Jesus de Christus ass, dem Herrgott säi Jong, a fir datt dir, wann dir
+#&gt; gleeft, d’Liewen hutt an sengem Numm.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '2 De Johannes hat am Prisong vum Christus senge Wierker
+#&gt; héieren. Duerfir huet hien seng Jünger dohi geschéckt,' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '3 fir hien ze froen: “Bass du deen, dee komme soll, oder
+#&gt; solle mir op en anere waarden?”' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '4 De Jesus huet hinne geäntwert: "Gitt hin an erzielt
+#&gt; dem Johannes, wat dir héiert a gesitt:' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '5 Déi Blann gesinn nees, an déi Schlamm kënnen erëm
+#&gt; goen; déi Aussätzeg gi gerengegt, an déi Daf héieren op en Neis; déi Doudeg
+#&gt; ginn erwächt, an deenen Aarme gëtt eng gutt Noriicht verkënnegt.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '6 A glécklech ass dann deen, deen u mir keen Ustouss
+#&gt; hëlt.“7 Wéi dem Johannes seng Jünger fort waren, huet de Jesus ugefaang, mat de
+#&gt; Leit iwwer hien ze schwätzen. Hie sot:”Wat wollt dir iech ukucken, wéi dir an
+#&gt; d’Wüüst erausgaang sidd? En Hallem, dee vum Wand hin an hier geblose gëtt?'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '8 Oder wat wollt dir gesinn, wéi dir erausgaang sidd? E
+#&gt; Mënsch, deen a Seid a Samett gekleet ass? Kuckt, Leit, déi a Seid a Samett
+#&gt; gekleet sinn, déi sinn an de Kinnekshaiser.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '9 Oder wat wollt dir gesinn, wéi dir erausgaang sidd? E
+#&gt; Prophéit? Jo, ech soen iech, esouguer méi wéi e Prophéit.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '10 De Johannes ass et, iwwer dee geschriwwe steet: Kuck,
+#&gt; ech schécke mäi Buet virun dir hier: Hie geet virun dir a bereet däi Wee vir.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '11 Amen, ech soen iech: Vun all deenen, déi jee vun
+#&gt; enger Fra gebuer goufen, ass kee méi grouss wéi de Johannes den Deefer – an
+#&gt; dach ass dee Klengsten am Himmelräich méi grouss wéi hien."' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '15 Wéi d’Engele vun den Hierde fortgaang waren an den
+#&gt; Himmel, soten d’Hierden zueneen: “Loosse mer dach bis op Bethlehem goen an äis
+#&gt; dat ukucken, wat geschitt ass a wat den Här äis matgedeelt huet!”' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '16 Si hunn sech geflass, fir dohinner ze goen, an si
+#&gt; hunn d’Maria an de Jouseph fonnt an d’Këndchen, dat an enger Krëpp louch.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '17 Wéi si dat gesinn hunn, hunn si erzielt, wat hinnen
+#&gt; iwwer dëst Kand gesot gi war.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '18 All déi, déi et héieren hunn, hunn sech iwwer dat
+#&gt; gewonnert, wat d’Hierden hinne soten.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '19 D’Maria awer huet sech all dës Wierder gemierkt an an
+#&gt; hirem Häerz driwwer nogeduecht.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '20 Wéi d’Hierden hannescht bei hir Häerd gaang sinn,
+#&gt; hunn si den Herrgott verherrlecht a gelueft fir dat, wat si héieren a gesinn
+#&gt; haten – et ass alles esou gewiescht, wéi et hinne gesot gi war.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '13 De Jesus sot zu senge Jünger: "Dir sidd d’Salz vun
+#&gt; der Äerd! Wann awer dat Salz fad ginn ass, wouduerch kann et dann nees salzeg
+#&gt; gemaach ginn? Et daacht näischt méi, et ass just nach gutt, fir erausgehäit a
+#&gt; vun de Leit zertrëppelt ze ginn.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '14 Dir sidd d’Liicht vun der Welt! Eng Stad, déi uewen
+#&gt; um Bierg läit, kann een net verstoppen.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '15 Et fänkt ee jo och net eng Luucht un an ’t stellt een
+#&gt; se dann ënner e Sieschter, ma ’t stellt een se op de Liichter, an da liicht se
+#&gt; fir all déi, déi am Haus sinn.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '16 Esou soll äert Liicht virun de Leit liichten, fir
+#&gt; datt si är gutt Wierker gesinn an äre Papp am Himmel verherrlechen."' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '24 De Jesus huet de Leit dat Gläichnes hei erzielt:
+#&gt; "D’Himmelräich ass ze vergläiche mat engem Mënsch, dee gudde Som op säi Stéck
+#&gt; geséit huet.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '25 Wéi alles geschlof huet, koum säi Feind, huet matzen
+#&gt; ënner de Weess Onkraut geséit an huet sech ewechgemaach.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '26 Wéi d’Hällem grouss gi sinn a Fruucht gedroen hunn,
+#&gt; huet och d’Onkraut sech gewisen.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 Du sinn dem Haushär seng Kniecht bei hie komm a soten
+#&gt; zu him: ’Här, hues du net gudde Som op däi Stéck geséit? Wou kënnt dann dat
+#&gt; Onkraut hier?’' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '28 Hien huet hinne geäntwert: ’Dat huet e Feind
+#&gt; gemaach!’ Du soten d’Kniecht zu him: ’Solle mir higoen an et zesummerafen?’'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 Hie sot: ’Neen, soss rappt dir, wann dir d’Onkraut
+#&gt; zesummeraaft, an engems de Weess mat eraus.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Loosst béides matenee wuesse bis d’Rekolt! Da soen
+#&gt; ech deenen, déi d’Rekolt eranhuele kommen: Raaft fir d’éischt d’Onkraut a bannt
+#&gt; et a Bëndelen zesummen, fir et ze verbrennen; de Weess awer sammelt fir a meng
+#&gt; Scheier!”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '31 Nach en anert Gläichnes huet de Jesus hinne matginn.
+#&gt; Hie sot: "Mat dem Himmelräich ass et wéi mat engem Moschterkär, deen e Mënsch
+#&gt; op säi Stéck séit.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '32 De Moschterkär ass wuel dee klengste vun alle
+#&gt; Somkären, ma wann e bis gewuess ass, gëtt e méi grouss wéi all déi aner
+#&gt; Gaardeplanzen – e gëtt e Bam, esou datt d’Vigel vum Himmel kommen an an sengen
+#&gt; Äscht hir Näschter bauen.”' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '33 An nach en anert Gläichnes huet hien hinne verzielt:
+#&gt; “Mat dem Himmelräich ass et wéi mat Deessem, deen eng Fra ënner dräi Moosse
+#&gt; Miel mëscht, bis dat Ganzt duerchsaiert ass.”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '34 Dat alles huet de Jesus deene sëllege Leit a
+#&gt; Gläichnesser verzielt – ouni Gläichnesser huet hien hinnen näischt verzielt,'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '35 fir datt sech dat erfëlle géif, wat duerch de
+#&gt; Prophéit gesot gi war: “Dann doen ech mäi Mond op [a schwätzen] a Gläichnesser,
+#&gt; da ruffen ech dat aus, wat zënter dem Ufank [vun der Welt] verstoppt war.”'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '36 Duerno huet de Jesus d’Leit heemgeschéckt an ass
+#&gt; hannescht an d’Haus gaang. Seng Jünger si bei hie komm a soten zu him: “Erklär
+#&gt; äis d’Gläichnes vum Onkraut um Feld!”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '37 Hien huet hinne geäntwert: "Deejéinegen, deen dee
+#&gt; gudde Som séit, dat ass de Mënschejong,' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '38 an d’Feld, dat ass d’Welt; dee gudde Som, dat sinn
+#&gt; d’Kanner vum Räich, an d’Onkraut, dat sinn d’Kanner vum Béisen.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '39 De Feind, deen et geséit huet, ass den Däiwel,
+#&gt; d’Rekolt ass d’Enn vun dëser Welt, an déi, déi d’Rekolt eranhuelen, sinn
+#&gt; d’Engelen.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '40 Esou wéi d’Onkraut zesummegeraaft an am Feier
+#&gt; verbrannt gëtt, esou geet et och um Enn vun dëser Welt.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '41 De Mënschejong schéckt dann seng Engelen, an si rafen
+#&gt; all dat aus sengem Räich eraus, wat een zum Béise verféiert, an och all déi,
+#&gt; déi Onrecht gedoen hunn,' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '42 an si geheien si an en Uewen, an deem Feier ass ; do
+#&gt; gëtt gejéimert a mat den Zänn gegrätscht.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '43 Da liichten déi Gerecht wéi d’Sonn an hirem Papp
+#&gt; sengem Räich. Wien Oueren huet, dee soll lauschteren!"' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '25 Där Deeg een huet de Jesus gesot: "Ech luewen dech,
+#&gt; Papp, Här vum Himmel a vun der Äerd, well s du dat hei virun deene Verstännegen
+#&gt; a Gescheite verbuerge gehal an et deene Klenge bekannt gemaach hues.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 Ech krut vu mengem Papp alles uvertraut. Et erkennt
+#&gt; keen de Jong, ausser dem Papp, an et erkennt keen de Papp, ausser dem Jong an
+#&gt; deemjéinegen, deem de Jong et bekannt maache wëllt.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '28 Kommt all hier bei mech, déi dir iech kristillegt a
+#&gt; schwéier Laaschten ze droen hutt; bei mir kënnt dir raschten.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 Huelt mäi Jach op iech a léiert vu mir, well ech si
+#&gt; vu ganzem Häerz duuss an damiddeg, an dir fannt Rou fir är Séil.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Mäi Jach ass nämlech net schwéier ze droen, a meng
+#&gt; Laascht ass liicht."' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string '22 Nodeems de Jesus deene ville Leit eppes z’iesse
+#&gt; verschaaft hat, huet hien seng Jünger gedoen an den Naache klammen an op déi
+#&gt; aner Säit virfueren. Iwwerdeems si fortgefuer sinn, huet hien d’Leit
+#&gt; fortgeschéckt.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '24 Den Naache war scho vill Stadie vum Land ewech a gouf
+#&gt; vun de Wellen hin an hier gerappt, well et war Géigewand.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '25 An där véierter Nuetswuecht ass de Jesus iwwer de Séi
+#&gt; op d’Jünger duerkomm.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string '26 Wéi si hien iwwer de Séi komme gesinn hunn, waren si
+#&gt; ausser sech a soten: “Et ass e Geescht!”, an si hu vun Angscht Kreesch gedoen.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 De Jesus huet direkt ugefaang, mat hinnen ze
+#&gt; schwätzen, a sot: “Kuraasch, ech sinn et; fäert net!”' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '28 De Péitrus huet him geäntwert: “Här, wann s du et
+#&gt; bass, da gebitt mir, iwwer d’Waasser bei dech ze kommen!”' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '29 De Jesus sot: “Komm!” Nodeems de Péitrus aus dem
+#&gt; Naachen erausgeklomm war, ass hien iwwer d’Waasser op de Jesus duergaang.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '30 Wéi hien awer dee staarke Wand gesinn huet, huet hien
+#&gt; et mat der Angscht ze doe kritt, a wéi hien ugefaang huet ënnerzegoen, huet hie
+#&gt; Kreesch gedoen: “Här, rett mech!”' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '31 De Jesus huet eenzock d’Hand ausgestreckt an de
+#&gt; Péitrus gepaakt. Hie sot zu him: “Du Klenggleewegen! Firwat hues du
+#&gt; gezweiwelt?”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '33 Déi am Naachen hunn de Jesus ugebiet a soten:
+#&gt; “Wierklech, du bass dem Herrgott säi Jong!”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '15 De Jesus ass deenen Eelef erschéngen a sot zu hinnen:
+#&gt; "Gitt eraus an d’ganz Welt, verkënnegt der ganzer Schëpfung d’Evangelium!'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '16 Deen, dee gleeft an sech deefe léisst, gëtt gerett;
+#&gt; deen awer, deen net gleeft, gëtt veruerteelt.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '17 Dës Zeeche begleeden déi, déi gleewen: A mengem Numm
+#&gt; dreiwen si Dämonen aus; si schwätzen an neie Sproochen;' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '18 si huele Schlaangen an d’Hand, a wann si eppes
+#&gt; Gëfteges drénken, schuet et hinnen net; si leeë Kranken d’Hänn op, an déi gi
+#&gt; gesond."' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '19 Nodeems eiser Här Jesus dat zu hinne gesot hat, gouf
+#&gt; hien op an den Himmel geholl, an hien huet sech op dem Herrgott seng riets Säit
+#&gt; gesat.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '20 Si awer hunn sech op de Wee gemaach an hunn iwwerall
+#&gt; [d’Evangelium] verkënnegt. Den Här war mat hinnen an allem, wat si gemaach
+#&gt; hunn, an hien huet d’Wuert bestätegt duerch déi Zeechen, déi et begleet hunn.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '7 De Johannes den Deefer ass an der Wüüst opgetratt an
+#&gt; huet verkënnegt: "No mir kënnt een, dee méi staark ass wéi ech; ech sinn et net
+#&gt; wäert, mech ze bécken an d’Stréckele vun senge Sandale lasszemaachen.' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '9 Déi Zäit koum de Jesus vun Nazareth a Galiläa erfort,
+#&gt; an hie gouf vum Johannes am Jordan gedeeft.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '10 Soubal wéi hien aus dem Waasser eropkomm ass, huet
+#&gt; hie gesinn, wéi den Himmel opgerappt ginn ass an de Geescht wéi eng Dauf op
+#&gt; hien erofkomm ass.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '11 An eng Stëmm koum aus dem Himmel: “Du bass mäi Jong,
+#&gt; an ech hunn dech gär; du stees a menger Gonscht!”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '35 De Jakobus an de Johannes, dem Zebedäus seng Jongen,
+#&gt; si bei de Jesus komm an hunn zu him gesot: “Meeschter, mir hätte gär, datt s du
+#&gt; äis dat an d’Rei méchs, wat mir dech elo froen.”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '36 Hie sot zu hinnen: “Wat soll ech da fir iech an d’Rei
+#&gt; maachen?”' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid
+#&gt; UTF-8
+#&gt; Warning: input string '37 Si soten zu him: “Looss äis an denger Herrlechkeet
+#&gt; deen een op denger rietser Säit an deen aneren op denger lénkser Säit sëtzen!”'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '38 De Jesus awer huet hinne geäntwert: “Dir wësst net,
+#&gt; wat dir do frot! Kënnt dir dann dee Kielech drénken, deen ech drénken, oder mat
+#&gt; där Daf gedeeft ginn, mat där ech gedeeft ginn?”' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '39 Dueropshin hunn si zu him gesot: “Dat kënne mir!” Du
+#&gt; sot de Jesus zu hinnen: "Dee Kielech, deen ech drénken, kritt dir ze drénken, a
+#&gt; mat där Daf, mat där ech gedeeft ginn, gitt dir gedeeft.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '40 Et ass awer net u mir, fir d’Plaz op menger rietser
+#&gt; oder menger lénkser Säit ze verginn; duer kommen déi sëtzen, fir déi dës Plaze
+#&gt; virbereet gi sinn."' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but
+#&gt; is valid UTF-8
+#&gt; Warning: input string '41 Wéi déi zéng aner Jünger dat héieren hunn, hunn si
+#&gt; ugefaang, sech iwwer de Jakobus an de Johannes ze iergeren.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '42 Dunn huet de Jesus si bei sech geruff a sot zu
+#&gt; hinnen: "Dir wësst, datt déijéineg, déi als déi Iewescht gëllen, iwwer hir
+#&gt; Vëlleker herrschen, an datt déi Grouss hir Muecht iwwer d’Leit mëssbrauchen.'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '43 Bei iech awer soll et net esou sinn! Wien ënner iech
+#&gt; dee Gréisste gi wëllt, dee soll ären Dénger ginn,' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '44 a wien ënner iech deen Éischte si wëllt, dee soll de
+#&gt; Kniecht vun en alleguer sinn.' cannot be translated from 'ANSI_X3.4-1968' to
+#&gt; UTF-8, but is valid UTF-8
+#&gt; Warning: input string '45 De Mënschejong ass nämlech net komm, fir bedéngt ze
+#&gt; ginn, ma fir ze déngen an säi Liewen hierzeginn als Léisegeld fir der vill."'
+#&gt; cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '22 Wéi et un der Zäit war, fir sech dem Moses sengem
+#&gt; Gesetz no rengegen ze loossen, hunn de Jouseph an d’Maria de Jesus erop op
+#&gt; Jerusalem bruecht, fir hien dem Här ze weien' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '23 – esou wéi am Här sengem Gesetz geschriwwe steet: All
+#&gt; männlecht Kand, dat der Mamm hire Schouss opmécht, soll helleg genannt an dem
+#&gt; Här geweit ginn –' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '24 a fir Affer duerzebréngen – esou wéi am Här sengem
+#&gt; Gesetz gesot gëtt: eng Koppel Duerteldauwen oder zwou jonk Dauwen.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '25 Zu Jerusalem war e Mann, dee Simeon geheescht huet.
+#&gt; Dëse war gerecht a fromm, hien huet drop gewaart, datt Israel getréischt géif,
+#&gt; an den hellege Geescht war op him.' cannot be translated from 'ANSI_X3.4-1968'
+#&gt; to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '26 Vum hellege Geescht war him virausgesot ginn, hie
+#&gt; geséich der Doud net, éier hien dem Här säi Christus gesinn hätt.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '27 Geleet vum Geescht, ass hien elo an den Tempel komm,
+#&gt; a wéi d’Elteren hiert Kand, de Jesus, erabruecht hunn, fir dat, wat vum Gesetz
+#&gt; fir hie virgeschriwwe war, ze maachen,' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '28 huet de Simeon d’Kand an seng Äerm geholl, huet den
+#&gt; Herrgott gelueft a sot:' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '29 "Elo kanns du däin Dénger, Här, a Fridde goe loossen,
+#&gt; esou wéi s du gesot hues,' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '30 well meng Aen hunn d’Rettung gesinn, déi vun dir
+#&gt; kënnt' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '31 an déi s du fir all d’Vëlleker bestëmmt hues,' cannot
+#&gt; be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '32 e Liicht, dat Offenbarung bréngt fir d’Heeden an
+#&gt; Herrlechkeet fir däi Vollek Israel."' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '33 Dem Jesus säi Papp an seng Mamm hunn sech gewonnert
+#&gt; iwwer dat, wat iwwer d’Kand gesot gouf.' cannot be translated from
+#&gt; 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '34 Dunn huet de Simeon si geseent, an hie sot zu der
+#&gt; Maria, dem Jesus senger Mamm: "Kuck, deen heiten ass agesat, fir datt duerch
+#&gt; hien der vill an Israel falen an datt vill anerer opgeriicht ginn, an hien ass
+#&gt; agesat, fir en Zeechen ze sinn, deem widdersprach gëtt' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '35 – dir selwer awer fiert och e Schwäert duerch d’Séil.
+#&gt; Esou solle ville Mënschen hir Gedanke bekannt gemaach ginn."' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '36 Do war och d’Hanna, eng Prophéitin, dem Penuël aus
+#&gt; dem Stamm Ascher seng Duechter. Si war scho bei Alter. Als jonkt Meedchen hat
+#&gt; si sech bestuet a siwe Joer laang mat hirem Mann gelieft.' cannot be translated
+#&gt; from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '37 Elo war si eng Witfra vu 84 Joer, déi net vum Tempel
+#&gt; fortgaang ass an dem Herrgott Dag an Nuecht mat Faaschten a Biede gedéngt
+#&gt; huet.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8
+#&gt; Warning: input string '38 An dësem Ament ass si dohi komm, huet den Herrgott
+#&gt; gelueft an huet all deenen, déi op d’Erléisung vu Jerusalem gewaart hunn, vum
+#&gt; Kand erzielt.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8, but is
+#&gt; valid UTF-8
+#&gt; Warning: input string '39 Nodeems d’Maria an de Jouseph alles erfëllt haten,
+#&gt; wat vum Här sengem Gesetz virgeschriwwe war, sinn si a Galiläa an hir Stad
+#&gt; Nazareth hanneschtgaang.' cannot be translated from 'ANSI_X3.4-1968' to UTF-8,
+#&gt; but is valid UTF-8
+#&gt; Warning: input string '40 D’Kand awer ass gewuess an ass staark ginn, et war
+#&gt; erfëllt mat Weisheet, an dem Herrgott seng Gnod war op him.' cannot be
+#&gt; translated from 'ANSI_X3.4-1968' to UTF-8, but is valid UTF-8</code></pre>
+</div>
 <p>What actually matters is the top letters across all languages, which are <strong>E, N, S, T, R, I, A</strong>, the letters you’d want on your home row.</p>
 </section>
 <section id="the-effort-model-explained" class="level2">
@@ -236,109 +1292,109 @@ font-style: inherit;">print</span>(result)</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="a-concrete-example-the-pangram">A Concrete Example: The Pangram</h3>
 <p>Let’s calculate actual effort scores for “the quick brown fox jumps over the lazy dog” (a pangram using every letter of the alphabet):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Load layouts</span></span>
-<span id="cb2-2"><span class="fu" style="color: #4758AB;
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">data</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"ch_qwertz"</span>)</span>
-<span id="cb2-3"><span class="fu" style="color: #4758AB;
+<span id="cb3-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">data</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"afnor_bepo"</span>)</span>
-<span id="cb2-4">qwertz_lux <span class="ot" style="color: #003B4F;
+<span id="cb3-4">qwertz_lux <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">create_qwertz_lux_keyboard</span>()</span>
-<span id="cb2-5"></span>
-<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+<span id="cb3-5"></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Effort weights (same as used throughout)</span></span>
-<span id="cb2-7">effort_weights <span class="ot" style="color: #003B4F;
+<span id="cb3-7">effort_weights <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">list</span>(</span>
-<span id="cb2-8">  <span class="at" style="color: #657422;
+<span id="cb3-8">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">base =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.0</span>,</span>
-<span id="cb2-9">  <span class="at" style="color: #657422;
+<span id="cb3-9">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">same_finger =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.0</span>,</span>
-<span id="cb2-10">  <span class="at" style="color: #657422;
+<span id="cb3-10">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">same_hand =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>,</span>
-<span id="cb2-11">  <span class="at" style="color: #657422;
+<span id="cb3-11">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">row_change =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>,</span>
-<span id="cb2-12">  <span class="at" style="color: #657422;
+<span id="cb3-12">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">trigram =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span></span>
-<span id="cb2-13">)</span>
-<span id="cb2-14"></span>
-<span id="cb2-15">pangram <span class="ot" style="color: #003B4F;
+<span id="cb3-13">)</span>
+<span id="cb3-14"></span>
+<span id="cb3-15">pangram <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"the quick brown fox jumps over the lazy dog"</span></span>
-<span id="cb2-16"></span>
-<span id="cb2-17"><span class="co" style="color: #5E5E5E;
+<span id="cb3-16"></span>
+<span id="cb3-17"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Calculate effort for each layout</span></span>
-<span id="cb2-18">pangram_qwertz <span class="ot" style="color: #003B4F;
+<span id="cb3-18">pangram_qwertz <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">calculate_layout_effort</span>(ch_qwertz, pangram, </span>
-<span id="cb2-19">                                          <span class="at" style="color: #657422;
+<span id="cb3-19">                                          <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">keys_to_evaluate =</span> letters,</span>
-<span id="cb2-20">                                          <span class="at" style="color: #657422;
+<span id="cb3-20">                                          <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">effort_weights =</span> effort_weights)</span>
-<span id="cb2-21">pangram_bepo <span class="ot" style="color: #003B4F;
+<span id="cb3-21">pangram_bepo <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">calculate_layout_effort</span>(afnor_bepo, pangram,</span>
-<span id="cb2-22">                                        <span class="at" style="color: #657422;
+<span id="cb3-22">                                        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">keys_to_evaluate =</span> letters,</span>
-<span id="cb2-23">                                        <span class="at" style="color: #657422;
+<span id="cb3-23">                                        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">effort_weights =</span> effort_weights)</span>
-<span id="cb2-24">pangram_lux <span class="ot" style="color: #003B4F;
+<span id="cb3-24">pangram_lux <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">calculate_layout_effort</span>(qwertz_lux<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>base, pangram,</span>
-<span id="cb2-25">                                       <span class="at" style="color: #657422;
+<span id="cb3-25">                                       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">keys_to_evaluate =</span> letters,</span>
-<span id="cb2-26">                                       <span class="at" style="color: #657422;
+<span id="cb3-26">                                       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">effort_weights =</span> effort_weights)</span>
-<span id="cb2-27"></span>
-<span id="cb2-28"><span class="fu" style="color: #4758AB;
+<span id="cb3-27"></span>
+<span id="cb3-28"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">data.frame</span>(</span>
-<span id="cb2-29">  <span class="at" style="color: #657422;
+<span id="cb3-29">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">Layout =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -349,7 +1405,7 @@ background-color: null;
 font-style: inherit;">"BÉPO"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"QWERTZ-LUX"</span>),</span>
-<span id="cb2-30">  <span class="at" style="color: #657422;
+<span id="cb3-30">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">Effort =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -358,7 +1414,7 @@ background-color: null;
 font-style: inherit;">c</span>(pangram_qwertz, pangram_bepo, pangram_lux), <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>),</span>
-<span id="cb2-31">  <span class="st" style="color: #20794D;
+<span id="cb3-31">  <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">`</span><span class="at" style="color: #657422;
 background-color: null;
@@ -379,7 +1435,7 @@ background-color: null;
 font-style: inherit;">c</span>(pangram_qwertz, pangram_bepo, pangram_lux) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> </span>
-<span id="cb2-32">                               pangram_qwertz) <span class="sc" style="color: #5E5E5E;
+<span id="cb3-32">                               pangram_qwertz) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -388,12 +1444,24 @@ background-color: null;
 font-style: inherit;">1</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"%"</span>),</span>
-<span id="cb2-33">  <span class="at" style="color: #657422;
+<span id="cb3-33">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">check.names =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">FALSE</span></span>
-<span id="cb2-34">)</span></code></pre></div>
+<span id="cb3-34">)</span>
+<span id="cb3-35"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#&gt;       Layout Effort vs QWERTZ</span></span>
+<span id="cb3-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#&gt; 1     QWERTZ 338.69        0%</span></span>
+<span id="cb3-37"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#&gt; 2       BÉPO 268.79     20.6%</span></span>
+<span id="cb3-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#&gt; 3 QWERTZ-LUX 303.08     10.5%</span></span></code></pre></div>
 </div>
 <p>Even for this short 35-letter sentence, the optimised layouts require measurably less effort.</p>
 </section>
@@ -401,10 +1469,152 @@ font-style: inherit;">FALSE</span></span>
 <section id="how-much-better-is-it" class="level2">
 <h2 class="anchored" data-anchor-id="how-much-better-is-it">How Much Better Is It?</h2>
 <p>Using this effort model (with the weights shown above), here’s how the layouts compare:</p>
+<div class="cell">
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_cvc2zi1tmxgxhq8a2mws(i, j, css_id) {
+          var table = document.getElementById("tinytable_cvc2zi1tmxgxhq8a2mws");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_cvc2zi1tmxgxhq8a2mws');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_cvc2zi1tmxgxhq8a2mws(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_cvc2zi1tmxgxhq8a2mws");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 },  ], css_id: 'tinytable_css_akqm5crks8lm241slue5',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_8e2rdu9e5naelcw7tljp',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_cvc2zi1tmxgxhq8a2mws(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_akqm5crks8lm241slue5, .table th.tinytable_css_akqm5crks8lm241slue5 { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_8e2rdu9e5naelcw7tljp, .table th.tinytable_css_8e2rdu9e5naelcw7tljp { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_cvc2zi1tmxgxhq8a2mws" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col">Layout</th>
+                <th scope="col">Effort Score</th>
+                <th scope="col">Hand Balance (L/R %)</th>
+                <th scope="col">Relative (%)</th>
+                <th scope="col">Improvement vs QWERTZ</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>BÉPO          </td>
+                  <td> 633624.9</td>
+                  <td>43.6/56.4</td>
+                  <td>100.0</td>
+                  <td>42.1%</td>
+                </tr>
+                <tr>
+                  <td>QWERTZ-LUX    </td>
+                  <td> 642547.9</td>
+                  <td>52.1/47.9</td>
+                  <td>101.4</td>
+                  <td>41.3%</td>
+                </tr>
+                <tr>
+                  <td>QWERTZ (Swiss)</td>
+                  <td>1094468.2</td>
+                  <td>59/41    </td>
+                  <td>172.7</td>
+                  <td>0%   </td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
 </section>
 <section id="visualizing-the-difference-heatmaps" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-difference-heatmaps">Visualizing the Difference: Heatmaps</h2>
 <p>Heatmaps show where your fingers spend time. Brighter colors = more keystrokes. Ideally, you want the brightness concentrated on the home row.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux_files/figure-html/heatmaps-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux_files/figure-html/heatmap-qwertz-lux-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux_files/figure-html/heatmap-bepo-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>Notice how BÉPO and QWERTZ-LUX concentrate activity on the home row, while QWERTZ spreads effort across all rows.</p>
 <section id="key-features" class="level3">
 <h3 class="anchored" data-anchor-id="key-features">Key Features</h3>
