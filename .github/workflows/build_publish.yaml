@@ -34,11 +34,28 @@ jobs:
               fi
             done
 
-        - name: Publish to GitHub Pages (and render)
+        - name: Render remaining posts with base environment
+          run: |
+            # Render each .qmd file that doesn't have a specific .nix file
+            nix-shell --run '
+              for qmd_file in posts/*.qmd posts/*.Qmd; do
+                [[ -f "$qmd_file" ]] || continue
+                base=$(basename "${qmd_file%.*}")
+                if [[ ! -f "posts/${base}.nix" ]]; then
+                  echo "Rendering $qmd_file with base environment..."
+                  quarto render "$qmd_file"
+                else
+                  echo "Skipping $qmd_file (has specific .nix file, already rendered)"
+                fi
+              done
+              # Render the site structure (index, about, etc) without re-rendering posts
+              quarto render --no-execute
+            '
+
+        - name: Publish to GitHub Pages
           uses: rstats-on-nix/quarto-nix-actions/publish@main
           with:
-            render: true
+            render: false
             target: gh-pages
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
