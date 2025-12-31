@@ -1,5 +1,5 @@
 ---
-title: "Introducing QWERTZ-LUX: A Better Keyboard Layout for Luxembourg"
+title: "What would a keyboard optimised for Luxembourgish look like? Now with an actual keyboard!"
 author: "Bruno Rodrigues"
 date: "2025-12-31"
 categories: [R, keyboard]
@@ -36,86 +36,115 @@ if (!dir.exists("layouts")) {
 library(lbkeyboard)
 library(dplyr)
 library(ggplot2)
+library(tinytable)
 ```
 
-## TL;DR
+## An optimised layout for a polyglot country
 
-I've been thinking about keyboard layouts for a while. QWERTZ isn't great, and France
-recently adopted BÉPO as an official standard alongside a revised AZERTY. What would
-such an optimized layout look like for Luxembourg? Here's my proposal: **QWERTZ-LUX**.
+[5 years ago](https://brodrigues.co/posts/2020-03-26-bepo_lu.html) I
+discussed what features a keyboard optimised for Luxembourg should have. I'm
+talking about Luxembourg the country, and not Luxembourgish the language,
+because in Luxembourg no one types only Luxembourgish. The most commonly typed language
+is probably French, and English a close second. German follows in third and then
+Luxembourgish (some people might argue that, in their own experience, German
+is more widely typed than French, but I seriously doubt it). Whatever the actual ranking,
+an optimised keyboard for Luxembourg should be a keyboard in which typing these
+4 languages is comfortable. That blog post from 5 years ago dug into that (letter frequency
+and so on), but until today, I left it on the back burner.
 
-> ⚠️ **This is a work in progress!** The layout, the name, and even the methodology 
-> are all open for discussion. I'm sharing this early because I'd love to hear from
-> the community—especially those who type in multiple languages daily. Your feedback
-> will shape the final version.
+Now, with LLMs it was trivial to continue working on this, implement
+an effort model, and use an optimisation algorithm to minimise said effort.
+Today, I can present the layout I've obtained:
 
-## The Problem with QWERTZ
+```{r heatmap-qwertz-lux-intro, echo=FALSE, fig.width=8, fig.height=4, warning=FALSE}
+data("ch_qwertz")
+data("afnor_bepo")
+data("french")
+data("german")
+data("english")
+data("luxembourguish")
 
-If you've ever wondered why you're typing "E" with your middle finger stretched up
-to the top row while "J" (which you barely use) sits comfortably on the home row...
-well, you're not alone. The QWERTZ layout, like its QWERTY cousin, was designed in
-the 1870s for typewriters. The primary concern wasn't typing efficiency—it was
-preventing mechanical jamming of type bars.
+corpus <- list(
+  French = rep(french, 3),         # 30%
+  English = rep(english, 3),       # 30%
+  German = rep(german, 2),         # 20%
+  Luxembourgish = rep(luxembourguish, 2)  # 20%
+)
 
-**Fast forward 150 years**: we're still using essentially the same layout, even though
-the mechanical constraints disappeared decades ago.
+all_texts <- unlist(corpus)
 
-The home row—where your fingers naturally rest—should contain the most frequently
-used letters. But look at QWERTZ's home row:
+freq_all <- letter_freq(paste(all_texts, collapse = " "))
+qwertz_lux <- create_qwertz_lux_keyboard()
 
+# QWERTZ-LUX heatmap - use the base layer directly (already ggkeyboard-compatible)
+heatmap_qwertz_lux <- heatmapize(qwertz_lux$base, freq_all)
+p3 <- ggkeyboard(heatmap_qwertz_lux) + ggtitle("QWERTZ-LUX")
+p3
 ```
-A S D F G H J K L
-```
 
-For a multilingual environment like Luxembourg (where we type in French, German,
-Luxembourgish, and English), this means:
+> ⚠️ **This is a work in progress!** The layout, the name, and even the
+> methodology are all open for discussion. I'm sharing this early because I'd
+> love to hear from the community, especially those who type in multiple
+> languages daily. Your feedback will shape the final version.
 
-- **E** (the most frequent letter in all four languages) is on the top row
-- **T, N, R, I** (all extremely common) are scattered or require reaching
-- **J, K** (rarely used) take prime real estate on the home row
-
-This is objectively inefficient.
+Let me also clarify what my goal with this is: do I want to actually suggest
+a layout that shall be adopted nationally and become a standard? Well, maybe.
+But I definitely won't do it alone. So if you're interested, we could work
+together and write a layout that could actually be used by different operating
+systems and pitch it to decision makers.
 
 ## France Shows the Way
 
 In 2019, France officially adopted two new keyboard standards:
 
 1. **A revised AZERTY** that fixes many issues while maintaining familiarity
-2. **BÉPO** — a completely redesigned layout optimized for French
+2. **BÉPO** — a completely redesigned layout optimised for French
 
-I've been using BÉPO for years, and I can honestly say it's a game-changer. Typing
-feels more natural, there's less finger movement, and the learning curve, while steep
-at first, pays off significantly.
+I've been using BÉPO for years, and I can honestly say it's a game-changer.
+Typing feels more natural, there's less finger movement, and the learning curve,
+while steep at first, pays off significantly.
 
-But here's the thing: BÉPO was designed primarily for French. Luxembourg is unique—
-we need something that works for French *and* German *and* Luxembourgish *and* English.
+But here's the thing: BÉPO was designed primarily for French. Luxembourg is
+unique, because we need something that works for French *and* German *and*
+Luxembourgish *and* English.
 
 ## The QWERTZ-LUX Approach
 
-So I started wondering: what would an optimized keyboard layout for Luxembourg look
-like?
+So I started wondering: what would an optimised keyboard layout for Luxembourg
+look like? You can read about my findings
+[here](https://brodrigues.co/posts/2020-03-26-bepo_lu.html), but basically,
+any optimised layout for any of these 4 languages would actually work rather
+well; this is because 3 out of these 4 languages are Germanic languages, but
+also, the top 10 most used characters for these 4 languages are essentially the
+same.
 
-I had two options:
+So I had three options:
 
-1. **Go full BÉPO** and adapt it for Luxembourgish needs
-2. **Keep QWERTZ as a base** and optimize only what's necessary
+1. Simply propose that we also adopt BÉPO
+2. Create a fully optimised layout using these 4 languages for setting up the
+   optimisation problem
+3. Keep QWERTZ as a base for familiarity and only move around a minimal set of
+  characters to improve comfort.
 
-I chose a middle path, inspired by Carpalx's 
-[partial optimization](https://mk.bcgsc.ca/carpalx/?partial_optimization) philosophy. 
-Martin Krzywinski demonstrated that you don't need to remap the entire keyboard to 
-reap most of the rewards—just 5 strategic key swaps can achieve **70% of the effort 
-reduction** of a fully optimized layout, while the learning curve remains manageable.
+I chose a middle path, inspired by Carpalx's [partial
+optimization](https://mk.bcgsc.ca/carpalx/?partial_optimization) philosophy.
+Martin Krzywinski demonstrated that you don't need to remap the entire keyboard
+to reap most of the rewards. Just 5 strategic key swaps can achieve **70% of the
+effort reduction** of a fully optimised layout, while the learning curve remains
+manageable.
 
-QWERTZ-LUX follows this principle. It's essentially a fork of BÉPO's structure, but
-with modifications that:
+QWERTZ-LUX (final name pending) follows this principle. It's essentially a fork
+of BÉPO's structure, but with modifications that:
 
 - Keep familiar elements for QWERTZ users (Ctrl+Z, Ctrl+X, Ctrl+C, Ctrl+V shortcuts)
 - Optimize the letter arrangement for our multilingual corpus
 - Provide direct access to accented characters (é, à, ü, ö, ç, ä) without dead keys
 
-The home row had to change substantially—QWERTZ's home row is simply too inefficient.
-But I tried to minimize disruption elsewhere, following the partial optimization insight
-that the first few key swaps matter most.
+The home row had to change substantially, because QWERTZ's home row is simply
+too inefficient. But I tried to minimize disruption elsewhere, following the
+partial optimization insight that the first few key swaps matter most. Setting
+up the optimisation problem with these constraints resulted in a keyboard layout
+that stays familiar, while being much more efficient.
 
 ## The Corpus: What Does Luxembourg Type?
 
@@ -123,9 +152,14 @@ To evaluate keyboard layouts fairly, we need text that reflects what people actu
 type in Luxembourg. I created a balanced multilingual corpus with:
 
 - **30% French** — Administrative and business language
-- **30% English** — International communication  
+- **30% English** — International communication
 - **20% German** — Media and education
 - **20% Luxembourgish** — Daily life and national identity
+
+Again, your mileage may vary. When I first started working in Luxembourg, I only
+used English and French. Now I also use Luxembourgish more often, and I know
+people who only write French. Either way, a national keyboard layout should be
+able to be comfortable for any of these languages.
 
 ```{r load-corpus, echo=FALSE}
 # Load sample texts and create weighted corpus
@@ -145,15 +179,15 @@ all_texts <- unlist(corpus)
 freq_all <- letter_freq(paste(all_texts, collapse = " "))
 ```
 
-This weighting roughly matches language usage patterns in Luxembourg workplaces
-and daily communication. The top letters across all languages? **E, N, S, T, R, I, A**
-— exactly what you'd want on your home row.
+What actually matters is the top letters across all languages, which are **E,
+N, S, T, R, I, A**, the letters you'd want on your home row.
 
 ## The Effort Model Explained
 
-Before comparing layouts, let's understand how we measure "typing effort." The **lbkeyboard** 
-package uses a model inspired by [Carpalx](https://mk.bcgsc.ca/carpalx/?typing_effort), 
-the seminal keyboard layout optimization tool created by Martin Krzywinski.
+Before comparing layouts, let's understand how we measure "typing effort". I
+wrote an R package called **lbkeyboard** that implements a model inspired by
+[Carpalx](https://mk.bcgsc.ca/carpalx/?typing_effort), the seminal keyboard
+layout optimization tool created by Martin Krzywinski.
 
 ### Carpalx vs lbkeyboard
 
@@ -165,43 +199,45 @@ the seminal keyboard layout optimization tool created by Martin Krzywinski.
 | **Stroke path** | Complex path penalties | Simplified via bigram weights |
 | **Layer support** | Not built-in | Shift, AltGr, dead key penalties |
 
-Carpalx uses triads and a sophisticated stroke path model. We simplify this to bigrams 
-(2-key sequences) for faster computation while retaining the key ergonomic insights.
+Carpalx uses triads and a sophisticated stroke path model. I simplify this to
+bigrams (2-key sequences) for faster computation while retaining the key
+ergonomic insights.
 
 ### Our Model Components
 
 ### 1. Base Effort (Weight: 3.0)
 
-Every key has an inherent effort based on position. Home row keys (where fingers rest) 
-have the lowest effort; reaching up to the top row or down to the bottom row costs more. 
-Finger strength matters too—index fingers are stronger than pinkies.
+Every key has an inherent effort based on position. Home row keys (where fingers
+rest) have the lowest effort; reaching up to the top row or down to the bottom
+row costs more. Finger strength matters too: index fingers are stronger than
+pinkies.
 
-**Example**: Typing "e" on QWERTZ (top row, middle finger reach) costs more than 
+**Example**: Typing "e" on QWERTZ (top row, middle finger reach) costs more than
 typing "j" (home row, index finger)—even though we use "e" 100× more often!
 
 ### 2. Same-Finger Bigram Penalty (Weight: 3.0)
 
-Using the same finger twice in a row is slow and uncomfortable. The model heavily 
-penalizes these sequences.
+Using the same finger twice in a row is slow and uncomfortable. The model
+heavily penalizes these sequences.
 
-**Example**: Typing "de" on QWERTZ uses the same finger (middle finger, D→E). 
+**Example**: Typing "de" on QWERTZ uses the same finger (middle finger, D→E).
 This is penalized. On BÉPO, these letters are on different hands, so no penalty.
 
 ### 3. Same-Hand Penalty (Weight: 0.5)
 
-Consecutive keys on the same hand are slightly harder than alternating hands, 
+Consecutive keys on the same hand are slightly harder than alternating hands,
 because one hand must do all the work.
 
 ### 4. Row Change Penalty (Weight: 0.5)
 
-Jumping between rows (e.g., top→bottom) requires more finger travel than 
-staying on the same row.
+Jumping between rows (e.g., top→bottom) requires more finger travel than staying
+on the same row.
 
 ### 5. Layer Penalties
 
 Characters requiring modifier keys (Shift, AltGr, dead keys) incur extra effort:
 - **Shift**: +5% effort
-- **AltGr**: +20% effort  
+- **AltGr**: +20% effort
 - **Dead key** (e.g., ˆ + o = ô): +40% effort (two keystrokes!)
 
 ### Putting It Together
@@ -209,7 +245,7 @@ Characters requiring modifier keys (Shift, AltGr, dead keys) incur extra effort:
 The total effort formula is:
 
 ```
-Total = Σ (base × frequency) + Σ (same_finger_penalty) + Σ (same_hand_penalty) 
+Total = Σ (base × frequency) + Σ (same_finger_penalty) + Σ (same_hand_penalty)
         + Σ (row_change_penalty) + Σ (layer_penalties)
 ```
 
@@ -218,14 +254,15 @@ Total = Σ (base × frequency) + Σ (same_finger_penalty) + Σ (same_hand_penalt
 | Layout | Key Positions | Same-Finger? | Row Changes | Effort |
 |--------|--------------|--------------|-------------|--------|
 | QWERTZ | T(top), H(home), E(top) | No | 2 | Moderate |
-| BÉPO   | T(home), H(home), E(home) | No | 0 | **Low** |
+| BÉPO   | T(home), H(bottom), E(home) | No | 1 | **Low** |
 
-BÉPO places all three letters on the home row, eliminating row changes entirely.
+BÉPO places two letters on the home row, and two characters are typed using
+index finger (T and E), so it's very comfortable to type.
 
 ### A Concrete Example: The Pangram
 
-Let's calculate actual effort scores for "the quick brown fox jumps over the lazy dog" 
-(a pangram using every letter of the alphabet):
+Let's calculate actual effort scores for "the quick brown fox jumps over the
+lazy dog" (a pangram using every letter of the alphabet):
 
 ```{r pangram-example, echo=TRUE}
 # Load layouts
@@ -264,7 +301,7 @@ data.frame(
 )
 ```
 
-Even for this short 35-letter sentence, the optimized layouts require measurably less effort.
+Even for this short 35-letter sentence, the optimised layouts require measurably less effort.
 
 ## How Much Better Is It?
 
@@ -328,7 +365,7 @@ comparison_df$Effort <- round(comparison_df$Effort, 2)
 # Rename columns for final display
 colnames(comparison_df) <- c("Layout", "Effort Score", "Hand Balance (L/R %)", "Relative (%)", "Improvement vs QWERTZ")
 
-comparison_df
+tt(comparison_df)
 ```
 
 ## Visualizing the Difference: Heatmaps
@@ -357,18 +394,8 @@ p2 <- ggkeyboard(heatmap_bepo) + ggtitle("BÉPO")
 p2
 ```
 
-
-
 Notice how BÉPO and QWERTZ-LUX concentrate activity on the home row, while
 QWERTZ spreads effort across all rows.
-
-## The QWERTZ-LUX Layout
-
-Here's what the optimized layout looks like:
-
-```{r show-layout, echo=FALSE, results='asis'}
-p3
-```
 
 ### Key Features
 
@@ -379,74 +406,45 @@ p3
 | **ZXCV preserved** | Common shortcuts (Ctrl+Z/X/C/V) stay in familiar positions |
 | **BÉPO-compatible** | Same modifier layer philosophy as BÉPO |
 
-## Should You Switch?
-
-That depends on your priorities:
-
-- **If you value efficiency**: Yes. The numbers don't lie—QWERTZ-LUX requires
-  meaningfully less effort for the same typing tasks.
-  
-- **If you're a touch typist**: You'll need to relearn the layout, but the
-  investment pays off. I'd estimate 2-4 weeks of practice to regain full speed.
-  
-- **If you type casually**: The switch might not be worth the learning curve.
-  But if you're reading this, you're probably not a casual typist!
 
 ## What's Next?
 
-I'm still refining this layout based on real-world usage. The **lbkeyboard** package
-lets you:
+So I'd like to know what others think. Is this something you'd be
+interested in exploring further? The next step would be to write a `layout.ini`
+file for *Portable Keyboard Layout* for Windows, and write layout files for
+Linux and macOS, and have real people test it in real-world settings.
+We could see if it feels comfortable and what else could be optimised.
 
-- Analyze your own text corpora
-- Experiment with different layout modifications
-- Quantify improvements with the effort model
+But is there a chance that such a layout will ever get adopted? After all, there
+are obstacles:
 
-Want to try it? Install the package and dive in:
+- People just don't care and won't ever switch
+- Even if people cared, Luxembourg is too small a market and keyboards will never
+  ship with a Luxembourg-specific layout
 
-```{r install, eval=FALSE}
-# Install from GitHub
-# remotes::install_github("b-rodrigues/lbkeyboard")
+In my opinion, rolling out such a keyboard would require a phased and gradual approach:
 
-library(lbkeyboard)
+- Have kids learn to touch type in school on the optimised layout
+- Distribute keyboard layout stickers, which are cheap
 
-# Explore the layout
-qwertz_lux <- parse_layout_ini("layouts/qwertz-lux/layout.ini")
-print(qwertz_lux)
-
-# Visualize it
-plot_layout_ini("layouts/qwertz-lux/layout.ini")
-```
-
----
-
-## Discussion
-
-I'd love to hear your thoughts:
-
-1. **What letters/symbols do you type most often?** (This helps tune the model)
-2. **What shortcuts can't you live without?** (I tried to preserve common ones)
-3. **Would you try an optimized layout?** (Or are you QWERTZ-for-life?)
-
-The beauty of having this as an R package is that *you* can fork it and create
-your own optimized layout for your specific needs. The code is open source, the
-methodology is transparent, and the effort model is documented.
-
-Happy typing! 🎹
-
----
+After some years, the switch would be complete, so I think it's feasible, but
+only if there is a community around this layout. Also, who knows, this layout
+could technically be adopted in Switzerland and other German-speaking nations
+(maybe as a variant without direct access to French accented letters).
 
 ## About the Name
 
-The current working name "QWERTZ-LUX" is descriptive but not final. The first letters
-of the layout are **QWFOG**, which doesn't exactly roll off the tongue like "QWERTY" 
-or "BÉPO." Here are some alternatives I'm considering:
+The current working name "QWERTZ-LUX" is descriptive but not final. The first
+letters of the layout are **QWFOG**, which doesn't exactly roll off the tongue
+like "QWERTY" or "BÉPO." Here are some alternatives I'm considering:
 
 | Name | Meaning |
 |------|---------|
 | **QWERTZ-LUX** | Current name; descriptive (QWERTZ variant for Luxembourg) |
 | **LÉTZ** | Short for *Lëtzebuergesch* (Luxembourgish); catchy and culturally meaningful |
-| **AUIE** | From the home row left hand (A, U, I, E); pronounceable as "ow-ee" |
 | **LUXO** | Luxembourg Optimized |
 | **TRIGLOT** | Reflects the trilingual focus (French, German, Luxembourgish) |
 
-What do you think? I'm genuinely open to suggestions—a good name helps adoption!
+What do you think? I'm genuinely open to suggestions: a good name helps adoption!
+
+Oh, and happy new year I guess.

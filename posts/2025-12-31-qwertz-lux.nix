@@ -43,6 +43,7 @@ in
   lbkeyboard
   ggkeyboard
   pkgs.rPackages.dplyr
+  pkgs.rPackages.tinytable
   pkgs.rPackages.ggplot2
 ]
 
