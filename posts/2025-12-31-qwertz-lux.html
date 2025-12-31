@@ -9,7 +9,7 @@
 <meta name="author" content="Bruno Rodrigues">
 <meta name="dcterms.date" content="2025-12-31">
 
-<title>Toy Post: Per-Post Nix Dependencies – Econometrics and Free Software</title>
+<title>What would a keyboard optimised for Luxembourgish look like? Now with an actual keyboard! – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,9 +134,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Toy Post: Per-Post Nix Dependencies</h1>
+<h1 class="title">What would a keyboard optimised for Luxembourgish look like? Now with an actual keyboard!</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">nix</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">keyboard</div>
   </div>
   </div>
 
@@ -166,18 +167,306 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is a toy post demonstrating per-post Nix dependencies.</p>
-<p>This post has a corresponding <code>2025-12-31-toy-post.nix</code> file that adds the <code>purrr</code> package to the environment.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Use purrr to demonstrate it's available</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="sc">~</span> .x<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div style="text-align: center;">
+<p>
+<a> <img src="../assets/img/qwertz-lux.png" style="width: 100%; height: auto;"> </a>
+</p>
 </div>
-<p>The <code>purrr</code> package is not in the base <code>posts/default.nix</code>, but it’s available here because of the post-specific <code>.nix</code> file!</p>
+<section id="an-optimised-layout-for-a-polyglot-country" class="level2">
+<h2 class="anchored" data-anchor-id="an-optimised-layout-for-a-polyglot-country">An optimised layout for a polyglot country</h2>
+<p><a href="https://brodrigues.co/posts/2020-03-26-bepo_lu.html">5 years ago</a> I discussed what features a keyboard optimised for Luxembourg should have. I’m talking about Luxembourg the country, and not Luxembourgish the language, because in Luxembourg no one types only Luxembourgish. The most commonly typed language is probably French, and English a close second. German follows in third and then Luxembourgish (some people might argue that, in their own experience, German is more widely typed than French, but I seriously doubt it). Whatever the actual ranking, an optimised keyboard for Luxembourg should be a keyboard in which typing these 4 languages is comfortable. That blog post from 5 years ago dug into that (letter frequency and so on), but until today, I left it on the back burner.</p>
+<p>Now, with LLMs it was trivial to continue working on this, implement an effort model, and use an optimisation algorithm to minimise said effort. Today, I can present the layout I’ve obtained:</p>
+<p>(there is an error in the layout shown here, there are two “G”s; the one on the right of E should not be there, and instead should be a “,”. This is a bug in the function that creates the heatmap, not in the layout itself.)</p>
+<blockquote class="blockquote">
+<p>⚠️ <strong>This is a work in progress!</strong> The layout, the name, and even the methodology are all open for discussion. I’m sharing this early because I’d love to hear from the community, especially those who type in multiple languages daily. Your feedback will shape the final version.</p>
+</blockquote>
+<p>Let me also clarify what my goal with this is: do I want to actually suggest a layout that shall be adopted nationally and become a standard? Well, maybe. But I definitely won’t do it alone. So if you’re interested, we could work together and write a layout that could actually be used by different operating systems and pitch it to decision makers.</p>
+</section>
+<section id="france-shows-the-way" class="level2">
+<h2 class="anchored" data-anchor-id="france-shows-the-way">France Shows the Way</h2>
+<p>In 2019, France officially adopted two new keyboard standards:</p>
+<ol type="1">
+<li><strong>A revised AZERTY</strong> that fixes many issues while maintaining familiarity</li>
+<li><strong>BÉPO</strong> — a completely redesigned layout optimised for French</li>
+</ol>
+<p>I’ve been using BÉPO for years, and I can honestly say it’s a game-changer. Typing feels more natural, there’s less finger movement, and the learning curve, while steep at first, pays off significantly.</p>
+<p>But here’s the thing: BÉPO was designed primarily for French. Luxembourg is unique, because we need something that works for French <em>and</em> German <em>and</em> Luxembourgish <em>and</em> English.</p>
+</section>
+<section id="the-qwertz-lux-approach" class="level2">
+<h2 class="anchored" data-anchor-id="the-qwertz-lux-approach">The QWERTZ-LUX Approach</h2>
+<p>So I started wondering: what would an optimised keyboard layout for Luxembourg look like? You can read about my findings <a href="https://brodrigues.co/posts/2020-03-26-bepo_lu.html">here</a>, but basically, any optimised layout for any of these 4 languages would actually work rather well; this is because 3 out of these 4 languages are Germanic languages, but also, the top 10 most used characters for these 4 languages are essentially the same.</p>
+<p>So I had three options:</p>
+<ol type="1">
+<li>Simply propose that we also adopt BÉPO</li>
+<li>Create a fully optimised layout using these 4 languages for setting up the optimisation problem</li>
+<li>Keep QWERTZ as a base for familiarity and only move around a minimal set of characters to improve comfort.</li>
+</ol>
+<p>I chose a middle path, inspired by Carpalx’s <a href="https://mk.bcgsc.ca/carpalx/?partial_optimization">partial optimization</a> philosophy. Martin Krzywinski demonstrated that you don’t need to remap the entire keyboard to reap most of the rewards. Just 5 strategic key swaps can achieve <strong>70% of the effort reduction</strong> of a fully optimised layout, while the learning curve remains manageable.</p>
+<p>QWERTZ-LUX (final name pending) follows this principle. It’s essentially a fork of BÉPO’s structure, but with modifications that:</p>
+<ul>
+<li>Keep familiar elements for QWERTZ users (Ctrl+Z, Ctrl+X, Ctrl+C, Ctrl+V shortcuts)</li>
+<li>Optimize the letter arrangement for our multilingual corpus</li>
+<li>Provide direct access to accented characters (é, à, ü, ö, ç, ä) without dead keys</li>
+</ul>
+<p>The home row had to change substantially, because QWERTZ’s home row is simply too inefficient. But I tried to minimize disruption elsewhere, following the partial optimization insight that the first few key swaps matter most. Setting up the optimisation problem with these constraints resulted in a keyboard layout that stays familiar, while being much more efficient.</p>
+</section>
+<section id="the-corpus-what-does-luxembourg-type" class="level2">
+<h2 class="anchored" data-anchor-id="the-corpus-what-does-luxembourg-type">The Corpus: What Does Luxembourg Type?</h2>
+<p>To evaluate keyboard layouts fairly, we need text that reflects what people actually type in Luxembourg. I created a balanced multilingual corpus with:</p>
+<ul>
+<li><strong>30% French</strong> — Administrative and business language</li>
+<li><strong>30% English</strong> — International communication</li>
+<li><strong>20% German</strong> — Media and education</li>
+<li><strong>20% Luxembourgish</strong> — Daily life and national identity</li>
+</ul>
+<p>Again, your mileage may vary. When I first started working in Luxembourg, I only used English and French. Now I also use Luxembourgish more often, and I know people who only write French. Either way, a national keyboard layout should be able to be comfortable for any of these languages.</p>
+<p>What actually matters is the top letters across all languages, which are <strong>E, N, S, T, R, I, A</strong>, the letters you’d want on your home row.</p>
+</section>
+<section id="the-effort-model-explained" class="level2">
+<h2 class="anchored" data-anchor-id="the-effort-model-explained">The Effort Model Explained</h2>
+<p>Before comparing layouts, let’s understand how we measure “typing effort”. I wrote an R package called <strong>lbkeyboard</strong> that implements a model inspired by <a href="https://mk.bcgsc.ca/carpalx/?typing_effort">Carpalx</a>, the seminal keyboard layout optimization tool created by Martin Krzywinski.</p>
+<section id="carpalx-vs-lbkeyboard" class="level3">
+<h3 class="anchored" data-anchor-id="carpalx-vs-lbkeyboard">Carpalx vs lbkeyboard</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 31%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Carpalx</th>
+<th>lbkeyboard</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Unit of analysis</strong></td>
+<td>Triads (3-key sequences)</td>
+<td>Bigrams + individual keys</td>
+</tr>
+<tr class="even">
+<td><strong>Base effort</strong></td>
+<td>Finger travel distance</td>
+<td>Position-based (row + column)</td>
+</tr>
+<tr class="odd">
+<td><strong>Penalties</strong></td>
+<td>Hand, row, finger costs</td>
+<td>Same-finger, same-hand, row-change</td>
+</tr>
+<tr class="even">
+<td><strong>Stroke path</strong></td>
+<td>Complex path penalties</td>
+<td>Simplified via bigram weights</td>
+</tr>
+<tr class="odd">
+<td><strong>Layer support</strong></td>
+<td>Not built-in</td>
+<td>Shift, AltGr, dead key penalties</td>
+</tr>
+</tbody>
+</table>
+<p>Carpalx uses triads and a sophisticated stroke path model. I simplify this to bigrams (2-key sequences) for faster computation while retaining the key ergonomic insights.</p>
+</section>
+<section id="our-model-components" class="level3">
+<h3 class="anchored" data-anchor-id="our-model-components">Our Model Components</h3>
+</section>
+<section id="base-effort-weight-3.0" class="level3">
+<h3 class="anchored" data-anchor-id="base-effort-weight-3.0">1. Base Effort (Weight: 3.0)</h3>
+<p>Every key has an inherent effort based on position. Home row keys (where fingers rest) have the lowest effort; reaching up to the top row or down to the bottom row costs more. Finger strength matters too: index fingers are stronger than pinkies.</p>
+<p><strong>Example</strong>: Typing “e” on QWERTZ (top row, middle finger reach) costs more than typing “j” (home row, index finger)—even though we use “e” 100× more often!</p>
+</section>
+<section id="same-finger-bigram-penalty-weight-3.0" class="level3">
+<h3 class="anchored" data-anchor-id="same-finger-bigram-penalty-weight-3.0">2. Same-Finger Bigram Penalty (Weight: 3.0)</h3>
+<p>Using the same finger twice in a row is slow and uncomfortable. The model heavily penalizes these sequences.</p>
+<p><strong>Example</strong>: Typing “de” on QWERTZ uses the same finger (middle finger, D→E). This is penalized. On BÉPO, these letters are on different hands, so no penalty.</p>
+</section>
+<section id="same-hand-penalty-weight-0.5" class="level3">
+<h3 class="anchored" data-anchor-id="same-hand-penalty-weight-0.5">3. Same-Hand Penalty (Weight: 0.5)</h3>
+<p>Consecutive keys on the same hand are slightly harder than alternating hands, because one hand must do all the work.</p>
+</section>
+<section id="row-change-penalty-weight-0.5" class="level3">
+<h3 class="anchored" data-anchor-id="row-change-penalty-weight-0.5">4. Row Change Penalty (Weight: 0.5)</h3>
+<p>Jumping between rows (e.g., top→bottom) requires more finger travel than staying on the same row.</p>
+</section>
+<section id="layer-penalties" class="level3">
+<h3 class="anchored" data-anchor-id="layer-penalties">5. Layer Penalties</h3>
+<p>Characters requiring modifier keys (Shift, AltGr, dead keys) incur extra effort: - <strong>Shift</strong>: +5% effort - <strong>AltGr</strong>: +20% effort - <strong>Dead key</strong> (e.g., ˆ + o = ô): +40% effort (two keystrokes!)</p>
+</section>
+<section id="putting-it-together" class="level3">
+<h3 class="anchored" data-anchor-id="putting-it-together">Putting It Together</h3>
+<p>The total effort formula is:</p>
+<pre><code>Total = Σ (base × frequency) + Σ (same_finger_penalty) + Σ (same_hand_penalty)
+        + Σ (row_change_penalty) + Σ (layer_penalties)</code></pre>
+<p><strong>Numerical Example</strong>: Consider typing “the” (one of the most common English trigrams):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Layout</th>
+<th>Key Positions</th>
+<th>Same-Finger?</th>
+<th>Row Changes</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>QWERTZ</td>
+<td>T(top), H(home), E(top)</td>
+<td>No</td>
+<td>2</td>
+<td>Moderate</td>
+</tr>
+<tr class="even">
+<td>BÉPO</td>
+<td>T(home), H(bottom), E(home)</td>
+<td>No</td>
+<td>1</td>
+<td><strong>Low</strong></td>
+</tr>
+</tbody>
+</table>
+<p>BÉPO places two letters on the home row, and two characters are typed using index finger (T and E), so it’s very comfortable to type.</p>
+</section>
+<section id="a-concrete-example-the-pangram" class="level3">
+<h3 class="anchored" data-anchor-id="a-concrete-example-the-pangram">A Concrete Example: The Pangram</h3>
+<p>Let’s calculate actual effort scores for “the quick brown fox jumps over the lazy dog” (a pangram using every letter of the alphabet):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load layouts</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"ch_qwertz"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"afnor_bepo"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>qwertz_lux <span class="ot">&lt;-</span> <span class="fu">create_qwertz_lux_keyboard</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Effort weights (same as used throughout)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>effort_weights <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">base =</span> <span class="fl">3.0</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">same_finger =</span> <span class="fl">3.0</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">same_hand =</span> <span class="fl">0.5</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_change =</span> <span class="fl">0.5</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">trigram =</span> <span class="fl">0.3</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>pangram <span class="ot">&lt;-</span> <span class="st">"the quick brown fox jumps over the lazy dog"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate effort for each layout</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>pangram_qwertz <span class="ot">&lt;-</span> <span class="fu">calculate_layout_effort</span>(ch_qwertz, pangram, </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">effort_weights =</span> effort_weights)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>pangram_bepo <span class="ot">&lt;-</span> <span class="fu">calculate_layout_effort</span>(afnor_bepo, pangram,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">effort_weights =</span> effort_weights)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>pangram_lux <span class="ot">&lt;-</span> <span class="fu">calculate_layout_effort</span>(qwertz_lux<span class="sc">$</span>base, pangram,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">effort_weights =</span> effort_weights)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Layout =</span> <span class="fu">c</span>(<span class="st">"QWERTZ"</span>, <span class="st">"BÉPO"</span>, <span class="st">"QWERTZ-LUX"</span>),</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Effort =</span> <span class="fu">round</span>(<span class="fu">c</span>(pangram_qwertz, pangram_bepo, pangram_lux), <span class="dv">2</span>),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">vs QWERTZ</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>((<span class="dv">1</span> <span class="sc">-</span> <span class="fu">c</span>(pangram_qwertz, pangram_bepo, pangram_lux) <span class="sc">/</span> </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                               pangram_qwertz) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>),</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Even for this short 35-letter sentence, the optimised layouts require measurably less effort.</p>
+</section>
+</section>
+<section id="how-much-better-is-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-much-better-is-it">How Much Better Is It?</h2>
+<p>Using this effort model (with the weights shown above), here’s how the layouts compare:</p>
+</section>
+<section id="visualizing-the-difference-heatmaps" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-difference-heatmaps">Visualizing the Difference: Heatmaps</h2>
+<p>Heatmaps show where your fingers spend time. Brighter colors = more keystrokes. Ideally, you want the brightness concentrated on the home row.</p>
+<p>Notice how BÉPO and QWERTZ-LUX concentrate activity on the home row, while QWERTZ spreads effort across all rows.</p>
+<section id="key-features" class="level3">
+<h3 class="anchored" data-anchor-id="key-features">Key Features</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Optimized home row</strong></td>
+<td>High-frequency letters (E, T, N, R, I, S) within easy reach</td>
+</tr>
+<tr class="even">
+<td><strong>Direct accents</strong></td>
+<td>é, à, ü, ö, ç, ä accessible without dead key combinations</td>
+</tr>
+<tr class="odd">
+<td><strong>ZXCV preserved</strong></td>
+<td>Common shortcuts (Ctrl+Z/X/C/V) stay in familiar positions</td>
+</tr>
+<tr class="even">
+<td><strong>BÉPO-compatible</strong></td>
+<td>Same modifier layer philosophy as BÉPO</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
+<p>So I’d like to know what others think. Is this something you’d be interested in exploring further? The next step would be to write a <code>layout.ini</code> file for <em>Portable Keyboard Layout</em> for Windows, and write layout files for Linux and macOS, and have real people test it in real-world settings. We could see if it feels comfortable and what else could be optimised.</p>
+<p>But is there a chance that such a layout will ever get adopted? After all, there are obstacles:</p>
+<ul>
+<li>People just don’t care and won’t ever switch</li>
+<li>Even if people cared, Luxembourg is too small a market and keyboards will never ship with a Luxembourg-specific layout</li>
+</ul>
+<p>In my opinion, rolling out such a keyboard would require a phased and gradual approach:</p>
+<ul>
+<li>Have kids learn to touch type in school on the optimised layout</li>
+<li>Distribute keyboard layout stickers, which are cheap</li>
+</ul>
+<p>After some years, the switch would be complete, so I think it’s feasible, but only if there is a community around this layout. Also, who knows, this layout could technically be adopted in Switzerland and other German-speaking nations (maybe as a variant without direct access to French accented letters).</p>
+</section>
+<section id="about-the-name" class="level2">
+<h2 class="anchored" data-anchor-id="about-the-name">About the Name</h2>
+<p>The current working name “QWERTZ-LUX” is descriptive but not final. The first letters of the layout are <strong>QWFOG</strong>, which doesn’t exactly roll off the tongue like “QWERTY” or “BÉPO.” Here are some alternatives I’m considering:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>QWERTZ-LUX</strong></td>
+<td>Current name; descriptive (QWERTZ variant for Luxembourg)</td>
+</tr>
+<tr class="even">
+<td><strong>LÉTZ</strong></td>
+<td>Short for <em>Lëtzebuergesch</em> (Luxembourgish); catchy and culturally meaningful</td>
+</tr>
+<tr class="odd">
+<td><strong>LUXO</strong></td>
+<td>Luxembourg Optimized</td>
+</tr>
+<tr class="even">
+<td><strong>TRIGLOT</strong></td>
+<td>Reflects the trilingual focus (French, German, Luxembourgish)</td>
+</tr>
+</tbody>
+</table>
+<p>What do you think? I’m genuinely open to suggestions: a good name helps adoption!</p>
+<p>Oh, and happy new year I guess.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">

@@ -50,9 +50,6 @@ font-style: inherit;">2</span>)</span>
 <span id="cb1-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print</span>(result)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]  1  4  9 16 25</code></pre>
-</div>
 </div>
 <p>The <code>purrr</code> package is not in the base <code>posts/default.nix</code>, but it’s available here because of the post-specific <code>.nix</code> file!</p>
 
@@ -61,6 +58,446 @@ font-style: inherit;">print</span>(result)</span></code></pre></div>
  ]]></description>
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2025-12-31-toy-post.html</guid>
+  <pubDate>Wed, 31 Dec 2025 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>What would a keyboard optimised for Luxembourgish look like? Now with an actual keyboard!</title>
+  <dc:creator>Bruno Rodrigues</dc:creator>
+  <link>https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/qwertz-lux.png" style="width: 100%; height: auto;"> </a>
+</p>
+</div>
+<section id="an-optimised-layout-for-a-polyglot-country" class="level2">
+<h2 class="anchored" data-anchor-id="an-optimised-layout-for-a-polyglot-country">An optimised layout for a polyglot country</h2>
+<p><a href="https://brodrigues.co/posts/2020-03-26-bepo_lu.html">5 years ago</a> I discussed what features a keyboard optimised for Luxembourg should have. I’m talking about Luxembourg the country, and not Luxembourgish the language, because in Luxembourg no one types only Luxembourgish. The most commonly typed language is probably French, and English a close second. German follows in third and then Luxembourgish (some people might argue that, in their own experience, German is more widely typed than French, but I seriously doubt it). Whatever the actual ranking, an optimised keyboard for Luxembourg should be a keyboard in which typing these 4 languages is comfortable. That blog post from 5 years ago dug into that (letter frequency and so on), but until today, I left it on the back burner.</p>
+<p>Now, with LLMs it was trivial to continue working on this, implement an effort model, and use an optimisation algorithm to minimise said effort. Today, I can present the layout I’ve obtained:</p>
+<p>(there is an error in the layout shown here, there are two “G”s; the one on the right of E should not be there, and instead should be a “,”. This is a bug in the function that creates the heatmap, not in the layout itself.)</p>
+<blockquote class="blockquote">
+<p>⚠️ <strong>This is a work in progress!</strong> The layout, the name, and even the methodology are all open for discussion. I’m sharing this early because I’d love to hear from the community, especially those who type in multiple languages daily. Your feedback will shape the final version.</p>
+</blockquote>
+<p>Let me also clarify what my goal with this is: do I want to actually suggest a layout that shall be adopted nationally and become a standard? Well, maybe. But I definitely won’t do it alone. So if you’re interested, we could work together and write a layout that could actually be used by different operating systems and pitch it to decision makers.</p>
+</section>
+<section id="france-shows-the-way" class="level2">
+<h2 class="anchored" data-anchor-id="france-shows-the-way">France Shows the Way</h2>
+<p>In 2019, France officially adopted two new keyboard standards:</p>
+<ol type="1">
+<li><strong>A revised AZERTY</strong> that fixes many issues while maintaining familiarity</li>
+<li><strong>BÉPO</strong> — a completely redesigned layout optimised for French</li>
+</ol>
+<p>I’ve been using BÉPO for years, and I can honestly say it’s a game-changer. Typing feels more natural, there’s less finger movement, and the learning curve, while steep at first, pays off significantly.</p>
+<p>But here’s the thing: BÉPO was designed primarily for French. Luxembourg is unique, because we need something that works for French <em>and</em> German <em>and</em> Luxembourgish <em>and</em> English.</p>
+</section>
+<section id="the-qwertz-lux-approach" class="level2">
+<h2 class="anchored" data-anchor-id="the-qwertz-lux-approach">The QWERTZ-LUX Approach</h2>
+<p>So I started wondering: what would an optimised keyboard layout for Luxembourg look like? You can read about my findings <a href="https://brodrigues.co/posts/2020-03-26-bepo_lu.html">here</a>, but basically, any optimised layout for any of these 4 languages would actually work rather well; this is because 3 out of these 4 languages are Germanic languages, but also, the top 10 most used characters for these 4 languages are essentially the same.</p>
+<p>So I had three options:</p>
+<ol type="1">
+<li>Simply propose that we also adopt BÉPO</li>
+<li>Create a fully optimised layout using these 4 languages for setting up the optimisation problem</li>
+<li>Keep QWERTZ as a base for familiarity and only move around a minimal set of characters to improve comfort.</li>
+</ol>
+<p>I chose a middle path, inspired by Carpalx’s <a href="https://mk.bcgsc.ca/carpalx/?partial_optimization">partial optimization</a> philosophy. Martin Krzywinski demonstrated that you don’t need to remap the entire keyboard to reap most of the rewards. Just 5 strategic key swaps can achieve <strong>70% of the effort reduction</strong> of a fully optimised layout, while the learning curve remains manageable.</p>
+<p>QWERTZ-LUX (final name pending) follows this principle. It’s essentially a fork of BÉPO’s structure, but with modifications that:</p>
+<ul>
+<li>Keep familiar elements for QWERTZ users (Ctrl+Z, Ctrl+X, Ctrl+C, Ctrl+V shortcuts)</li>
+<li>Optimize the letter arrangement for our multilingual corpus</li>
+<li>Provide direct access to accented characters (é, à, ü, ö, ç, ä) without dead keys</li>
+</ul>
+<p>The home row had to change substantially, because QWERTZ’s home row is simply too inefficient. But I tried to minimize disruption elsewhere, following the partial optimization insight that the first few key swaps matter most. Setting up the optimisation problem with these constraints resulted in a keyboard layout that stays familiar, while being much more efficient.</p>
+</section>
+<section id="the-corpus-what-does-luxembourg-type" class="level2">
+<h2 class="anchored" data-anchor-id="the-corpus-what-does-luxembourg-type">The Corpus: What Does Luxembourg Type?</h2>
+<p>To evaluate keyboard layouts fairly, we need text that reflects what people actually type in Luxembourg. I created a balanced multilingual corpus with:</p>
+<ul>
+<li><strong>30% French</strong> — Administrative and business language</li>
+<li><strong>30% English</strong> — International communication</li>
+<li><strong>20% German</strong> — Media and education</li>
+<li><strong>20% Luxembourgish</strong> — Daily life and national identity</li>
+</ul>
+<p>Again, your mileage may vary. When I first started working in Luxembourg, I only used English and French. Now I also use Luxembourgish more often, and I know people who only write French. Either way, a national keyboard layout should be able to be comfortable for any of these languages.</p>
+<p>What actually matters is the top letters across all languages, which are <strong>E, N, S, T, R, I, A</strong>, the letters you’d want on your home row.</p>
+</section>
+<section id="the-effort-model-explained" class="level2">
+<h2 class="anchored" data-anchor-id="the-effort-model-explained">The Effort Model Explained</h2>
+<p>Before comparing layouts, let’s understand how we measure “typing effort”. I wrote an R package called <strong>lbkeyboard</strong> that implements a model inspired by <a href="https://mk.bcgsc.ca/carpalx/?typing_effort">Carpalx</a>, the seminal keyboard layout optimization tool created by Martin Krzywinski.</p>
+<section id="carpalx-vs-lbkeyboard" class="level3">
+<h3 class="anchored" data-anchor-id="carpalx-vs-lbkeyboard">Carpalx vs lbkeyboard</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 31%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Carpalx</th>
+<th>lbkeyboard</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Unit of analysis</strong></td>
+<td>Triads (3-key sequences)</td>
+<td>Bigrams + individual keys</td>
+</tr>
+<tr class="even">
+<td><strong>Base effort</strong></td>
+<td>Finger travel distance</td>
+<td>Position-based (row + column)</td>
+</tr>
+<tr class="odd">
+<td><strong>Penalties</strong></td>
+<td>Hand, row, finger costs</td>
+<td>Same-finger, same-hand, row-change</td>
+</tr>
+<tr class="even">
+<td><strong>Stroke path</strong></td>
+<td>Complex path penalties</td>
+<td>Simplified via bigram weights</td>
+</tr>
+<tr class="odd">
+<td><strong>Layer support</strong></td>
+<td>Not built-in</td>
+<td>Shift, AltGr, dead key penalties</td>
+</tr>
+</tbody>
+</table>
+<p>Carpalx uses triads and a sophisticated stroke path model. I simplify this to bigrams (2-key sequences) for faster computation while retaining the key ergonomic insights.</p>
+</section>
+<section id="our-model-components" class="level3">
+<h3 class="anchored" data-anchor-id="our-model-components">Our Model Components</h3>
+</section>
+<section id="base-effort-weight-3.0" class="level3">
+<h3 class="anchored" data-anchor-id="base-effort-weight-3.0">1. Base Effort (Weight: 3.0)</h3>
+<p>Every key has an inherent effort based on position. Home row keys (where fingers rest) have the lowest effort; reaching up to the top row or down to the bottom row costs more. Finger strength matters too: index fingers are stronger than pinkies.</p>
+<p><strong>Example</strong>: Typing “e” on QWERTZ (top row, middle finger reach) costs more than typing “j” (home row, index finger)—even though we use “e” 100× more often!</p>
+</section>
+<section id="same-finger-bigram-penalty-weight-3.0" class="level3">
+<h3 class="anchored" data-anchor-id="same-finger-bigram-penalty-weight-3.0">2. Same-Finger Bigram Penalty (Weight: 3.0)</h3>
+<p>Using the same finger twice in a row is slow and uncomfortable. The model heavily penalizes these sequences.</p>
+<p><strong>Example</strong>: Typing “de” on QWERTZ uses the same finger (middle finger, D→E). This is penalized. On BÉPO, these letters are on different hands, so no penalty.</p>
+</section>
+<section id="same-hand-penalty-weight-0.5" class="level3">
+<h3 class="anchored" data-anchor-id="same-hand-penalty-weight-0.5">3. Same-Hand Penalty (Weight: 0.5)</h3>
+<p>Consecutive keys on the same hand are slightly harder than alternating hands, because one hand must do all the work.</p>
+</section>
+<section id="row-change-penalty-weight-0.5" class="level3">
+<h3 class="anchored" data-anchor-id="row-change-penalty-weight-0.5">4. Row Change Penalty (Weight: 0.5)</h3>
+<p>Jumping between rows (e.g., top→bottom) requires more finger travel than staying on the same row.</p>
+</section>
+<section id="layer-penalties" class="level3">
+<h3 class="anchored" data-anchor-id="layer-penalties">5. Layer Penalties</h3>
+<p>Characters requiring modifier keys (Shift, AltGr, dead keys) incur extra effort: - <strong>Shift</strong>: +5% effort - <strong>AltGr</strong>: +20% effort - <strong>Dead key</strong> (e.g., ˆ + o = ô): +40% effort (two keystrokes!)</p>
+</section>
+<section id="putting-it-together" class="level3">
+<h3 class="anchored" data-anchor-id="putting-it-together">Putting It Together</h3>
+<p>The total effort formula is:</p>
+<pre><code>Total = Σ (base × frequency) + Σ (same_finger_penalty) + Σ (same_hand_penalty)
+        + Σ (row_change_penalty) + Σ (layer_penalties)</code></pre>
+<p><strong>Numerical Example</strong>: Consider typing “the” (one of the most common English trigrams):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Layout</th>
+<th>Key Positions</th>
+<th>Same-Finger?</th>
+<th>Row Changes</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>QWERTZ</td>
+<td>T(top), H(home), E(top)</td>
+<td>No</td>
+<td>2</td>
+<td>Moderate</td>
+</tr>
+<tr class="even">
+<td>BÉPO</td>
+<td>T(home), H(bottom), E(home)</td>
+<td>No</td>
+<td>1</td>
+<td><strong>Low</strong></td>
+</tr>
+</tbody>
+</table>
+<p>BÉPO places two letters on the home row, and two characters are typed using index finger (T and E), so it’s very comfortable to type.</p>
+</section>
+<section id="a-concrete-example-the-pangram" class="level3">
+<h3 class="anchored" data-anchor-id="a-concrete-example-the-pangram">A Concrete Example: The Pangram</h3>
+<p>Let’s calculate actual effort scores for “the quick brown fox jumps over the lazy dog” (a pangram using every letter of the alphabet):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Load layouts</span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ch_qwertz"</span>)</span>
+<span id="cb2-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"afnor_bepo"</span>)</span>
+<span id="cb2-4">qwertz_lux <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">create_qwertz_lux_keyboard</span>()</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Effort weights (same as used throughout)</span></span>
+<span id="cb2-7">effort_weights <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb2-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.0</span>,</span>
+<span id="cb2-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">same_finger =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.0</span>,</span>
+<span id="cb2-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">same_hand =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>,</span>
+<span id="cb2-11">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">row_change =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>,</span>
+<span id="cb2-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">trigram =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span></span>
+<span id="cb2-13">)</span>
+<span id="cb2-14"></span>
+<span id="cb2-15">pangram <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"the quick brown fox jumps over the lazy dog"</span></span>
+<span id="cb2-16"></span>
+<span id="cb2-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate effort for each layout</span></span>
+<span id="cb2-18">pangram_qwertz <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">calculate_layout_effort</span>(ch_qwertz, pangram, </span>
+<span id="cb2-19">                                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-20">                                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">effort_weights =</span> effort_weights)</span>
+<span id="cb2-21">pangram_bepo <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">calculate_layout_effort</span>(afnor_bepo, pangram,</span>
+<span id="cb2-22">                                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-23">                                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">effort_weights =</span> effort_weights)</span>
+<span id="cb2-24">pangram_lux <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">calculate_layout_effort</span>(qwertz_lux<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>base, pangram,</span>
+<span id="cb2-25">                                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">keys_to_evaluate =</span> letters,</span>
+<span id="cb2-26">                                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">effort_weights =</span> effort_weights)</span>
+<span id="cb2-27"></span>
+<span id="cb2-28"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb2-29">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Layout =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"QWERTZ"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"BÉPO"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"QWERTZ-LUX"</span>),</span>
+<span id="cb2-30">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Effort =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(pangram_qwertz, pangram_bepo, pangram_lux), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb2-31">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">vs QWERTZ</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>((<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(pangram_qwertz, pangram_bepo, pangram_lux) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> </span>
+<span id="cb2-32">                               pangram_qwertz) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>),</span>
+<span id="cb2-33">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">check.names =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span></span>
+<span id="cb2-34">)</span></code></pre></div>
+</div>
+<p>Even for this short 35-letter sentence, the optimised layouts require measurably less effort.</p>
+</section>
+</section>
+<section id="how-much-better-is-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-much-better-is-it">How Much Better Is It?</h2>
+<p>Using this effort model (with the weights shown above), here’s how the layouts compare:</p>
+</section>
+<section id="visualizing-the-difference-heatmaps" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-difference-heatmaps">Visualizing the Difference: Heatmaps</h2>
+<p>Heatmaps show where your fingers spend time. Brighter colors = more keystrokes. Ideally, you want the brightness concentrated on the home row.</p>
+<p>Notice how BÉPO and QWERTZ-LUX concentrate activity on the home row, while QWERTZ spreads effort across all rows.</p>
+<section id="key-features" class="level3">
+<h3 class="anchored" data-anchor-id="key-features">Key Features</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Optimized home row</strong></td>
+<td>High-frequency letters (E, T, N, R, I, S) within easy reach</td>
+</tr>
+<tr class="even">
+<td><strong>Direct accents</strong></td>
+<td>é, à, ü, ö, ç, ä accessible without dead key combinations</td>
+</tr>
+<tr class="odd">
+<td><strong>ZXCV preserved</strong></td>
+<td>Common shortcuts (Ctrl+Z/X/C/V) stay in familiar positions</td>
+</tr>
+<tr class="even">
+<td><strong>BÉPO-compatible</strong></td>
+<td>Same modifier layer philosophy as BÉPO</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
+<p>So I’d like to know what others think. Is this something you’d be interested in exploring further? The next step would be to write a <code>layout.ini</code> file for <em>Portable Keyboard Layout</em> for Windows, and write layout files for Linux and macOS, and have real people test it in real-world settings. We could see if it feels comfortable and what else could be optimised.</p>
+<p>But is there a chance that such a layout will ever get adopted? After all, there are obstacles:</p>
+<ul>
+<li>People just don’t care and won’t ever switch</li>
+<li>Even if people cared, Luxembourg is too small a market and keyboards will never ship with a Luxembourg-specific layout</li>
+</ul>
+<p>In my opinion, rolling out such a keyboard would require a phased and gradual approach:</p>
+<ul>
+<li>Have kids learn to touch type in school on the optimised layout</li>
+<li>Distribute keyboard layout stickers, which are cheap</li>
+</ul>
+<p>After some years, the switch would be complete, so I think it’s feasible, but only if there is a community around this layout. Also, who knows, this layout could technically be adopted in Switzerland and other German-speaking nations (maybe as a variant without direct access to French accented letters).</p>
+</section>
+<section id="about-the-name" class="level2">
+<h2 class="anchored" data-anchor-id="about-the-name">About the Name</h2>
+<p>The current working name “QWERTZ-LUX” is descriptive but not final. The first letters of the layout are <strong>QWFOG</strong>, which doesn’t exactly roll off the tongue like “QWERTY” or “BÉPO.” Here are some alternatives I’m considering:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>QWERTZ-LUX</strong></td>
+<td>Current name; descriptive (QWERTZ variant for Luxembourg)</td>
+</tr>
+<tr class="even">
+<td><strong>LÉTZ</strong></td>
+<td>Short for <em>Lëtzebuergesch</em> (Luxembourgish); catchy and culturally meaningful</td>
+</tr>
+<tr class="odd">
+<td><strong>LUXO</strong></td>
+<td>Luxembourg Optimized</td>
+</tr>
+<tr class="even">
+<td><strong>TRIGLOT</strong></td>
+<td>Reflects the trilingual focus (French, German, Luxembourgish)</td>
+</tr>
+</tbody>
+</table>
+<p>What do you think? I’m genuinely open to suggestions: a good name helps adoption!</p>
+<p>Oh, and happy new year I guess.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>keyboard</category>
+  <guid>https://b-rodrigues.github.io/posts/2025-12-31-qwertz-lux.html</guid>
   <pubDate>Wed, 31 Dec 2025 00:00:00 GMT</pubDate>
 </item>
 <item>
@@ -3967,154 +4404,6 @@ If you read all the blog posts above but still want to learn and know more about
   <category>proramming</category>
   <guid>https://b-rodrigues.github.io/posts/2023-10-05-repro_overview.html</guid>
   <pubDate>Thu, 05 Oct 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>ZSA Voyager review</title>
-  <link>https://b-rodrigues.github.io/posts/2023-09-29-voyager.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<a href="https://www.youtube.com/watch?v=NlgmH5q9uNk"> <img src="https://b-rodrigues.github.io/assets/img/travelling_with_my_keyboard.png" title="Click for banger" width="80%" height="auto"></a>
-</p>
-</div>
-<p>
-Now for something completely different than our usual programming: today I’m sharing my thoughts on the latest ZSA mechanical keyboard, the <a href="https://www.zsa.io/voyager/buy/">Voyager</a>. First things first: this is in no way shape or form sponsored by ZSA. But Erez, if you’d like to send me money you’re more than welcome.
-</p>
-<p>
-Here’s what the keyboard looks like:
-</p>
-<div style="text-align:center;">
-<video width="854" height="480" controls="" autoplay="" muted="" loop="">
-<source src="../assets/img/voyager.mp4" type="video/mp4">
-Your browser does not support the video tag. </video>
-</div>
-<p>
-Yes, it comes with RGB LEDs. Why do mechanical keyboards come with RGB LEDs? No idea, I usually don’t care for them, but unlike other keyboards from ZSA, you cannot order the Voyager without them. So now my keyboard looks like a Christmas tree. And by the way, yes, you can get the good old regular QWERTY layout instead of the dots. I chose to get blank keys because I don’t look at my keyboard when typing.
-</p>
-<p>
-It’s quite small and there aren’t many keys on it. But it’s very comfortable to use. I’ll try to explain why.
-</p>
-<p>
-If you don’t know anything about mechanical keyboards, I think you might find this blog post useful. I’ll explain the basics and also why you might want to consider one if you’re a programmer.
-</p>
-<p>
-First of all, let me just get this out of the way: typing on a mechanical keyboard will not make you type any faster. I think that people that buy mechanical keyboards also tend to be people that spend some time learning how to touch-type, so yeah, they’ll type faster than most people that never bother to learn to touch-type, but two touch-typists, one that use a mechanical keyboard and another that uses a normal keyboard, will roughly type at the same speed.
-</p>
-<p>
-So if not for speed, why bother with mechanical keyboards?
-</p>
-<p>
-In my opinion, the main advantage of mechanical keyboards is customization. You can customize absolutely everything: not just how the keyboard looks, but also how it works. Many mechanical keyboards come with a firmware called QMK which enables you to program each key. So for instance I have a key that types “&lt;-” and another that types “%&gt;%”, very useful for an R programmer like myself. You can configure such things at the level of you favourite text editor, but it’s nice to also have the option at the level of the hardware, because it means that you can now easily type these programming symbols anywhere: on social media, an email, a forum… Configuring this firmware on keyboards made by ZSA, like the Voyager, is incredibly easy: there’s a web-application called Oryx that you can use for all they keyboards. Simply select the keys, change what you must and flash the new firmware to your keyboard! For example here, I’m configuring a key to output “,” when pressed, but to output “_” when double-tapped:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/oryx.png" width="80%" height="auto">
-</p>
-</div>
-<p>
-And for the flashing process you don’t even have to install anything on your computer: if you’re using a Chromium based browser like Google Chrome, you can flash it from the Web Browser. You can even browse other people’s configurations, for example here’s <a href="https://configure.zsa.io/voyager/layouts/l9eWG/ErJeQ/0">mine</a> (and you can even customize the RGB).
-</p>
-<p>
-I use the French ergonomic BÉPO layout, the English equivalent would be Dvorak. You can add different layers, for example by holding one key, all the other keys now output something different when pressed (like holding down the SHIFT key produces capital letters), but you can make any key switch layers and then any other key output anything. For example I have a layer in which I configured keys to move my mouse and click. I don’t use that very often, but in case I forget my mouse if I’m traveling, I could also use my keyboard as a mouse now.
-</p>
-<p>
-Hardware can also be customized: the color of the keyboard, but also the keycaps (I have the blank ones, as you’ve seen above) and also the switches. If you’re not into mechanical keyboard I guess this doesn’t mean anything. Keycaps are these:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/caps.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-and switches are these:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/switches.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-And you can change either the caps, the switches or both. The keyboard is <em>hot-swapable</em> meaning that you can actually replace the switches. Here is a switch with a keycap on it that I removed from my keyboard:
-</p>
-<div style="text-align:center;">
-<video width="854" height="480" controls="" loop="">
-<source src="../assets/img/pressing_switch.mp4" type="video/mp4">
-Your browser does not support the video tag. </video>
-</div>
-<p>
-Again, if you’re not into mechanical keyboard it’s difficult to see why this is really a nice thing: but being able to change caps and switches allows you to truly make the keyboard feel and sound just right for you.
-</p>
-<p>
-Let me explain: there’s switches that make no sound and that are very easy to press: they’re called linear switches. Then there’s switches that make a nice clicky sound and that require more force to press, and there’s switches that make even more noise and that require a lot of force to press. The harder ones are so-called “clicky” switches and the intermediate ones “tactile”. There’s a lot more subtlety than that, but even I don’t know everything about switches. What matters is that you can swap these, and find the ones that are just right for you. My first mechanical keyboard, also one from ZSA, the Ergodox EZ (pictured below) came with red switches. At the time, I had no idea what switches I should get, so I bought the reds because they were silent, and I figured that I would prefer silent ones. Turns out that I absolutely hated them. It didn’t fill right because they were extremely light, and simply by resting my hands on the keyboard I would press keys by mistake. Then I bought clicky switches, and since then haven’t looked back. Clicky switches make a nice “click” sound when you press them, because there’s actually a little mechanism that produces this noise when you press them. It’s like pushing an actual button. Much more satisfying, and much better, in my opinion, for typing. So for this board I got the white ones, which are the clickiest. It’s also the one’s I had for my other mechanical keyboard, the Planck EZ, also by ZSA:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/planck.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-I also experimented with heavier ones on my other board (an Idobao ID75, a somewhat overgrown Planck, not by ZSA but also very customizable through <a href="https://get.vial.today/">VIAL</a>):
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/idobao.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-The switches there are heavier, and I enjoy them a lot as well.
-</p>
-<p>
-Now, this keyboard isn’t cheap, but it does come with a lot of nice stuff in the box. You get 3 usb cables, 4 more switches, several keycaps more, and a carrying bag.
-</p>
-<p>
-And as you can see, it’s a so-called low profile keyboard:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/low_voyager_1.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-You can even remove these little feet from the keyboard (they’re magnetic):
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/magnetic_feet.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-to get it even lower:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/low_voyager_2.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-I’ve never had such a keyboard in the past and I must say that it’s really comfortable to use. I don’t need to use any wrist rests anymore, which is kinda nice. Because it’s low-profile the switches and keycaps are different from the usual ones you get for other mechanical keyboards:
-</p>
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/mx_vs_choc.jpg" width="80%" height="auto">
-</p>
-</div>
-<p>
-Anyways, I really enjoy this form factor, not just that it’s low profile, but also that it doesn’t have a lot of keys. I like this, because my hands don’t need to move at all. If I need numbers for example, I switch layers, and now the keys that would usually be directly under my fingers will output numbers when pressed. So instead of my fingers going to the keys, they keys go to my fingers. It gets some time to get used to this, but once you know how to do that, it’s just great.
-</p>
-<p>
-So, should you buy a Voyager? I might not advise it to you for a first mechanical keyboard. There’s much cheaper ones that you can get and see if mechanical keyboards are for you. If you can, try some out in a store, I think it’s especially important to find the right switches for your style. As I’ve written above, I started with linear reds which I hated, thankfully I tried clicky whites before abandoning my mechanical keyboard adventure. If you’re already a hardened mechanical keyboard user, and are looking for a light keyboard that you can take with you on your travels, I think that it’s hard to overlook the Voyager. There are other nice, very transportable keyboards out there, but the build quality of ZSA and the firmware customization tool they provide, Oryx, is hard to beat.
-</p>
-
-
- ]]></description>
-  <category>R</category>
-  <category>proramming</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-09-29-voyager.html</guid>
-  <pubDate>Fri, 29 Sep 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
