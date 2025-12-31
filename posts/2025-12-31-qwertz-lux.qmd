@@ -82,6 +82,10 @@ p3 <- ggkeyboard(heatmap_qwertz_lux) + ggtitle("QWERTZ-LUX")
 p3
 ```
 
+(there is an error in the layout shown here, there are two "G"s; the one
+on the right of E should not be there, and instead should be a ",". This
+is a bug in the function that creates the heatmap, not in the layout itself.)
+
 > ⚠️ **This is a work in progress!** The layout, the name, and even the
 > methodology are all open for discussion. I'm sharing this early because I'd
 > love to hear from the community, especially those who type in multiple
