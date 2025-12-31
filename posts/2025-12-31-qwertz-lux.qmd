@@ -5,6 +5,15 @@ date: "2025-12-31"
 categories: [R, keyboard]
 ---
 
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/qwertz-lux.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
