@@ -47,6 +47,18 @@ jobs:
         - name: Render site
           run: nix-shell --run "quarto render"
 
+        - name: Commit updated freeze folder
+          run: |
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            if [[ -n $(git status _freeze --porcelain) ]]; then
+              git add _freeze
+              git commit -m "Update freeze folder [skip ci]"
+              git push
+            else
+              echo "No freeze changes to commit"
+            fi
+
         - name: Publish to GitHub Pages
           uses: rstats-on-nix/quarto-nix-actions/publish@main
           with:
