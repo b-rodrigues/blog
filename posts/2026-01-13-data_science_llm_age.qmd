@@ -1,0 +1,420 @@
+---
+date: 2026-01-13
+title: "From scripts to pipelines in the age of LLMs"
+categories:
+  - R
+  - nix
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/chad_beach.png" style="width: 80%; height: auto;">
+    </a>
+  </p>
+</div>
+
+I was recently reading Davis Vaughan's blog post [Semi-automating 200 Pull
+Requests with Claude
+Code](https://blog.davisvaughan.com/posts/2026-01-09-claude-200-pull-requests/)
+and it really resonated with me, as I've been using LLMs for tedious tasks like
+that for some time now. Davis's key insight: *structure = success*. When you can
+scope a task tightly and provide clear context, LLMs become genuinely useful
+tools.
+
+If you've been following my work, you know that reproducible pipelines have been
+my main focus for some time now. It's the reason I wrote `{rix}` for
+reproducible R environments, `{rixpress}` for declarative pipelines, and even a
+Python port called `ryxpress`. I genuinely believe these tools make data science
+better: more reproducible, more debuggable, more shareable.
+
+But I also know that getting people to adopt new tools is hard. Learning a new
+way of structuring your code takes time and effort, and most people are busy
+enough already. Here's where LLMs enter the picture: they can help translate
+your existing scripts into this more structured format. You provide your
+monolithic script, explain what you want, and the LLM does the grunt work of
+restructuring it.
+
+The typical way we write analytics scripts (long chains of `%>%` calls in R or
+method-chaining in Python) works fine for interactive exploration, but quickly
+turns into spaghetti that's hard to modify, test, or debug. Take [my old
+Luxembourg Airport analysis](2018-11-14-luxairport.qmd) as an example: it works,
+but turning that kind of script into a proper pipeline with caching, explicit
+dependencies, and testability is tedious work.
+
+But we're in 2026 where LLMs now make this trivial.
+
+## From implicit to explicit: translating a script into a rixpress pipeline
+
+Let me show you what I mean by translating that old Luxembourg Airport data
+cleaning code into a `{rixpress}` pipeline. The original script uses continuous
+`%>%` chaining, standard tidyverse style. The `{rixpress}` version makes every
+intermediate step explicit.
+
+But here's the thing: LLMs don't know about `{rixpress}` out of the box. It's a
+relatively new package, and it's not in their training data (or if it is, it's
+outdated). So I wrote another tool called
+[pkgctx](https://github.com/b-rodrigues/pkgctx) that extracts structured,
+LLM-ready API specifications from R or Python packages (and guess what, I did
+not write a single line of code of that tool, LLMs did).
+
+The idea is simple: run `pkgctx r rixpress > rixpress.ctx.yaml` and you get a
+compact YAML file describing every function, its arguments, and its purpose.
+Feed that to an LLM, and suddenly it "knows" the package. All my packages now
+have such a file generated on each push thanks to GitHub Actions. Here's how my
+conversation went:
+
+> **Me:** I want to use a package called rixpress, but I am not familiar with
+> it. You'll help me, and here is a file with a detailed description of the API,
+> for context.
+>
+> *[uploaded rixpress.ctx.yaml]*
+>
+> **LLM:** Got it. I'll use this API specification as the authoritative reference
+> for **rixpress** and help you write correct, idiomatic pipelines with it.
+>
+> A few orientation points to set the frame (no action required yet):
+>
+> - **rixpress is declarative**: you describe *derivations* (`rxp_r()`,
+>   `rxp_py()`, `rxp_qmd()`, …), then materialize them with `rxp_populate()` and
+>   `rxp_make()`.
+> - **Data flows through the DAG** via serialized artifacts (RDS / pickle /
+>   Julia Serialization), not in-memory objects.
+> - **Language boundaries are explicit** (`rxp_r2py()`, `rxp_py2r()`).
+> - **Nix is the execution engine**; `default.nix` (or equivalents) define the
+>   runtime environment.
+>
+> When you're ready, tell me what you want to do [...]
+
+Then I simply asked:
+
+> **Me:** Help me translate this R script into a rixpress pipeline: *[pasted the
+> old script]*
+
+And that's how I got a working `{rixpress}` pipeline. The LLM did the tedious
+restructuring; I reviewed the output, made minor tweaks, and was done. The
+combination of `pkgctx` for context and a clear task ("translate this script")
+made the LLM genuinely useful.
+
+Now let's look at what the translated pipeline looks like. First, let's assume:
+
+- The data file `avia_par_lu.tsv` is in the project directory
+- Required R packages are available via `default.nix` (we'll also use an LLM for
+  this one)
+- The project has been initialized with `rxp_init()` (this sets up two skeleton
+  files to get started quickly)
+
+<details>
+<summary>Click to expand the full rixpress pipeline</summary>
+
+```r
+library(rixpress)
+
+# Step 0: Load the data
+avia <- rxp_r_file(
+  name = avia,
+  path = "avia_par_lu.tsv",
+  read_function = readr::read_tsv
+)
+
+# Step 1: Select and reshape (wide → long)
+avia_long <- rxp_r(
+  name = avia_long,
+  expr =
+    avia %>%
+      select("unit,tra_meas,airp_pr\\time", contains("20")) %>%
+      gather(date, passengers, -`unit,tra_meas,airp_pr\\time`)
+)
+
+# Step 2: Split composite key column
+avia_split <- rxp_r(
+  name = avia_split,
+  expr =
+    avia_long %>%
+      separate(
+        col = `unit,tra_meas,airp_pr\\time`,
+        into = c("unit", "tra_meas", "air_pr\\time"),
+        sep = ","
+      )
+)
+
+# Step 3: Recode transport measure
+avia_recode_tra_meas <- rxp_r(
+  name = avia_recode_tra_meas,
+  expr =
+    avia_split %>%
+      mutate(
+        tra_meas = fct_recode(
+          tra_meas,
+          `Passengers on board` = "PAS_BRD",
+          `Passengers on board (arrivals)` = "PAS_BRD_ARR",
+          `Passengers on board (departures)` = "PAS_BRD_DEP",
+          `Passengers carried` = "PAS_CRD",
+          `Passengers carried (arrival)` = "PAS_CRD_ARR",
+          `Passengers carried (departures)` = "PAS_CRD_DEP",
+          `Passengers seats available` = "ST_PAS",
+          `Passengers seats available (arrivals)` = "ST_PAS_ARR",
+          `Passengers seats available (departures)` = "ST_PAS_DEP",
+          `Commercial passenger air flights` = "CAF_PAS",
+          `Commercial passenger air flights (arrivals)` = "CAF_PAS_ARR",
+          `Commercial passenger air flights (departures)` = "CAF_PAS_DEP"
+        )
+      )
+)
+
+# Step 4: Recode unit
+avia_recode_unit <- rxp_r(
+  name = avia_recode_unit,
+  expr =
+    avia_recode_tra_meas %>%
+      mutate(
+        unit = fct_recode(
+          unit,
+          Passenger = "PAS",
+          Flight = "FLIGHT",
+          `Seats and berths` = "SEAT"
+        )
+      )
+)
+
+# Step 5: Recode destination
+avia_recode_destination <- rxp_r(
+  name = avia_recode_destination,
+  expr =
+    avia_recode_unit %>%
+      mutate(
+        destination = fct_recode(
+          `air_pr\\time`,
+          `WIEN-SCHWECHAT` = "LU_ELLX_AT_LOWW",
+          `BRUSSELS` = "LU_ELLX_BE_EBBR",
+          `GENEVA` = "LU_ELLX_CH_LSGG",
+          `ZURICH` = "LU_ELLX_CH_LSZH",
+          `FRANKFURT/MAIN` = "LU_ELLX_DE_EDDF",
+          `HAMBURG` = "LU_ELLX_DE_EDDH",
+          `BERLIN-TEMPELHOF` = "LU_ELLX_DE_EDDI",
+          `MUENCHEN` = "LU_ELLX_DE_EDDM",
+          `SAARBRUECKEN` = "LU_ELLX_DE_EDDR",
+          `BERLIN-TEGEL` = "LU_ELLX_DE_EDDT",
+          `KOBENHAVN/KASTRUP` = "LU_ELLX_DK_EKCH",
+          `HURGHADA / INTL` = "LU_ELLX_EG_HEGN",
+          `IRAKLION/NIKOS KAZANTZAKIS` = "LU_ELLX_EL_LGIR",
+          `FUERTEVENTURA` = "LU_ELLX_ES_GCFV",
+          `GRAN CANARIA` = "LU_ELLX_ES_GCLP",
+          `LANZAROTE` = "LU_ELLX_ES_GCRR",
+          `TENERIFE SUR/REINA SOFIA` = "LU_ELLX_ES_GCTS",
+          `BARCELONA/EL PRAT` = "LU_ELLX_ES_LEBL",
+          `ADOLFO SUAREZ MADRID-BARAJAS` = "LU_ELLX_ES_LEMD",
+          `MALAGA/COSTA DEL SOL` = "LU_ELLX_ES_LEMG",
+          `PALMA DE MALLORCA` = "LU_ELLX_ES_LEPA",
+          `SYSTEM - PARIS` = "LU_ELLX_FR_LF90",
+          `NICE-COTE D'AZUR` = "LU_ELLX_FR_LFMN",
+          `PARIS-CHARLES DE GAULLE` = "LU_ELLX_FR_LFPG",
+          `STRASBOURG-ENTZHEIM` = "LU_ELLX_FR_LFST",
+          `KEFLAVIK` = "LU_ELLX_IS_BIKF",
+          `MILANO/MALPENSA` = "LU_ELLX_IT_LIMC",
+          `BERGAMO/ORIO AL SERIO` = "LU_ELLX_IT_LIME",
+          `ROMA/FIUMICINO` = "LU_ELLX_IT_LIRF",
+          `AGADIR/AL MASSIRA` = "LU_ELLX_MA_GMAD",
+          `AMSTERDAM/SCHIPHOL` = "LU_ELLX_NL_EHAM",
+          `WARSZAWA/CHOPINA` = "LU_ELLX_PL_EPWA",
+          `PORTO` = "LU_ELLX_PT_LPPR",
+          `LISBOA` = "LU_ELLX_PT_LPPT",
+          `STOCKHOLM/ARLANDA` = "LU_ELLX_SE_ESSA",
+          `MONASTIR/HABIB BOURGUIBA` = "LU_ELLX_TN_DTMB",
+          `ENFIDHA-HAMMAMET INTERNATIONAL` = "LU_ELLX_TN_DTNH",
+          `ENFIDHA ZINE EL ABIDINE BEN ALI` = "LU_ELLX_TN_DTNZ",
+          `DJERBA/ZARZIS` = "LU_ELLX_TN_DTTJ",
+          `ANTALYA (MIL-CIV)` = "LU_ELLX_TR_LTAI",
+          `ISTANBUL/ATATURK` = "LU_ELLX_TR_LTBA",
+          `SYSTEM - LONDON` = "LU_ELLX_UK_EG90",
+          `MANCHESTER` = "LU_ELLX_UK_EGCC",
+          `LONDON GATWICK` = "LU_ELLX_UK_EGKK",
+          `LONDON/CITY` = "LU_ELLX_UK_EGLC",
+          `LONDON HEATHROW` = "LU_ELLX_UK_EGLL",
+          `LONDON STANSTED` = "LU_ELLX_UK_EGSS",
+          `NEWARK LIBERTY INTERNATIONAL, NJ.` = "LU_ELLX_US_KEWR",
+          `O.R TAMBO INTERNATIONAL` = "LU_ELLX_ZA_FAJS"
+        )
+      )
+)
+
+# Step 6: Final cleaned dataset
+avia_clean <- rxp_r(
+  name = avia_clean,
+  expr =
+    avia_recode_destination %>%
+      mutate(passengers = as.numeric(passengers)) %>%
+      select(unit, tra_meas, destination, date, passengers)
+)
+
+# Step 7: Quarterly arrivals
+avia_clean_quarterly <- rxp_r(
+  name = avia_clean_quarterly,
+  expr =
+    avia_clean %>%
+      filter(
+        tra_meas == "Passengers on board (arrivals)",
+        !is.na(passengers),
+        str_detect(date, "Q")
+      ) %>%
+      mutate(date = yq(date))
+)
+
+# Step 8: Monthly arrivals
+avia_clean_monthly <- rxp_r(
+  name = avia_clean_monthly,
+  expr =
+    avia_clean %>%
+      filter(
+        tra_meas == "Passengers on board (arrivals)",
+        !is.na(passengers),
+        str_detect(date, "M")
+      ) %>%
+      mutate(date = ymd(paste0(date, "01"))) %>%
+      select(destination, date, passengers)
+)
+
+# Populate and build the pipeline
+rxp_populate(
+  list(
+    avia,
+    avia_long,
+    avia_split,
+    avia_recode_tra_meas,
+    avia_recode_unit,
+    avia_recode_destination,
+    avia_clean,
+    avia_clean_quarterly,
+    avia_clean_monthly
+  )
+)
+
+rxp_make()
+```
+
+</details>
+
+Now this is a faithful "translation" of the script into a `{rixpress}` pipeline,
+however, the original data is now not available anymore, and recent data sets
+have changed slightly, which means that this script would need further
+adaptation to the current data source. Otherwise, this would be it! You can view
+the updated script
+[here](https://github.com/b-rodrigues/rixpress_demos/tree/master/avia) (I have
+also removed all the recoding of factors, because there seems to be something
+wrong with how `{rixpress}` handles ` ` `, so writing this blog post actually
+help me find something to fix!)
+
+## Generating the environment
+
+I also used an LLM to generate the `{rix}` script that sets up the reproducible
+environment for this pipeline. I gave it the `rix.pkgctx.yaml` context file
+(generated with `pkgctx r rix > rix.pkgctx.yaml`, which is also available on the
+rix GitHub repo) and asked: "Using this knowledge, write me an R script that
+uses rix to set up the right default.nix for this pipeline."
+
+The LLM correctly identified the packages needed from the pipeline code:
+
+- `readr` (for `read_tsv`)
+- `dplyr` (for `select`, `filter`, `mutate`, `%>%`)
+- `tidyr` (for `gather`, `separate`)
+- `forcats` (for `fct_recode`)
+- `lubridate` (for `yq`, `ymd`)
+- `stringr` (for `str_detect`)
+- `rixpress` (for the pipeline itself)
+
+And produced this script:
+
+```r
+library(rix)
+
+rix(
+  date = "2026-01-10",
+  r_pkgs = c(
+    "readr",
+    "dplyr",
+    "tidyr",
+    "forcats",
+    "lubridate",
+    "stringr",
+    "rixpress"
+  ),
+  ide = "none",
+  project_path = ".",
+  overwrite = TRUE
+)
+```
+
+There's only one issue with that script: the selected date is not valid, it
+should instead be the 12th of January. But that's actually my fault: the LLM had
+no way of knowing that. The only way it could have known is if I had told it to
+look at the csv file that lists all the valid dates on `{rix}`'s repository. But
+after changing the date, it becomes possible to run this script, then
+`nix-build` to build the environment and `nix-shell` to drop into it. From
+there, run your pipeline.
+
+What we've done here is use LLMs at every step:
+
+1. **Gave context about rixpress** (via `pkgctx`) and asked the LLM to translate
+   my old script into a pipeline
+2. **Gave context about rix** (via `pkgctx`) and asked the LLM to generate the
+   environment setup
+
+The pattern is always the same: context + scoped task = useful output.
+
+## Structure + context = outsourceable grunt work
+
+The point I'm making here isn't really about `{rixpress}` pipelines
+specifically. It's about a broader principle that both Davis Vaughan and I have
+observed: LLMs are genuinely useful when you give them enough structure and
+context.
+
+Davis [pre-cloned repositories, pre-generated `.Rprofile` files, and pre-created
+task
+lists](https://blog.davisvaughan.com/posts/2026-01-09-claude-200-pull-requests/)
+so Claude could focus on the actual fixes rather than git management. I used
+`pkgctx` to give the LLM a complete API specification and provided a clear
+starting point (my old script). In both cases, the formula is the same:
+
+> **Structure + Context → Scoped Task → LLM can actually help**
+
+I've [written before](2025-07-03-llm_time.qmd) about how you can outsource grunt
+work to an LLM, but not expertise. The same applies here. I still had to know
+what data transformations I needed. I still had to review the output and make
+adjustments. But the tedious restructuring (turning a monolithic script into a
+declarative pipeline) is exactly the kind of work LLMs can handle if you set
+them up properly.
+
+If you want LLMs to help with your data science work:
+
+1. **Give them context.** Use tools like `pkgctx` to feed them API
+   specifications. Paste your existing code. Show them examples.
+2. **Scope the task tightly.** "Translate this script into a rixpress pipeline"
+   is a well-defined task. "Make my code better" is not.
+3. **Review the output.** LLMs do grunt work; you provide expertise.
+
+If you're not familiar with `{rixpress}`, check out [my announcement
+post](2025-03-20-announcing_rixpress.Qmd) or the [CRAN release
+post](2025-10-23-rixpress_cran.Qmd). And if you want to give LLMs context about
+R or Python packages, [pkgctx](https://github.com/b-rodrigues/pkgctx) is there
+to help. For those who want to dive deeper into Nix, `{rix}`, and `{rixpress}`,
+I've recently submitted a paper to the Journal of Statistical Software, which
+you can read [here](https://b-rodrigues.github.io/rix_paper/). For more
+examples of `{rixpress}` pipelines, check out the
+[rixpress_demos](https://github.com/b-rodrigues/rixpress_demos) repository.
+
+LLMs aren't going anywhere: the genie is out of the bottle. I still see plenty
+of people online claiming that LLMs aren't useful, but I genuinely believe it
+comes down to one of two things:
+
+- They're not providing enough context or scoping their tasks well enough.
+- They have a principled objection to LLMs, AI, and automation in general which,
+  ok, whatever, but it's not a technical argument about usefulness.
+
+Some people might even say that to feel good about themselves: *what I program is 
+much too complex and important for mere LLMs to be able to help me*. Ok perhaps, but
+not all of us are working for NASA or whatever. I'll keep on outsourcing the tedious
+grunt work to LLMs. 
+
