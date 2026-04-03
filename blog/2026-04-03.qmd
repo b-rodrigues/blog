@@ -1,0 +1,348 @@
+---
+date: 2026-04-03
+title: "You can just build your own programming language"
+categories:
+  - T
+  - datascience
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/tlogo.png" style="width: 100%; height: auto;">
+    </a>
+  </p>
+</div>
+
+Last summer, while relaxing on the beaches of Berck, a French town known for
+treating tuberculosis in kids by exposing them to the fresh maritime air (back
+in 19th century, they have antibiotics these days), 
+I found myself daydreaming about building my own programming language.
+
+Spoiler alert: I don't know how to build programming languages, but I have
+developed extremely strong opinions over the years about the features a modern
+data science language *should* have. So could I use them fancy LLMs to build one?
+
+Also, let's get one question answered straight away: why create a new language instead
+of contributing to existing ones? I certainly do contribute, I maintain several
+R packages like `{rix}`, `{rixpress}`, and `{chronicler}`, and even have two
+Python packages (`cronista` and `ryxpress`), but I wanted a clean slate to build
+a system centered around a few non-negotiable principles and features I’ve implemented
+over the years in R:
+
+- **Reproducibility-First**: A language where reproducibility isn't a bolt-on
+  afterthought managed by external tools, but the very foundation of the
+  runtime.
+- **Aggressive Re-use**: Instead of reinventing the wheel, this language would
+  stand on the shoulders of giants. It'd use **Nix** for package management and
+  environment isolation, and **Apache Arrow** as its high-performance backbone
+  for data frames. R, Python, Julia and other languages would provide the
+  algorithms and models.
+- **First-Class Pipelines**: Scripts shouldn't be a sequence of side-effects. In
+  this language, pipelines would be mandatory and first-class citizens.
+- **Fail Early and Loudly**: No silent type conversions or hidden NAs. If
+  something is wrong, the language breaks immediately so you can fix it.
+- **Errors as Objects**: Inspired by functional programming, errors are
+  first-class values that can be inspected and handled gracefully.
+- **Two Pipes**: I want two pipes, one for linear transformations, `|>`,
+  and a maybe-pipe, `?|>` for error recovery. Unlike the standard pipe, 
+  `?|>` always forwards its value, including Errors, to the next function, 
+  allowing you to write handlers that inspect and potentially recover from them. 
+  Since Errors are just values, this composes naturally with the rest of the language.
+- **Polyglot by Design**: Rather than re-implementing every statistical
+  algorithm, this language would be designed to orchestrate and bridge R,
+  Python, and Julia seamlessly.
+
+Also, we’re in a post LLM world, and like them or not, they’re here to stay.
+They’re pretty useful to write boilerplate code and so any new language would
+be dead on arrival if it didn’t play nicely with LLMs. So such a new language would
+need to be written for LLMs primarily, because I don’t expect anyone to learn 
+any new language. This is where the declarative nature of Nix is a huge advantage. Because environments are precisely
+described, it is much easier for LLMs to focus on generating code and not have to fight
+with environment setup. This is also the reason I took another radical decision: since Nix
+would be mandatory for setting up the environment, why bother building OS-specific
+binaries? I'd just build a Nix package for this language and let Nix handle the rest.
+
+This architecture results in a DSL for orchestration, making it trivial to
+transfer data objects between different ecosystems without the usual FFI
+(Foreign Function Interface) friction.
+
+With these ideas in mind, I started prompting Gemini to brainstorm and started
+by generating specification files. Very broad first, but as days went by, more
+and more focused. The way I went about it (and still go) is that I first brainstorm
+an idea with an LLM, then I ask it to generate a specification file, then I refine
+it, ask it to generate a new specification file, and so on. Once I’m happy with
+the spec, I ask an LLM to generate a minimal implementation of the spec. Usually writing
+the spec and a first implementation is a task shared between Claude and Gemini (through
+Antigravity). Then I open a pull request and ask GitHub Copilot to review it (usually 
+with GPT-5.x). I repeat this process until I’m happy with the implementation. I always
+ask for documentation and unit tests (and golden tests when relevant, more on this later). 
+
+I started to really believe that I had something interesting, so I gave it a
+shot, and called it **T**. I had long joked that the natural successor to R
+should be called T (because R is the successor to S... and no, I'm not going
+to call it Q because that sounds like the word for ass in French).
+
+Something else that made me confident I could succeed, besides my own hubris,
+was that I am pretty familiar with unit testing, test-driven development,
+trunk-based development and Nix. When you combine all these elements, it makes
+developing with LLMs quite safe.
+
+So I just started prompting. And now I'm quite happy to announce that there is a
+beta version of T that you can use today! 
+
+By leveraging Nix as a build engine, T can treat complex data science
+workflows as buildable derivations. A typical T pipeline looks like this:
+
+```t
+p = pipeline {
+  -- 1. Python node: read data with pandas
+  mtcars_pl = pyn(
+    command = <{
+import pandas as pd
+pd.read_csv("data/mtcars.csv", sep="|")
+    }>,
+    include = ["data/mtcars.csv"],
+    serializer = ^csv
+  )
+
+  -- 2. Python node: filter and serialize as CSV
+  mtcars_pl_am = pyn(
+    command = <{
+mtcars_pl[mtcars_pl['am'] == 1]
+    }>,
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- 3. R node: read CSV and take head using functions.R
+  mtcars_head = rn(
+    command = <{
+my_head(mtcars_pl_am)
+    }>,
+    functions = ["src/functions.R"],
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- 4. R node: select column with dplyr
+  mtcars_mpg = rn(
+    command = <{
+library(dplyr)
+mtcars_head %>% select(mpg)
+    }>,
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- Render Quarto report
+  report = node(script = "src/report.qmd", runtime = Quarto)
+}
+
+-- Materialize the pipeline
+populate_pipeline(p, build = true)
+pipeline_copy() -- Copy the outputs from the Nix store to your working directory
+```
+
+As you can see, each node has a `command` argument where you can write literal
+R or Python code. It is also possible to provide the path to a script instead.
+If packages need to be loaded for the code to work, you can just write the calls
+to load the required packages in the `command` argument as well.
+
+While T is heavily inspired by the `{targets}` package in R, it takes the
+concept a step further by making pipelines **first-class objects** within the
+language itself. This means you can:
+
+- **Compose Pipelines**: You can define small, modular pipelines and then merge
+  them into larger ones using standard operators.
+- **Static Analysis**: Because the DAG (Directed Acyclic Graph) is defined
+  within the language, T can validate your entire workflow (checking for
+  circular dependencies or missing data) before a single line of code even runs.
+- **Heterogeneous Execution**: A single pipeline can effortlessly mix R, Python,
+  and native T code. Data is passed between these nodes using built-in
+  serializers like `^csv`, `^arrow`, or even specialized formats like `^pmml`
+  for traditional models and `^onnx` for deep learning architectures. It is also
+  possible to define your own serializers.
+- **Immutable State**: Each node output is managed by Nix, meaning if you
+  haven't changed the code or the data for a specific node, T (via Nix) will
+  simply pull the cached result from previous runs.
+
+But don't let the "orchestrator" label fool you; T is also a capable language in
+its own right. It features a selection of built-in packages inspired by the
+`tidyverse` for data manipulation. Thanks to its Arrow backend, it is
+surprisingly fast. I even maintain a CI benchmark running on NYC Taxi data to
+ensure performance remains competitive.
+
+I made sure that T is pretty easy to use with LLMs by providing a file
+called `summary.md` in the root of the GitHub repository. This file is meant to be used by
+LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide
+the whole help documentation to the LLM (found in the repository under `help/`docs.json`), 
+but I found that a summary is usually enough. There is also another experimental feature I’m
+thinking about, called `intent` blocks. These blocks would essentially be first-class structured
+comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks
+would be parsed by T and used to generate code accordingly. I have some ideas how these could look
+like, something like this:
+
+```t
+intent {
+  description: "Customer churn prediction",
+  assumptions: ["Age > 18", "NA imputed with multiple imputation"],
+  requires: ["dataset.csv"]
+}
+```
+
+## Is this slop?
+
+There's a lot of skepticism about building your own language using LLMs, and I get it. 
+I was pretty skeptical myself. So let me tell you what actually gives me confidence in T's correctness: 
+as of writing, 1753 unit tests, 122 golden tests, 13 end-to-end tests, and 18 full project demos are executed 
+on every push and PR, on both Linux and macOS via GitHub Actions. That's the verification regime, and it has
+to be rigorous precisely because I can't audit the OCaml implementation by eye. This is actually one of the
+more interesting lessons from this project: when you can't rely on code review, you have to over-invest in
+tests and specifications. The spec files, the enriched changelog, the `summary.md`,
+all of that context makes the LLM's output more predictable, and the test suite tells you immediately when it isn't.
+
+From personal experience, when I generate R or Python code, the output looks a lot like what I would have written myself. 
+The main failure mode I've noticed is lack of context: the more you give the model, the better the result. 
+Letting separate LLMs review PRs and iterating through several loops helps catch what any single model misses.
+
+I'm also confident in T's safety from a different angle: it's ultimately orchestrating Python and R code you write yourself,
+and that you can test independently. 
+
+## Interested?
+
+If you’re interested in trying it out or contributing, check out the
+[official repository](https://github.com/b-rodrigues/tlang) or the
+[website](https://tstats-project.org/), and don’t hesitate to open an issue or a PR or contact me 
+on the dedicated Matrix (https://matrix.to/#/#tproject:matrix.org) channel.
+
+# Appendix
+
+For the interested reader, here's how to get started with T.
+
+## How to get started
+
+If you have Nix installed, getting started with a new project is just a single
+command away:
+
+```bash
+# 1. Initialize a new project
+nix run github:b-rodrigues/tlang -- init --project my_t_project
+cd my_t_project
+```
+
+There will be no other way to start a T project. As explained above, I don’t want
+to have to deal with providing OS-specific binaries, and since Nix is used by T as the build engine, 
+you’ll need to have Nix installed on your system anyways. Might as well reuse it to 
+manage the install T itself!
+
+Inside the project’s folder, you'll find a `tproject.toml` file. This is were you list R and Python
+packages you'll need. For example:
+
+```toml
+[project]
+name = "r_py_xgboost_t"
+description = "A T data analysis project"
+
+[dependencies]
+# T packages this project depends on
+# Format: package = { git = "repository-url", tag = "version" }
+# Example:
+# stats = { git = "https://github.com/t-lang/stats", tag = "v0.5.0" }
+
+[r-dependencies]
+packages = ["dplyr", "yardstick"]
+
+[py-dependencies]
+version = "python313"
+packages = ["numpy", "pandas", "scikit-learn", "xgboost"]
+
+[additional-tools]
+packages = ["quarto"]
+
+[t]
+# Minimum T language version required
+min_version = "0.51.2"
+```
+
+Under "additional tools" you can add any package that is available in `nixpkgs`.
+If you need LaTeX, you can also add this dedicated section:
+
+```toml
+[latex]
+packages = ["amsmath", "geometry", "hyperref", "biblatex"]
+```
+
+You may have noticed that there is also a section for T packages; that's right,
+T supports user-defined packages. Instead of starting a project you'd start a package:
+
+```bash
+nix run github:b-rodrigues/tlang -- init --package my_package
+cd my_package
+```
+
+Instead of a `tproject.toml` file, you'll have to fill a `DESCRIPTION.toml` file:
+
+```toml
+[package]
+name = "my_package"
+version = "0.1.0"
+description = "A brief description of what my_package does"
+authors = ["brodriguesco"]
+license = "EUPL-1.2"
+homepage = ""
+repository = ""
+
+[dependencies]
+# T packages this package depends on
+# Format: package = { git = "repository-url", tag = "version" }
+
+[t]
+# Minimum T language version required
+min_version = "0.5.0"
+```
+
+Another important file is the `flake.nix` that will be automatically generated. You
+shouldn't have to touch it, but this `flake.nix` is what provides the reproducible
+development environment for running your project. To do so, simply use:
+
+```bash
+nix develop
+```
+
+This will install T and activate the environment. If you've added stuff to the
+`tproject.toml` you'll have to run `t update` to sync the packages to the flake,
+and then rebuild the environment (you'll need to exit the development
+environment with `exit` and rebuild it using `nix develop` again). Oh and by the way,
+T requires a Linux-like environment so if you're on
+Windows, you'll have to run T within **WSL2** (Windows Subsystem for Linux).
+
+Once inside the `nix develop` shell, everything you need, the T interpreter, your
+specific versions of R/Python, and all project tools, is ready to use. You don't
+need to manage virtual environments or Docker containers manually; T handles the
+heavy lifting via Nix under the hood.
+
+You can browse examples on this [repository](https://github.com/b-rodrigues/t_demos).
+
+## Tooling and Editor Support
+
+A language is only as good as its developer experience. 
+I politely asked LLMs to implement a full Language Server (**LSP**) for T, which
+provides autocompletion, real-time diagnostics, and "Go to Definition" support.
+
+- For **VS Code / Positron**: A dedicated extension providing syntax highlighting
+  and LSP integration.
+- For **Vim / Emacs**: Detailed configuration guides and syntax files are available.
+- For **Quarto**: T is fully compatible with Quarto for literate programming,
+  allowing you to run executable `{t}` chunks directly in your documents.
+
+For detailed setup instructions, check out the [Editor Support
+guide](https://github.com/b-rodrigues/tlang/blob/main/docs/editors.md) in the
+official documentation.
+
+There's much more I haven't covered here, so
+[check out the official repository](https://github.com/b-rodrigues/tlang)
+or the [website](https://tstats-project.org/).
