@@ -1631,165 +1631,193 @@
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-01-nethack/index.html",
-    "href": "blog/2018-11-01-nethack/index.html",
-    "title": "From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack",
+    "objectID": "blog/2022-11-19-raps/index.html",
+    "href": "blog/2022-11-19-raps/index.html",
+    "title": "Reproducibility with Docker and Github Actions for the average R enjoyer",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2023-10-20-nix_for_r_part7/index.html",
-    "href": "blog/2023-10-20-nix_for_r_part7/index.html",
-    "title": "Reproducible data science with Nix, part 7 – Building a Quarto book using Nix on Github Actions",
+    "objectID": "blog/2022-04-04-chron_post/index.html",
+    "href": "blog/2022-04-04-chron_post/index.html",
+    "title": "The {chronicler} package, an implementation of the logger monad in R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
-    "href": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
-    "title": "Merge a list of datasets together",
+    "objectID": "blog/2018-06-24-fun_ts/index.html",
+    "href": "blog/2018-06-24-fun_ts/index.html",
+    "title": "Forecasting my weight with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-11-16-open_source_repro/index.html",
-    "href": "blog/2022-11-16-open_source_repro/index.html",
-    "title": "Open source is a hard requirement for reproducibility",
+    "objectID": "blog/2018-04-15-announcing_pmice/index.html",
+    "href": "blog/2018-04-15-announcing_pmice/index.html",
+    "title": "{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-04-11-monads/index.html",
-    "href": "blog/2022-04-11-monads/index.html",
-    "title": "Why you should(n’t) care about Monads if you’re an R programmer",
+    "objectID": "blog/2021-03-02-no_shiny_dashboard/index.html",
+    "href": "blog/2021-03-02-no_shiny_dashboard/index.html",
+    "title": "Server(shiny)-less dashboards with R, {htmlwidgets} and {crosstalk}",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-12-02-hyper-parameters/index.html",
-    "href": "blog/2018-12-02-hyper-parameters/index.html",
-    "title": "What hyper-parameters are, and what to do with them; an illustration with ridge regression",
+    "objectID": "blog/2018-11-03-nethack_analysis/index.html",
+    "href": "blog/2018-11-03-nethack_analysis/index.html",
+    "title": "Analyzing NetHack data, part 1: What kills the players",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
-    "href": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
-    "title": "How to use jailbreakr",
+    "objectID": "blog/2022-10-01-why_js_shiny/index.html",
+    "href": "blog/2022-10-01-why_js_shiny/index.html",
+    "title": "Why and how to use JS in your Shiny app",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
-    "href": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
-    "title": "Simulated Maximum Likelihood with R",
+    "objectID": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
+    "href": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
+    "title": "Introduction to programming econometrics with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
-    "href": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
-    "title": "Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash",
+    "objectID": "blog/2018-06-10-scraping_pdfs/index.html",
+    "href": "blog/2018-06-10-scraping_pdfs/index.html",
+    "title": "Getting data from pdfs using the pdftools package",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2019-07-19-statmatch/index.html",
-    "href": "blog/2019-07-19-statmatch/index.html",
-    "title": "Statistical matching, or when one single data source is not enough",
+    "objectID": "blog/2021-02-20-covid_paper/index.html",
+    "href": "blog/2021-02-20-covid_paper/index.html",
+    "title": "R makes it too easy to write papers",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-16-rgenoud_arima/index.html",
-    "href": "blog/2018-11-16-rgenoud_arima/index.html",
-    "title": "Using a genetic algorithm for the hyperparameter optimization of a SARIMA model",
+    "objectID": "blog/2024-08-28-nix_for_r_part_12/index.html",
+    "href": "blog/2024-08-28-nix_for_r_part_12/index.html",
+    "title": "Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-07-08-rob_stderr/index.html",
-    "href": "blog/2018-07-08-rob_stderr/index.html",
-    "title": "Dealing with heteroskedasticity; regression with robust standard errors using R",
+    "objectID": "blog/2018-11-25-tidy_cv/index.html",
+    "href": "blog/2018-11-25-tidy_cv/index.html",
+    "title": "A tutorial on tidy cross-validation with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-05-15-self_doc_ggplot/index.html",
-    "href": "blog/2022-05-15-self_doc_ggplot/index.html",
-    "title": "Self-documenting {ggplot}s thanks to the power of monads!",
+    "objectID": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
+    "href": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
+    "title": "Work on lists of datasets instead of individual datasets by using functional programming",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2023-01-12-repro_R/index.html",
-    "href": "blog/2023-01-12-repro_R/index.html",
-    "title": "MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?",
+    "objectID": "blog/2018-11-15-tidy_gridsearch/index.html",
+    "href": "blog/2018-11-15-tidy_gridsearch/index.html",
+    "title": "Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2020-09-05-tidytable/index.html",
-    "href": "blog/2020-09-05-tidytable/index.html",
-    "title": "Gotta go fast with “{tidytable}”",
+    "objectID": "blog/2020-03-08-tidymodels/index.html",
+    "href": "blog/2020-03-08-tidymodels/index.html",
+    "title": "Machine learning with {tidymodels}",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2019-01-04-newspapers/index.html",
-    "href": "blog/2019-01-04-newspapers/index.html",
-    "title": "Looking into 19th century ads from a Luxembourguish newspaper with R",
+    "objectID": "blog/2023-10-05-repro_overview/index.html",
+    "href": "blog/2023-10-05-repro_overview/index.html",
+    "title": "An overview of what’s out there for reproducibility with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
-    "href": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
-    "title": "Building a shiny app to explore historical newspapers: a step-by-step guide",
+    "objectID": "blog/2020-02-08-harold_part2/index.html",
+    "href": "blog/2020-02-08-harold_part2/index.html",
+    "title": "Dynamic discrete choice models, reinforcement learning and Harold, part 2",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2019-05-19-spacemacs/index.html",
-    "href": "blog/2019-05-19-spacemacs/index.html",
-    "title": "The never-ending editor war (?)",
+    "objectID": "blog/2022-02-18-loudly/index.html",
+    "href": "blog/2022-02-18-loudly/index.html",
+    "title": "Add logging to your functions using my newest package {loud}",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-14-luxairport/index.html",
-    "href": "blog/2018-11-14-luxairport/index.html",
-    "title": "Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport",
+    "objectID": "blog/2023-06-29-book_quarto/index.html",
+    "href": "blog/2023-06-29-book_quarto/index.html",
+    "title": "How to self-publish a technical book on Leanpub and Amazon using Quarto",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2017-12-27-build_formulae/index.html",
-    "href": "blog/2017-12-27-build_formulae/index.html",
-    "title": "Building formulae",
+    "objectID": "blog/2018-09-15-time_use/index.html",
+    "href": "blog/2018-09-15-time_use/index.html",
+    "title": "How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2020-02-23-synthpop/index.html",
-    "href": "blog/2020-02-23-synthpop/index.html",
-    "title": "Synthetic micro-datasets: a promising middle ground between data privacy and data analysis",
+    "objectID": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
+    "href": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
+    "title": "Read a lot of datasets at once with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2021-03-05-covid_lu/index.html",
-    "href": "blog/2021-03-05-covid_lu/index.html",
-    "title": "Using explainability methods to understand (some part) of the spread of COVID-19 in a landlocked country",
+    "objectID": "blog/2021-09-04-quest_fast/index.html",
+    "href": "blog/2021-09-04-quest_fast/index.html",
+    "title": "The quest for fast(er?) row-oriented workflows",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-05-26-safer_programs/index.html",
-    "href": "blog/2022-05-26-safer_programs/index.html",
-    "title": "Some learnings from functional programming you can use to write safer programs",
+    "objectID": "blog/2026-04-03-tproject.html",
+    "href": "blog/2026-04-03-tproject.html",
+    "title": "You can just build your own programming language",
     "section": "",
-    "text": "Permanently moved."
+    "text": "Last summer, while relaxing on the beaches of Berck, a French town known for treating tuberculosis in kids by exposing them to the fresh maritime air (back in 19th century, they have antibiotics these days), I found myself daydreaming about building my own programming language.\nSpoiler alert: I don’t know how to build programming languages, but I have developed extremely strong opinions over the years about the features a modern data science language should have. So could I use them fancy LLMs to build one?\nAlso, let’s get one question answered straight away: why create a new language instead of contributing to existing ones? I certainly do contribute, I maintain several R packages like {rix}, {rixpress}, and {chronicler}, and even have two Python packages (cronista and ryxpress), but I wanted a clean slate to build a system centered around a few non-negotiable principles and features I’ve implemented over the years in R:\nAlso, we’re in a post LLM world, and like them or not, they’re here to stay. They’re pretty useful to write boilerplate code and so any new language would be dead on arrival if it didn’t play nicely with LLMs. So such a new language would need to be written for LLMs primarily, because I don’t expect anyone to learn any new language. This is where the declarative nature of Nix is a huge advantage. Because environments are precisely described, it is much easier for LLMs to focus on generating code and not have to fight with environment setup. This is also the reason I took another radical decision: since Nix would be mandatory for setting up the environment, why bother building OS-specific binaries? I’d just build a Nix package for this language and let Nix handle the rest.\nThis architecture results in a DSL for orchestration, making it trivial to transfer data objects between different ecosystems without the usual FFI (Foreign Function Interface) friction.\nWith these ideas in mind, I started prompting Gemini to brainstorm and started by generating specification files. Very broad first, but as days went by, more and more focused. The way I went about it (and still go) is that I first brainstorm an idea with an LLM, then I ask it to generate a specification file, then I refine it, ask it to generate a new specification file, and so on. Once I’m happy with the spec, I ask an LLM to generate a minimal implementation of the spec. Usually writing the spec and a first implementation is a task shared between Claude and Gemini (through Antigravity). Then I open a pull request and ask GitHub Copilot to review it (usually with GPT-5.x). I repeat this process until I’m happy with the implementation. I always ask for documentation and unit tests (and golden tests when relevant, more on this later).\nI started to really believe that I had something interesting, so I gave it a shot, and called it T. I had long joked that the natural successor to R should be called T (because R is the successor to S… and no, I’m not going to call it Q because that sounds like the word for ass in French).\nSomething else that made me confident I could succeed, besides my own hubris, was that I am pretty familiar with unit testing, test-driven development, trunk-based development and Nix. When you combine all these elements, it makes developing with LLMs quite safe.\nSo I just started prompting. And now I’m quite happy to announce that there is a beta version of T that you can use today!\nBy leveraging Nix as a build engine, T can treat complex data science workflows as buildable derivations. A typical T pipeline looks like this:\nAs you can see, each node has a command argument where you can write literal R or Python code. It is also possible to provide the path to a script instead. If packages need to be loaded for the code to work, you can just write the calls to load the required packages in the command argument as well.\nWhile T is heavily inspired by the {targets} package in R, it takes the concept a step further by making pipelines first-class objects within the language itself. This means you can:\nBut don’t let the “orchestrator” label fool you; T is also a capable language in its own right. It features a selection of built-in packages inspired by the tidyverse for data manipulation. Thanks to its Arrow backend, it is surprisingly fast. I even maintain a CI benchmark running on NYC Taxi data to ensure performance remains competitive.\nI made sure that T is pretty easy to use with LLMs by providing a file called summary.md in the root of the GitHub repository. This file is meant to be used by LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide the whole help documentation to the LLM (found in the repository under help/docs.json),  but I found that a summary is usually enough. There is also another experimental feature I’m thinking about, calledintent` blocks. These blocks would essentially be first-class structured comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks would be parsed by T and used to generate code accordingly. I have some ideas how these could look like, something like this:"
+  },
+  {
+    "objectID": "blog/2026-04-03-tproject.html#is-this-slop",
+    "href": "blog/2026-04-03-tproject.html#is-this-slop",
+    "title": "You can just build your own programming language",
+    "section": "Is this slop?",
+    "text": "Is this slop?\nThere’s a lot of skepticism about building your own language using LLMs, and I get it. I was pretty skeptical myself. So let me tell you what actually gives me confidence in T’s correctness: as of writing, 1753 unit tests, 122 golden tests, 13 end-to-end tests, and 18 full project demos are executed on every push and PR, on both Linux and macOS via GitHub Actions. That’s the verification regime, and it has to be rigorous precisely because I can’t audit the OCaml implementation by eye. This is actually one of the more interesting lessons from this project: when you can’t rely on code review, you have to over-invest in tests and specifications. The spec files, the enriched changelog, the summary.md, all of that context makes the LLM’s output more predictable, and the test suite tells you immediately when it isn’t.\nFrom personal experience, when I generate R or Python code, the output looks a lot like what I would have written myself. The main failure mode I’ve noticed is lack of context: the more you give the model, the better the result. Letting separate LLMs review PRs and iterating through several loops helps catch what any single model misses.\nI’m also confident in T’s safety from a different angle: it’s ultimately orchestrating Python and R code you write yourself, and that you can test independently."
+  },
+  {
+    "objectID": "blog/2026-04-03-tproject.html#interested",
+    "href": "blog/2026-04-03-tproject.html#interested",
+    "title": "You can just build your own programming language",
+    "section": "Interested?",
+    "text": "Interested?\nIf you’re interested in trying it out or contributing, check out the official repository or the website, and don’t hesitate to open an issue or a PR or contact me on the dedicated Matrix (https://matrix.to/#/#tproject:matrix.org) channel."
+  },
+  {
+    "objectID": "blog/2026-04-03-tproject.html#how-to-get-started",
+    "href": "blog/2026-04-03-tproject.html#how-to-get-started",
+    "title": "You can just build your own programming language",
+    "section": "How to get started",
+    "text": "How to get started\nIf you have Nix installed, getting started with a new project is just a single command away:\n# 1. Initialize a new project\nnix run github:b-rodrigues/tlang -- init --project my_t_project\ncd my_t_project\nThere will be no other way to start a T project. As explained above, I don’t want to have to deal with providing OS-specific binaries, and since Nix is used by T as the build engine, you’ll need to have Nix installed on your system anyways. Might as well reuse it to manage the install T itself!\nInside the project’s folder, you’ll find a tproject.toml file. This is were you list R and Python packages you’ll need. For example:\n[project]\nname = \"r_py_xgboost_t\"\ndescription = \"A T data analysis project\"\n\n[dependencies]\n# T packages this project depends on\n# Format: package = { git = \"repository-url\", tag = \"version\" }\n# Example:\n# stats = { git = \"https://github.com/t-lang/stats\", tag = \"v0.5.0\" }\n\n[r-dependencies]\npackages = [\"dplyr\", \"yardstick\"]\n\n[py-dependencies]\nversion = \"python313\"\npackages = [\"numpy\", \"pandas\", \"scikit-learn\", \"xgboost\"]\n\n[additional-tools]\npackages = [\"quarto\"]\n\n[t]\n# Minimum T language version required\nmin_version = \"0.51.2\"\nUnder “additional tools” you can add any package that is available in nixpkgs. If you need LaTeX, you can also add this dedicated section:\n[latex]\npackages = [\"amsmath\", \"geometry\", \"hyperref\", \"biblatex\"]\nYou may have noticed that there is also a section for T packages; that’s right, T supports user-defined packages. Instead of starting a project you’d start a package:\nnix run github:b-rodrigues/tlang -- init --package my_package\ncd my_package\nInstead of a tproject.toml file, you’ll have to fill a DESCRIPTION.toml file:\n[package]\nname = \"my_package\"\nversion = \"0.1.0\"\ndescription = \"A brief description of what my_package does\"\nauthors = [\"brodriguesco\"]\nlicense = \"EUPL-1.2\"\nhomepage = \"\"\nrepository = \"\"\n\n[dependencies]\n# T packages this package depends on\n# Format: package = { git = \"repository-url\", tag = \"version\" }\n\n[t]\n# Minimum T language version required\nmin_version = \"0.5.0\"\nAnother important file is the flake.nix that will be automatically generated. You shouldn’t have to touch it, but this flake.nix is what provides the reproducible development environment for running your project. To do so, simply use:\nnix develop\nThis will install T and activate the environment. If you’ve added stuff to the tproject.toml you’ll have to run t update to sync the packages to the flake, and then rebuild the environment (you’ll need to exit the development environment with exit and rebuild it using nix develop again). Oh and by the way, T requires a Linux-like environment so if you’re on Windows, you’ll have to run T within WSL2 (Windows Subsystem for Linux).\nOnce inside the nix develop shell, everything you need, the T interpreter, your specific versions of R/Python, and all project tools, is ready to use. You don’t need to manage virtual environments or Docker containers manually; T handles the heavy lifting via Nix under the hood.\nYou can browse examples on this repository."
+  },
+  {
+    "objectID": "blog/2026-04-03-tproject.html#tooling-and-editor-support",
+    "href": "blog/2026-04-03-tproject.html#tooling-and-editor-support",
+    "title": "You can just build your own programming language",
+    "section": "Tooling and Editor Support",
+    "text": "Tooling and Editor Support\nA language is only as good as its developer experience. I politely asked LLMs to implement a full Language Server (LSP) for T, which provides autocompletion, real-time diagnostics, and “Go to Definition” support.\n\nFor VS Code / Positron: A dedicated extension providing syntax highlighting and LSP integration.\nFor Vim / Emacs: Detailed configuration guides and syntax files are available.\nFor Quarto: T is fully compatible with Quarto for literate programming, allowing you to run executable {t} chunks directly in your documents.\n\nFor detailed setup instructions, check out the Editor Support guide in the official documentation.\nThere’s much more I haven’t covered here, so check out the official repository or the website."
   },
   {
     "objectID": "blog/2018-01-05-lists_all_the_way2/index.html",
@@ -2128,193 +2156,165 @@
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2021-09-04-quest_fast/index.html",
-    "href": "blog/2021-09-04-quest_fast/index.html",
-    "title": "The quest for fast(er?) row-oriented workflows",
+    "objectID": "blog/2022-05-26-safer_programs/index.html",
+    "href": "blog/2022-05-26-safer_programs/index.html",
+    "title": "Some learnings from functional programming you can use to write safer programs",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
-    "href": "blog/2016-07-26-read-a-lot-of-datasets-at-once-with-r/index.html",
-    "title": "Read a lot of datasets at once with R",
+    "objectID": "blog/2021-03-05-covid_lu/index.html",
+    "href": "blog/2021-03-05-covid_lu/index.html",
+    "title": "Using explainability methods to understand (some part) of the spread of COVID-19 in a landlocked country",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-09-15-time_use/index.html",
-    "href": "blog/2018-09-15-time_use/index.html",
-    "title": "How Luxembourguish residents spend their time: a small {flexdashboard} demo using the Time use survey data",
+    "objectID": "blog/2020-02-23-synthpop/index.html",
+    "href": "blog/2020-02-23-synthpop/index.html",
+    "title": "Synthetic micro-datasets: a promising middle ground between data privacy and data analysis",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2023-06-29-book_quarto/index.html",
-    "href": "blog/2023-06-29-book_quarto/index.html",
-    "title": "How to self-publish a technical book on Leanpub and Amazon using Quarto",
+    "objectID": "blog/2017-12-27-build_formulae/index.html",
+    "href": "blog/2017-12-27-build_formulae/index.html",
+    "title": "Building formulae",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-02-18-loudly/index.html",
-    "href": "blog/2022-02-18-loudly/index.html",
-    "title": "Add logging to your functions using my newest package {loud}",
+    "objectID": "blog/2018-11-14-luxairport/index.html",
+    "href": "blog/2018-11-14-luxairport/index.html",
+    "title": "Easy time-series prediction with R: a tutorial with air traffic data from Lux Airport",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2020-02-08-harold_part2/index.html",
-    "href": "blog/2020-02-08-harold_part2/index.html",
-    "title": "Dynamic discrete choice models, reinforcement learning and Harold, part 2",
+    "objectID": "blog/2019-05-19-spacemacs/index.html",
+    "href": "blog/2019-05-19-spacemacs/index.html",
+    "title": "The never-ending editor war (?)",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2023-10-05-repro_overview/index.html",
-    "href": "blog/2023-10-05-repro_overview/index.html",
-    "title": "An overview of what’s out there for reproducibility with R",
+    "objectID": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
+    "href": "blog/2019-02-04-newspapers_shiny_app_tutorial/index.html",
+    "title": "Building a shiny app to explore historical newspapers: a step-by-step guide",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2020-03-08-tidymodels/index.html",
-    "href": "blog/2020-03-08-tidymodels/index.html",
-    "title": "Machine learning with {tidymodels}",
+    "objectID": "blog/2019-01-04-newspapers/index.html",
+    "href": "blog/2019-01-04-newspapers/index.html",
+    "title": "Looking into 19th century ads from a Luxembourguish newspaper with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-15-tidy_gridsearch/index.html",
-    "href": "blog/2018-11-15-tidy_gridsearch/index.html",
-    "title": "Searching for the optimal hyper-parameters of an ARIMA model in parallel: the tidy gridsearch approach",
+    "objectID": "blog/2020-09-05-tidytable/index.html",
+    "href": "blog/2020-09-05-tidytable/index.html",
+    "title": "Gotta go fast with “{tidytable}”",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
-    "href": "blog/2016-12-21-work-on-lists-of-datasets-instead-of-individual-datasets-by-using-functional-programming/index.html",
-    "title": "Work on lists of datasets instead of individual datasets by using functional programming",
+    "objectID": "blog/2023-01-12-repro_R/index.html",
+    "href": "blog/2023-01-12-repro_R/index.html",
+    "title": "MRAN is getting shutdown - what else is there for reproducibility with R, or why reproducibility is on a continuum?",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-25-tidy_cv/index.html",
-    "href": "blog/2018-11-25-tidy_cv/index.html",
-    "title": "A tutorial on tidy cross-validation with R",
+    "objectID": "blog/2022-05-15-self_doc_ggplot/index.html",
+    "href": "blog/2022-05-15-self_doc_ggplot/index.html",
+    "title": "Self-documenting {ggplot}s thanks to the power of monads!",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2024-08-28-nix_for_r_part_12/index.html",
-    "href": "blog/2024-08-28-nix_for_r_part_12/index.html",
-    "title": "Reproducible data science with Nix, part 12 – Nix as a polyglot build automation tool for data science",
+    "objectID": "blog/2018-07-08-rob_stderr/index.html",
+    "href": "blog/2018-07-08-rob_stderr/index.html",
+    "title": "Dealing with heteroskedasticity; regression with robust standard errors using R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2021-02-20-covid_paper/index.html",
-    "href": "blog/2021-02-20-covid_paper/index.html",
-    "title": "R makes it too easy to write papers",
+    "objectID": "blog/2018-11-16-rgenoud_arima/index.html",
+    "href": "blog/2018-11-16-rgenoud_arima/index.html",
+    "title": "Using a genetic algorithm for the hyperparameter optimization of a SARIMA model",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-06-10-scraping_pdfs/index.html",
-    "href": "blog/2018-06-10-scraping_pdfs/index.html",
-    "title": "Getting data from pdfs using the pdftools package",
+    "objectID": "blog/2019-07-19-statmatch/index.html",
+    "href": "blog/2019-07-19-statmatch/index.html",
+    "title": "Statistical matching, or when one single data source is not enough",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
-    "href": "blog/2015-01-12-introduction-to-programming-econometrics-with-r/index.html",
-    "title": "Introduction to programming econometrics with R",
+    "objectID": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
+    "href": "blog/2018-03-03-sparklyr_h2o_rsparkling/index.html",
+    "title": "Getting {sparklyr}, {h2o}, {rsparkling} to work together and some fun with bash",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-10-01-why_js_shiny/index.html",
-    "href": "blog/2022-10-01-why_js_shiny/index.html",
-    "title": "Why and how to use JS in your Shiny app",
+    "objectID": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
+    "href": "blog/2013-01-16-simulated-maximum-likelihood-with-r/index.html",
+    "title": "Simulated Maximum Likelihood with R",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-11-03-nethack_analysis/index.html",
-    "href": "blog/2018-11-03-nethack_analysis/index.html",
-    "title": "Analyzing NetHack data, part 1: What kills the players",
+    "objectID": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
+    "href": "blog/2017-02-17-how_to_use_jailbreakr/index.html",
+    "title": "How to use jailbreakr",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2021-03-02-no_shiny_dashboard/index.html",
-    "href": "blog/2021-03-02-no_shiny_dashboard/index.html",
-    "title": "Server(shiny)-less dashboards with R, {htmlwidgets} and {crosstalk}",
+    "objectID": "blog/2018-12-02-hyper-parameters/index.html",
+    "href": "blog/2018-12-02-hyper-parameters/index.html",
+    "title": "What hyper-parameters are, and what to do with them; an illustration with ridge regression",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-04-15-announcing_pmice/index.html",
-    "href": "blog/2018-04-15-announcing_pmice/index.html",
-    "title": "{pmice}, an experimental package for missing data imputation in parallel using {mice} and {furrr}",
+    "objectID": "blog/2022-04-11-monads/index.html",
+    "href": "blog/2022-04-11-monads/index.html",
+    "title": "Why you should(n’t) care about Monads if you’re an R programmer",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2018-06-24-fun_ts/index.html",
-    "href": "blog/2018-06-24-fun_ts/index.html",
-    "title": "Forecasting my weight with R",
+    "objectID": "blog/2022-11-16-open_source_repro/index.html",
+    "href": "blog/2022-11-16-open_source_repro/index.html",
+    "title": "Open source is a hard requirement for reproducibility",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-04-04-chron_post/index.html",
-    "href": "blog/2022-04-04-chron_post/index.html",
-    "title": "The {chronicler} package, an implementation of the logger monad in R",
+    "objectID": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
+    "href": "blog/2016-07-30-merge-a-list-of-datasets-together/index.html",
+    "title": "Merge a list of datasets together",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2022-11-19-raps/index.html",
-    "href": "blog/2022-11-19-raps/index.html",
-    "title": "Reproducibility with Docker and Github Actions for the average R enjoyer",
+    "objectID": "blog/2023-10-20-nix_for_r_part7/index.html",
+    "href": "blog/2023-10-20-nix_for_r_part7/index.html",
+    "title": "Reproducible data science with Nix, part 7 – Building a Quarto book using Nix on Github Actions",
     "section": "",
     "text": "Permanently moved."
   },
   {
-    "objectID": "blog/2026-04-03.html",
-    "href": "blog/2026-04-03.html",
-    "title": "You can just build your own programming language",
+    "objectID": "blog/2018-11-01-nethack/index.html",
+    "href": "blog/2018-11-01-nethack/index.html",
+    "title": "From webscraping data to releasing it as an R package to share with the world: a full tutorial with data from NetHack",
     "section": "",
-    "text": "Last summer, while relaxing on the beaches of Berck, a French town known for treating tuberculosis in kids by exposing them to the fresh maritime air (back in 19th century, they have antibiotics these days), I found myself daydreaming about building my own programming language.\nSpoiler alert: I don’t know how to build programming languages, but I have developed extremely strong opinions over the years about the features a modern data science language should have. So could I use them fancy LLMs to build one?\nAlso, let’s get one question answered straight away: why create a new language instead of contributing to existing ones? I certainly do contribute, I maintain several R packages like {rix}, {rixpress}, and {chronicler}, and even have two Python packages (cronista and ryxpress), but I wanted a clean slate to build a system centered around a few non-negotiable principles and features I’ve implemented over the years in R:\nAlso, we’re in a post LLM world, and like them or not, they’re here to stay. They’re pretty useful to write boilerplate code and so any new language would be dead on arrival if it didn’t play nicely with LLMs. So such a new language would need to be written for LLMs primarily, because I don’t expect anyone to learn any new language. This is where the declarative nature of Nix is a huge advantage. Because environments are precisely described, it is much easier for LLMs to focus on generating code and not have to fight with environment setup. This is also the reason I took another radical decision: since Nix would be mandatory for setting up the environment, why bother building OS-specific binaries? I’d just build a Nix package for this language and let Nix handle the rest.\nThis architecture results in a DSL for orchestration, making it trivial to transfer data objects between different ecosystems without the usual FFI (Foreign Function Interface) friction.\nWith these ideas in mind, I started prompting Gemini to brainstorm and started by generating specification files. Very broad first, but as days went by, more and more focused. The way I went about it (and still go) is that I first brainstorm an idea with an LLM, then I ask it to generate a specification file, then I refine it, ask it to generate a new specification file, and so on. Once I’m happy with the spec, I ask an LLM to generate a minimal implementation of the spec. Usually writing the spec and a first implementation is a task shared between Claude and Gemini (through Antigravity). Then I open a pull request and ask GitHub Copilot to review it (usually with GPT-5.x). I repeat this process until I’m happy with the implementation. I always ask for documentation and unit tests (and golden tests when relevant, more on this later).\nI started to really believe that I had something interesting, so I gave it a shot, and called it T. I had long joked that the natural successor to R should be called T (because R is the successor to S… and no, I’m not going to call it Q because that sounds like the word for ass in French).\nSomething else that made me confident I could succeed, besides my own hubris, was that I am pretty familiar with unit testing, test-driven development, trunk-based development and Nix. When you combine all these elements, it makes developing with LLMs quite safe.\nSo I just started prompting. And now I’m quite happy to announce that there is a beta version of T that you can use today!\nBy leveraging Nix as a build engine, T can treat complex data science workflows as buildable derivations. A typical T pipeline looks like this:\nAs you can see, each node has a command argument where you can write literal R or Python code. It is also possible to provide the path to a script instead. If packages need to be loaded for the code to work, you can just write the calls to load the required packages in the command argument as well.\nWhile T is heavily inspired by the {targets} package in R, it takes the concept a step further by making pipelines first-class objects within the language itself. This means you can:\nBut don’t let the “orchestrator” label fool you; T is also a capable language in its own right. It features a selection of built-in packages inspired by the tidyverse for data manipulation. Thanks to its Arrow backend, it is surprisingly fast. I even maintain a CI benchmark running on NYC Taxi data to ensure performance remains competitive.\nI made sure that T is pretty easy to use with LLMs by providing a file called summary.md in the root of the GitHub repository. This file is meant to be used by LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide the whole help documentation to the LLM (found in the repository under help/docs.json),  but I found that a summary is usually enough. There is also another experimental feature I’m thinking about, calledintent` blocks. These blocks would essentially be first-class structured comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks would be parsed by T and used to generate code accordingly. I have some ideas how these could look like, something like this:"
-  },
-  {
-    "objectID": "blog/2026-04-03.html#is-this-slop",
-    "href": "blog/2026-04-03.html#is-this-slop",
-    "title": "You can just build your own programming language",
-    "section": "Is this slop?",
-    "text": "Is this slop?\nThere’s a lot of skepticism about building your own language using LLMs, and I get it. I was pretty skeptical myself. So let me tell you what actually gives me confidence in T’s correctness: as of writing, 1753 unit tests, 122 golden tests, 13 end-to-end tests, and 18 full project demos are executed on every push and PR, on both Linux and macOS via GitHub Actions. That’s the verification regime, and it has to be rigorous precisely because I can’t audit the OCaml implementation by eye. This is actually one of the more interesting lessons from this project: when you can’t rely on code review, you have to over-invest in tests and specifications. The spec files, the enriched changelog, the summary.md, all of that context makes the LLM’s output more predictable, and the test suite tells you immediately when it isn’t.\nFrom personal experience, when I generate R or Python code, the output looks a lot like what I would have written myself. The main failure mode I’ve noticed is lack of context: the more you give the model, the better the result. Letting separate LLMs review PRs and iterating through several loops helps catch what any single model misses.\nI’m also confident in T’s safety from a different angle: it’s ultimately orchestrating Python and R code you write yourself, and that you can test independently."
-  },
-  {
-    "objectID": "blog/2026-04-03.html#interested",
-    "href": "blog/2026-04-03.html#interested",
-    "title": "You can just build your own programming language",
-    "section": "Interested?",
-    "text": "Interested?\nIf you’re interested in trying it out or contributing, check out the official repository or the website, and don’t hesitate to open an issue or a PR or contact me on the dedicated Matrix (https://matrix.to/#/#tproject:matrix.org) channel."
-  },
-  {
-    "objectID": "blog/2026-04-03.html#how-to-get-started",
-    "href": "blog/2026-04-03.html#how-to-get-started",
-    "title": "You can just build your own programming language",
-    "section": "How to get started",
-    "text": "How to get started\nIf you have Nix installed, getting started with a new project is just a single command away:\n# 1. Initialize a new project\nnix run github:b-rodrigues/tlang -- init --project my_t_project\ncd my_t_project\nThere will be no other way to start a T project. As explained above, I don’t want to have to deal with providing OS-specific binaries, and since Nix is used by T as the build engine, you’ll need to have Nix installed on your system anyways. Might as well reuse it to manage the install T itself!\nInside the project’s folder, you’ll find a tproject.toml file. This is were you list R and Python packages you’ll need. For example:\n[project]\nname = \"r_py_xgboost_t\"\ndescription = \"A T data analysis project\"\n\n[dependencies]\n# T packages this project depends on\n# Format: package = { git = \"repository-url\", tag = \"version\" }\n# Example:\n# stats = { git = \"https://github.com/t-lang/stats\", tag = \"v0.5.0\" }\n\n[r-dependencies]\npackages = [\"dplyr\", \"yardstick\"]\n\n[py-dependencies]\nversion = \"python313\"\npackages = [\"numpy\", \"pandas\", \"scikit-learn\", \"xgboost\"]\n\n[additional-tools]\npackages = [\"quarto\"]\n\n[t]\n# Minimum T language version required\nmin_version = \"0.51.2\"\nUnder “additional tools” you can add any package that is available in nixpkgs. If you need LaTeX, you can also add this dedicated section:\n[latex]\npackages = [\"amsmath\", \"geometry\", \"hyperref\", \"biblatex\"]\nYou may have noticed that there is also a section for T packages; that’s right, T supports user-defined packages. Instead of starting a project you’d start a package:\nnix run github:b-rodrigues/tlang -- init --package my_package\ncd my_package\nInstead of a tproject.toml file, you’ll have to fill a DESCRIPTION.toml file:\n[package]\nname = \"my_package\"\nversion = \"0.1.0\"\ndescription = \"A brief description of what my_package does\"\nauthors = [\"brodriguesco\"]\nlicense = \"EUPL-1.2\"\nhomepage = \"\"\nrepository = \"\"\n\n[dependencies]\n# T packages this package depends on\n# Format: package = { git = \"repository-url\", tag = \"version\" }\n\n[t]\n# Minimum T language version required\nmin_version = \"0.5.0\"\nAnother important file is the flake.nix that will be automatically generated. You shouldn’t have to touch it, but this flake.nix is what provides the reproducible development environment for running your project. To do so, simply use:\nnix develop\nThis will install T and activate the environment. If you’ve added stuff to the tproject.toml you’ll have to run t update to sync the packages to the flake, and then rebuild the environment (you’ll need to exit the development environment with exit and rebuild it using nix develop again). Oh and by the way, T requires a Linux-like environment so if you’re on Windows, you’ll have to run T within WSL2 (Windows Subsystem for Linux).\nOnce inside the nix develop shell, everything you need, the T interpreter, your specific versions of R/Python, and all project tools, is ready to use. You don’t need to manage virtual environments or Docker containers manually; T handles the heavy lifting via Nix under the hood.\nYou can browse examples on this repository."
-  },
-  {
-    "objectID": "blog/2026-04-03.html#tooling-and-editor-support",
-    "href": "blog/2026-04-03.html#tooling-and-editor-support",
-    "title": "You can just build your own programming language",
-    "section": "Tooling and Editor Support",
-    "text": "Tooling and Editor Support\nA language is only as good as its developer experience. I politely asked LLMs to implement a full Language Server (LSP) for T, which provides autocompletion, real-time diagnostics, and “Go to Definition” support.\n\nFor VS Code / Positron: A dedicated extension providing syntax highlighting and LSP integration.\nFor Vim / Emacs: Detailed configuration guides and syntax files are available.\nFor Quarto: T is fully compatible with Quarto for literate programming, allowing you to run executable {t} chunks directly in your documents.\n\nFor detailed setup instructions, check out the Editor Support guide in the official documentation.\nThere’s much more I haven’t covered here, so check out the official repository or the website."
+    "text": "Permanently moved."
   },
   {
     "objectID": "blog/2020-04-27-nace_explorer/index.html",
