@@ -10,7 +10,405 @@
 <atom:link href="https://b-rodrigues.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.6.37</generator>
-<lastBuildDate>Tue, 13 Jan 2026 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 03 Apr 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>You can just build your own programming language</title>
+  <link>https://b-rodrigues.github.io/posts/2026-04-03-tproject.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div style="text-align: center;">
+<p>
+<a> <img src="https://b-rodrigues.github.io/assets/img/tlogo.png" style="width: 100%; height: auto;"> </a>
+</p>
+</div>
+<p>Last summer, while relaxing on the beaches of Berck, a French town known for treating tuberculosis in kids by exposing them to the fresh maritime air (back in 19th century, they have antibiotics these days), I found myself daydreaming about building my own programming language.</p>
+<p>Spoiler alert: I don’t know how to build programming languages, but I have developed extremely strong opinions over the years about the features a modern data science language <em>should</em> have. So could I use them fancy LLMs to build one?</p>
+<p>Also, let’s get one question answered straight away: why create a new language instead of contributing to existing ones? I certainly do contribute, I maintain several R packages like <code>{rix}</code>, <code>{rixpress}</code>, and <code>{chronicler}</code>, and even have two Python packages (<code>cronista</code> and <code>ryxpress</code>), but I wanted a clean slate to build a system centered around a few non-negotiable principles and features I’ve implemented over the years in R:</p>
+<ul>
+<li><strong>Reproducibility-First</strong>: A language where reproducibility isn’t a bolt-on afterthought managed by external tools, but the very foundation of the runtime.</li>
+<li><strong>Aggressive Re-use</strong>: Instead of reinventing the wheel, this language would stand on the shoulders of giants. It’d use <strong>Nix</strong> for package management and environment isolation, and <strong>Apache Arrow</strong> as its high-performance backbone for data frames. R, Python, Julia and other languages would provide the algorithms and models.</li>
+<li><strong>First-Class Pipelines</strong>: Scripts shouldn’t be a sequence of side-effects. In this language, pipelines would be mandatory and first-class citizens.</li>
+<li><strong>Fail Early and Loudly</strong>: No silent type conversions or hidden NAs. If something is wrong, the language breaks immediately so you can fix it.</li>
+<li><strong>Errors as Objects</strong>: Inspired by functional programming, errors are first-class values that can be inspected and handled gracefully.</li>
+<li><strong>Two Pipes</strong>: I want two pipes, one for linear transformations, <code>|&gt;</code>, and a maybe-pipe, <code>?|&gt;</code> for error recovery. Unlike the standard pipe, <code>?|&gt;</code> always forwards its value, including Errors, to the next function, allowing you to write handlers that inspect and potentially recover from them. Since Errors are just values, this composes naturally with the rest of the language.</li>
+<li><strong>Polyglot by Design</strong>: Rather than re-implementing every statistical algorithm, this language would be designed to orchestrate and bridge R, Python, and Julia seamlessly.</li>
+</ul>
+<p>Also, we’re in a post LLM world, and like them or not, they’re here to stay. They’re pretty useful to write boilerplate code and so any new language would be dead on arrival if it didn’t play nicely with LLMs. So such a new language would need to be written for LLMs primarily, because I don’t expect anyone to learn any new language. This is where the declarative nature of Nix is a huge advantage. Because environments are precisely described, it is much easier for LLMs to focus on generating code and not have to fight with environment setup. This is also the reason I took another radical decision: since Nix would be mandatory for setting up the environment, why bother building OS-specific binaries? I’d just build a Nix package for this language and let Nix handle the rest.</p>
+<p>This architecture results in a DSL for orchestration, making it trivial to transfer data objects between different ecosystems without the usual FFI (Foreign Function Interface) friction.</p>
+<p>With these ideas in mind, I started prompting Gemini to brainstorm and started by generating specification files. Very broad first, but as days went by, more and more focused. The way I went about it (and still go) is that I first brainstorm an idea with an LLM, then I ask it to generate a specification file, then I refine it, ask it to generate a new specification file, and so on. Once I’m happy with the spec, I ask an LLM to generate a minimal implementation of the spec. Usually writing the spec and a first implementation is a task shared between Claude and Gemini (through Antigravity). Then I open a pull request and ask GitHub Copilot to review it (usually with GPT-5.x). I repeat this process until I’m happy with the implementation. I always ask for documentation and unit tests (and golden tests when relevant, more on this later).</p>
+<p>I started to really believe that I had something interesting, so I gave it a shot, and called it <strong>T</strong>. I had long joked that the natural successor to R should be called T (because R is the successor to S… and no, I’m not going to call it Q because that sounds like the word for ass in French).</p>
+<p>Something else that made me confident I could succeed, besides my own hubris, was that I am pretty familiar with unit testing, test-driven development, trunk-based development and Nix. When you combine all these elements, it makes developing with LLMs quite safe.</p>
+<p>So I just started prompting. And now I’m quite happy to announce that there is a beta version of T that you can use today!</p>
+<p>By leveraging Nix as a build engine, T can treat complex data science workflows as buildable derivations. A typical T pipeline looks like this:</p>
+<pre class="t"><code>p = pipeline {
+  -- 1. Python node: read data with pandas
+  mtcars_pl = pyn(
+    command = &lt;{
+import pandas as pd
+pd.read_csv("data/mtcars.csv", sep="|")
+    }&gt;,
+    include = ["data/mtcars.csv"],
+    serializer = ^csv
+  )
+
+  -- 2. Python node: filter and serialize as CSV
+  mtcars_pl_am = pyn(
+    command = &lt;{
+mtcars_pl[mtcars_pl['am'] == 1]
+    }&gt;,
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- 3. R node: read CSV and take head using functions.R
+  mtcars_head = rn(
+    command = &lt;{
+my_head(mtcars_pl_am)
+    }&gt;,
+    functions = ["src/functions.R"],
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- 4. R node: select column with dplyr
+  mtcars_mpg = rn(
+    command = &lt;{
+library(dplyr)
+mtcars_head %&gt;% select(mpg)
+    }&gt;,
+    deserializer = ^csv,
+    serializer = ^csv
+  )
+
+  -- Render Quarto report
+  report = node(script = "src/report.qmd", runtime = Quarto)
+}
+
+-- Materialize the pipeline
+populate_pipeline(p, build = true)
+pipeline_copy() -- Copy the outputs from the Nix store to your working directory</code></pre>
+<p>As you can see, each node has a <code>command</code> argument where you can write literal R or Python code. It is also possible to provide the path to a script instead. If packages need to be loaded for the code to work, you can just write the calls to load the required packages in the <code>command</code> argument as well.</p>
+<p>While T is heavily inspired by the <code>{targets}</code> package in R, it takes the concept a step further by making pipelines <strong>first-class objects</strong> within the language itself. This means you can:</p>
+<ul>
+<li><strong>Compose Pipelines</strong>: You can define small, modular pipelines and then merge them into larger ones using standard operators.</li>
+<li><strong>Static Analysis</strong>: Because the DAG (Directed Acyclic Graph) is defined within the language, T can validate your entire workflow (checking for circular dependencies or missing data) before a single line of code even runs.</li>
+<li><strong>Heterogeneous Execution</strong>: A single pipeline can effortlessly mix R, Python, and native T code. Data is passed between these nodes using built-in serializers like <code>^csv</code>, <code>^arrow</code>, or even specialized formats like <code>^pmml</code> for traditional models and <code>^onnx</code> for deep learning architectures. It is also possible to define your own serializers.</li>
+<li><strong>Immutable State</strong>: Each node output is managed by Nix, meaning if you haven’t changed the code or the data for a specific node, T (via Nix) will simply pull the cached result from previous runs.</li>
+</ul>
+<p>But don’t let the “orchestrator” label fool you; T is also a capable language in its own right. It features a selection of built-in packages inspired by the <code>tidyverse</code> for data manipulation. Thanks to its Arrow backend, it is surprisingly fast. I even maintain a CI benchmark running on NYC Taxi data to ensure performance remains competitive.</p>
+<p>I made sure that T is pretty easy to use with LLMs by providing a file called <code>summary.md</code> in the root of the GitHub repository. This file is meant to be used by LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide the whole help documentation to the LLM (found in the repository under <code>help/</code>docs.json<code>),  but I found that a summary is usually enough. There is also another experimental feature I’m thinking about, called</code>intent` blocks. These blocks would essentially be first-class structured comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks would be parsed by T and used to generate code accordingly. I have some ideas how these could look like, something like this:</p>
+<pre class="t"><code>intent {
+  description: "Customer churn prediction",
+  assumptions: ["Age &gt; 18", "NA imputed with multiple imputation"],
+  requires: ["dataset.csv"]
+}</code></pre>
+<section id="is-this-slop" class="level2">
+<h2 class="anchored" data-anchor-id="is-this-slop">Is this slop?</h2>
+<p>There’s a lot of skepticism about building your own language using LLMs, and I get it. I was pretty skeptical myself. So let me tell you what actually gives me confidence in T’s correctness: as of writing, 1753 unit tests, 122 golden tests, 13 end-to-end tests, and 18 full project demos are executed on every push and PR, on both Linux and macOS via GitHub Actions. That’s the verification regime, and it has to be rigorous precisely because I can’t audit the OCaml implementation by eye. This is actually one of the more interesting lessons from this project: when you can’t rely on code review, you have to over-invest in tests and specifications. The spec files, the enriched changelog, the <code>summary.md</code>, all of that context makes the LLM’s output more predictable, and the test suite tells you immediately when it isn’t.</p>
+<p>From personal experience, when I generate R or Python code, the output looks a lot like what I would have written myself. The main failure mode I’ve noticed is lack of context: the more you give the model, the better the result. Letting separate LLMs review PRs and iterating through several loops helps catch what any single model misses.</p>
+<p>I’m also confident in T’s safety from a different angle: it’s ultimately orchestrating Python and R code you write yourself, and that you can test independently.</p>
+</section>
+<section id="interested" class="level2">
+<h2 class="anchored" data-anchor-id="interested">Interested?</h2>
+<p>If you’re interested in trying it out or contributing, check out the <a href="https://github.com/b-rodrigues/tlang">official repository</a> or the <a href="https://tstats-project.org/">website</a>, and don’t hesitate to open an issue or a PR or contact me on the dedicated Matrix (https://matrix.to/#/#tproject:matrix.org) channel.</p>
+</section>
+<section id="appendix" class="level1">
+<h1>Appendix</h1>
+<p>For the interested reader, here’s how to get started with T.</p>
+<section id="how-to-get-started" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-get-started">How to get started</h2>
+<p>If you have Nix installed, getting started with a new project is just a single command away:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1. Initialize a new project</span></span>
+<span id="cb3-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">nix</span> run github:b-rodrigues/tlang <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--</span> init <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--project</span> my_t_project</span>
+<span id="cb3-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">cd</span> my_t_project</span></code></pre></div>
+<p>There will be no other way to start a T project. As explained above, I don’t want to have to deal with providing OS-specific binaries, and since Nix is used by T as the build engine, you’ll need to have Nix installed on your system anyways. Might as well reuse it to manage the install T itself!</p>
+<p>Inside the project’s folder, you’ll find a <code>tproject.toml</code> file. This is were you list R and Python packages you’ll need. For example:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[project]</span></span>
+<span id="cb4-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">name</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"r_py_xgboost_t"</span></span>
+<span id="cb4-3"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">description</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"A T data analysis project"</span></span>
+<span id="cb4-4"></span>
+<span id="cb4-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[dependencies]</span></span>
+<span id="cb4-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># T packages this project depends on</span></span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Format: package = { git = "repository-url", tag = "version" }</span></span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example:</span></span>
+<span id="cb4-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># stats = { git = "https://github.com/t-lang/stats", tag = "v0.5.0" }</span></span>
+<span id="cb4-10"></span>
+<span id="cb4-11"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[r-dependencies]</span></span>
+<span id="cb4-12"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">packages</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dplyr"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"yardstick"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span id="cb4-13"></span>
+<span id="cb4-14"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[py-dependencies]</span></span>
+<span id="cb4-15"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">version</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"python313"</span></span>
+<span id="cb4-16"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">packages</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"numpy"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pandas"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"scikit-learn"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xgboost"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span id="cb4-17"></span>
+<span id="cb4-18"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[additional-tools]</span></span>
+<span id="cb4-19"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">packages</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"quarto"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span id="cb4-20"></span>
+<span id="cb4-21"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[t]</span></span>
+<span id="cb4-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Minimum T language version required</span></span>
+<span id="cb4-23"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">min_version</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0.51.2"</span></span></code></pre></div>
+<p>Under “additional tools” you can add any package that is available in <code>nixpkgs</code>. If you need LaTeX, you can also add this dedicated section:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[latex]</span></span>
+<span id="cb5-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">packages</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"amsmath"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"geometry"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"hyperref"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"biblatex"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span></code></pre></div>
+<p>You may have noticed that there is also a section for T packages; that’s right, T supports user-defined packages. Instead of starting a project you’d start a package:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">nix</span> run github:b-rodrigues/tlang <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--</span> init <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--package</span> my_package</span>
+<span id="cb6-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">cd</span> my_package</span></code></pre></div>
+<p>Instead of a <code>tproject.toml</code> file, you’ll have to fill a <code>DESCRIPTION.toml</code> file:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb7-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[package]</span></span>
+<span id="cb7-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">name</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"my_package"</span></span>
+<span id="cb7-3"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">version</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0.1.0"</span></span>
+<span id="cb7-4"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">description</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"A brief description of what my_package does"</span></span>
+<span id="cb7-5"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">authors</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"brodriguesco"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span id="cb7-6"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">license</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"EUPL-1.2"</span></span>
+<span id="cb7-7"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">homepage</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span></span>
+<span id="cb7-8"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">repository</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span></span>
+<span id="cb7-9"></span>
+<span id="cb7-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[dependencies]</span></span>
+<span id="cb7-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># T packages this package depends on</span></span>
+<span id="cb7-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Format: package = { git = "repository-url", tag = "version" }</span></span>
+<span id="cb7-13"></span>
+<span id="cb7-14"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[t]</span></span>
+<span id="cb7-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Minimum T language version required</span></span>
+<span id="cb7-16"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">min_version</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0.5.0"</span></span></code></pre></div>
+<p>Another important file is the <code>flake.nix</code> that will be automatically generated. You shouldn’t have to touch it, but this <code>flake.nix</code> is what provides the reproducible development environment for running your project. To do so, simply use:</p>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">nix</span> develop</span></code></pre></div>
+<p>This will install T and activate the environment. If you’ve added stuff to the <code>tproject.toml</code> you’ll have to run <code>t update</code> to sync the packages to the flake, and then rebuild the environment (you’ll need to exit the development environment with <code>exit</code> and rebuild it using <code>nix develop</code> again). Oh and by the way, T requires a Linux-like environment so if you’re on Windows, you’ll have to run T within <strong>WSL2</strong> (Windows Subsystem for Linux).</p>
+<p>Once inside the <code>nix develop</code> shell, everything you need, the T interpreter, your specific versions of R/Python, and all project tools, is ready to use. You don’t need to manage virtual environments or Docker containers manually; T handles the heavy lifting via Nix under the hood.</p>
+<p>You can browse examples on this <a href="https://github.com/b-rodrigues/t_demos">repository</a>.</p>
+</section>
+<section id="tooling-and-editor-support" class="level2">
+<h2 class="anchored" data-anchor-id="tooling-and-editor-support">Tooling and Editor Support</h2>
+<p>A language is only as good as its developer experience. I politely asked LLMs to implement a full Language Server (<strong>LSP</strong>) for T, which provides autocompletion, real-time diagnostics, and “Go to Definition” support.</p>
+<ul>
+<li>For <strong>VS Code / Positron</strong>: A dedicated extension providing syntax highlighting and LSP integration.</li>
+<li>For <strong>Vim / Emacs</strong>: Detailed configuration guides and syntax files are available.</li>
+<li>For <strong>Quarto</strong>: T is fully compatible with Quarto for literate programming, allowing you to run executable <code>{t}</code> chunks directly in your documents.</li>
+</ul>
+<p>For detailed setup instructions, check out the <a href="https://github.com/b-rodrigues/tlang/blob/main/docs/editors.md">Editor Support guide</a> in the official documentation.</p>
+<p>There’s much more I haven’t covered here, so <a href="https://github.com/b-rodrigues/tlang">check out the official repository</a> or the <a href="https://tstats-project.org/">website</a>.</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>T</category>
+  <category>datascience</category>
+  <guid>https://b-rodrigues.github.io/posts/2026-04-03-tproject.html</guid>
+  <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>From scripts to pipelines in the age of LLMs</title>
   <link>https://b-rodrigues.github.io/posts/2026-01-13-data_science_llm_age.html</link>
@@ -5456,220 +5854,6 @@ Many thanks, merry Christmas and happy new year!
   <category>nix</category>
   <guid>https://b-rodrigues.github.io/posts/2023-12-19-nix_for_r_part_8.html</guid>
   <pubDate>Tue, 19 Dec 2023 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Reproducible data science with Nix, part 7 – Building a Quarto book using Nix on Github Actions</title>
-  <link>https://b-rodrigues.github.io/posts/2023-10-20-nix_for_r_part7.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<div style="text-align:center;">
-<p>
-<img src="https://b-rodrigues.github.io/assets/img/nix_users_press_both_buttons.png" width="50%">
-</p>
-</div>
-<p>
-Back in June I self-published a book on Amazon’s Kindle Direct Publishing service and wrote a blog post detailling how you could achieve that using Quarto, which you can read <a href="../posts/2023-06-29-book_quarto.html">here</a>. The book is about <a href="https://b-rodrigues.github.io/blog/books.html">building reproducible analytical pipelines with R</a>. For the purposes of this post I made a <a href="https://github.com/b-rodrigues/kdp_quarto">template on Github</a> that you could fork and use as a starting point to write your own book. The book also gets built using Github Actions each time you push new changes: a website gets built, an E-book for e-ink devices and a Amazon KDP-ready PDF for print get also built. That template used dedicated actions to install the required version of R, Quarto, and R packages (using <code>{renv}</code>).
-</p>
-<p>
-Let’s take a look at the workflow file:
-</p>
-<pre><code>on:
-  push:
-    branches: main
-
-name: Render and Publish
-
-jobs:
-  build-deploy:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-
-      - name: Setup R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: '4.3.1'
-
-      - name: Setup renv
-        uses: r-lib/actions/setup-renv@v2
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          # To install LaTeX to build PDF book 
-          tinytex: true 
-          # uncomment below and fill to pin a version
-          #version: 1.3.353
-
-      - name: Publish to GitHub Pages (and render)
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this secret is always available for github actions</code></pre>
-<p>
-As you can see, there are a lot of different moving pieces to get this to work. Since then I discovered Nix (if you’ve not been following my adventures, there’s 6 other parts to this series as of today), and now I wrote another template that uses Nix to handle the book’s dependencies instead of dedicated actions and <code>{renv}</code>. You can find the repository <a href="https://github.com/b-rodrigues/quarto_book_nix">here</a>.
-</p>
-<p>
-Here is what the workflow file looks like:
-</p>
-<pre><code>name: Build book using Nix
-
-on:
-  push:
-    branches:
-      - main
-      - master
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@main
-      with:
-        logger: pretty
-        log-directives: nix_installer=trace
-        backtrace: full
-
-    - name: Nix cache
-      uses: DeterminateSystems/magic-nix-cache-action@main
-
-    - name: Build development environment
-      run: |
-        nix-build
-
-    - name: Publish to GitHub Pages (and render)
-      uses: b-rodrigues/quarto-nix-actions/publish@main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} </code></pre>
-<p>
-The first thing you should notice is that this file is much shorter.
-</p>
-<p>
-The first step, <code>Checkout Code</code> makes the code available to the rest of the steps. I then install Nix on this runner using the Determinate Systems <code>nix-installer-action</code> and then I use another action from Determinate Systems, the <code>magic-nix-cache-action</code>. This action caches all the packages so that they don’t need to get re-built each time a change gets pushed, speeding up the process by a lot. The development environment gets then built using <code>nix-build</code>.
-</p>
-<p>
-Finally, an action I defined runs, <code>quarto-nix-actions/publish</code>. This is a fork of the <code>quarto-actions/publish</code> action which you can find <a href="https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml">here</a>. My fork simply makes sure that the <code>quarto render</code> and <code>quarto publish</code> commands run in the <a href="https://github.com/b-rodrigues/quarto-nix-actions/blob/f48f5a7813eb4978a2f557ff45bcc854526fb80b/publish/action.yml#L58">Nix environment defined for the project</a>.
-</p>
-<p>
-You can see the book website <a href="https://b-rodrigues.github.io/quarto_book_nix/">here</a>; read it, it’s explains everything in much more details than this blog post! But if you’re busy, read continue reading this blog post instead.
-</p>
-<p>
-The obvious next question is why bother with this second, Nix-centric, approach?
-</p>
-<p>
-There are at least three reasons. The first is that it is possible to define so-called <code>default.nix</code> files that the Nix package manager then uses to build a fully reproducible development environment. This environment will contain all the packages that you require, and will not interfere with any other packages installed on your system. This essentially means that you can have project-specific <code>default.nix</code> files, each specifying the requirements for specific projects. This file can then be used as-is on any other platform to re-create your environment. The second reason is that when installing a package that requires system-level dependencies, <code>{rJava}</code> for example, all the lower-level dependencies get automatically installed as well. Forget about reading error messages of <code>install.packages()</code> to find which system development library you need to install first. The third reason is that you can pin a specific revision of <code>nixpkgs</code> to ensure reproducibility.
-</p>
-<p>
-The <code>nixpkgs</code> mono-repository is “just” a Github repository which you can find here: <a href="https://github.com/NixOS/nixpkgs">https://github.com/NixOS/nixpkgs</a>. This repository contains Nix expressions to build and install more than 80’000 packages and you can search for installable Nix packages <a href="https://search.nixos.org/packages">here</a>.
-</p>
-<p>
-Because <code>nixpkgs</code> is a “just” Github repository, it is possible to use a specific commit hash to install the packages as they were at a specific point in time. For example, if you use this commit, <code>7c9cc5a6e</code>, you’ll get the very latest packages as of the 19th of October 2023, but if you used this one instead: <code>976fa3369</code>, you’ll get packages from the 19th of August 2023.
-</p>
-<p>
-This ability to deal with both underlying system-level dependencies and pin package versions at a specific commit is extremely useful on Git(Dev)Ops platforms like Github Actions. Debugging installation failures of packages can be quite frustrating, especially on Github Actions, and especially if you’re not already familiar with how Linux distributions work. Having a tool that handles all of that for you is amazing. The difficult part is writing these <code>default.nix</code> files that the Nix package manager requires to actually build these development environments. But don’t worry, with my co-author <a href="https://github.com/philipp-baumann">Philipp Baumann</a>, we developed an R package called <code>{rix}</code> which generates these <code>default.nix</code> files for you.
-</p>
-<p>
-<code>{rix}</code> is an R package that makes it very easy to generate very complex <code>default.nix</code> files. These files can in turn be used by the Nix package manager to build project-specific environments. The book’s Github repository contains a file called <code>define_env.R</code> with the following content:
-</p>
-<pre class="r"><code>library(rix)
-
-rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto"),
-    system_pkgs = "quarto",
-    tex_pkgs = c(
-      "amsmath",
-      "framed",
-      "fvextra",
-      "environ",
-      "fontawesome5",
-      "orcidlink",
-      "pdfcol",
-      "tcolorbox",
-      "tikzfill"
-    ),
-    ide = "other",
-    shell_hook = "",
-    project_path = ".",
-    overwrite = TRUE,
-    print = TRUE)</code></pre>
-<p>
-<code>{rix}</code> ships the <code>rix()</code> function which takes several arguments. These arguments allow you to specify an R version, a list of R packages, a list of system packages, TeXLive packages and other options that allow you to specify your requirements. Running this code generates this <code>default.nix</code> file:
-</p>
-<pre><code># This file was generated by the {rix} R package v0.4.1 on 2023-10-19
-# with following call:
-# &gt;rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
-#  &gt; r_pkgs = c("quarto"),
-#  &gt; system_pkgs = "quarto",
-#  &gt; tex_pkgs = c("amsmath",
-#  &gt; "framed",
-#  &gt; "fvextra",
-#  &gt; "environ",
-#  &gt; "fontawesome5",
-#  &gt; "orcidlink",
-#  &gt; "pdfcol",
-#  &gt; "tcolorbox",
-#  &gt; "tikzfill"),
-#  &gt; ide = "other",
-#  &gt; project_path = ".",
-#  &gt; overwrite = TRUE,
-#  &gt; print = TRUE,
-#  &gt; shell_hook = "")
-# It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes
-# which will install R version 4.3.1
-# Report any issues to https://github.com/b-rodrigues/rix
-let
- pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
- rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) quarto;
-};
-  tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) scheme-small amsmath framed fvextra environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
-});
- system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocalesUtf8 quarto;
-};
-  in
-  pkgs.mkShell {
-    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";
-    LANG = "en_US.UTF-8";
-    LC_ALL = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-
-    buildInputs = [  rpkgs tex system_packages  ];
-  }</code></pre>
-<p>
-This file defines the environment that is needed to build your book: be it locally on your machine, or on a GitOps platform like Github Actions. All that matters is that you have the Nix package manager installed (thankfully, it’s available for Windows –through WSL2–, Linux and macOS).
-</p>
-<p>
-Being able to work locally on a specific environment, defined through code, and use that environment on the cloud as well, is great. It doesn’t matter that the code runs on Ubuntu on the Github Actions runner, and if that operating system is not the one you use as well. Thanks to Nix, your code will run on exactly the same environment. Because of that, you can use <code>ubuntu-latest</code> as your runner, because exactly the same packages will always get installed. This is not the case with my first template that uses dedicated actions and <code>{renv}</code>: there, the runner uses <code>ubuntu-22.04</code>, a fixed version of the Ubuntu operating system. The risk here, is that once these runners get decommissioned (Ubuntu 22.04 is a <em>long-term support</em> release of Ubuntu, so it’ll stop getting updated sometime in 2027), my code won’t be able to run anymore. This is because there’s no guarantee that the required version of R, Quarto, and all the other packages I need will be installable on that new release of Ubuntu. So for example, suppose I have the package <code>{foo}</code> at version 1.0 that requires the system-level development library <code>bar-dev</code> at version 0.4 to be installed on Ubuntu. This is not an issue now, as Ubuntu 22.04 ships version 0.4 of <code>bar-dev</code>. But it is very unlikely that the future version of Ubuntu from 2027 will ship that version, and there’s no guarantee my package will successfully build and work as expected with a more recent version of <code>bar-dev</code>. With Nix, this is not an issue; because I pin a specific commit of <code>nixpkgs</code>, not only will <code>{foo}</code> at version 1.0 get installed, its dependency <code>bar-dev</code> at version 0.4 will get installed by Nix as well, and get used to build <code>{foo}</code>. It doesn’t matter that my underlying operating system ships a more recent version of <code>bar-dev</code>. I really insist on this point, because this is not something that you can easily deal with, even with Docker. This is because when you use Docker, you need to be able to rebuild the image as many times as you need (the alternative is to store, forever, the built image), and just like for Github Actions runners, the underlying Ubuntu image will be decommissioned and stop working one day.
-</p>
-<p>
-In other words, if you need long-term reproducibility, you should really consider using Nix, and even if you don’t need long-term reproducibility, you should really consider using Nix. This is because Nix makes things much easier. But there is one point where Nix is at a huge disadvantage when compared to the alternatives: the entry cost is quite high, as I’ve discussed in my <a href="../posts/2023-10-05-repro_overview.html">previous blog post</a>. But I’m hoping that through my blog posts, this entry cost is getting lowered for R users!
-</p>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>nix</category>
-  <guid>https://b-rodrigues.github.io/posts/2023-10-20-nix_for_r_part7.html</guid>
-  <pubDate>Fri, 20 Oct 2023 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
