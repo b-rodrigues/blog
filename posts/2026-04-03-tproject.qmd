@@ -12,7 +12,7 @@ execute:
 <div style="text-align: center;">
   <p>
     <a>
-      <img src="../assets/img/tlogo.png" style="width: 100%; height: auto;">
+      <img src="../assets/img/tlogo.png" style="width: 50%; height: auto;">
     </a>
   </p>
 </div>
@@ -179,7 +179,7 @@ ensure performance remains competitive.
 I made sure that T is pretty easy to use with LLMs by providing a file
 called `summary.md` in the root of the GitHub repository. This file is meant to be used by
 LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide
-the whole help documentation to the LLM (found in the repository under `help/`docs.json`), 
+the whole help documentation to the LLM (found in the repository under `help/docs.json`), 
 but I found that a summary is usually enough. There is also another experimental feature I’m
 thinking about, called `intent` blocks. These blocks would essentially be first-class structured
 comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks
