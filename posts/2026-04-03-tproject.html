@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div style="text-align: center;">
 <p>
-<a> <img src="../assets/img/tlogo.png" style="width: 100%; height: auto;"> </a>
+<a> <img src="../assets/img/tlogo.png" style="width: 50%; height: auto;"> </a>
 </p>
 </div>
 <p>Last summer, while relaxing on the beaches of Berck, a French town known for treating tuberculosis in kids by exposing them to the fresh maritime air (back in 19th century, they have antibiotics these days), I found myself daydreaming about building my own programming language.</p>
@@ -254,7 +254,7 @@ pipeline_copy() -- Copy the outputs from the Nix store to your working directory
 <li><strong>Immutable State</strong>: Each node output is managed by Nix, meaning if you haven’t changed the code or the data for a specific node, T (via Nix) will simply pull the cached result from previous runs.</li>
 </ul>
 <p>But don’t let the “orchestrator” label fool you; T is also a capable language in its own right. It features a selection of built-in packages inspired by the <code>tidyverse</code> for data manipulation. Thanks to its Arrow backend, it is surprisingly fast. I even maintain a CI benchmark running on NYC Taxi data to ensure performance remains competitive.</p>
-<p>I made sure that T is pretty easy to use with LLMs by providing a file called <code>summary.md</code> in the root of the GitHub repository. This file is meant to be used by LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide the whole help documentation to the LLM (found in the repository under <code>help/</code>docs.json<code>),  but I found that a summary is usually enough. There is also another experimental feature I’m thinking about, called</code>intent` blocks. These blocks would essentially be first-class structured comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks would be parsed by T and used to generate code accordingly. I have some ideas how these could look like, something like this:</p>
+<p>I made sure that T is pretty easy to use with LLMs by providing a file called <code>summary.md</code> in the root of the GitHub repository. This file is meant to be used by LLMs to quickly learn the language’s syntax and generate code accordingly. You could also provide the whole help documentation to the LLM (found in the repository under <code>help/docs.json</code>), but I found that a summary is usually enough. There is also another experimental feature I’m thinking about, called <code>intent</code> blocks. These blocks would essentially be first-class structured comments that would be used to anchor LLM’s behaviour and make it more deterministic. These blocks would be parsed by T and used to generate code accordingly. I have some ideas how these could look like, something like this:</p>
 <pre class="t"><code>intent {
   description: "Customer churn prediction",
   assumptions: ["Age &gt; 18", "NA imputed with multiple imputation"],
