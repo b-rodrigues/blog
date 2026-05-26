@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Packages – Econometrics and Free Software</title>
+<title>Software – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -76,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
       <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
       <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
       <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
-      <a href="https://b-rodrigues.github.io/blog/packages.html">Packages</a> -
+      <a href="https://b-rodrigues.github.io/blog/software.html">Software</a> -
       <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
     </td>
 </tr></tbody></table>
@@ -98,7 +98,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Packages</h1>
+<h1 class="title">Software</h1>
 </div>
 
 
@@ -115,26 +115,29 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="r-packages" class="level2">
-<h2 class="anchored" data-anchor-id="r-packages">R packages</h2>
-<section id="rix-reproducible-data-science-environments-with-nix" class="level3">
-<h3 class="anchored" data-anchor-id="rix-reproducible-data-science-environments-with-nix">rix: Reproducible Data Science environments with Nix</h3>
+<p>This page gathers the software I work on, from language-specific packages to larger tools and experiments.</p>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<section id="r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="r-packages">R packages</h3>
+<section id="rix-reproducible-data-science-environments-with-nix" class="level4">
+<h4 class="anchored" data-anchor-id="rix-reproducible-data-science-environments-with-nix">rix: Reproducible Data Science environments with Nix</h4>
 <a href="https://docs.ropensci.org/rix/"><img src="https://docs.ropensci.org/rix/logo.png" align="left" style="display:
 inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180"></a>
 <p>
 Simplifies the creation of reproducible data science environments using the ‘Nix’ package manager, as described in Dolstra (2006) &lt;ISBN 90-393-4130-3&gt;. The included ‘rix()’ function generates a complete description of the environment as a ‘default.nix’ file, which can then be built using ’Nix’. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. Additional helpers make it easy to run R code in ‘Nix’ software environments for testing and production.
 </p>
 </section>
-<section id="rixpress-build-reproducible-analytical-pipelines-with-nix" class="level3">
-<h3 class="anchored" data-anchor-id="rixpress-build-reproducible-analytical-pipelines-with-nix">rixpress: Build Reproducible Analytical Pipelines with Nix</h3>
+<section id="rixpress-build-reproducible-analytical-pipelines-with-nix" class="level4">
+<h4 class="anchored" data-anchor-id="rixpress-build-reproducible-analytical-pipelines-with-nix">rixpress: Build Reproducible Analytical Pipelines with Nix</h4>
 <a href="https://docs.ropensci.org/rixpress/"><img src="https://docs.ropensci.org/rixpress/logo.png" align="left" style="display:
 inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180"></a>
 <p>
 Streamlines the creation of reproducible analytical pipelines using ‘default.nix’ expressions generated via the ‘rix’ package for reproducibility. Define derivations in ‘R’, ‘Python’ or ‘Julia’, chain them into a composition of pure functions and build the resulting pipeline using ‘Nix’ as the underlying end-to-end build tool. Functions to plot the pipeline as a directed acyclic graph are included, as well as functions to load and inspect intermediary results for interactive analysis. User experience heavily inspired by the ‘targets’ package.
 </p>
 </section>
-<section id="chronicler-add-logging-to-functions" class="level3">
-<h3 class="anchored" data-anchor-id="chronicler-add-logging-to-functions">chronicler: Add Logging to Functions</h3>
+<section id="chronicler-add-logging-to-functions" class="level4">
+<h4 class="anchored" data-anchor-id="chronicler-add-logging-to-functions">chronicler: Add Logging to Functions</h4>
 <a href="https://b-rodrigues.github.io/chronicler/"><img src="https://b-rodrigues.github.io/chronicler/reference/figures/hex.png" align="left" style="display:
 inline; margin: 10px 50px 10px 10px; border-width: 0px;" width="180"></a>
 <p>
@@ -142,19 +145,31 @@ Decorate functions to make them return enhanced output. The enhanced output cons
 </p>
 </section>
 </section>
-<section id="python-packages" class="level2">
-<h2 class="anchored" data-anchor-id="python-packages">Python packages</h2>
-<section id="ryxpress" class="level3">
-<h3 class="anchored" data-anchor-id="ryxpress">ryxpress</h3>
+<section id="python-packages" class="level3">
+<h3 class="anchored" data-anchor-id="python-packages">Python packages</h3>
+<section id="ryxpress" class="level4">
+<h4 class="anchored" data-anchor-id="ryxpress">ryxpress</h4>
 <p><a href="https://pypi.org/project/ryxpress/">ryxpress</a> is a Python reimplementation/port of the R package {rixpress}. It provides helpers and a small framework to build and work with reproducible, polyglot analytical pipelines that are built with Nix.</p>
 </section>
-<section id="talvez" class="level3">
-<h3 class="anchored" data-anchor-id="talvez">talvez</h3>
+<section id="talvez" class="level4">
+<h4 class="anchored" data-anchor-id="talvez">talvez</h4>
 <p><a href="https://pypi.org/project/talvez/">talvez</a> is a lightweight Python implementation of a Maybe monad (Just / Nothing) inspired by the R package <code>{maybe}</code>.</p>
 </section>
-<section id="cronista" class="level3">
-<h3 class="anchored" data-anchor-id="cronista">cronista</h3>
+<section id="cronista" class="level4">
+<h4 class="anchored" data-anchor-id="cronista">cronista</h4>
 <p><a href="https://github.com/b-rodrigues/cronista/">cronista</a> is a Python port of my R package <code>{chronicler}</code>.</p>
+</section>
+</section>
+</section>
+<section id="other-software" class="level2">
+<h2 class="anchored" data-anchor-id="other-software">Other software</h2>
+<section id="t" class="level3">
+<h3 class="anchored" data-anchor-id="t">T</h3>
+<p><a href="https://github.com/b-rodrigues/tlang">T</a> is an experimental, reproducibility-first language and orchestration engine for polyglot data science. It is built around immutable, composable pipelines and uses Nix to make environments, builds and execution reproducible across machines.</p>
+</section>
+<section id="korppi" class="level3">
+<h3 class="anchored" data-anchor-id="korppi">Korppi</h3>
+<p><a href="https://github.com/b-rodrigues/korppi/">Korppi</a> is an offline-first text editor for asynchronous collaboration. It stores documents as a series of patches so changes from different collaborators can be imported, reviewed, accepted or rejected, making it a Git-free alternative for people used to track changes in word processors.</p>
 
 
 </section>
