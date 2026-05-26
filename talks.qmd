@@ -6,6 +6,9 @@ title: "Talks, presentations, workshops..."
 
 ### 2026
 
+- *Reproducible data science with Nix and T* — A talk I gave for the R/Pharma hangout, May 18, 2026.  
+  [Code repository](https://github.com/b-rodrigues/repro_r_pharma), [slides](https://b-rodrigues.github.io/repro_r_pharma/) and [youtube video](https://www.youtube.com/watch?v=wkjLVhaazRI)
+
 - *Reproducible data science environments with {rix}* — A talk I gave for the Oak Ridge National Laboratory, January 23, 2026.  
   [Code repository](https://github.com/b-rodrigues/repro_oak_ridge), [slides](https://b-rodrigues.github.io/repro_oak_ridge/)
 
