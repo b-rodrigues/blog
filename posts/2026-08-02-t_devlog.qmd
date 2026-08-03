@@ -1,0 +1,400 @@
+---
+date: 2026-08-02
+title: "The Future of Programming Looks Like Its Past or Why I build T"
+categories:
+  - T
+  - datascience
+toc: true
+execute:
+  freeze: auto
+---
+
+<div style="text-align: center;">
+  <p>
+    <a>
+      <img src="../assets/img/tlogo.png" style="width: 50%; height: auto;">
+    </a>
+  </p>
+</div>
+
+*This is a post based on two other posts I wrote for LinkedIn. It has become quite long.*
+
+## AI Won’t Save People From Work They Never Thought to Automate
+
+I’m a fairly optimistic person, but when it comes to AI adoption and how it will
+be generating billions in increased GDP I’m more skeptical. Not that AI is not
+capable: on the contrary, I think that for all intents and purposes, even the
+models from 6 months ago are more than capable enough to perform a majority of
+white collar tasks, including programming. No, I think the issue is the same
+I’ve observed many times over my years on this God’s green earth, and that is
+that there are people who see computers as tools for doing tasks and people who
+see computers as systems that can be taught to do tasks.
+
+Consider two people using Excel. Both have used it for ten years.
+
+Jim receives a monthly report and manually copies data between sheets, formats
+cells, and updates numbers. He’s learned the workflow and can execute it
+efficiently. He’s essentially performing the task using a computer as he would
+with a pen and paper. He’s doing procedural work. That’s his job, and he’s good
+at it.
+
+Bill, on the other hand, asks himself the question: “Why am I doing this every
+month? Is my job actually about moving data around? Or is it something else?
+What is my purpose?” Now this may seem overly philosophical when the topic at
+hand is moving data around in Excel to increase shareholder value, but
+nonetheless, these questions are the right ones to ask. So Bill starts seeing
+his computer not as a tool that simply replaced pen and paper, but as something
+he can teach to perform tasks.
+
+Bill learns about formulas. Bill learns about pivot tables. Using the free tier
+of an LLM he makes it write macros. He then even creates styles for Word instead
+of changing the headers manually each time.
+
+The difference is not technical ability. Both Jim and Bill can operate Excel and
+Word. But the difference is the mental model. Jim sees the computer as a digital
+version of pen and paper. It is a place where work happens. Bill sees the
+computer as a machine that can execute rules. It is a place where work can be
+transformed into a repeatable system.
+
+Bill has an automation mindset. People with an automation mindset naturally ask
+different questions. Instead of:
+
+“How do I complete this task?”
+
+they ask:
+
+- "This fucking sucks and surely there’s a better way of doing it?"
+
+Instead of:
+
+- "How do I make this report?”
+
+they ask:
+
+- "How can this report generate itself and fuck off?"
+
+Instead of:
+
+- "How do I process these 1000 files?"
+
+they ask:
+
+- "How can I write a process that handles any number of files?"
+
+The key shift is recognizing that anything you do is required to follow rules,
+and these rules are mostly implicit and invisible. It is moving from thinking
+about individual actions to thinking about the underlying rules that matters.
+
+Computers are powerful because they are not just faster versions of humans.
+Their real advantage is that they can execute instructions that follow rules
+repeatedly, consistently, and at scale, but you gotta provide them with the
+rules.
+
+## The Real Barrier to AI Automation: Mindset, Tools, and Culture
+
+A common assumption is that AI will democratize automation because people no
+longer need to know how to program, which is certainly true (to some extent). AI
+dramatically lowers the technical barrier. Someone can now describe a workflow
+in natural language and get help creating scripts, automations, or processes.
+
+But there is a more fundamental barrier: people have to imagine that automation
+is possible in the first place!
+
+Someone who has never thought about programming will not suddenly become an
+automation architect just because they have access to an AI assistant.
+
+- Jim may use AI to write an email faster.
+- Jim may use AI to summarize a document.
+- Jim may use AI to answer a question.
+
+Those are useful improvements.
+
+But Bill is playing another game entirely. He’s thinking about implicit rules,
+and how to make them explicit (which, by the way, can also be done with AI!). So
+he’s rubber ducking with Claude and asking it:
+
+- "Why does this task exist at all?"
+- "Could this entire workflow disappear?"
+- "Could you (Claude) write a Python script/Excel Macro to run this every week?"
+
+While certainly AI lowers the cost of building systems, it does not
+automatically teach people to think in systems.
+
+It is not Jim’s fault though. This difference in mindset can even be seen in
+operating systems. Historically, Windows has emphasized graphical workflows. The
+philosophy is often: “There is a tool or button for every task. This Word
+document just looks like an actual sheet of paper, so treat it as such. This
+Excel workbook just looks like an actual ledger your grandpa used to use, so
+treat it as such.” Linux and Unix come from a different tradition: “Everything
+is a program. Programs can be combined. You pass data from program to program by
+streams of text. Text is the fundamental unit of information.”
+
+A Linux user solving a repetitive problem often starts with a command, then
+turns that command into a script, then schedules that script to run
+automatically.
+
+The progression is natural:
+
+Manual action → command → script → automated system.
+
+Windows has powerful automation capabilities too. PowerShell is an extremely
+capable scripting environment. But for too long, Windows’ main target audience
+was (and still is) the white collar office drone. Even though it is absolutely
+possible to automate tasks on Windows, the culture now is not one of automation.
+And technology alone does not create culture.
+
+There are many such examples. Consider using a regular text editor like VS Code
+versus something like Vim. With regular text editors, you essentially use your
+computer as a fancy pen and paper. With Vim, you manipulate text and think about
+ranges and how to operate on them using macros. Very different mental models. In
+fact, they're so different that trying to explain Vim to someone not familiar
+with it is practically impossible. People can only truly get it if they try it
+and keep using it for some time. And it's the same thing with data analysis:
+using Excel vs R for example. The surrounding culture matters. If users grow up
+thinking:
+
+- "The computer is a place where I click through tasks,"
+
+they will rarely ask:
+
+- "How can the computer do this task for me?"
+
+The tool exists. The mindset does not.
+
+## Transforming Organizations: Rewarding Work Elimination
+
+Many companies are approaching AI transformation as a training problem: teach
+employees how to use AI tools. But the deeper challenge is a thinking problem:
+teach employees how to identify opportunities for automation. The most valuable
+AI employees will not necessarily be the people who write the cleverest prompts.
+They will be the people who notice:
+
+- "Everyone spends two hours every week doing this repetitive process."
+- "This information is copied manually between systems."
+- "This decision follows a predictable set of rules.
+  These rules are not written down anywhere, but they exist."
+- "This workflow exists only because nobody questioned it."
+
+Those people are the ones who will transform organizations, and organizations
+need to create an incentive structure where people are rewarded for eliminating
+work, not for performing more work. The irony is that many organizations say
+they want efficiency but reward visible effort. True AI transformation requires
+rewarding people who make themselves unnecessary.
+
+The biggest advantage of AI will not come from people who use it as a faster
+assistant. It will come from people who use it as a way to redesign work. The
+question that separates the old way of working from the new one is simple:
+
+- "Why am I doing this manually at all?"
+
+AI is powerful because it makes accessing automation easier than ever before.
+But the greatest gains will go to those who already understand the fundamental
+idea behind computers:
+
+**A computer is not just a tool for performing tasks!**
+
+It is a machine for turning ideas, rules, and processes into systems that run.
+
+## Jupyter Notebooks (and Interactive Data Analysis) Are Dead (one can hope)
+
+Now how do these observations translate to our work as data scientists?
+
+I’ve spent years watching data science workflows evolve, and I keep coming back
+to the same conclusion:
+
+Jupyter notebooks are making data science and statistics worse. I’d even go so
+far as to argue that interactive data analysis may be the wrong mental model
+altogether.
+
+Let’s start with notebooks. If you've been reading my work these past years, you
+know I'm not fond of them.
+
+They encourage messy, non-reproducible “spaghetti” code. They mix data, business
+logic, and results into a single file (something most of us would never accept
+in an Excel spreadsheet, yet somehow tolerate in an .ipynb). They’re also not
+plain text, which makes version control, code review, and collaboration
+unnecessarily painful, often requiring dedicated tooling just to work around the
+format.
+
+Joel Grus said it best years ago in his classic *I Don’t Like Notebooks* talk
+(go watch it on youtube, it's great). Very little has changed since then.
+
+So why did notebooks become so dominant?
+
+Because Python’s scientific computing tooling was simply that bad for a long
+time. Spyder wasn’t great. Installing Python packages was (and, to some extent,
+still is) an absolute clown show. `uv` has dramatically improved the experience,
+but it can’t solve the deeper structural issues of PyPI.
+
+From the mid-2000s through the early 2010s, spinning up a Jupyter server with a
+curated set of pre-installed packages was often the only practical way for
+institutions to provide working Python environments to their users. Unlike R,
+which had RStudio, Python never had a truly first-class IDE built specifically
+for scientific computing. So a whole generation of data scientists grew up on
+Jupyter and now teach on Jupyter and force their juniors to use Jupyter. Big
+mistake! Even without AI, there's no reason to keep using notebooks. Positron is
+excellent, and VS Code can be configured into a capable data science
+environment. But AI may end up making the entire IDE debate irrelevant (of
+course, us Emacs or Vim chads have solved this since decades).
+
+AI agents thrive on plain text, which also happens to be the simplest and most
+enduring interface in computing, especially in the Unix/Linux world.
+
+Jupyter notebooks, by contrast, are JSON documents rather than plain text (and
+the json format itself would actually not be an issue for agents, to be fair).
+But notebooks have many longstanding problems (hidden state, side effects, and
+non-linear execution) which are exactly the kinds of things that make life
+difficult for AI agents. AI systems struggle with implicit state and
+unpredictable execution. Tools and interfaces that deliberately minimize these
+issues (like plain-text scripts, explicit pipelines, immutable workflows) don’t
+just make life easier for humans; they make it easier for AI as well.
+
+If AI becomes central to software development (which it will), I think we’ll see
+a resurgence of simple text-based workflows.
+
+A notebook is essentially a recording of a conversation between a human and a
+computer:
+
+```
+Run cell.
+Inspect output.
+Modify.
+Run again.
+Oops.
+Restart kernel.
+Run all.
+```
+
+It’s procedural and interactive, and it's completely pointless when the coding
+is being done by an AI agent. Just think about it: imagine we're back in 2010,
+and you hire some data science consultants to analyse some data. Do you care to
+see which tools they used for the analysis? You might be interested in the
+source code of the analysis itself, but why would you care if they used
+notebooks or plain text scripts? This is essentially the same here. People might
+say "well I care because I want to collaborate with AI", and that may be true,
+but I'm willing to bet that we're going to move more towards what makes AI
+efficient (plain text) and move away from what humans like (notebooks if you
+have shit taste). We start to see it already in the tooling that is being
+developed and offered to developers: we've started with AI agents embedded in
+text editors doing auto-complete to "harnesses" that edit the code for you and
+show you the diffs.
+
+That brings me back to the idea of interactive data analysis. Increasingly, I
+think the workflow itself may be flawed.
+
+To be clear, there is real value in exploring data: filtering, slicing,
+visualizing, trying different models, testing hypotheses, tweaking graphs. The
+problem is that this exploratory process usually produces a chaotic script that
+eventually has to be rewritten before it can be put into production. We accept
+this rewrite as part of the job, but ideally we shouldn’t have to.
+
+AI changes that equation.
+
+Humans can continue exploring data in messy, experimental code while AI agents
+continuously refactor that exploration into clean, modular, production-ready
+pipelines. Instead of treating exploration and production as two separate
+phases, we can have AI bridge the gap in real time.
+
+## Introducing T: Describing Systems, Constraints, and Intent
+
+Those two ideas (that plain text is still the best interface we have, and that
+human-agent collaboration will fundamentally reshape how we build software) are
+the foundation of the domain-specific language I’m working on, T.
+
+Also, I'm betting that the history of computing will keep on repeating itself,
+and this history as always about raising the level of abstraction. In the 1980s
+and 1990s, everyone wanted programming to become *more interactive*. We got
+IDEs, GUIs, notebooks, drag-and-drop workflows, visual programming, WYSIWYG
+editors. The assumption was that making computers more like humans was the
+future. We went from describing exactly what the CPU should do to describing
+data transformations with modern functional programming.
+
+With AI, we are increasingly focusing on describing **systems**,
+**constraints**, and **intent**.
+
+We're rediscovering that plain text, explicit representations, and declarative
+specifications are incredibly powerful: not because humans suddenly prefer
+them (some nerds do, see NixOS), but because *both humans and AI can reason
+about them*. Git can diff them. Compilers can analyze them. LLMs can transform
+them. They compose naturally.
+
+So the future may look surprisingly like the past: not because we’ve failed to
+innovate, but because we've rediscovered that the oldest Unix philosophy was
+pointing in the right direction all along:
+
+> Everything should have an explicit, textual representation that can be
+> composed into larger systems.
+
+For example, instead of writing:
+
+```python
+for ...
+    ...
+```
+
+you tell some AI-agent in voice mode:
+
+> Here’s my data.
+> These transformations must happen.
+> These invariants must hold.
+> This pipeline should be reproducible.
+
+Let's go back to the intro: Jim thinks in **tasks**.
+
+> “I need to copy these numbers.”
+
+Bill thinks in **rules**.
+
+> “These numbers are generated according to these rules.”
+
+When using an AI, you need to go one step further and think about systems and
+design. Once the system or the design of your project is explicit, generating
+Python, R, SQL, Bash, DuckDB, Polars, Spark, or whatever becomes almost an
+implementation detail.
+
+This is the main design principle behind T.
+
+T is an experimental, reproducibility-by-design DSL for polyglot data science.
+It provides a functional, immutable language for constructing composable
+micropipelines: first-class, introspectable computation graphs that coordinate
+R, Python, Julia, Quarto, and Shell execution within a unified system. Pipelines
+in T are not configuration artifacts but executable program structures with
+explicit dataflow, typed nodes, and content-addressed outputs. I've talked about
+it already [here](https://brodrigues.co/posts/2026-04-03-tproject.html).
+
+The main idea is that you **will not** write any T code. An AI agent should do
+it. And to achieve this, everything humans can do with T (running code, running
+tests, looking at error messages, etc) can also be done by AI agents. Agents can
+run the code and get feedback in json format. Error messages can also be
+surfaced using json. There is a whole "agentic" way of using T that is
+first-class.
+
+Built on Nix, T integrates declarative environment management and deterministic
+builds at the language level. Every node runs in its own hermetic sandbox.
+Reproducibility isn’t something you configure; it’s something you can’t opt out
+of. Data moves via Apache Arrow. The actual data analysis code is still written
+in R, Python or Julia. T "merely" owns the data boundaries and efficiently
+coordinates the different nodes written in different languages seamlessly.
+Models can be trained in R or Python and evaluated natively in T via PMML or
+ONNX. The language is strictly functional: no mutable state, errors as values,
+tidyverse-inspired verbs for exploration in the REPL, then promotion into
+production pipelines.
+
+Its source is 100% AI-generated and thoroughly tested. Starting a T project will
+ship an `AGENTS.md` and tiered language references so LLMs get the exact context
+they need. Intent blocks let you embed the “why.” `t check` is milliseconds and
+checks the structural correctness of the pipeline; builds are cached and
+content-addressed.
+
+If T succeeds, I don’t think it should be framed as “another programming
+language.” It should be framed as **a language for describing data science
+pipelines**. Check it out [here](https://github.com/b-rodrigues/tlang)
+or the [website](https://tstats-project.org/).
+
+AI won't eliminate the need to think computationally; it will make computational
+thinking more valuable than ever. The syntax is becoming cheaper. The
+implementation is becoming easier. What remains scarce is the ability to
+recognize systems where others only see tasks. That's why I think the future of
+programming looks so much like its past: explicit representations, declarative
+descriptions, and composable systems remain the best way to communicate
+intent.
