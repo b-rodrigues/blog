@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-02-13">
+<meta name="dcterms.date" content="2026-08-02">
 
-<title>Using options() to inject a function’s internal variable for reproducible testing – Econometrics and Free Software</title>
+<title>The Future of Programming Looks Like Its Past or Why I build T – Econometrics and Free Software</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -127,18 +127,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#ai-wont-save-people-from-work-they-never-thought-to-automate" id="toc-ai-wont-save-people-from-work-they-never-thought-to-automate" class="nav-link active" data-scroll-target="#ai-wont-save-people-from-work-they-never-thought-to-automate">AI Won’t Save People From Work They Never Thought to Automate</a></li>
+  <li><a href="#the-real-barrier-to-ai-automation-mindset-tools-and-culture" id="toc-the-real-barrier-to-ai-automation-mindset-tools-and-culture" class="nav-link" data-scroll-target="#the-real-barrier-to-ai-automation-mindset-tools-and-culture">The Real Barrier to AI Automation: Mindset, Tools, and Culture</a></li>
+  <li><a href="#transforming-organizations-rewarding-work-elimination" id="toc-transforming-organizations-rewarding-work-elimination" class="nav-link" data-scroll-target="#transforming-organizations-rewarding-work-elimination">Transforming Organizations: Rewarding Work Elimination</a></li>
+  <li><a href="#jupyter-notebooks-and-interactive-data-analysis-are-dead-one-can-hope" id="toc-jupyter-notebooks-and-interactive-data-analysis-are-dead-one-can-hope" class="nav-link" data-scroll-target="#jupyter-notebooks-and-interactive-data-analysis-are-dead-one-can-hope">Jupyter Notebooks (and Interactive Data Analysis) Are Dead (one can hope)</a></li>
+  <li><a href="#introducing-t-describing-systems-constraints-and-intent" id="toc-introducing-t-describing-systems-constraints-and-intent" class="nav-link" data-scroll-target="#introducing-t-describing-systems-constraints-and-intent">Introducing T: Describing Systems, Constraints, and Intent</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Using options() to inject a function’s internal variable for reproducible testing</h1>
+<h1 class="title">The Future of Programming Looks Like Its Past or Why I build T</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">R</div>
-    <div class="quarto-category">data-science</div>
+    <div class="quarto-category">T</div>
+    <div class="quarto-category">datascience</div>
   </div>
   </div>
 
@@ -150,7 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 13, 2025</p>
+      <p class="date">August 2, 2026</p>
     </div>
   </div>
   
@@ -162,86 +172,160 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>No image this time</em></p>
-<p>Imagine you have a function that does something complicated, and in the middle of its definition it generates a variable. Now suppose that you want to save this variable and then re-use it for tests, what I mean is that you want your function to always reproduce this intermediary variable, regardless of what you give it as inputs. This can be useful for testing, if computing this intermediate variable is costly.</p>
-<p>In my <code>{rix}</code> package, the <code>rix()</code> function generates valid Nix expressions from R input and these Nix expressions can then be used to build reproducible development environments that include R, R packages, development libraries, and so on. If you want a 5-minute intro to <code>{rix}</code>, click <a href="https://www.youtube.com/watch?v=OOu6gjQ310c">here</a>.</p>
-<p>Anyways, sometimes, computing these expressions can take some time, especially if the users wants to include remote dependencies that have themselves remote dependencies. <code>rix()</code> will try to look for suitable GitHub commits to pin all the packages for reproducibility purposes, and this can imply quite a lot of api calls. Now for my tests, I wanted to use an already generated <code>default.nix</code> file (which contains the generated Nix expression) but I didn’t want to have to recompute it every time I ran the test and I couldn’t simply use it as is for the test either. You see, that <code>default.nix</code> was in an intermediary state, before <code>rix()</code> is supposed to do some post-processing to it, which is what I actually want to test (I want to actually test the argument that makes <code>rix()</code> skip this post-processing step).</p>
-<p>So suppose <code>rix()</code> looks like this:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>rix <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b,c){</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  ... <span class="co"># lots of code</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>  ... <span class="co"># lots of code</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>  default.nix_file <span class="ot">&lt;-</span> ... <span class="co"># it's generated here</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>  <span class="co"># Then a bunch of things happen to it</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a>  out <span class="ot">&lt;-</span> <span class="fu">f</span>(default.nix_file)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>  <span class="fu">writeLines</span>(out, path) <span class="co"># this is what's written</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div style="text-align: center;">
+<p>
+<a> <img src="../assets/img/tlogo.png" style="width: 50%; height: auto;"> </a>
+</p>
 </div>
-<p>Now what I want is to be able to “overwrite” the <code>default.nix_file</code> variable on line 4 when testing, to provide what I want. This way, I can call <code>rix()</code> with some “easy” parameters that make the computations up to that point very quick. My goal is essentially to test <code>f()</code> (line 6), which begs the question, why not write <code>f()</code> as a separate function and test it? This would be the best practice, however, I don’t really have such an <code>f()</code>, rather it’s a series of complicated steps that follow and rewriting everything to make it easily testable would just take too much time.</p>
-<p>Instead, I opted for the following:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>rix <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b,c){</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  ... <span class="co"># lots of code</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a>  ... <span class="co"># lots of code</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  stub_default.nix <span class="ot">&lt;-</span> <span class="fu">getOption</span>(<span class="st">"TESTTHAT_DEFAULT.NIX"</span>, <span class="at">default =</span> <span class="cn">NULL</span>)</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(stub_default.nix)){</span>
-<span id="cb2-8"><a href="#cb2-8"></a>    default.nix_file <span class="ot">&lt;-</span> <span class="fu">readLines</span>(stub_default.nix)</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  } <span class="cf">else</span> {</span>
-<span id="cb2-10"><a href="#cb2-10"></a>    default.nix_file <span class="ot">&lt;-</span> ... <span class="co"># it's generated here if not being tested</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>  }</span>
-<span id="cb2-12"><a href="#cb2-12"></a>  out <span class="ot">&lt;-</span> <span class="fu">f</span>(default.nix_file)</span>
-<span id="cb2-13"><a href="#cb2-13"></a>  <span class="co"># Then a bunch of things happen to it</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a>  <span class="fu">writeLines</span>(out, path) <span class="co"># this is what's written</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>On line 5, I get the option <code>"TESTTHAT_DEFAULT.NIX"</code> and if it doesn’t exist, <code>stub_default.nix</code> will be set to <code>NULL</code>. So if it’s <code>NULL</code> it’s business as usual, if not, then that <code>default.nix</code> file dedicated for testing gets passed further down. In a sense, I injected the variable I needed in the spot I needed.</p>
-<p>Then, my tests looks like this:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">"remove_duplicate_entries(), don't remove duplicates if skip"</span>, {</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  dups_entries_default.nix <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
-<span id="cb3-5"><a href="#cb3-5"></a>    testthat<span class="sc">::</span><span class="fu">test_path</span>(),</span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="st">"/testdata/default-nix_samples/dups-entries_default.nix"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a></span>
-<span id="cb3-8"><a href="#cb3-8"></a>  tmpdir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
-<span id="cb3-9"><a href="#cb3-9"></a></span>
-<span id="cb3-10"><a href="#cb3-10"></a>  <span class="co"># This copies the file I need in the right path</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a>  destination_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="fu">basename</span>(dups_entries_default.nix))</span>
-<span id="cb3-12"><a href="#cb3-12"></a>  <span class="fu">file.copy</span>(dups_entries_default.nix, destination_file, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-13"><a href="#cb3-13"></a></span>
-<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">on.exit</span>(</span>
-<span id="cb3-15"><a href="#cb3-15"></a>    <span class="fu">unlink</span>(tmpdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">force =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-16"><a href="#cb3-16"></a>    <span class="at">add =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a>  )</span>
-<span id="cb3-18"><a href="#cb3-18"></a></span>
-<span id="cb3-19"><a href="#cb3-19"></a>  removed_dups <span class="ot">&lt;-</span> <span class="cf">function</span>(destination_file) {</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a>    <span class="co"># Set the option to the file path and clean the option afterwards</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>    op <span class="ot">&lt;-</span> <span class="fu">options</span>(<span class="st">"TESTTHAT_DEFAULT.NIX"</span> <span class="ot">=</span> destination_file)</span>
-<span id="cb3-23"><a href="#cb3-23"></a>    <span class="fu">on.exit</span>(<span class="fu">options</span>(op), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">after =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-24"><a href="#cb3-24"></a></span>
-<span id="cb3-25"><a href="#cb3-25"></a>    out <span class="ot">&lt;-</span> <span class="fu">rix</span>(</span>
-<span id="cb3-26"><a href="#cb3-26"></a>      <span class="at">date =</span> <span class="st">"2025-02-10"</span>,</span>
-<span id="cb3-27"><a href="#cb3-27"></a>      <span class="at">project_path =</span> tmpdir,</span>
-<span id="cb3-28"><a href="#cb3-28"></a>      <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-29"><a href="#cb3-29"></a>      <span class="at">skip_post_processing =</span> <span class="cn">TRUE</span>) <span class="co"># &lt;- this is actually want I wanted to test</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a>    <span class="fu">file.path</span>(destination_file)</span>
-<span id="cb3-31"><a href="#cb3-31"></a>  }</span>
-<span id="cb3-32"><a href="#cb3-32"></a></span>
-<span id="cb3-33"><a href="#cb3-33"></a></span>
-<span id="cb3-34"><a href="#cb3-34"></a>  testthat<span class="sc">::</span><span class="fu">expect_snapshot_file</span>(</span>
-<span id="cb3-35"><a href="#cb3-35"></a>    <span class="at">path =</span> <span class="fu">removed_dups</span>(destination_file),</span>
-<span id="cb3-36"><a href="#cb3-36"></a>    <span class="at">name =</span> <span class="st">"skip-dups-entries_default.nix"</span>,</span>
-<span id="cb3-37"><a href="#cb3-37"></a>  )</span>
-<span id="cb3-38"><a href="#cb3-38"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>On line 22, I set the option and on line 23 I write code to remove that option once the test is done, to not mess up subsequent tests. This is a snapshot test, so now I can take a look at the resulting file, and indeed make sure that post-processing was skipped, as expected.</p>
-<p>How would you have done this?</p>
+<p><em>This is a post based on two other posts I wrote for LinkedIn. It has become quite long.</em></p>
+<section id="ai-wont-save-people-from-work-they-never-thought-to-automate" class="level2">
+<h2 class="anchored" data-anchor-id="ai-wont-save-people-from-work-they-never-thought-to-automate">AI Won’t Save People From Work They Never Thought to Automate</h2>
+<p>I’m a fairly optimistic person, but when it comes to AI adoption and how it will be generating billions in increased GDP I’m more skeptical. Not that AI is not capable: on the contrary, I think that for all intents and purposes, even the models from 6 months ago are more than capable enough to perform a majority of white collar tasks, including programming. No, I think the issue is the same I’ve observed many times over my years on this God’s green earth, and that is that there are people who see computers as tools for doing tasks and people who see computers as systems that can be taught to do tasks.</p>
+<p>Consider two people using Excel. Both have used it for ten years.</p>
+<p>Jim receives a monthly report and manually copies data between sheets, formats cells, and updates numbers. He’s learned the workflow and can execute it efficiently. He’s essentially performing the task using a computer as he would with a pen and paper. He’s doing procedural work. That’s his job, and he’s good at it.</p>
+<p>Bill, on the other hand, asks himself the question: “Why am I doing this every month? Is my job actually about moving data around? Or is it something else? What is my purpose?” Now this may seem overly philosophical when the topic at hand is moving data around in Excel to increase shareholder value, but nonetheless, these questions are the right ones to ask. So Bill starts seeing his computer not as a tool that simply replaced pen and paper, but as something he can teach to perform tasks.</p>
+<p>Bill learns about formulas. Bill learns about pivot tables. Using the free tier of an LLM he makes it write macros. He then even creates styles for Word instead of changing the headers manually each time.</p>
+<p>The difference is not technical ability. Both Jim and Bill can operate Excel and Word. But the difference is the mental model. Jim sees the computer as a digital version of pen and paper. It is a place where work happens. Bill sees the computer as a machine that can execute rules. It is a place where work can be transformed into a repeatable system.</p>
+<p>Bill has an automation mindset. People with an automation mindset naturally ask different questions. Instead of:</p>
+<p>“How do I complete this task?”</p>
+<p>they ask:</p>
+<ul>
+<li>“This fucking sucks and surely there’s a better way of doing it?”</li>
+</ul>
+<p>Instead of:</p>
+<ul>
+<li>“How do I make this report?”</li>
+</ul>
+<p>they ask:</p>
+<ul>
+<li>“How can this report generate itself and fuck off?”</li>
+</ul>
+<p>Instead of:</p>
+<ul>
+<li>“How do I process these 1000 files?”</li>
+</ul>
+<p>they ask:</p>
+<ul>
+<li>“How can I write a process that handles any number of files?”</li>
+</ul>
+<p>The key shift is recognizing that anything you do is required to follow rules, and these rules are mostly implicit and invisible. It is moving from thinking about individual actions to thinking about the underlying rules that matters.</p>
+<p>Computers are powerful because they are not just faster versions of humans. Their real advantage is that they can execute instructions that follow rules repeatedly, consistently, and at scale, but you gotta provide them with the rules.</p>
+</section>
+<section id="the-real-barrier-to-ai-automation-mindset-tools-and-culture" class="level2">
+<h2 class="anchored" data-anchor-id="the-real-barrier-to-ai-automation-mindset-tools-and-culture">The Real Barrier to AI Automation: Mindset, Tools, and Culture</h2>
+<p>A common assumption is that AI will democratize automation because people no longer need to know how to program, which is certainly true (to some extent). AI dramatically lowers the technical barrier. Someone can now describe a workflow in natural language and get help creating scripts, automations, or processes.</p>
+<p>But there is a more fundamental barrier: people have to imagine that automation is possible in the first place!</p>
+<p>Someone who has never thought about programming will not suddenly become an automation architect just because they have access to an AI assistant.</p>
+<ul>
+<li>Jim may use AI to write an email faster.</li>
+<li>Jim may use AI to summarize a document.</li>
+<li>Jim may use AI to answer a question.</li>
+</ul>
+<p>Those are useful improvements.</p>
+<p>But Bill is playing another game entirely. He’s thinking about implicit rules, and how to make them explicit (which, by the way, can also be done with AI!). So he’s rubber ducking with Claude and asking it:</p>
+<ul>
+<li>“Why does this task exist at all?”</li>
+<li>“Could this entire workflow disappear?”</li>
+<li>“Could you (Claude) write a Python script/Excel Macro to run this every week?”</li>
+</ul>
+<p>While certainly AI lowers the cost of building systems, it does not automatically teach people to think in systems.</p>
+<p>It is not Jim’s fault though. This difference in mindset can even be seen in operating systems. Historically, Windows has emphasized graphical workflows. The philosophy is often: “There is a tool or button for every task. This Word document just looks like an actual sheet of paper, so treat it as such. This Excel workbook just looks like an actual ledger your grandpa used to use, so treat it as such.” Linux and Unix come from a different tradition: “Everything is a program. Programs can be combined. You pass data from program to program by streams of text. Text is the fundamental unit of information.”</p>
+<p>A Linux user solving a repetitive problem often starts with a command, then turns that command into a script, then schedules that script to run automatically.</p>
+<p>The progression is natural:</p>
+<p>Manual action → command → script → automated system.</p>
+<p>Windows has powerful automation capabilities too. PowerShell is an extremely capable scripting environment. But for too long, Windows’ main target audience was (and still is) the white collar office drone. Even though it is absolutely possible to automate tasks on Windows, the culture now is not one of automation. And technology alone does not create culture.</p>
+<p>There are many such examples. Consider using a regular text editor like VS Code versus something like Vim. With regular text editors, you essentially use your computer as a fancy pen and paper. With Vim, you manipulate text and think about ranges and how to operate on them using macros. Very different mental models. In fact, they’re so different that trying to explain Vim to someone not familiar with it is practically impossible. People can only truly get it if they try it and keep using it for some time. And it’s the same thing with data analysis: using Excel vs R for example. The surrounding culture matters. If users grow up thinking:</p>
+<ul>
+<li>“The computer is a place where I click through tasks,”</li>
+</ul>
+<p>they will rarely ask:</p>
+<ul>
+<li>“How can the computer do this task for me?”</li>
+</ul>
+<p>The tool exists. The mindset does not.</p>
+</section>
+<section id="transforming-organizations-rewarding-work-elimination" class="level2">
+<h2 class="anchored" data-anchor-id="transforming-organizations-rewarding-work-elimination">Transforming Organizations: Rewarding Work Elimination</h2>
+<p>Many companies are approaching AI transformation as a training problem: teach employees how to use AI tools. But the deeper challenge is a thinking problem: teach employees how to identify opportunities for automation. The most valuable AI employees will not necessarily be the people who write the cleverest prompts. They will be the people who notice:</p>
+<ul>
+<li>“Everyone spends two hours every week doing this repetitive process.”</li>
+<li>“This information is copied manually between systems.”</li>
+<li>“This decision follows a predictable set of rules. These rules are not written down anywhere, but they exist.”</li>
+<li>“This workflow exists only because nobody questioned it.”</li>
+</ul>
+<p>Those people are the ones who will transform organizations, and organizations need to create an incentive structure where people are rewarded for eliminating work, not for performing more work. The irony is that many organizations say they want efficiency but reward visible effort. True AI transformation requires rewarding people who make themselves unnecessary.</p>
+<p>The biggest advantage of AI will not come from people who use it as a faster assistant. It will come from people who use it as a way to redesign work. The question that separates the old way of working from the new one is simple:</p>
+<ul>
+<li>“Why am I doing this manually at all?”</li>
+</ul>
+<p>AI is powerful because it makes accessing automation easier than ever before. But the greatest gains will go to those who already understand the fundamental idea behind computers:</p>
+<p><strong>A computer is not just a tool for performing tasks!</strong></p>
+<p>It is a machine for turning ideas, rules, and processes into systems that run.</p>
+</section>
+<section id="jupyter-notebooks-and-interactive-data-analysis-are-dead-one-can-hope" class="level2">
+<h2 class="anchored" data-anchor-id="jupyter-notebooks-and-interactive-data-analysis-are-dead-one-can-hope">Jupyter Notebooks (and Interactive Data Analysis) Are Dead (one can hope)</h2>
+<p>Now how do these observations translate to our work as data scientists?</p>
+<p>I’ve spent years watching data science workflows evolve, and I keep coming back to the same conclusion:</p>
+<p>Jupyter notebooks are making data science and statistics worse. I’d even go so far as to argue that interactive data analysis may be the wrong mental model altogether.</p>
+<p>Let’s start with notebooks. If you’ve been reading my work these past years, you know I’m not fond of them.</p>
+<p>They encourage messy, non-reproducible “spaghetti” code. They mix data, business logic, and results into a single file (something most of us would never accept in an Excel spreadsheet, yet somehow tolerate in an .ipynb). They’re also not plain text, which makes version control, code review, and collaboration unnecessarily painful, often requiring dedicated tooling just to work around the format.</p>
+<p>Joel Grus said it best years ago in his classic <em>I Don’t Like Notebooks</em> talk (go watch it on youtube, it’s great). Very little has changed since then.</p>
+<p>So why did notebooks become so dominant?</p>
+<p>Because Python’s scientific computing tooling was simply that bad for a long time. Spyder wasn’t great. Installing Python packages was (and, to some extent, still is) an absolute clown show. <code>uv</code> has dramatically improved the experience, but it can’t solve the deeper structural issues of PyPI.</p>
+<p>From the mid-2000s through the early 2010s, spinning up a Jupyter server with a curated set of pre-installed packages was often the only practical way for institutions to provide working Python environments to their users. Unlike R, which had RStudio, Python never had a truly first-class IDE built specifically for scientific computing. So a whole generation of data scientists grew up on Jupyter and now teach on Jupyter and force their juniors to use Jupyter. Big mistake! Even without AI, there’s no reason to keep using notebooks. Positron is excellent, and VS Code can be configured into a capable data science environment. But AI may end up making the entire IDE debate irrelevant (of course, us Emacs or Vim chads have solved this since decades).</p>
+<p>AI agents thrive on plain text, which also happens to be the simplest and most enduring interface in computing, especially in the Unix/Linux world.</p>
+<p>Jupyter notebooks, by contrast, are JSON documents rather than plain text (and the json format itself would actually not be an issue for agents, to be fair). But notebooks have many longstanding problems (hidden state, side effects, and non-linear execution) which are exactly the kinds of things that make life difficult for AI agents. AI systems struggle with implicit state and unpredictable execution. Tools and interfaces that deliberately minimize these issues (like plain-text scripts, explicit pipelines, immutable workflows) don’t just make life easier for humans; they make it easier for AI as well.</p>
+<p>If AI becomes central to software development (which it will), I think we’ll see a resurgence of simple text-based workflows.</p>
+<p>A notebook is essentially a recording of a conversation between a human and a computer:</p>
+<pre><code>Run cell.
+Inspect output.
+Modify.
+Run again.
+Oops.
+Restart kernel.
+Run all.</code></pre>
+<p>It’s procedural and interactive, and it’s completely pointless when the coding is being done by an AI agent. Just think about it: imagine we’re back in 2010, and you hire some data science consultants to analyse some data. Do you care to see which tools they used for the analysis? You might be interested in the source code of the analysis itself, but why would you care if they used notebooks or plain text scripts? This is essentially the same here. People might say “well I care because I want to collaborate with AI”, and that may be true, but I’m willing to bet that we’re going to move more towards what makes AI efficient (plain text) and move away from what humans like (notebooks if you have shit taste). We start to see it already in the tooling that is being developed and offered to developers: we’ve started with AI agents embedded in text editors doing auto-complete to “harnesses” that edit the code for you and show you the diffs.</p>
+<p>That brings me back to the idea of interactive data analysis. Increasingly, I think the workflow itself may be flawed.</p>
+<p>To be clear, there is real value in exploring data: filtering, slicing, visualizing, trying different models, testing hypotheses, tweaking graphs. The problem is that this exploratory process usually produces a chaotic script that eventually has to be rewritten before it can be put into production. We accept this rewrite as part of the job, but ideally we shouldn’t have to.</p>
+<p>AI changes that equation.</p>
+<p>Humans can continue exploring data in messy, experimental code while AI agents continuously refactor that exploration into clean, modular, production-ready pipelines. Instead of treating exploration and production as two separate phases, we can have AI bridge the gap in real time.</p>
+</section>
+<section id="introducing-t-describing-systems-constraints-and-intent" class="level2">
+<h2 class="anchored" data-anchor-id="introducing-t-describing-systems-constraints-and-intent">Introducing T: Describing Systems, Constraints, and Intent</h2>
+<p>Those two ideas (that plain text is still the best interface we have, and that human-agent collaboration will fundamentally reshape how we build software) are the foundation of the domain-specific language I’m working on, T.</p>
+<p>Also, I’m betting that the history of computing will keep on repeating itself, and this history as always about raising the level of abstraction. In the 1980s and 1990s, everyone wanted programming to become <em>more interactive</em>. We got IDEs, GUIs, notebooks, drag-and-drop workflows, visual programming, WYSIWYG editors. The assumption was that making computers more like humans was the future. We went from describing exactly what the CPU should do to describing data transformations with modern functional programming.</p>
+<p>With AI, we are increasingly focusing on describing <strong>systems</strong>, <strong>constraints</strong>, and <strong>intent</strong>.</p>
+<p>We’re rediscovering that plain text, explicit representations, and declarative specifications are incredibly powerful: not because humans suddenly prefer them (some nerds do, see NixOS), but because <em>both humans and AI can reason about them</em>. Git can diff them. Compilers can analyze them. LLMs can transform them. They compose naturally.</p>
+<p>So the future may look surprisingly like the past: not because we’ve failed to innovate, but because we’ve rediscovered that the oldest Unix philosophy was pointing in the right direction all along:</p>
+<blockquote class="blockquote">
+<p>Everything should have an explicit, textual representation that can be composed into larger systems.</p>
+</blockquote>
+<p>For example, instead of writing:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ...</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>you tell some AI-agent in voice mode:</p>
+<blockquote class="blockquote">
+<p>Here’s my data. These transformations must happen. These invariants must hold. This pipeline should be reproducible.</p>
+</blockquote>
+<p>Let’s go back to the intro: Jim thinks in <strong>tasks</strong>.</p>
+<blockquote class="blockquote">
+<p>“I need to copy these numbers.”</p>
+</blockquote>
+<p>Bill thinks in <strong>rules</strong>.</p>
+<blockquote class="blockquote">
+<p>“These numbers are generated according to these rules.”</p>
+</blockquote>
+<p>When using an AI, you need to go one step further and think about systems and design. Once the system or the design of your project is explicit, generating Python, R, SQL, Bash, DuckDB, Polars, Spark, or whatever becomes almost an implementation detail.</p>
+<p>This is the main design principle behind T.</p>
+<p>T is an experimental, reproducibility-by-design DSL for polyglot data science. It provides a functional, immutable language for constructing composable micropipelines: first-class, introspectable computation graphs that coordinate R, Python, Julia, Quarto, and Shell execution within a unified system. Pipelines in T are not configuration artifacts but executable program structures with explicit dataflow, typed nodes, and content-addressed outputs. I’ve talked about it already <a href="https://brodrigues.co/posts/2026-04-03-tproject.html">here</a>.</p>
+<p>The main idea is that you <strong>will not</strong> write any T code. An AI agent should do it. And to achieve this, everything humans can do with T (running code, running tests, looking at error messages, etc) can also be done by AI agents. Agents can run the code and get feedback in json format. Error messages can also be surfaced using json. There is a whole “agentic” way of using T that is first-class.</p>
+<p>Built on Nix, T integrates declarative environment management and deterministic builds at the language level. Every node runs in its own hermetic sandbox. Reproducibility isn’t something you configure; it’s something you can’t opt out of. Data moves via Apache Arrow. The actual data analysis code is still written in R, Python or Julia. T “merely” owns the data boundaries and efficiently coordinates the different nodes written in different languages seamlessly. Models can be trained in R or Python and evaluated natively in T via PMML or ONNX. The language is strictly functional: no mutable state, errors as values, tidyverse-inspired verbs for exploration in the REPL, then promotion into production pipelines.</p>
+<p>Its source is 100% AI-generated and thoroughly tested. Starting a T project will ship an <code>AGENTS.md</code> and tiered language references so LLMs get the exact context they need. Intent blocks let you embed the “why.” <code>t check</code> is milliseconds and checks the structural correctness of the pipeline; builds are cached and content-addressed.</p>
+<p>If T succeeds, I don’t think it should be framed as “another programming language.” It should be framed as <strong>a language for describing data science pipelines</strong>. Check it out <a href="https://github.com/b-rodrigues/tlang">here</a> or the <a href="https://tstats-project.org/">website</a>.</p>
+<p>AI won’t eliminate the need to think computationally; it will make computational thinking more valuable than ever. The syntax is becoming cheaper. The implementation is becoming easier. What remains scarce is the ability to recognize systems where others only see tasks. That’s why I think the future of programming looks so much like its past: explicit representations, declarative descriptions, and composable systems remain the best way to communicate intent.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <hr style="border: 1px solid #ccc; margin: 20px 0;">
