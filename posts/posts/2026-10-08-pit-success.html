@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-10-08">
+
+<title>The Pit of Success, and What a Data Science Language Would Need to Make It – Econometrics and Free Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/img/favicon-32x32.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-3fe3df12cb322cd60d4f50ab5ce79ec8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-716f33e67463c9334c4b3b58475b2f7e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+@import url('https://fonts.bunny.net/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+</style>
+</head><body><table width="100%" height="100%" style="text-align: center;">
+    <tbody><tr><td>
+      <a href="https://b-rodrigues.github.io/blog/">Website</a> - 
+      <a href="https://www.youtube.com/@brodriguesco">Youtube</a> - 
+      <a href="https://b-rodrigues.github.io/blog/about.html">About</a> - 
+      <a href="https://b-rodrigues.github.io/blog/talks.html">Talks</a> -
+      <a href="https://b-rodrigues.github.io/blog/books.html">Books</a> - 
+      <a href="https://b-rodrigues.github.io/blog/software.html">Software</a> -
+      <a href="https://b-rodrigues.github.io/blog/index.xml">RSS</a>
+    </td>
+</tr></tbody></table>
+
+
+<link rel="stylesheet" href="../../styles.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#pits-of-failure-are-everywhere-in-data-science" id="toc-pits-of-failure-are-everywhere-in-data-science" class="nav-link active" data-scroll-target="#pits-of-failure-are-everywhere-in-data-science">Pits of failure are everywhere in data science</a></li>
+  <li><a href="#what-makes-a-pit-of-success" id="toc-what-makes-a-pit-of-success" class="nav-link" data-scroll-target="#what-makes-a-pit-of-success">What makes a pit of success</a></li>
+  <li><a href="#defaults-constraints-and-choice-architecture" id="toc-defaults-constraints-and-choice-architecture" class="nav-link" data-scroll-target="#defaults-constraints-and-choice-architecture">Defaults, constraints, and choice architecture</a></li>
+  <li><a href="#design-tools-that-make-falling-into-a-pit-of-success-easy" id="toc-design-tools-that-make-falling-into-a-pit-of-success-easy" class="nav-link" data-scroll-target="#design-tools-that-make-falling-into-a-pit-of-success-easy">Design tools that make falling into a pit of success easy</a></li>
+  <li><a href="#where-the-pit-needs-walls-and-an-exit" id="toc-where-the-pit-needs-walls-and-an-exit" class="nav-link" data-scroll-target="#where-the-pit-needs-walls-and-an-exit">Where the pit needs walls and an exit</a></li>
+  <li><a href="#what-the-pit-cannot-do" id="toc-what-the-pit-cannot-do" class="nav-link" data-scroll-target="#what-the-pit-cannot-do">What the pit cannot do</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Pit of Success, and What a Data Science Language Would Need to Make It</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">datascience</div>
+    <div class="quarto-category">T</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 8, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Rico Mariani, a long-time performance engineer at Microsoft, coined the idea of the <em>pit of success</em>. A system has a pit of success when the natural, lazy way of using it leads to good outcomes. You don’t need heroics or perfect memory. You fall into the right result, and climbing out to do something wrong takes deliberate effort.</p>
+<p>I came across this framing in a talk that I was recently recommended and I further recommend it to anyone interested in the topic: <a href="https://youtu.be/US8QG9I1XW0">Functional architecture - The pits of success - Mark Seemann</a>. It put a name to something I had been circling around for years.</p>
+<p>I had been arguing a version of the same point long before I knew the term. In my 2022 post titled <a href="https://brodrigues.co/posts/2022-11-30-pipelines-as.html">Functional programming explains why containerization is needed for reproducibility</a>, I argued that a pipeline is only as reproducible as the functions it is built from, and that even a pure function hides inputs such as the R version, the package versions, and the operating system. Containers are one way to make those hidden inputs explicit. In another 2022 post on <a href="https://brodrigues.co/posts/2022-05-26-safer_programs.html">learnings from functional programming</a>, I made a related case for writing functions that fail early and never reach into the global environment. Both posts were, in a sense, attempts to build a pit of success out of habits and tooling. Neither was framed that way, and I think the framing is more useful.</p>
+<section id="pits-of-failure-are-everywhere-in-data-science" class="level2">
+<h2 class="anchored" data-anchor-id="pits-of-failure-are-everywhere-in-data-science">Pits of failure are everywhere in data science</h2>
+<p>Most of the tools we use for analysis are pits of failure. You can be meticulous and still end up with an analysis that cannot be rerun, because the meticulousness is entirely up to you.</p>
+<p>Think about how a typical script behaves. It reads a file by path, and nothing says that the path is an input. It uses a package, and nothing records which version. It reassigns a variable halfway through, so the value at the bottom of the file depends on what happened at the top. It converts a column from text to numbers without complaint, and quietly turns the bad entries into missing values. Each of these is convenient in the moment. Together, they make the result depend on things nobody wrote down.</p>
+<p>Good practice is then a set of instructions: pin your dependencies, avoid globals, check your inputs, document your steps. These are road signs. They tell you where to go, and they leave the driving to you. Under deadline pressure, road signs get ignored, and not out of malice. Only a speed bump would make you drive more responsibly.</p>
+</section>
+<section id="what-makes-a-pit-of-success" class="level2">
+<h2 class="anchored" data-anchor-id="what-makes-a-pit-of-success">What makes a pit of success</h2>
+<p>If the goal is to make the disciplined path the easy one, we need to ask what the language itself would have to do. If reproducibility depends on remembering a checklist, then reproducibility is a convention. If the language makes the checklist unnecessary, reproducibility becomes a property of the program. From my own experience of building and using R packages, and from thinking about where analyses usually go wrong, I think a language designed for this purpose would need at least the points raised in <a href="https://brodrigues.co/posts/2026-04-03-tproject.html">this blog post from earlier this year</a>, but let me rephrase them here again.</p>
+<p><strong>The program should be a flat text file.</strong> Notebooks have become popular in data science, but I think they are a serious mistake. They mix code, output, and state in a format that is hard to diff, review, and reuse, and they encourage the hidden-state problems that make analyses irreproducible. Notebooks suffer from exactly the same problem that gets blamed on Excel. The main argument for notebooks is that they make exploration easy. But that says more about the shortcomings of the alternatives than about any real strength of notebooks. Environments like RStudio and Positron (or Emacs) already make interactive work with data natural, and they do it while keeping the program in a plain text file that can be run, tested, and versioned like any other code.</p>
+<p><strong>Reproducibility should be the default, not an option.</strong> If pinning an environment requires a separate file that someone has to remember to update, it will drift. A language that declares its runtime and dependencies as part of the program, and builds them the same way every time, removes a decision from the analyst. You cannot opt out of it by forgetting.</p>
+<p><strong>Inputs should be declared, not discovered.</strong> A program should not be able to read a file or an environment variable that it does not name. When every dependency is visible in the code, the tooling can see the whole picture: which step depends on which, and what changes when an input changes. Undeclared inputs become a build error rather than a silent difference between two machines. This is the same point as the hidden-inputs argument from my containerization post, moved from the operating system into the language.</p>
+<p><strong>Hidden state should be hard to create.</strong> Immutable bindings, explicit reassignment when you really need it, and no implicit global state make a result depend only on its inputs. This is also what makes caching safe. If a step is a pure function of its declared inputs, the system can reuse its previous output with confidence, and nobody has to wonder whether a cached result is stale.</p>
+<p><strong>Types and schemas should fail loudly.</strong> Silent coercion is one of the most common ways data goes wrong without anyone noticing. A language built for analysis should refuse to turn text into numbers without being asked, should make missing values explicit rather than inventing them, and should check that a column a downstream step needs actually exists before anything runs.</p>
+<p><strong>An analysis should be laid out as a pipeline.</strong> Traditional scripts tend to morph into spaghetti very quickly: steps depend on each other in ways that are hard to see, and a change in one place can silently affect results three sections later. Writing the analysis as an explicit pipeline, with each step a named stage that takes declared inputs and produces declared outputs, makes it much easier to debug a failing step, reuse results that have not changed, and hand the work over to someone (or some<em>thing</em>) else.</p>
+<p><strong>The whole graph should be checkable before it runs.</strong> If the pipeline is a first-class object that the language can inspect, you can catch missing columns, broken references, and cycles in milliseconds. Waiting three hours for a simulation to discover a typo in a column name is a failure of design, not of the analyst.</p>
+<p><strong>Errors should be values.</strong> When a step fails, the rest of the pipeline should not necessarily stop. An error that is captured as data can be inspected, reported, and handled, and independent branches can keep going. This turns debugging from reading a stack trace from code you didn’t write into reading a result that tells you where the problem is.</p>
+<p><strong>Interoperability should not require glue code.</strong> Real analysis mixes R, Python, Julia, SQL, and whatever comes next. Every hand-written CSV export between two of them is a place where types get lost and assumptions go unrecorded. A shared, typed interchange format between runtimes removes a whole category of errors and a lot of boilerplate.</p>
+<p><strong>Feedback should be structured.</strong> Error messages that are only meant for a human reading a terminal are hard for tools to act on. If the language reports problems in a machine-readable form, the same checks serve analysts, continuous integration, and increasingly, AI coding assistants that write much of the code.</p>
+<p>What makes this set of properties attractive is that the same features that make an analysis reproducible also make it easier for an LLM to work with. An LLM is much better at modifying a program when its inputs are explicit, its dependencies are named, its state is visible, and its errors are structured. In that sense, good language design doesn’t just put guardrails around the human analyst. It gives the machine a better representation of what the analyst is trying to do.</p>
+<p>This suggests an interesting convergence: the language we would want to make data science safer for humans is also close to the language we would want to make data science easier for AI to operate on. A language built around these principles could be a pit of success for both the human analyst and the AI assistant helping them. Instead of pulling in different directions, the two would be working with the same constraints.</p>
+</section>
+<section id="defaults-constraints-and-choice-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="defaults-constraints-and-choice-architecture">Defaults, constraints, and choice architecture</h2>
+<p>There is also a useful way to think about this from economics. We often distinguish between telling people what they ought to do and changing the rules and incentives under which they make decisions. A recommendation such as “pin your dependencies” or “don’t rely on global state” is a rule in the first sense: it asks the analyst to remember and follow a good practice. Defaults, constraints, and institutions work differently. They change what is easy to do, what is costly to do, and what is possible to do at all.</p>
+<p>This is closely related to the idea of choice architecture in behavioural economics, and to the broader observation that the design of an environment can shape behaviour without requiring people to consciously follow a set of instructions. In software, the architecture is unusually literal: a language can make some actions easy, others difficult, and some impossible to express without making the programmer explicitly acknowledge what they are doing.</p>
+<p>That suggests a useful question for data science. Instead of asking how we can get analysts to consistently follow reproducibility best practices, what if we designed the language so that following those practices was the easiest way to write a program?</p>
+</section>
+<section id="design-tools-that-make-falling-into-a-pit-of-success-easy" class="level2">
+<h2 class="anchored" data-anchor-id="design-tools-that-make-falling-into-a-pit-of-success-easy">Design tools that make falling into a pit of success easy</h2>
+<p>But have you tried asking someone who does none of this to adopt these practices? People may agree with every point, but applying them consistently takes effort and frankly brings very little immediate reward. Investing early in good practice makes life much easier later, but “later” is hard to sell to someone with a deadline yesterday.</p>
+<p>So what is the alternative? Rather than persuading people to jump into the pit, we can build tools that make falling into it the default. I’ve been working on a domain-specific language called T that aims at exactly this. The idea is that by simply using it, you end up in a pit of success. I won’t go into the details here, since you can read more about it <a href="https://brodrigues.co/posts/2026-04-03-tproject.html">here</a> and <a href="https://brodrigues.co/posts/2026-08-02-t_devlog.html">here</a>. What I want to discuss is why LLMs make this kind of tool practical to build.</p>
+<p>Historically, building a language or a tool was a large project that only a few people could justify. LLMs lower that cost dramatically. Someone with experience in a domain can now build a small tool that solves one specific problem well, without a team or a long development cycle. <em>Taste</em>, knowing which problems matter and which habits are worth enforcing, is exactly what a domain expert brings and what an LLM does not supply on its own.</p>
+<p>I don’t know yet how widely T will be adopted. But I think it is a good example of the pit-of-success idea applied to data science, and the broader point is that the tools themselves can carry the discipline, so that individual analysts don’t have to. The future will tell whether that bet pays off.</p>
+</section>
+<section id="where-the-pit-needs-walls-and-an-exit" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-pit-needs-walls-and-an-exit">Where the pit needs walls and an exit</h2>
+<p>A pit of success can become a trap if it is the only way to work. Exploration is messy by nature. You try a model, plot something odd, throw away three approaches before finding the one that works. A language that forbids all of that makes people go back to their old tools, usually a notebook on the side, and then the discipline lives in two places at once.</p>
+<p>So the language needs a deliberate place for exploration that does not contaminate production. Exploration should be easy and interactive, with the results promoted into the strict pipeline once they stabilise. The pit should catch you when you go into production, not when you’re trying to think. This is the part I find hardest to get right, and I suspect any language that ignores it will be abandoned quickly. For now, the way this works in T is that you have much more freedom to try things from its REPL. But I suspect that much of this exploratory work will be LLM-driven in the future. Interactive data exploration may move from “playing around” with the data to asking an LLM to do things for you and show you the results.</p>
+<p>If that happens, interactive exploration may become less important as a feature of the language itself. The important requirement would instead be that the language provides a good interface for an LLM to explore the data and then turn what it discovers into a reproducible pipeline.</p>
+<p>I think much of the answer lies in the tools we already use. Editors such as Emacs and Positron or VS Code already give analysts a place to explore interactively while writing plain text files that can later be run as a pipeline. What a new language needs is an editor integration that makes this transition smooth: completions, diagnostics, and navigation working in the same window as the exploratory code. That integration is a solvable engineering task, and LLMs are now quite capable of producing the plugins, language servers, or tree-sitter grammars it requires. One question is whether the language makes the move from exploration to production feel like tidying up rather than rewriting from scratch, which is, again, the typical life-cycle of an analysis. Quick and dirty exploration in a Notebook, clean rewrite in a script (sometimes even in another language). T solves this by forcing the analysis to be a pipeline that runs in a reproducible environment <em>by design</em>.</p>
+</section>
+<section id="what-the-pit-cannot-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-pit-cannot-do">What the pit cannot do</h2>
+<p>A language, even one supported by an LLM, can make reproducibility cheap. It cannot make the analysis correct. A misspecified regression run reproducibly is still misspecified, and catching that remains the work of a statistician and a reviewer. Nor can a language change the culture around it. People need to believe that rebuilding last year’s figures is worth the time, and someone needs to ask whether they still can.</p>
+<p>The pit of success makes the right thing easy. It does not decide what the right thing is, and it does not make anyone want to jump in. Those are still human jobs.</p>
+<p>This is roughly the bet behind T, though I think the general ideas matter more than any one implementation. If you have thought about what a data science language should refuse to let you do, I would be interested to hear what you would put on that list.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<hr style="border: 1px solid #ccc; margin: 20px 0;">
+<footer>
+If you find the content in this blog useful, you might want to follow
+me on <a href="https://fosstodon.org/@brodriguesco">Mastodon</a> or <a href="https://www.twitter.com/brodriguesco">twitter</a> for blog post updates or
+<a href="https://www.buymeacoffee.com/brodriguesco">buy me an espresso</a> or <a href="https://www.paypal.me/brodriguesco">paypal.me</a>, or buy my <a href="../../books.html">ebooks</a>.
+You can also watch my videos on <a href="https://www.youtube.com/c/BrunoRodrigues1988/">youtube</a>.
+So much content for you to consoom!
+<p></p>
+<style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#272b30 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#82518c !important;}</style>
+<p>
+<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/brodriguesco"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me an Espresso"><span style="margin-left:5px">Buy me an Espresso</span></a>
+</p>
+  <div class="row">
+    <div class="col-lg-12">
+        <p>© <span id="year"></span>, content by Bruno Rodrigues, unless otherwise stated, every content of this blog is licensed under the <a href="http://www.wtfpl.net/txt/copying/" rel="nofollow">WTFPL</a>.</p>
+        <p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://nixos.org/explore/">Nix</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+      <p><a href="../../index.html">Back to main page.</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+ document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/b-rodrigues\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
